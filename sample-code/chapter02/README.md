@@ -20,6 +20,6 @@ javac -d out *.java
 | [2-13](./02-13/) | TypeConversionExample.java | `java -cp out TypeConversionExample` |
 | [2-18](./02-18/) | SwitchExample.java | `java -cp out SwitchExample` |
 | [2-27](./02-27/) | Calculator.java | `java -cp out Calculator` |
-| [2-44](./02-44/) | IOExample.java | `java -cp out IOExample` |
-| [2-46](./02-46/) | SafeInputExample.java | `java -cp out SafeInputExample` |
-| [2-48](./02-48/) | ImportExample.java | `java -cp out ImportExample` |
+| [2-38](./02-38/) | IOExample.java | `java -cp out IOExample` |
+| [2-40](./02-40/) | SafeInputExample.java | `java -cp out SafeInputExample` |
+| [2-42](./02-42/) | ImportExample.java | `java -cp out ImportExample` |

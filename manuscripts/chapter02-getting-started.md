@@ -987,8 +987,8 @@ staticメソッドは、オブジェクトを生成せずに直接呼び出せ�
 
 ### C言語とJavaの文字列処理の根本的な違い
 
-Javaにおける文字列処理は、C言語のアプローチとは根本的に異なる設計思想にもとづいています。
-この違いを理解することは、C言語からJavaへ移行するうえできわめて重要です。
+C言語では、文字列をnull終端の`char`配列として扱い、メモリの確保や長さの計算を自分で行いました。
+Javaでは、文字列を`String`クラスのオブジェクトとして扱い、そうした管理を`String`クラスに任せます。
 
 #### C言語の文字列処理の課題
 
@@ -1027,74 +1027,12 @@ String copy = str;  // 参照のコピー（安全）
 | 文字列の表現 | char配列 + null終端文字 | Stringオブジェクト（長さ情報を内部保持） |
 | 文字エンコーディング | プラットフォーム依存（ASCII、Shift_JISなど） | Unicode（UTF-16）で統一 |
 
-### 実践的な比較例
-
-#### 文字列の長さ取得
-
-<span class="listing-number">**サンプルコード2-32**</span>
-
-```c
-// #include <string.h> が必要
-
-// C言語 - 文字列の長さに比例する時間がかかる
-int len = strlen(str);  // 毎回文字列を走査
-```
-
-<span class="listing-number">**サンプルコード2-33**</span>
-
-```java
-// Java - 長さによらず一定の時間で取得できる
-int len = str.length();  // 内部フィールドを返すだけ
-```
-
-#### 文字列の比較
-
-<span class="listing-number">**サンプルコード2-34**</span>
-
-```c
-// #include <string.h> が必要
-
-// C言語
-if (strcmp(str1, str2) == 0) {
-    // 等しい
-}
-```
-
-<span class="listing-number">**サンプルコード2-35**</span>
-
-```java
-// Java
-if (str1.equals(str2)) {
-    // 等しい
-}
-```
-
-#### 部分文字列の取得
-
-<span class="listing-number">**サンプルコード2-36**</span>
-
-```c
-// #include <string.h> が必要
-
-// C言語 - 手動でメモリ管理
-char sub[10];
-strncpy(sub, str + 5, 9);
-sub[9] = '\0';
-```
-
-<span class="listing-number">**サンプルコード2-37**</span>
-
-```java
-// Java - 簡潔で安全
-String sub = str.substring(5, 14);
-```
-
 ### 文字列の基本
 
 文字列オブジェクトの作成と基本操作は、Javaプログラミングにおいてもっとも頻繁に使用される機能の1つです。
 以下のコード例では、文字列の作成、連結、長さの取得、個別文字へのアクセスという基本的な操作を示します。
 
-<span class="listing-number">**サンプルコード2-38**</span>
+<span class="listing-number">**サンプルコード2-32**</span>
 
 ```java
 // 文字列の作成
@@ -1111,6 +1049,8 @@ int length = message.length();  // 11
 char firstChar = message.charAt(0);  // 'H'
 ```
 
+`length()`は、`String`が内部に持っている長さを返すだけなので、C言語の`strlen()`のように文字列を終端まで数えることはなく、長い文字列でも一定の時間で返ります。
+
 このコードで注目すべき重要な概念は、文字列リテラル（`"Hello"`）と`new`キーワードを使用した文字列作成の違いです。
 文字列リテラルはJVMが管理する文字列プールに格納され、同じ内容の文字列は共有されます。
 これは、メモリ効率とパフォーマンスの最適化のための重要なしくみです。
@@ -1122,7 +1062,7 @@ char firstChar = message.charAt(0);  // 'H'
 C言語では`strcmp()`関数で比較しますが、Javaではオブジェクトの比較という観点から、より慎重なアプローチが必要です。
 以下のコード例で、参照の比較と内容の比較の重要な違いを示します。
 
-<span class="listing-number">**サンプルコード2-39**</span>
+<span class="listing-number">**サンプルコード2-33**</span>
 
 ```java
 String s1 = "Java";
@@ -1154,7 +1094,7 @@ Javaの`String`クラスは、テキスト処理に必要な豊富なメソッ�
 これらのメソッドは、Web開発でのユーザー入力の処理、データベースから取得した文字列の整形、ファイルの読み書きなど、実際の開発で頻繁に使用されます。
 以下のコード例で、もっとも重要な文字列操作メソッドを実践的に学習します。
 
-<span class="listing-number">**サンプルコード2-40**</span>
+<span class="listing-number">**サンプルコード2-34**</span>
 
 ```java
 String text = "  Java Programming  ";
@@ -1184,6 +1124,8 @@ boolean contains = text.contains("Java");  // true
 
 これらのメソッドは、実際の開発でよく使います。
 `trim()`メソッドはユーザー入力の前後の空白を除去してデータの一貫性を保ち、`split()`メソッドはCSVファイルの解析や構造化データの処理に使用されます。
+`substring(開始位置, 終了位置)`は、開始位置から終了位置の1つ手前までを新しい文字列として返します。
+C言語の`strncpy()`のように、コピー先の配列を用意したり終端の`'\0'`を書いたりする必要はありません。
 `indexOf()`と`contains()`は検索機能の実装に欠かせず、`replace()`はテンプレートの穴埋めや表記をそろえる処理で活用されます。
 重要なのは、これらすべてのメソッドが元の文字列を変更せず、新しい文字列を返すという点です。
 
@@ -1195,7 +1137,7 @@ Javaの文字列設計におけるもっとも重要な特徴の1つが不変性
 複数の処理を同時に動かすマルチスレッド（第15章）でも、文字列を安全に共有できます。
 以下のコード例で、この重要な概念を実際に確認してみましょう。
 
-<span class="listing-number">**サンプルコード2-41**</span>
+<span class="listing-number">**サンプルコード2-35**</span>
 
 ```java
 String str = "Hello";
@@ -1225,7 +1167,7 @@ Javaでは、文字列操作メソッドはつねに新しい文字列オブジ�
 この問題を解決するために、Javaは`StringBuilder`クラス<span class="footnote">`StringBuilder`はJava 5で加わりました。それ以前からある`StringBuffer`も同じ働きをしますが、複数のスレッドから使うための同期処理が入っている分、処理に時間がかかります。</span>を提供しています。
 `StringBuilder`は内部に可変長の文字配列を持ち、メモリの再割り当てを最小限に抑えながら文字列操作を行います。
 
-<span class="listing-number">**サンプルコード2-42**</span>
+<span class="listing-number">**サンプルコード2-36**</span>
 
 ```java
 StringBuilder sb = new StringBuilder();
@@ -1285,7 +1227,7 @@ Javaの入力処理は型安全性を重視しています。
 
 #### C言語との違い
 
-<span class="listing-number">**サンプルコード2-43**</span>
+<span class="listing-number">**サンプルコード2-37**</span>
 
 ```c
 // #include <stdio.h> が必要
@@ -1295,7 +1237,7 @@ printf("Hello, %s!\n", name);
 scanf("%d", &age);  // 読み取れたかは戻り値で確かめる
 ```
 
-<span class="listing-number">**サンプルコード2-44**　IOExample.java</span>
+<span class="listing-number">**サンプルコード2-38**　IOExample.java</span>
 
 ```java
 public class IOExample {
@@ -1349,7 +1291,7 @@ Javaでは、`IO.readln`で1行を文字列として読み、`Integer.parseInt`�
 `IO.readln`の戻り値はつねにString型です。
 数値や真偽値として使うときは、型ごとの変換メソッドで変換します。
 
-<span class="listing-number">**サンプルコード2-45**</span>
+<span class="listing-number">**サンプルコード2-39**</span>
 
 ```java
 // 各種データ型の入力（IO.readlnの戻り値はつねにString型）
@@ -1370,7 +1312,7 @@ String line = IO.readln();                              // 行全体
 次の例では、整数に変換できるまで入力を繰り返します。
 `strip()`<span class="footnote">`strip()`はJava 11で加わったメソッドで、全角の空白などUnicodeの空白文字も取り除きます。以前からある`trim()`が取り除くのは、文字コードがU+0020（半角の空白）以下の文字だけです。</span>で前後の空白を取り除いてから変換するので、「 42 」のような入力も受け付けます。
 
-<span class="listing-number">**サンプルコード2-46**　SafeInputExample.java</span>
+<span class="listing-number">**サンプルコード2-40**　SafeInputExample.java</span>
 
 ```java
 public class SafeInputExample {
@@ -1411,7 +1353,7 @@ public class SafeInputExample {
 `IO.readln`は、入力がもう残っていないとき（ファイルを標準入力にリダイレクトして最後まで読んだときや、キーボードでCtrl+Dを押したとき。WindowsではCtrl+Zを押してからEnterキーを押す）に`null`を返します。
 行数が決まっていない入力は、`null`が返るまで読み続けます。
 
-<span class="listing-number">**サンプルコード2-47**</span>
+<span class="listing-number">**サンプルコード2-41**</span>
 
 ```java
 String line;
@@ -1436,7 +1378,7 @@ IO.println(count + "行読みました");
 Javaの標準ライブラリのクラスは、パッケージという単位に分けて置かれています。
 `java.lang`以外のパッケージにあるクラス（配列の節で使った`java.util.Arrays`など）を使うときは、ファイルの先頭に`import`文を書きます。
 
-<span class="listing-number">**サンプルコード2-48**　ImportExample.java</span>
+<span class="listing-number">**サンプルコード2-42**　ImportExample.java</span>
 
 ```java
 import java.util.Arrays;  // Arraysクラスを使用するための宣言
