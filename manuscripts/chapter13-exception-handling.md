@@ -382,7 +382,7 @@ public class UserService {
             // SQLExceptionが発生したと仮定
             throw new java.sql.SQLException("DB接続エラー");
         } catch (java.sql.SQLException e) {
-            // SQLExceptionをラップして、より抽象的なDataAccessExceptionをスロー
+            // SQLExceptionを包み、より抽象的なDataAccessExceptionをスロー
             throw new DataAccessException(
                     "ユーザー情報の取得に失敗しました", e);
         }

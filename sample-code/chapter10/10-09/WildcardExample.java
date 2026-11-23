@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WildcardExample {
-    // 上限境界ワイルドカード：Numberとそのサブクラスのリストを受け取り、合計値を計算する
+    // 上限境界ワイルドカード：Numberとそのサブクラスのリストを受け取って合計する
     public static double sum(List<? extends Number> numberList) {
         double total = 0.0;
         for (Number num : numberList) {

@@ -370,7 +370,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WildcardExample {
-    // 上限境界ワイルドカード：Numberとそのサブクラスのリストを受け取り、合計値を計算する
+    // 上限境界ワイルドカード：Numberとそのサブクラスのリストを受け取って合計する
     public static double sum(List<? extends Number> numberList) {
         double total = 0.0;
         for (Number num : numberList) {
@@ -448,7 +448,7 @@ public class VarBasicExample {
         var languagesVar = new ArrayList<String>();
         var scoresVar = new HashMap<String, Integer>();
 
-        // varの変数の型は右辺と同じArrayList<String>になる（List<String>ではない）
+        // varの変数の型は右辺と同じArrayList<String>（List<String>ではない）
         languagesVar.add("Java");
         languagesVar.ensureCapacity(10);  // ArrayListのメソッドも呼べる
         // List<String>型なのでコンパイルエラー

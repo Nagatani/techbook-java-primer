@@ -1301,7 +1301,7 @@ Javaでは、`IO.readln`で1行を文字列として読み、`Integer.parseInt`�
 int intValue = Integer.parseInt(IO.readln());           // 整数
 double doubleValue = Double.parseDouble(IO.readln());   // 浮動小数点
 boolean boolValue = Boolean.parseBoolean(IO.readln());  // 真偽値
-String[] words = IO.readln().split(" ");                // 空白で区切った単語
+String[] words = IO.readln().split(" ");                // 単語の配列
 String line = IO.readln();                              // 行全体
 ```
 

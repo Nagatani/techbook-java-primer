@@ -9,14 +9,14 @@ public class FileSystemExample {
 
         // ディレクトリ作成
         // Files.createDirectory()は指定されたディレクトリを作成します。
-        // createDirectories()を使用すると、親ディレクトリがなければ同時に作成されます。
+        // createDirectories()は、親ディレクトリがなければ同時に作成する
         if (Files.notExists(dir)) {
             Files.createDirectory(dir);
             IO.println("ディレクトリを作成しました: " + dir);
         }
 
         // ファイル作成と書き込み
-        // writeString()は、小さなテキストデータをファイルに保存する便利メソッドです。
+        // writeString()は、小さなテキストをファイルに保存する便利なメソッド
         // ファイルを開いて書き込み、閉じるまでをメソッドのなかで済ませます。
         Files.writeString(file, "Hello, NIO.2!");
         IO.println("ファイルを作成しました: " + file.getFileName());

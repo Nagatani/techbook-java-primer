@@ -294,12 +294,12 @@ public class StreamExample {
         students.add(new Student("David", 75, 170));
         students.add(new Student("Charlie", 92, 180));
 
-        // 点数が80点より高く、身長が170cm以上の生徒の名前を、アルファベット順で取得する
+        // 点数が80点より高く身長が170cm以上の生徒の名前を、アルファベット順で取得
         List<String> result = students.stream() // 1. ストリームを生成
             .filter(s -> s.getScore() > 80)      // 2. 点数でフィルタリング
             .filter(s -> s.getHeight() >= 170)   // 3. 身長でフィルタリング
             .map(Student::getName)               // 4. 名前に変換
-            .sorted()                            // 5. アルファベット順にソート
+            .sorted()                            // 5. 名前順にソート
             .collect(Collectors.toList());       // 6. 結果をリストに集約
 
         IO.println(result);

@@ -17,7 +17,7 @@ public class VarBasicExample {
         var languagesVar = new ArrayList<String>();
         var scoresVar = new HashMap<String, Integer>();
 
-        // varの変数の型は右辺と同じArrayList<String>になる（List<String>ではない）
+        // varの変数の型は右辺と同じArrayList<String>（List<String>ではない）
         languagesVar.add("Java");
         languagesVar.ensureCapacity(10);  // ArrayListのメソッドも呼べる
         // List<String>型なのでコンパイルエラー

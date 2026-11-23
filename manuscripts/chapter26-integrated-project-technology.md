@@ -270,7 +270,7 @@ S001を削除: true
             IO.println(cols.length + "列: " + String.join(" | ", cols));
         }
 
-        // Excelで「CSV UTF-8」形式を選んで保存すると、ファイルの先頭にBOM（U+FEFF）が付く
+        // Excelで「CSV UTF-8」形式で保存すると、先頭にBOM（U+FEFF）が付く
         String withBom = "\uFEFFS004,鈴木一郎,工学部,2025";
         String id = withBom.split(",")[0];
         IO.println("S004と等しいか: " + id.equals("S004")

@@ -312,7 +312,7 @@ ATMの例と同じく、読み込んでから書き戻すまでのあいだに�
 class SynchronizedCounter {
     private int count = 0;
 
-    // synchronizedキーワードにより、このメソッドは同時に1つのスレッドしか実行できない
+    // synchronizedにより、このメソッドは同時に1つのスレッドしか実行できない
     // これにより、count++という複合操作（読み取り→インクリメント→書き込み）が
     // 原子的（アトミック）に実行されることが保証される
     public synchronized void increment() {
@@ -706,9 +706,9 @@ public class FutureCallableExample {
             IO.println("計算開始: フィボナッチ数列の第" + n + "項");
             long start = System.nanoTime();
             long result = fibonacci(n);
-            long time = (System.nanoTime() - start) / 1_000_000;  // ミリ秒
+            long timeMs = (System.nanoTime() - start) / 1_000_000;
             IO.println("計算完了: F(%d) = %d (所要時間: %dms)"
-                    .formatted(n, result, time));
+                    .formatted(n, result, timeMs));
             return result;
         }
         // ...

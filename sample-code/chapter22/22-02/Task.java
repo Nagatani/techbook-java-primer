@@ -145,7 +145,7 @@ public class Task {
      * タスクの概要を文字列で返す
      * 
      * @return タスクのIDとタイトルを含む文字列
-     * @deprecated 詳しい情報を含む {@link #toDetailedString()} を使用してください
+     * @deprecated 詳しい情報を含む {@link #toDetailedString()} を使う
      */
     @Deprecated(since = "2.0", forRemoval = true)
     public String getSummary() {
