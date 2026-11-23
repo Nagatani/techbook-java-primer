@@ -1035,77 +1035,14 @@ Javaでこのような処理を書くときは、Reactorなどの外部ライブ
 
 ### 関数型プログラミングの実装パターン集
 
-#### 失敗した処理の再試行
-
-ネットワーク越しのサービスのように、ときどき失敗する処理は、何回か呼び出し直すと成功することがあります。
-サンプルコード11-17の`withRetry`は、処理を表す`Supplier`を受け取り、失敗したら呼び出し直す新しい`Supplier`を返す高階関数です。
-
-<span class="listing-number">**サンプルコード11-17**　ResilientService.java（3〜45行目）</span>
-
-```java
-public class ResilientService {
-    // 関数型リトライメカニズム
-    public <T> Supplier<T> withRetry(Supplier<T> supplier,
-            int maxAttempts) {
-        return () -> {
-            for (int attempt = 1; ; attempt++) {
-                try {
-                    return supplier.get();  // 成功したら結果を返す
-                } catch (RuntimeException e) {
-                    if (attempt >= maxAttempts) {
-                        throw new RuntimeException(
-                                "Max attempts reached", e);
-                    }
-                    // 失敗したら、もう一度呼び出す
-                }
-            }
-        };
-    }
-    
-    // 失敗を再現するため、呼び出した回数をフィールドで数える
-    private int calls = 0;
-
-    // 使用例：2回失敗し、3回目で成功するサービスを呼び出す
-    public String fetchDataWithRetry() {
-        Supplier<String> unreliableService = () -> {
-            calls++;
-            IO.println(calls + "回目の呼び出し");
-            if (calls < 3) {
-                throw new RuntimeException("Service unavailable");
-            }
-            return "Success!";
-        };
-
-        Supplier<String> resilientService =
-                withRetry(unreliableService, 3);
-        return resilientService.get();
-    }
-
-    public static void main(String[] args) {
-        ResilientService service = new ResilientService();
-        IO.println("結果: " + service.fetchDataWithRetry());
-    }
-}
-```
-
-実行結果：
-
-```
-1回目の呼び出し
-2回目の呼び出し
-3回目の呼び出し
-結果: Success!
-```
-
-`withRetry`が返す`Supplier`は、`get`を呼ばれると元の処理を呼び出し、例外が起きたら最大`maxAttempts`回まで呼び出し直します。
-この例では2回失敗したあと3回目で成功したので、その結果が返ります。
-3回とも失敗した場合は、最後の例外を原因として持つ例外をスローします。
+処理を受け取って別の処理を返す高階関数は、失敗した処理を呼び出し直す「再試行（リトライ）」にも使えます。
+試したい処理をラムダ式で渡し、失敗したら何回か呼び出し直すメソッドは、例外の扱いとあわせて第13章「例外処理」の「リトライパターン」で書きます。
 
 #### イベント処理システムでの関数型アプローチ
 
 イベント駆動アーキテクチャにおいて、関数型プログラミングはとくに有効です。イベントハンドラーをラムダ式として定義し、関数の組み合わせでイベント処理パイプラインを構築することで、保守性と拡張性の高いシステムを実現できます。
 
-<span class="listing-number">**サンプルコード11-18**　EventProcessor.java（8〜55行目）</span>
+<span class="listing-number">**サンプルコード11-17**　EventProcessor.java（8〜55行目）</span>
 
 ```java
 public class EventProcessor {
@@ -1175,9 +1112,9 @@ public class EventProcessor {
 Webのサーバーは、届いたリクエスト（要求）を本来の処理に渡す前に、いくつかの検査を順に行います。
 たとえば、記録を取る処理や、短い時間に届きすぎていないかを確かめる処理、利用者を認証する処理です。
 このような、本来の処理の前に挟む処理をミドルウェアと呼びます。
-サンプルコード11-19は、検査をラムダ式で書いてつなぎます<span class="footnote">`Request`などの補助の型は、全文（`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-19/`）にあります。</span>。
+サンプルコード11-18は、検査をラムダ式で書いてつなぎます<span class="footnote">`Request`などの補助の型は、全文（`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-19/`）にあります。</span>。
 
-<span class="listing-number">**サンプルコード11-19**　MiddlewareChain.java（3、9〜32、48〜52、61行目）</span>
+<span class="listing-number">**サンプルコード11-18**　MiddlewareChain.java（3、9〜32、48〜52、61行目）</span>
 
 ```java
 public class MiddlewareChain {
@@ -1224,7 +1161,7 @@ public class MiddlewareChain {
 
 テンプレートメソッドパターンでは、アルゴリズムの骨格を定義し、具体的な処理ステップをサブクラスに委ねます。関数型アプローチでは、これを継承ではなく関数の組み合わせとして実現でき、より柔軟で再利用しやすい設計が可能になります。
 
-<span class="listing-number">**サンプルコード11-20**　DataProcessingTemplate.java（5、12〜35、52行目）</span>
+<span class="listing-number">**サンプルコード11-19**　DataProcessingTemplate.java（5、12〜35、52行目）</span>
 
 ```java
 public class DataProcessingTemplate {
@@ -1272,7 +1209,7 @@ public class DataProcessingTemplate {
 イベントソーシングは、口座の残高のような現在の状態をそのまま記録するのではなく、「口座を作った」「入金した」「出金した」といった出来事（イベント）の列を記録する設計です。
 現在の状態が必要になったら、記録したイベントを順に適用して求めます。
 
-<span class="listing-number">**サンプルコード11-21**　EventSourcedAccount.java（3〜39行目）</span>
+<span class="listing-number">**サンプルコード11-20**　EventSourcedAccount.java（3〜39行目）</span>
 
 ```java
 public class EventSourcedAccount {
@@ -1322,7 +1259,7 @@ public class EventSourcedAccount {
 ファクトリパターンは、オブジェクトを生成する処理を1か所にまとめ、呼び出す側が具体的なクラスを知らなくても済むようにする設計です。
 `Supplier`にコンストラクター参照を入れておくと、形式の名前から生成する処理を選ぶファクトリを、`Map`1つで書けます。
 
-<span class="listing-number">**サンプルコード11-22**　ProcessorFactory.java（4〜7、27〜41、53行目）</span>
+<span class="listing-number">**サンプルコード11-21**　ProcessorFactory.java（4〜7、27〜41、53行目）</span>
 
 ```java
 public class ProcessorFactory {
@@ -1364,9 +1301,9 @@ JSONとして読み込み: {"a": 1}
 ### ラムダ式の内部実装とメモリ使用
 
 ラムダ式を評価すると、関数型インターフェイスを実装したオブジェクトができます<span class="footnote">匿名クラスはコンパイルすると`Outer$1.class`のような別のクラスファイルになりますが、ラムダ式はなりません。ラムダ式の本体は同じクラスのprivateメソッドになり、実行時に`invokedynamic`命令（Java 7で追加）を使ってオブジェクトを作ります。</span>。
-サンプルコード11-23は、同じラムダ式を2回評価してできたオブジェクトが、同じインスタンスかどうかを`==`で比べます。
+サンプルコード11-22は、同じラムダ式を2回評価してできたオブジェクトが、同じインスタンスかどうかを`==`で比べます。
 
-<span class="listing-number">**サンプルコード11-23**　LambdaCapture.java（5〜25行目）</span>
+<span class="listing-number">**サンプルコード11-22**　LambdaCapture.java（5〜25行目）</span>
 
 ```java
 public class LambdaCapture {
@@ -1411,7 +1348,7 @@ public class LambdaCapture {
 戦略パターン、コマンドパターン、テンプレートメソッドパターンなどでは、ラムダ式で振る舞いを直接渡せるので、振る舞いごとのクラスを定義せずに済みます。
 ここでは、オブジェクトの設定を組み立てるビルダーを関数型で実装する例を紹介します。
 
-<span class="listing-number">**サンプルコード11-24**　FunctionalBuilder.java（5、26〜61行目）</span>
+<span class="listing-number">**サンプルコード11-23**　FunctionalBuilder.java（5、26〜61行目）</span>
 
 ```java
 public class FunctionalBuilder {
@@ -1468,9 +1405,9 @@ Person{name='Alice', age=30, adult=true}
 #### 条件に応じた設定の組み立て
 
 関数型のビルダーは、実行する環境によって設定を変えるような、条件のある組み立てにも向いています。
-サンプルコード11-25の`whenCondition`は、条件が成り立つときだけ設定の操作を加えます。
+サンプルコード11-24の`whenCondition`は、条件が成り立つときだけ設定の操作を加えます。
 
-<span class="listing-number">**サンプルコード11-25**　ConfigurationBuilder.java（6〜32、51〜63、71行目）</span>
+<span class="listing-number">**サンプルコード11-24**　ConfigurationBuilder.java（6〜32、51〜63、71行目）</span>
 
 ```java
 public class ConfigurationBuilder {
@@ -1533,9 +1470,9 @@ production: db.example.com:5432/app_db (SSL: true)
 ### 関数合成によるビジネスロジックの設計
 
 業務の処理を、入力から結果を返すだけの小さな関数に分けておくと、関数ごとに確かめやすく、組み替えもしやすくなります。
-サンプルコード11-26は、注文の検証、金額の計算、割引、消費税の加算、明細の文字列の作成を、それぞれ1つのメソッドにしています。
+サンプルコード11-25は、注文の検証、金額の計算、割引、消費税の加算、明細の文字列の作成を、それぞれ1つのメソッドにしています。
 
-<span class="listing-number">**サンプルコード11-26**　OrderPipeline.java（3〜14、41〜48、57〜58行目）</span>
+<span class="listing-number">**サンプルコード11-25**　OrderPipeline.java（3〜14、41〜48、57〜58行目）</span>
 
 ```java
 public class OrderPipeline {

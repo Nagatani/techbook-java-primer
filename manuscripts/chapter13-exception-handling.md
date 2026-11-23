@@ -374,7 +374,8 @@ public class UserService {
 
 リトライパターンは、ネットワーク接続の一時的な問題やリソースの一時的な不足など、時間を置けば解決する可能性のあるエラーに対して、自動的に再試行を行うパターンです。
 
-`Callable<T>`は、`T`型の値を返す処理を表す関数型インターフェイスで、`Runnable`と違って検査例外を投げられます。
+第11章で見たとおり、`Callable<T>`は`T`型の値を返す処理を表す関数型インターフェイスです。
+`Runnable`や`Supplier`と違って検査例外を投げられるので、ファイルやネットワークを扱う処理もそのまま渡せます。
 `executeWithRetry`には、試したい処理をラムダ式で渡します（呼び出す`main`メソッドは全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-07/`</span>）。
 第2引数の`Class<? extends Exception>`には、再試行の対象にする例外の型を`IOException.class`のように渡します。
 
