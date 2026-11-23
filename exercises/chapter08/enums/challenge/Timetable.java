@@ -10,7 +10,7 @@ import java.util.EnumSet;
 public class Timetable {
 
     /**
-     * 科目。時間割と一緒に使うので、静的内部クラスにする（Timetable.Courseと書く）
+     * 科目。時間割と一緒に使うので、静的ネストクラスにする（Timetable.Courseと書く）
      */
     public static class Course {
         private final String name;

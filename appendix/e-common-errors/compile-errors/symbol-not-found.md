@@ -243,7 +243,7 @@ public class OuterClass {
     
     public static class StaticInnerClass {
         public void method() {
-            // エラー：静的内部クラスから非静的フィールドにアクセス不可
+            // エラー：静的ネストクラスから非静的フィールドにアクセス不可
             // IO.println(outerField);
         }
     }

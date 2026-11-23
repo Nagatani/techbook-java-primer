@@ -6,7 +6,7 @@ config:
 flowchart LR
     outer["OuterClass<br/>（外側のクラス）"]
     inner["メンバー内部クラス<br/>InnerClass<br/>―――――――――<br/>外側のインスタンスに紐付き<br/>外側のメンバーを使える"]
-    nested["静的内部クラス<br/>StaticNestedClass<br/>―――――――――<br/>外側のインスタンスに依存せず<br/>外側のstaticメンバーを<br/>直接使える"]
+    nested["静的ネストクラス<br/>StaticNestedClass<br/>―――――――――<br/>外側のインスタンスに依存せず<br/>外側のstaticメンバーを<br/>直接使える"]
     local["ローカル内部クラス<br/>LocalClass<br/>―――――――――<br/>メソッドの中で定義し<br/>実質的にfinalな<br/>ローカル変数を使える"]
     anon["匿名内部クラス<br/>―――――――――<br/>名前がなく、その場で<br/>インターフェイスなどを実装する<br/>（例: Comparatorの実装）"]
 

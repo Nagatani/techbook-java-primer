@@ -217,7 +217,7 @@ public class ThreadSafeSingletonExamples {
         }
     }
     
-    // 3. 静的内部クラスホルダー（推奨・遅延初期化）
+    // 3. 静的ネストクラスによるホルダー（推奨・遅延初期化）
     static class HolderSingleton {
         private HolderSingleton() {}
         

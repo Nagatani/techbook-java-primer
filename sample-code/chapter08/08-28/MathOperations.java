@@ -1,5 +1,5 @@
 public class MathOperations {
-    // 静的内部クラス
+    // 静的ネストクラス
     public static class Vector2D {
         private final double x, y;
         

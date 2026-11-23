@@ -9,7 +9,7 @@ import java.util.EnumSet;
  * - フィールドとメソッドを持つ列挙型と、ordinal()・values()の使い方
  * - 列挙型をキーにしたEnumMapと、列挙子の集合を表すEnumSet
  * - 列挙型を使ったswitch
- * - 時間割と一緒に使う科目を、静的内部クラスTimetable.Courseにする
+ * - 時間割と一緒に使う科目を、静的ネストクラスTimetable.Courseにする
  */
 public class TimetableApp {
     public static void main(String[] args) {
