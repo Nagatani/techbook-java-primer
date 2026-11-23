@@ -17,6 +17,7 @@
  * - 図（images/diagrams/*.svg）をPNG（images/epub/diagrams/*.png、scripts/epub-assets.js が作る）に替え、
  *   紙面での幅を本文の幅（132mm）に対する割合で指定する。Mermaidの図は文字をforeignObjectで描いており、
  *   KindleではSVGのままだと文字が出ない
+ * - 表のセルの align 属性を text-align のスタイルに替える（EPUB 3では align を使えない）
  */
 const path = require('path');
 const { layoutForSrc } = require('./diagram-size.js');
@@ -117,6 +118,21 @@ function useDiagramPngs(tree) {
   });
 }
 
+/**
+ * 表のセルの align 属性（Markdownの表で揃えを指定したセルに付く）を text-align のスタイルに替える。
+ * align はEPUB 3（HTML）では使えない属性で、epubcheckがエラーにする
+ */
+function replaceCellAlign(tree) {
+  walk(tree, (node) => {
+    if (!(isElement(node, 'th') || isElement(node, 'td'))) return;
+    const align = node.properties && node.properties.align;
+    if (!align) return;
+    delete node.properties.align;
+    const style = node.properties.style ? `${String(node.properties.style).replace(/;?\s*$/, '; ')}` : '';
+    node.properties.style = `${style}text-align: ${align};`;
+  });
+}
+
 function rehypeEpub() {
   return (tree) => {
     if (currentTarget() !== 'epub') return;
@@ -124,6 +140,7 @@ function rehypeEpub() {
     splitFootnotes(tree);
     addCodeLineNumbers(tree);
     useDiagramPngs(tree);
+    replaceCellAlign(tree);
   };
 }
 

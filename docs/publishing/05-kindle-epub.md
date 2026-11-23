@@ -36,7 +36,7 @@ epubcheck output/techbook-java-primer.epub
 
 `No errors or warnings detected.`と出れば合格です。エラーが出たら、表示されたファイル名（`chapter05-....xhtml`など）と行番号から原因を探します。原因が原稿のHTMLの書き方ならそこを直し、ビルドの処理（`scripts/vfm-*.js`）ならClaudeに表示をそのまま渡して直してもらってください。
 
-2026-11-18の作成時は、この環境でepubcheckを動かせなかったため、XHTMLの整形式、リンク先・画像・manifestの食い違い、表紙画像の登録だけを独自に確かめています。初回は必ずepubcheckを通してください。
+2026-11-24に初めてepubcheck（5.x、EPUB 3.4のルール）を通しました。Markdownで揃えを指定した表のセルに付く`align`属性（EPUB 3では使えない）が97件のエラーになったので、`scripts/vfm-epub.js`で`style="text-align: …"`に置き換えるようにし、エラーと警告は0件になりました。
 
 ### 2. Kindle Previewerで見る
 
