@@ -34,7 +34,9 @@ claims:
 
   - id: virtual-threads-21
     claim: 仮想スレッドはJava 21で正式な機能になった（Java 19・20ではプレビュー）
-    text: Java 21では、OSのスレッドより軽い仮想スレッド（virtual thread）が正式な機能になりました
+    text:
+      - Java 21では、OSのスレッドより軽い仮想スレッド（virtual thread）が正式な機能になりました
+      - 仮想スレッドは、JVMが管理する軽いスレッドで、Java 21で正式な機能になりました
     sources:
       - title: "JEP 444: Virtual Threads"
         url: https://openjdk.org/jeps/444
