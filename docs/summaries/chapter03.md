@@ -11,7 +11,7 @@ sections:
   - key: "オブジェクト指向の重要な用語と概念"
     hash: 3e9b8923
   - key: "オブジェクト指向の基本概念を実際のコードで理解する"
-    hash: 4d207d93
+    hash: 77b1d531
   - key: "クラスの構成要素"
     hash: 59bcbaf6
   - key: "クラスからオブジェクトを作る"
@@ -97,7 +97,7 @@ sections:
 
 - オブジェクト指向の基本概念を実際のコードで理解する（L289–546）
     + 学生の情報をクラスにまとめる: 3-1を受け、StudentクラスとObjectOrientedExample（3-3）で、privateフィールド、コンストラクター、`this.name`、表示メソッドの一体化を示す
-    + 3原則: カプセル化（3-4 BankAccount、3-5 テスト、図chapter03-encapsulation。privateの効果の説明はここに集める）、継承（3-6 ProductとBook、3-7）、ポリモーフィズム（3-8 PaymentMethodインターフェイス、3-9 PolymorphismTest）。3-6のprotected・extendsは第5章、3-8のinterfaceは第7章へ誘導
+    + 3つのしくみ（2026-11-23に「3原則」から改め、冒頭で第1章の3つの考え方を実現するしくみと位置づける）: カプセル化（3-4 BankAccount、3-5 テスト、図chapter03-encapsulation。privateの効果の説明はここに集める）、継承（3-6 ProductとBook、3-7。3-7がサブクラスでないクラスからprotectedのフィールドへ代入できるのは同じディレクトリだからで、理由は第4章と注記する。2026-11-23）、ポリモーフィズム（3-8 PaymentMethodインターフェイス、3-9 PolymorphismTest）。3-6のprotected・extendsは第5章、3-8のinterfaceは第7章へ誘導
 - クラスの構成要素（L547–1105）
     + クラスの基本構造（3-10）。フィールド（属性）: 宣言構文とStudentの例（3-11。学校名の初期値は架空の「青空大学」）、デフォルト値の例と表（3-12 DefaultValueDemo）。初期値を書かないフィールドに型ごとのデフォルト値が入ると説明
     + メソッドの宣言構文（3-13）、Rectangle（3-14）、メソッドの種類（3-15〜3-18）。C言語の関数との違いは「データと一緒にクラスのなかに定義する」こと

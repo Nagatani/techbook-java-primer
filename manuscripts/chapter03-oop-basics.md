@@ -446,6 +446,9 @@ public class Book extends Product {  // ③
 ```
 
 次のプログラムで、`Product`を継承した`Book`を使ってみます。
+説明を短くするため、ここでは`InheritanceTest`から`Book`のフィールドに直接代入しています。
+`InheritanceTest`は`Book`のサブクラスではありませんが、同じディレクトリに置いたクラスどうしなので、`protected`のフィールドにも代入できます（理由は第4章で学びます）。
+実際のクラスでは、カプセル化のためにフィールドを`private`にし、値はコンストラクターやメソッドで受け取ります。
 
 <span class="listing-number">**サンプルコード3-7**　InheritanceTest.java</span>
 
