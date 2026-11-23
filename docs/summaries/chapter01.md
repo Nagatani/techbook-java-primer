@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter01-introduction.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本書について"
     hash: dddd8f18
@@ -11,7 +11,7 @@ sections:
   - key: "C言語、Java、そして現代的ソフトウェア開発のしくみ"
     hash: 1ffb1780
   - key: "Javaとオブジェクト指向：データと処理を一体化する"
-    hash: 407f1630
+    hash: 95b3f77f
   - key: "Javaの特徴"
     hash: 03648981
   - key: "開発環境の準備"

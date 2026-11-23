@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter03-oop-basics.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: db7ea8c2
@@ -9,15 +9,15 @@ sections:
   - key: "オブジェクト指向とは"
     hash: 1910ecaa
   - key: "オブジェクト指向の重要な用語と概念"
-    hash: 302f90dc
+    hash: 3e9b8923
   - key: "オブジェクト指向の基本概念を実際のコードで理解する"
-    hash: 8f5a3e3b
+    hash: 4d207d93
   - key: "クラスの構成要素"
     hash: 7d29c8e1
   - key: "クラスからオブジェクトを作る"
     hash: a029f505
   - key: "アクセス修飾子：publicとprivate"
-    hash: 52a477ae
+    hash: d24135ed
   - key: "static：クラスに属するメンバー"
     hash: b63a939f
   - key: "オブジェクトの配列"
@@ -31,7 +31,7 @@ sections:
   - key: "よくあるエラーと対処法"
     hash: 8e7bb36e
   - key: "まとめ"
-    hash: a658fb1d
+    hash: 68af68cd
   - key: "章末演習"
     hash: be5b144f
 ---
