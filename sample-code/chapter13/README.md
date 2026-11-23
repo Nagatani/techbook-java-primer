@@ -19,14 +19,14 @@ javac -d out *.java
 | [13-1](./13-01/) | TryCatchSample.java | `java -cp out TryCatchSample` |
 | [13-3](./13-03/) | TryWithResourcesDemo.java<br>TryWithResourcesSample.java | `java -cp out TryWithResourcesDemo` |
 | [13-4](./13-04/) | ThrowsExample.java | `java -cp out ThrowsExample` |
-| [13-5](./13-05/) | BankAccount.java<br>BankAccountDemo.java | `java -cp out BankAccountDemo` |
-| [13-6](./13-06/) | UserService.java | （mainメソッドなし） |
-| [13-7](./13-07/) | RetryableOperation.java | `java -cp out RetryableOperation` |
-| [13-8](./13-08/) | ExceptionAggregator.java | （mainメソッドなし） |
-| [13-9](./13-09/) | MultiResourceExample.java | （mainメソッドなし） |
-| [13-10](./13-10/) | ResourcePool.java<br>ResourcePoolDemo.java | `java -cp out ResourcePoolDemo` |
-| [13-11](./13-11/) | ExceptionLogging.java<br>Exceptions.java | （mainメソッドなし） |
-| [13-12](./13-12/) | StructuredExceptionLogger.java | （mainメソッドなし） |
-| [13-13](./13-13/) | BusinessException.java<br>InsufficientBalanceException.java<br>SystemException.java | （mainメソッドなし） |
-| [13-14](./13-14/) | BusinessException.java<br>ErrorCode.java<br>ErrorResponse.java<br>InsufficientBalanceException.java<br>SystemException.java | （mainメソッドなし） |
-| [13-15](./13-15/) | BusinessException.java<br>InsufficientBalanceException.java<br>TransferDemo.java<br>TransferService.java<br>TransferSupport.java | `java -cp out TransferDemo` |
+| [13-6](./13-06/) | BankAccount.java<br>BankAccountDemo.java | `java -cp out BankAccountDemo` |
+| [13-7](./13-07/) | UserService.java | （mainメソッドなし） |
+| [13-8](./13-08/) | RetryableOperation.java | `java -cp out RetryableOperation` |
+| [13-9](./13-09/) | ExceptionAggregator.java | （mainメソッドなし） |
+| [13-10](./13-10/) | MultiResourceExample.java | （mainメソッドなし） |
+| [13-11](./13-11/) | ResourcePool.java<br>ResourcePoolDemo.java | `java -cp out ResourcePoolDemo` |
+| [13-12](./13-12/) | ExceptionLogging.java<br>Exceptions.java | （mainメソッドなし） |
+| [13-13](./13-13/) | StructuredExceptionLogger.java | （mainメソッドなし） |
+| [13-14](./13-14/) | BusinessException.java<br>InsufficientBalanceException.java<br>SystemException.java | （mainメソッドなし） |
+| [13-15](./13-15/) | BusinessException.java<br>ErrorCode.java<br>ErrorResponse.java<br>InsufficientBalanceException.java<br>SystemException.java | （mainメソッドなし） |
+| [13-16](./13-16/) | BusinessException.java<br>InsufficientBalanceException.java<br>TransferDemo.java<br>TransferService.java<br>TransferSupport.java | `java -cp out TransferDemo` |

@@ -249,13 +249,68 @@ mainメソッドで例外をキャッチ: I/Oエラーが発生しました
 この制約は、第5章で学んだリスコフ置換原則（親クラスの型で使う場所に子クラスを渡しても正しく動く）を、コンパイラーが検査しているものです。
 非検査例外には、この制約はありません。
 
+### ラムダ式のなかの検査例外
+
+同じ制約は、ラムダ式にも当てはまります。
+第11章で学んだ`Function`や`Consumer`などの標準の関数型インターフェイスは、メソッドに`throws`を宣言していません。
+そのため、検査例外を投げるメソッドをラムダ式のなかで呼ぶと、その例外をラムダ式の外へ投げられず、コンパイルエラーになります。
+第14章で使う`Files`のメソッドの多くは`IOException`を投げるので、Stream（第12章）の`map`などに渡すときに出会います。
+
+対処のしかたは、ラムダ式のなかで`try-catch`を書き、検査例外を非検査例外に包み直すことです。
+`IOException`には、包むための非検査例外`UncheckedIOException`が用意されています。
+
+<span class="listing-number">**サンプルコード13-5**　LambdaCheckedException.java</span>
+
+```java
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.List;
+
+public class LambdaCheckedException {
+    // ファイルを読む代わりに、名前が空ならIOExceptionを投げるメソッド
+    static String load(String name) throws IOException {
+        if (name.isEmpty()) {
+            throw new IOException("名前が空です");
+        }
+        return name + "の内容";
+    }
+
+    public static void main(String[] args) {
+        List<String> names = List.of("a.txt", "b.txt");
+
+        // names.stream().map(n -> load(n))  // コンパイルエラー
+
+        List<String> contents = names.stream()
+                .map(n -> {
+                    try {
+                        return load(n);
+                    } catch (IOException e) {
+                        // 検査例外を非検査例外に包み直す
+                        throw new UncheckedIOException(e);
+                    }
+                })
+                .toList();
+        IO.println(contents);
+    }
+}
+```
+
+実行結果：
+
+```
+[a.txtの内容, b.txtの内容]
+```
+
+コメントにした`map(n -> load(n))`のままでは、`例外IOExceptionは報告されません。スローするには、捕捉または宣言する必要があります`というコンパイルエラーになります。
+包み直した`UncheckedIOException`は、`getCause()`で元の`IOException`を取り出せます（次の節「例外の連鎖」で学びます）。
+
 ## 独自例外と例外の連鎖
 
 ### 独自例外の作成とスロー
 
 アプリケーション固有のエラー状況を表現するために、独自の例外クラスを作成できます。`Exception`または`RuntimeException`を継承して定義します。`throw`キーワードを使うと、任意の場所で意図的に例外を発生させることができます。
 
-<span class="listing-number">**サンプルコード13-5**　BankAccount.java（1〜18、27行目）</span>
+<span class="listing-number">**サンプルコード13-6**　BankAccount.java（1〜18、27行目）</span>
 
 ```java
 // 独自の検査例外クラス
@@ -303,11 +358,11 @@ public class BankAccount {
 
 <div class="figure">
 
-![例外の連鎖（サンプルコード13-6）](images/diagrams/chapter13-exception-chaining.svg)
+![例外の連鎖（サンプルコード13-7）](images/diagrams/chapter13-exception-chaining.svg)
 
 </div>
 
-<span class="listing-number">**サンプルコード13-6**　UserService.java</span>
+<span class="listing-number">**サンプルコード13-7**　UserService.java</span>
 
 ```java
 class DataAccessException extends Exception {
@@ -380,7 +435,7 @@ public class UserService {
 `executeWithRetry`には、試したい処理をラムダ式で渡します（呼び出す`main`メソッドは全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-07/`</span>）。
 第2引数の`Class<? extends Exception>`には、再試行の対象にする例外の型を`IOException.class`のように渡します。
 
-<span class="listing-number">**サンプルコード13-7**　RetryableOperation.java（4〜6、8〜24、33〜38、56行目）</span>
+<span class="listing-number">**サンプルコード13-8**　RetryableOperation.java（4〜6、8〜24、33〜38、56行目）</span>
 
 ```java
 public class RetryableOperation {
@@ -435,7 +490,7 @@ public class RetryableOperation {
 
 複数の処理を順に実行し、途中で失敗しても残りの処理を続けたい場合は、発生した例外を集めておき、最後にまとめて報告します。
 
-<span class="listing-number">**サンプルコード13-8**　ExceptionAggregator.java（3〜29、39〜56行目）</span>
+<span class="listing-number">**サンプルコード13-9**　ExceptionAggregator.java（3〜29、39〜56行目）</span>
 
 ```java
 public class ExceptionAggregator {
@@ -492,7 +547,7 @@ public class ExceptionAggregator {
 
 実際の開発では、複数のリソースを同時に扱うことが多くあります。`try-with-resources`では、複数のリソースを1つの`try`の括弧内にまとめて宣言できます。
 
-<span class="listing-number">**サンプルコード13-9**　MultiResourceExample.java（4〜22、51行目）</span>
+<span class="listing-number">**サンプルコード13-10**　MultiResourceExample.java（4〜22、51行目）</span>
 
 ```java
 public class MultiResourceExample {
@@ -531,7 +586,7 @@ public class MultiResourceExample {
 
 独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェイスを実装すると、`try-with-resources`で使えるようになります。
 
-<span class="listing-number">**サンプルコード13-10**　ResourcePool.java（3〜7、15〜45、59行目）、ResourcePoolDemo.java</span>
+<span class="listing-number">**サンプルコード13-11**　ResourcePool.java（3〜7、15〜45、59行目）、ResourcePoolDemo.java</span>
 
 ```java
 public class ResourcePool implements AutoCloseable {
@@ -607,9 +662,9 @@ tryブロックを抜けました
 
 ### 効果的なログレベルの選択
 
-ログ記録は例外処理の重要な要素です<span class="footnote">サンプルコード13-11の`Logger`と`Level`は、Java 1.4で標準ライブラリに加わった`java.util.logging`パッケージのクラスです。実務では、SLF4JやLog4j 2などのライブラリもよく使われます。</span>。目的に応じたログレベルを選ぶと、問題の深刻度を正確に伝えられます。
+ログ記録は例外処理の重要な要素です<span class="footnote">サンプルコード13-12の`Logger`と`Level`は、Java 1.4で標準ライブラリに加わった`java.util.logging`パッケージのクラスです。実務では、SLF4JやLog4j 2などのライブラリもよく使われます。</span>。目的に応じたログレベルを選ぶと、問題の深刻度を正確に伝えられます。
 
-<span class="listing-number">**サンプルコード13-11**　ExceptionLogging.java（5〜47、68行目）</span>
+<span class="listing-number">**サンプルコード13-12**　ExceptionLogging.java（5〜47、68行目）</span>
 
 ```java
 public class ExceptionLogging {
@@ -666,7 +721,7 @@ public class ExceptionLogging {
 
 本番環境では、例外情報を構造化して記録することで、ログ分析が容易になります。
 
-<span class="listing-number">**サンプルコード13-12**　StructuredExceptionLogger.java（5〜46、65行目）</span>
+<span class="listing-number">**サンプルコード13-13**　StructuredExceptionLogger.java（5〜46、65行目）</span>
 
 ```java
 public class StructuredExceptionLogger {
@@ -724,9 +779,9 @@ public class StructuredExceptionLogger {
 
 大規模なアプリケーションでは、ビジネスロジックに関する例外とシステムレベルの例外を明確に分離することが重要です。
 次のコードでは、検査例外の基底クラス`BusinessException`と、非検査例外の基底クラス`SystemException`を抽象クラスとして用意します。
-サンプルコード13-5の`InsufficientBalanceException`は、ここでは`BusinessException`を継承する形に定義し直しています。
+サンプルコード13-6の`InsufficientBalanceException`は、ここでは`BusinessException`を継承する形に定義し直しています。
 
-<span class="listing-number">**サンプルコード13-13**　BusinessException.java（4〜13、22〜24、30〜33行目）、InsufficientBalanceException.java（3〜12行目）、SystemException.java（4〜13、28行目）</span>
+<span class="listing-number">**サンプルコード13-14**　BusinessException.java（4〜13、22〜24、30〜33行目）、InsufficientBalanceException.java（3〜12行目）、SystemException.java（4〜13、28行目）</span>
 
 ```java
 // ビジネス例外の基底クラス
@@ -778,7 +833,7 @@ public abstract class SystemException extends RuntimeException {
 
 エラーコードとメッセージを一元管理することで、国際化<span class="footnote">国際化（internationalization）は、最初のiと最後のnのあいだに18文字あることから「i18n」とも書きます。</span>やメンテナンスが容易になります。
 
-<span class="listing-number">**サンプルコード13-14**　ErrorCode.java（1〜5、15〜23、37行目）、BusinessException.java（4〜5、15〜18、38行目）、InsufficientBalanceException.java（3〜12行目）、ErrorResponse.java（4〜18、28〜29行目）</span>
+<span class="listing-number">**サンプルコード13-15**　ErrorCode.java（1〜5、15〜23、37行目）、BusinessException.java（4〜5、15〜18、38行目）、InsufficientBalanceException.java（3〜12行目）、ErrorResponse.java（4〜18、28〜29行目）</span>
 
 ```java
 public enum ErrorCode {
@@ -840,7 +895,7 @@ public class ErrorResponse {
 }
 ```
 
-`BusinessException`に`ErrorCode`を受け取るコンストラクターを足すと、サンプルコード13-13で`"ACC-001"`と文字列で書いていた部分を`ErrorCode.ACC_001`に置き換えられます。
+`BusinessException`に`ErrorCode`を受け取るコンストラクターを足すと、サンプルコード13-14で`"ACC-001"`と文字列で書いていた部分を`ErrorCode.ACC_001`に置き換えられます。
 コードとメッセージがenumの1か所にまとまるので、メッセージを変えるときもenumだけを直せば済みます。
 
 ### 例外処理戦略の実装例
@@ -849,7 +904,7 @@ public class ErrorResponse {
 入力の誤りや残高不足などのビジネス例外はそのまま呼び出し元に伝え、それ以外の予期しない例外は原因を保ったまま非検査例外に包んで投げ直します。
 `Account`や`AccountRepository`などの補助の型と、送金を試す`main`メソッド（`TransferDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-15/`</span>。
 
-<span class="listing-number">**サンプルコード13-15**　TransferService.java（5〜7、17〜20、24〜49、60〜74、121行目）</span>
+<span class="listing-number">**サンプルコード13-16**　TransferService.java（5〜7、17〜20、24〜49、60〜74、121行目）</span>
 
 ```java
 public class TransferService {

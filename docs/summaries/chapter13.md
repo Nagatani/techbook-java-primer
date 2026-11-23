@@ -9,17 +9,17 @@ sections:
   - key: "例外処理の基本：`try-catch-finally`"
     hash: 4a7e0f1b
   - key: "検査例外と非検査例外"
-    hash: ae90a458
+    hash: fcb45821
   - key: "独自例外と例外の連鎖"
-    hash: 9cd5d965
+    hash: 88335daf
   - key: "実践的な例外処理パターン"
-    hash: 58f9957a
+    hash: 8e8ed350
   - key: "リソース管理の実践例"
-    hash: 463a5e7d
+    hash: 472c3982
   - key: "例外処理とログ記録"
-    hash: b670d020
+    hash: e7017d9e
   - key: "業務アプリケーションでの例外設計"
-    hash: c92f1c90
+    hash: 0ec8d683
   - key: "例外処理のベストプラクティス"
     hash: 9c812abf
   - key: "よくあるエラーと対処法"
@@ -74,25 +74,26 @@ sections:
     + 検査例外はコンパイラーが処理を強制する（C#やKotlinにはない旨を脚注で説明）。throwsによる委譲（13-4）と伝播の図
     + 非検査例外はバグが原因なので、catchせずコードを直すのが原則。`Error`の例は脚注
     + 小節「オーバーライドと`throws`」。子クラスのメソッドが宣言できる検査例外は、親の宣言した例外かそのサブクラスに限られる（書かないこともできる）
+    + 「ラムダ式のなかの検査例外」（2026-11-23に追加、13-5 LambdaCheckedException）: 標準の関数型インターフェイスはthrowsを宣言しないので検査例外を投げるメソッドをラムダ式で呼ぶとコンパイルエラー（javacのメッセージを引く）。try-catchでUncheckedIOExceptionに包み直す。第11章・第12章のエラー一覧がここへ案内している
 - 独自例外と例外の連鎖（L251–367）
-    + Exceptionを継承したInsufficientBalanceExceptionとthrow（13-5）。実行結果の前提とmainは全文にある旨
-    + SQLExceptionをDataAccessExceptionでラップする例外の連鎖（13-6）と図。データベースに接続せず例外が起きたと仮定する旨
+    + Exceptionを継承したInsufficientBalanceExceptionとthrow（13-6）。実行結果の前提とmainは全文にある旨
+    + SQLExceptionをDataAccessExceptionでラップする例外の連鎖（13-7）と図。データベースに接続せず例外が起きたと仮定する旨
     + 呼び出し側は`getCause()`で元の例外を取り出せ、スタックトレースには`Caused by:`で原因が出る旨
     + コラム「スタックトレースを読める人は強い」（2026-11-19）。原因つきの例外の実際の出力と読む手順（最後のCaused byまで下りて自分のクラスの最初の行を探す）、「... n more」の意味、原因を渡し忘れると手がかりが切れること
 - 実践的な例外処理パターン（L336–454）
-    + Callableとジェネリクスを使ったリトライ（13-7）。`Callable`（第11章で見たものとして受け、Supplierと違って検査例外を投げられる点を述べる。2026-11-23）と`Class<? extends Exception>`の説明。第11章にあった同じ内容の再試行の例（旧11-17）は削り、本章に一本化した
+    + Callableとジェネリクスを使ったリトライ（13-8）。`Callable`（第11章で見たものとして受け、Supplierと違って検査例外を投げられる点を述べる。2026-11-23）と`Class<? extends Exception>`の説明。第11章にあった同じ内容の再試行の例（旧11-17）は削り、本章に一本化した
     + 小節「失敗が続いたら呼び出しを止める」。サーキットブレーカーの考え方と名前の由来（脚注）を文章だけで説明し、3つの状態を切り替える実装は付録Hへ案内する
-    + 複数の処理を順に実行して例外を集めるExceptionAggregator（13-8）
+    + 複数の処理を順に実行して例外を集めるExceptionAggregator（13-9）
 - リソース管理の実践例（L455–571）
-    + 複数リソースのtry-with-resources（13-9）。1つの`try`の括弧内にまとめて宣言できる。宣言と逆の順に閉じる理由と、closeの例外が抑制された例外として付け加えられ`getSuppressed`で取り出せること
-    + AutoCloseableを実装したResourcePool（13-10）と実行結果。1スレッド前提で、排他制御は第15章で学ぶ旨
+    + 複数リソースのtry-with-resources（13-10）。1つの`try`の括弧内にまとめて宣言できる。宣言と逆の順に閉じる理由と、closeの例外が抑制された例外として付け加えられ`getSuppressed`で取り出せること
+    + AutoCloseableを実装したResourcePool（13-11）と実行結果。1スレッド前提で、排他制御は第15章で学ぶ旨
 - 例外処理とログ記録（L572–686）
-    + java.util.loggingで例外の種類ごとにログレベルを使い分け、エラーIDを発行する（13-11）。ログと再スローを両方行うと二重に記録される注意
-    + LogRecordとJSON形式の1行の文字列による構造化ログ（13-12、`createStructuredMessage`も載せ、JSONは第7章で紹介した旨）
+    + java.util.loggingで例外の種類ごとにログレベルを使い分け、エラーIDを発行する（13-12）。ログと再スローを両方行うと二重に記録される注意
+    + LogRecordとJSON形式の1行の文字列による構造化ログ（13-13、`createStructuredMessage`も載せ、JSONは第7章で紹介した旨）
 - 業務アプリケーションでの例外設計（L687–877）
-    + 検査例外のBusinessException（抽象）と非検査例外のSystemException（抽象）の基底クラス、InsufficientBalanceException（13-13、金額はBigDecimal）
-    + enumによるエラーコードとメッセージの一元管理、`BusinessException(ErrorCode)`のコンストラクターとそれを使うInsufficientBalanceException、ErrorResponse（13-14）。13-13の文字列のコードをenumに置き換えられる旨
-    + 送金サービスでのビジネス例外の伝播と、予期せぬ例外を`RuntimeException`に包んで投げ直す処理（13-15、Springに依存しない形。Loggerで記録する）
+    + 検査例外のBusinessException（抽象）と非検査例外のSystemException（抽象）の基底クラス、InsufficientBalanceException（13-14、金額はBigDecimal）
+    + enumによるエラーコードとメッセージの一元管理、`BusinessException(ErrorCode)`のコンストラクターとそれを使うInsufficientBalanceException、ErrorResponse（13-15）。13-14の文字列のコードをenumに置き換えられる旨
+    + 送金サービスでのビジネス例外の伝播と、予期せぬ例外を`RuntimeException`に包んで投げ直す処理（13-16、Springに依存しない形。Loggerで記録する）
 - 例外処理のベストプラクティス（L878–891）
     + 空のcatchを避ける、具体的な例外だけをcatch、try-with-resources、ユーザー向けメッセージとログの分離を文章で示す
     + 性能面の詳細は付録B.12「例外処理のパフォーマンス」で扱う旨
@@ -105,11 +106,11 @@ sections:
 
 ## 他章との関係
 
-- 第10章・第11章: 13-7などで型パラメーターとラムダ式を使う（前提に明記）
+- 第10章・第11章: 13-8などで型パラメーターとラムダ式を使う（前提に明記）
 - 第12章: 前提の範囲に含む
 - 第14章: try-with-resourcesは本章が正式に説明し、第14章はファイル処理での注意点だけを書いて本章を参照する（2026-11-11に重複を解消）
-- 第15章: 13-10とエラー一覧から排他制御・スレッドの例外を第15章へ誘導する。第15章はCompletableFutureの`exceptionally`/`handle`を扱う
-- 第16章: タイムアウトとリトライを扱っており、本章13-7のリトライパターンと重なる
+- 第15章: 13-11とエラー一覧から排他制御・スレッドの例外を第15章へ誘導する。第15章はCompletableFutureの`exceptionally`/`handle`を扱う
+- 第16章: タイムアウトとリトライを扱っており、本章13-8のリトライパターンと重なる
 - 第21章: 例外のテスト（assertThrows）との接続は本文にない
 - 付録B.12: 例外処理のパフォーマンス（ディレクトリ番号に統一済み。Issue #011は解消）
 - 付録E（`appendix/e-common-errors/`）: 本章のよくあるエラーの詳細とデバッグのヒント
