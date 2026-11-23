@@ -15,9 +15,9 @@ public class FutureCallableExample {
         @Override
         public Long call() throws Exception {
             IO.println("計算開始: フィボナッチ数列の第" + n + "項");
-            long start = System.currentTimeMillis();
+            long start = System.nanoTime();
             long result = fibonacci(n);
-            long time = System.currentTimeMillis() - start;
+            long time = (System.nanoTime() - start) / 1_000_000;  // ミリ秒
             IO.println("計算完了: F(%d) = %d (所要時間: %dms)"
                     .formatted(n, result, time));
             return result;

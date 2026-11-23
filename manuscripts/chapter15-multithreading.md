@@ -178,6 +178,8 @@ public class MultiThreadExample {
 3つのスレッドは同時に動くため、「〜しています」の3行の順序は実行のたびに変わることがあります。
 「〜ができました」は、処理時間の短い順に、トースト（2秒）、コーヒー（3秒）、卵（5秒）の順で表示されます。
 このように、マルチスレッドを使うことで、10秒かかっていた処理を約5秒に短縮できました。
+最後の`join()`は、そのスレッドが終わるまで待つメソッドで、第11章のサンプルコード11-11でも使いました。
+3つのスレッドが終わるのを待ってから「朝食の準備完了！」を表示しています。
 
 ## マルチスレッドプログラミングの基礎
 
@@ -186,7 +188,7 @@ public class MultiThreadExample {
 
 マルチスレッドとは、1つのプログラム内で複数のスレッドを同時に実行し、処理を並行して進める技術です<span class="footnote">C言語の標準規格にスレッドの機能が入ったのはC11からで、それまではPOSIXスレッド（pthread）などOSが用意するライブラリを使っていました。Javaは最初の版から、スレッドを言語とライブラリに組み込んでいます。</span>。
 
-### なぜマルチスレッドが必要か
+### マルチスレッドが役立つ場面
 
 「並行処理の世界への招待」では、朝食の準備を3つのスレッドに分けて、全体の時間を短くしました。
 ここでは、マルチスレッドが役立つ場面を整理します。
@@ -198,7 +200,7 @@ GUIアプリケーションでは、時間のかかる処理をバックグラ�
 
 ### スレッドの作成と実行
 
-Javaでスレッドを作成するには、`Runnable`インターフェイスを実装する方法が推奨されます。
+Javaでスレッドを作るときは、実行する処理（タスク）を`Runnable`として書き、`Thread`に渡して`start()`で開始します。
 
 スレッドは生成されてから終了するまでに、次の図のような状態を遷移します。
 `new Thread()`で作ったばかりのスレッドはNEWで、`start()`を呼ぶとRUNNABLEになって実行されます。
@@ -596,7 +598,7 @@ for (int i = 0; i < 10000; i++) {
 スレッドプールはスレッドを使い回すので、タスクごとにスレッドを生成・破棄するコストがかかりません。
 作るスレッドの数に上限を設けられるため、スレッドが増えすぎてシステムが不安定になることも防げます。
 スレッドが空いていないときに届いたタスクは、キューで実行を待ちます。
-また、タスクの実行時に例外が発生しても、スレッドプールはそのまま動作を続けます<span class="footnote">`execute`で渡したタスクが例外を投げるとそのスレッドは終わり、プールが代わりのスレッドを作ります。`submit`で渡したタスクの例外は`Future`に入り、`get()`で`ExecutionException`として受け取れます。</span>。
+また、タスクの実行時に例外が発生しても、スレッドプールはそのまま動作を続けます<span class="footnote">`execute`で渡したタスクが例外を投げるとそのスレッドは終わり、プールが代わりのスレッドを作ります。</span>。
 
 <div class="figure">
 
@@ -688,6 +690,7 @@ public class ExecutorExample {
 また、`Callable`は検査例外をスローできます。
 `Callable`のタスクを`ExecutorService`に投入すると、`Future`が返ります。
 `Future`インターフェイスは非同期処理の結果を表すオブジェクトで、結果を保持し、処理の完了を待てます。
+タスクが例外を投げたときは、その例外が`Future`に入り、`get()`を呼んだときに`ExecutionException`に包まれて届きます。
 実行中のタスクをキャンセルすることもできます。
 
 <span class="listing-number">**サンプルコード15-12**　FutureCallableExample.java（5、7〜8、15〜24、30〜63行目）</span>
@@ -701,9 +704,9 @@ public class FutureCallableExample {
         @Override
         public Long call() throws Exception {
             IO.println("計算開始: フィボナッチ数列の第" + n + "項");
-            long start = System.currentTimeMillis();
+            long start = System.nanoTime();
             long result = fibonacci(n);
-            long time = System.currentTimeMillis() - start;
+            long time = (System.nanoTime() - start) / 1_000_000;  // ミリ秒
             IO.println("計算完了: F(%d) = %d (所要時間: %dms)"
                     .formatted(n, result, time));
             return result;
