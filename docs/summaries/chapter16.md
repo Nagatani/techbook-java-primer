@@ -7,7 +7,7 @@ sections:
   - key: "はじめに"
     hash: f8ddb88b
   - key: "ネットワークプログラミングの基礎"
-    hash: efa62353
+    hash: 4d378036
   - key: "ソケットプログラミングの基礎"
     hash: 8af8e865
   - key: "マルチスレッドサーバーの実装"

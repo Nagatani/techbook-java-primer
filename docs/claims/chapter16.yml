@@ -78,3 +78,70 @@ claims:
       kind: run
       probe: SilentServer.java
       expect: ['^タイムアウトなし: 3秒後も終わっていない = true$', '^タイムアウト1秒: HttpTimeoutException（約1秒）$']
+
+  # ---- 版以外の主張（2026-11-24、Issue #034）
+  - id: port-ranges
+    claim: ポート番号は0〜65535で、Well-known（0〜1023）・登録済み（1024〜49151）・動的・私的（49152〜65535）に分かれる
+    text:
+      - ポート番号は、そのうちのどのアプリケーションと通信するかを識別する番号で、0から65535までの値をとります
+      - Well-knownポート（0〜1023）
+      - 動的・私的ポート（49152〜65535）
+    sources:
+      - title: "RFC 6335: IANA Procedures for the Management of the Service Name and Transport Protocol Port Number Registry"
+        url: https://www.rfc-editor.org/rfc/rfc6335.html
+        anchor: the Dynamic Ports, also known as the Private or Ephemeral Ports, from 49152-65535
+    verify:
+      kind: manual
+      checked: 2026-11-24
+      note: RFC 6335の6節「Port Number Ranges」で、System Ports 0-1023、User Ports 1024-49151、Dynamic Ports 49152-65535を確かめた
+
+  - id: ephemeral-port-by-os
+    claim: クライアント側のポート番号はOSが自動で割り当てる。macOSとWindowsは49152〜65535、Linuxの既定は32768〜60999から選ぶ
+    text:
+      - クライアント側のポート番号は、ふつうはOSが空いている大きな番号から自動で割り当てます
+      - Linuxの既定の範囲は32768〜60999で、動的・私的ポートの範囲とは少し違います
+    sources:
+      - title: Linux kernel documentation, IP Sysctl（ip_local_port_range）
+        url: https://docs.kernel.org/networking/ip-sysctl.html
+        anchor: ip_local_port_range
+    verify:
+      kind: run
+      probe: SocketFacts.java
+      expect: ['^client port in the OS''s ephemeral range: true$']
+      note: 以前は「動的・私的ポートの範囲から割り当てる」と書いていたが、Linuxの既定（32768〜60999）は違うので直した（2026-11-24）。macOSはsysctl net.inet.ip.portrange.first/lastで49152〜65535を確かめた。Windowsは、Microsoftのサポート文書（KB929851）でWindows Vista以降の既定が49152〜65535
+
+  - id: printwriter-autoflush
+    claim: PrintWriterのコンストラクターの第2引数をtrueにすると、printlnのたびにフラッシュされる
+    text: 第2引数のtrueは自動フラッシュの指定で、printlnを呼ぶたびにたまった文字をすぐ送り出します
+    sources:
+      - title: PrintWriter（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/PrintWriter.html
+        anchor: if automatic flushing is enabled it will be done only when one of the println, printf, or format methods is invoked
+    verify:
+      kind: run
+      probe: SocketFacts.java
+      expect: ['^autoflush println received: hello$']
+
+  - id: stream-charset-default-18
+    claim: InputStreamReaderとPrintWriterは文字コードを指定しないと既定の文字コードを使い、Java 18以降の既定はUTF-8（JEP 400）
+    text: Java 18以降の既定はUTF-8です
+    sources:
+      - title: JEP 400 UTF-8 by Default
+        url: https://openjdk.org/jeps/400
+        anchor: Release 18
+    verify:
+      kind: manual
+      checked: 2026-11-24
+      note: 第14章のutf8-default-18と同じ出典。InputStreamReaderのAPIドキュメントも、文字コードを指定しないコンストラクターは既定の文字コード（Charset.defaultCharset()）を使うと書いている
+
+  - id: virtual-threads-server-21
+    claim: Java 21以降は仮想スレッドで接続ごとにスレッドを割り当てられる
+    text: Java 21以降は、第15章の節「新しい並行処理のしくみ」で紹介した仮想スレッドを使い
+    sources:
+      - title: "JEP 444: Virtual Threads"
+        url: https://openjdk.org/jeps/444
+    verify:
+      kind: since
+      probe: ../chapter15/VirtualThreads.java
+      version: 21
+      expect: ['ofVirtual\(\) is a preview API']
