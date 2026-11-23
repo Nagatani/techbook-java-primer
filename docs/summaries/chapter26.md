@@ -9,13 +9,13 @@ sections:
   - key: "事例1：データをどこに保存するか"
     hash: dd99d186
   - key: "事例2：CSVを自分で読むか、ライブラリを使うか"
-    hash: 1d40f67c
+    hash: 061673fc
   - key: "事例3：画面を何で作るか"
     hash: b349495b
   - key: "事例4：ログを何で出すか"
     hash: 043dacd6
   - key: "事例5：テストに何を使うか"
-    hash: 6b14e89f
+    hash: 7de91958
   - key: "初版から改善版へ移す"
     hash: 1cd164c8
   - key: "作ったものを振り返る"

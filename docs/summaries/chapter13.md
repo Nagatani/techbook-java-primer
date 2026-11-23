@@ -11,13 +11,13 @@ sections:
   - key: "検査例外と非検査例外"
     hash: bf83a4ed
   - key: "独自例外と例外の連鎖"
-    hash: 06cb6dd8
+    hash: 467c5614
   - key: "実践的な例外処理パターン"
     hash: 11dca2b7
   - key: "リソース管理の実践例"
     hash: 472c3982
   - key: "例外処理とログ記録"
-    hash: e7017d9e
+    hash: 8c902c00
   - key: "業務アプリケーションでの例外設計"
     hash: 89922cf1
   - key: "例外処理のベストプラクティス"

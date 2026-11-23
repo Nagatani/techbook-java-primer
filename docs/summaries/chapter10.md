@@ -13,9 +13,9 @@ sections:
   - key: "型制約（境界のある型パラメーター）"
     hash: 183367be
   - key: "ワイルドカード"
-    hash: bcfc913c
+    hash: fbf0b5d8
   - key: "var型推論とジェネリクス"
-    hash: fa0b4764
+    hash: fe975810
   - key: "よくあるエラーと対処法"
     hash: bc2020c2
   - key: "まとめ"

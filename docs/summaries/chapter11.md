@@ -7,13 +7,13 @@ sections:
   - key: "匿名クラスからラムダ式へ"
     hash: 97cdaf58
   - key: "関数型インターフェイス"
-    hash: a8bb94b4
+    hash: 83eb03eb
   - key: "メソッド参照"
     hash: 5f6866e2
   - key: "ラムダ式の応用例"
     hash: 532805ab
   - key: "関数型プログラミングの実践例"
-    hash: bf73740e
+    hash: 78399b79
   - key: "よくあるエラーと対処法"
     hash: 57f1da1b
   - key: "まとめ"

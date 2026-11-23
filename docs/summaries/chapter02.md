@@ -5,7 +5,7 @@ sections:
   - key: "本章の学習目標"
     hash: 0cb94cb6
   - key: "基本データ型"
-    hash: 5f1e975b
+    hash: 52bd3761
   - key: "変数の宣言と初期化"
     hash: faf3a587
   - key: "演算子"
@@ -13,7 +13,7 @@ sections:
   - key: "型変換"
     hash: 701cb274
   - key: "コンソール入出力"
-    hash: 46e78071
+    hash: 9f5dbd96
   - key: "制御構造"
     hash: 7c302410
   - key: "配列"

@@ -17,7 +17,7 @@ sections:
   - key: "UDP通信の実装"
     hash: 31d03b03
   - key: "実践的な例：チャットアプリケーション"
-    hash: 297be891
+    hash: 7039c911
   - key: "JSON APIクライアントの実装"
     hash: b53650d6
   - key: "セキュリティの考慮事項"
