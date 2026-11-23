@@ -1214,6 +1214,7 @@ public class Logger {
 }
 ```
 
+`Object... args`は、第3章で学んだ可変長引数で、どんな型の値もいくつでも受け取れます。
 フォーマット付きメッセージを`log(String format, Object... args)`というオーバーロードにすると、`log("Hello %s", "World")`は引数の型がぴったり合う`log(String level, String message)`のほうが呼び出されます。
 このように引数の型が重なるオーバーロードは、意図と違うメソッドが選ばれる原因になります。
 そこで、フォーマット付きメッセージのメソッドは`logf`という別の名前にしています。
