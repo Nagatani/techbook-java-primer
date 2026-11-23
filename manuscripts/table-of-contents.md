@@ -14,31 +14,33 @@
 - [5章　継承とポリモーフィズム](chapter05-inheritance-and-polymorphism.md)
 - [6章　不変性とfinalキーワード](chapter06-immutability-and-final.md)
 - [7章　抽象クラスとインターフェイス](chapter07-abstract-classes-and-interfaces.md)
-
-### 3部：モダンJava機能編
 - [8章　Javaの特殊なクラス形式](chapter08-special-classes.md)
+
+### 3部：標準ライブラリと関数型編
 - [9章　コレクションフレームワーク](chapter09-collections.md)
 - [10章　ジェネリクス](chapter10-generics.md)
 - [11章　ラムダ式と関数型インターフェイス](chapter11-lambda-and-functional-interfaces.md)
 - [12章　Stream APIと高度なコレクション操作](chapter12-advanced-collections.md)
 - [13章　例外処理](chapter13-exception-handling.md)
 
-### 4部：外部システム連携編
+### 4部：入出力と並行処理編
 - [14章　ファイルI/O](chapter14-file-io.md)
 - [15章　マルチスレッドプログラミング](chapter15-multithreading.md)
 - [16章　ネットワークプログラミング](chapter16-network-programming.md)
+
+### 5部：GUI編
 - [17章　GUIプログラミングの基礎](chapter17-gui-basics.md)
 - [18章　基本的なイベント処理](chapter18-event-basics.md)
 - [19章　高度なイベント処理パターン](chapter19-event-advanced.md)
 - [20章　JTable・JList・JTree](chapter20-advanced-gui.md)
 
-### 5部：実践編
+### 6部：開発実践編
 - [21章　ユニットテストと品質保証](chapter21-unit-testing.md)
 - [22章　ドキュメントと外部ライブラリ](chapter22-documentation-and-libraries.md)
 - [23章　ビルドとデプロイ](chapter23-build-and-deploy.md)
 - [24章　データベースプログラミング](chapter24-database-programming.md)
 
-### 6部：統合プロジェクト編
+### 7部：統合プロジェクト編
 - [25章　統合プロジェクトの設計](chapter25-integrated-project-design.md)
 - [26章　統合プロジェクトの技術選定と実装](chapter26-integrated-project-technology.md)
 
