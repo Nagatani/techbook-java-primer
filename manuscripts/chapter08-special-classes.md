@@ -12,7 +12,7 @@
     - 高度なEnum機能とデザインパターンへの応用
 2. レコード（Record）の理解と活用
     - 不変データクラスの簡潔な定義方法
-    - sealed interfaceやパターンマッチングと組み合わせた活用
+    - sealedインターフェイスやパターンマッチングと組み合わせた活用
 3. 両者の使い分けと実践的な設計
     - それぞれの特徴を活かした設計上の選択
     - 実際のアプリケーションでの組み合わせ方
@@ -893,13 +893,13 @@ public record Money(BigDecimal amount, String currency) {
 }
 ```
 
-### sealed interfaceとRecordの組み合わせ
+### sealedインターフェイスとRecordの組み合わせ
 
-sealed interfaceは、インターフェイスを実装できる型を明示的に限る機能で<span class="footnote">sealedは、Java 15と16のプレビュー機能を経て、Java 17で正式な機能になりました。</span>、Recordと組み合わせることで型安全な設計を実現できます。
+sealedインターフェイスは、インターフェイスを実装できる型を明示的に限る機能で<span class="footnote">sealedは、Java 15と16のプレビュー機能を経て、Java 17で正式な機能になりました。</span>、Recordと組み合わせることで型安全な設計を実現できます。
 
 <div class="figure">
 
-![sealed interfaceとRecordの組み合わせ（サンプルコード8-23）](images/diagrams/chapter08-sealed-record.svg)
+![sealedインターフェイスとRecordの組み合わせ（サンプルコード8-23）](images/diagrams/chapter08-sealed-record.svg)
 
 </div>
 
@@ -933,6 +933,10 @@ public class ShapeCalculator {
 ここでは`Shape`を実装できるのは`Circle`・`Rectangle`・`Triangle`の3つだけで、ほかのクラスが`implements Shape`と書くとコンパイルエラーになります。
 許可された型は、`final`・`sealed`・`non-sealed`のどれかを付けて、さらに継承できるかどうかを決めておく必要があります。
 Recordは暗黙的に`final`なので、何も付けずにこの条件を満たします。
+
+`sealed`はクラスにも付けられます。
+`public sealed class Shape permits Circle, Rectangle, Triangle`と書くと、`Shape`を継承できるクラスが3つに限られます。
+本書では、Recordと組み合わせやすいsealedインターフェイスを使います<span class="footnote">Recordはほかのクラスを継承できないので、sealedクラスの子にはなれません。インターフェイスなら、Recordも実装できます。</span>。
 
 `calculateArea`のswitchに`default`がないことにも注目してください。
 コンパイラーは`Shape`の実装が3つしかないことを知っているので、3つのcaseですべての場合を尽くしていると判断できます。
@@ -1350,7 +1354,7 @@ Javaの標準ライブラリにも、同じ考え方の`Iterator`インターフ
 - 不変データクラスを簡潔に定義
 - ボイラープレートコードを自動生成
 - パターンマッチングとの統合
-- sealed interfaceと組み合わせると、switchがすべての場合を尽くしているかをコンパイラーが確かめる
+- sealedインターフェイスと組み合わせると、switchがすべての場合を尽くしているかをコンパイラーが確かめる
 - DTOやValue Objectの実装に使用される
 
 ### 内部クラスの重要ポイント

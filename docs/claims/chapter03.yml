@@ -20,8 +20,8 @@ claims:
       expect: ['pattern matching in instanceof is not supported in -source 15']
 
   - id: sealed-17
-    claim: シールクラスはJava 17で正式な機能になった
-    text: シールクラスはJava 17で正式な機能になりました
+    claim: sealedはJava 17で正式な機能になった
+    text: sealedはJava 17で正式な機能になりました
     verify:
       kind: since
       probe: SealedProbe.java

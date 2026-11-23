@@ -170,7 +170,7 @@
 
 ### S
 - **Scanner クラス** - 第1章、第2章、第14章
-- **sealed interface** - 第8章、付録B.10
+- **sealedインターフェイス** - 第8章、付録B.10
 - **Semaphore** - 第15章
 - **Serializable インターフェイス** - 第14章
 - **ServerSocket** - 第16章
