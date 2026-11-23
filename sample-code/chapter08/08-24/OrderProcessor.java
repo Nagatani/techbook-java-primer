@@ -1,6 +1,6 @@
 import java.math.BigDecimal;
 
-// ロジックの分離（純粋関数）
+// ロジックの分離（引数だけで結果が決まり、何も書き換えない）
 public class OrderProcessor {
     public static BigDecimal calculateTotal(Order order) {
         BigDecimal total = BigDecimal.ZERO;

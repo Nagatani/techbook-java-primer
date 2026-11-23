@@ -954,6 +954,14 @@ Recordは暗黙的に`final`なので、何も付けずにこの条件を満た�
 
 データ指向プログラミングは、データ構造とビジネスロジックを明確に分離する設計パラダイムです<span class="footnote">Javaの言語設計者であるブライアン・ゲッツが、2022年の記事「Data Oriented Programming in Java」で、Record・sealed・パターンマッチングを組み合わせた書き方として紹介しました。</span>。
 
+第3章では、データとそれを扱う処理を1つのクラスにまとめる「データと処理の一体化」を学びました。
+データ指向プログラミングはその逆にデータと処理を分けるので、第3章と矛盾するように見えます。
+2つは、場面によって使い分ける書き方です。
+データの種類が決まっていて、そのデータに対する処理（集計・表示・保存など）があとから増えていく場面では、データをRecordで定義し、処理を別のクラスやswitchに分けます。
+こうすると、データの定義を変えずに処理を足せます。
+一方、データの値を正しく保つための規則（残高を負にしない、など）は、第3章のようにデータと同じクラスに置きます。
+あとで見るサンプルコード8-25の`updateStatus`がRecordのなかにあるのは、「最終状態の注文は変えない」という規則を守るためです。
+
 次のサンプルの`List<OrderItem>`は、`OrderItem`を順に並べて持つリストです（第9章で学びます）。
 `OrderProcessor`では、拡張for文でリストの要素を1つずつ取り出して計算や判定を行います。
 本文では、各ファイルの先頭にあるimport文を省いています<span class="footnote">省いたimport文は`java.math.BigDecimal`、`java.time.LocalDateTime`、`java.util.List`です。全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter08/08-24/`にあります。</span>。
@@ -968,7 +976,7 @@ public record Customer(String id, String name, String email) {}
 public record OrderItem(String productName, int quantity,
         BigDecimal price) {}
 
-// ロジックの分離（純粋関数）
+// ロジックの分離（引数だけで結果が決まり、何も書き換えない）
 public class OrderProcessor {
     public static BigDecimal calculateTotal(Order order) {
         BigDecimal total = BigDecimal.ZERO;
