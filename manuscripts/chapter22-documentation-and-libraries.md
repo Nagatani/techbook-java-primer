@@ -227,8 +227,8 @@ Mavenは2002年にJason van Zylが開発しました<span class="footnote">Maven
 
 3つめは依存関係の管理（Dependency Management）です。
 Mavenは、推移的な依存関係（依存ライブラリがさらに依存するライブラリ）も自動で解決します。
-4つめはリポジトリ（Repository Pattern）です。
-ライブラリなどの成果物（アーティファクト）を中央のリポジトリで集中して管理し、各プロジェクトはそこから取得します。
+4つめはリポジトリです。
+ライブラリなどの成果物（アーティファクト）を中央のリポジトリで集中して管理し、各プロジェクトはそこから取得します<span class="footnote">ここでのリポジトリは成果物を置く場所のことです。第21章と第24〜26章で使う、データの保存を隠すクラスとしての「リポジトリ」とは別の意味です。</span>。
 
 Mavenでは、`pom.xml`という設定ファイルに利用したいライブラリの名前とバージョンを記述するだけで、ライブラリの管理が完結します。
 Mavenが必要なJARファイルをMaven Central Repositoryなどのリポジトリから自動的にダウンロードし、クラスパスも自動で設定します。
@@ -239,16 +239,13 @@ Mavenが必要なJARファイルをMaven Central Repositoryなどのリポジト
 
 </div>
 
-#### 依存関係解決のアルゴリズム
+#### Mavenのプロジェクトを作る
 
-Mavenは、依存関係を次の順に解決します。
-
-1. `pom.xml`に書いた直接の依存関係を集める
-2. それらがさらに依存するライブラリ（推移的な依存関係）をたどって集める
-    + 除外の設定（`exclusions`）で指定したライブラリはたどらない
-3. 同じライブラリの異なるバージョンが見つかったら、1つに決める
-    + 依存関係の木で自分のプロジェクトにもっとも近いものを選ぶ（nearest wins）。近さが同じなら、`pom.xml`で先に書かれたほうを選ぶ
-4. スコープ（compile、runtime、test、provided）に応じて、コンパイル・実行・テストのそれぞれで使うライブラリを決める
+Mavenを使うには、プロジェクトをMavenの形で作ります。
+IntelliJ IDEAでは、新しいプロジェクトを作るときにビルドシステムとして「Maven」を選ぶと、`pom.xml`とMavenの規約どおりのディレクトリ（ソースは`src/main/java`、テストは`src/test/java`）を持つプロジェクトができます。
+IntelliJ IDEAはMavenを内蔵しているので、IDEのなかで使うだけならMavenを別にインストールする必要はありません。
+コマンドラインで`mvn`コマンドを使うときは、付録Aの手順でMavenをインストールします<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/a-environment-setup/`</span>。
+コマンドラインでプロジェクトを作る方法は、本章の「実践的な開発フロー」で紹介します。
 
 #### `pom.xml`での依存関係の記述
 
@@ -269,6 +266,17 @@ Mavenは、依存関係を次の順に解決します。
 ```
 
 `groupId`、`artifactId`、`version`は、ライブラリを一意に識別するための座標（coordinates）です。これらの情報は、Maven Centralなどのリポジトリサイトで検索できます<span class="footnote">Maven Centralに登録されたライブラリは、`https://central.sonatype.com/`で検索できます。</span>。
+
+#### 依存関係解決のアルゴリズム
+
+Mavenは、依存関係を次の順に解決します。
+
+1. `pom.xml`に書いた直接の依存関係を集める
+2. それらがさらに依存するライブラリ（推移的な依存関係）をたどって集める
+    + 除外の設定（`exclusions`）で指定したライブラリはたどらない
+3. 同じライブラリの異なるバージョンが見つかったら、1つに決める
+    + 依存関係の木で自分のプロジェクトにもっとも近いものを選ぶ（nearest wins）。近さが同じなら、`pom.xml`で先に書かれたほうを選ぶ
+4. スコープ（compile、runtime、test、provided）に応じて、コンパイル・実行・テストのそれぞれで使うライブラリを決める
 
 ### 外部ライブラリの利用例（Gson）
 
@@ -790,6 +798,14 @@ mvn dependency:purge-local-repository
 ひな形から作った`pom.xml`には、コンパイルの対象とするJavaのバージョンが書かれています（版1.5のひな形では17）。
 本書のコードは`IO`クラスなどJava 25の機能を使うため、`pom.xml`の`<properties>`にある`maven.compiler.release`の値を`25`に書き換えます。
 ひな形から作るときに`-DjavaCompilerVersion=25`を付けると、はじめから`25`になります。
+
+`mvn compile`や`mvn package`の`compile`・`package`は、ビルドの段階（フェーズ）の名前です。
+Mavenのビルドは、`compile`（コンパイル）→`test`（テストの実行）→`package`（JARの作成）→`verify`（検査）のように決まった順に進み、あるフェーズを指定すると、それより前のフェーズもすべて実行します。
+そのため、`mvn package`を実行するとテストも実行され、テストが失敗するとJARは作られません。
+各フェーズで実際の作業をするのはプラグインで、プラグインが持つ1つ1つの作業をゴールと呼びます。
+`pom.xml`の`<build>`の`<plugins>`にプラグインを書いて`<goal>`でゴールを指定すると、そのゴールがフェーズの途中で実行されます。
+第21章のJaCoCoや、本章のOWASP Dependency-Checkは、この書き方で組み込んでいます。
+`mvn dependency:tree`のように「プラグイン名:ゴール名」と書くと、フェーズとは関係なくゴールを1つだけ実行します。
 
 ### もう1つのビルドツール：Gradle
 

@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter21-unit-testing.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: 79f3d043
@@ -21,9 +21,9 @@ sections:
   - key: "テストのベストプラクティス"
     hash: 2ba0c6c7
   - key: "継続的インテグレーション（CI）との統合"
-    hash: 605244be
+    hash: cb45ca8f
   - key: "よくあるエラーと対処法"
-    hash: 4fd20877
+    hash: b81b8e91
   - key: "まとめ"
     hash: 992503ef
   - key: "章末演習"
@@ -121,3 +121,4 @@ sections:
     + TDDのサイクルの名前を「Refactoring」から「Refactor」に統一し（見出し・まとめも）、Refactorの説明の「綺麗に、効率的に」を「重複を取り除くなどして読みやすく」に改めた
     + 「Dependency Injection (DI)」「制御の反転 (Inversion of Control - IoC)」の半角括弧を全角括弧に、「他の」を「ほかの」にそろえた
     + よくあるエラーのモックの既定の戻り値に、空のコレクションを加えた
+- 2026-11-23（流れ・矛盾・過不足の校閲）: 第22章: 最初のpom.xmlの例の前に「Mavenのプロジェクトを作る」（IntelliJ IDEAでMavenを選ぶ、IDE内蔵のMaven、コマンドラインは付録Aでインストール）を置き、依存関係解決のアルゴリズムをpom.xmlの例の後ろへ移した。「実践的な開発フロー」にフェーズ（compile→test→package→verify）とプラグイン・ゴールの関係を足した。リポジトリの「Repository Pattern」をやめ、データの保存を隠すリポジトリとは別の意味だと脚注で区別した。第21章: 第22章への誘導にプラグインとゴールを含め、JaCoCoの箇所でゴールの読み方を添え、章末の浮動小数点数の比べ方に許容誤差の指定のしかたを書いた

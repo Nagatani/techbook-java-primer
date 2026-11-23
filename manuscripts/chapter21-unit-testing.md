@@ -644,7 +644,7 @@ public class PaymentServiceTest {
 `mvn verify`は、コンパイル、テストの実行、JARファイルの作成などを順に行い、テストが1つでも失敗するとビルドを失敗させます。
 `-B`は、対話的な入力を求めずに実行するバッチモードの指定で、CIのように人が操作しない環境で使います。
 GitHub Actionsの`ubuntu-latest`の環境にはMavenが入っているので、そのまま`mvn`コマンドを使えます。
-Mavenの使い方と`pom.xml`の書き方は、第22章「ドキュメントと外部ライブラリ」で学びます。
+Mavenの使い方と`pom.xml`の書き方、プラグインとゴール、`mvn verify`などのフェーズの関係は、第22章「ドキュメントと外部ライブラリ」で学びます。
 ここでは、CIがテストを自動で実行するという流れをつかんでください。
 
 <span class="listing-number">**サンプルコード21-17**</span>
@@ -737,7 +737,7 @@ JUnitは、`<dependencies>`に`test`スコープの依存関係（`org.junit.jup
 </build>
 ```
 
-JaCoCo<span class="footnote">JaCoCoは「Java Code Coverage」を縮めた名前です。</span>の`prepare-agent`ゴールは、テストの実行中にどの行を通ったかを記録する準備をします。
+JaCoCo<span class="footnote">JaCoCoは「Java Code Coverage」を縮めた名前です。</span>の`prepare-agent`ゴール（ゴールは、プラグインが行う1つ1つの作業です）は、テストの実行中にどの行を通ったかを記録する準備をします。
 `report`ゴールは、その記録から`target/site/jacoco/`にHTMLとXMLのレポートを作ります。
 `index.html`をブラウザーで開くと、クラスやメソッドごとに、テストで通った行と通らなかった行を確かめられます。
 `check`ゴールは、プロジェクト全体（`BUNDLE`）の行カバレッジが80%に満たないとビルドを失敗させます。
@@ -750,7 +750,7 @@ JaCoCo<span class="footnote">JaCoCoは「Java Code Coverage」を縮めた名前
 - テストケースの不足
     + 期待どおりの入力だけでなく、境界値や異常値もテストする
 - アサーションの使い方の誤り
-    + 浮動小数点数を比較するときは、誤差の許容範囲を指定する
+    + 浮動小数点数を比較するときは、`assertEquals(0.3, actual, 1e-9)`のように第3引数で許容する誤差を指定する。0.1 + 0.2のような計算の結果は、0.3とぴったり等しくならないことがある
 - モックの設定不足
     + 振る舞いを設定していないメソッドは`null`や0、空のコレクションを返す。テストに必要なメソッドの振る舞いは、モックに設定しておく
     + 逆に、使わない振る舞いを設定すると、`MockitoExtension`の既定では`UnnecessaryStubbingException`でテストが失敗する
