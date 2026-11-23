@@ -165,12 +165,18 @@ SQLiteに保存する実装は、このインターフェイスを実装する�
 JDBCを使うのはこのクラスだけにし、`StudentService`は変えません。
 実行結果は、全文の`JdbcDemo`で、メモリ上のSQLiteのデータベースに学生と成績を保存し、読み直してから1人を削除したものです。
 
-<span class="listing-number">**サンプルコード26-1**　JdbcStudentRepository.java（13〜15、53〜59、73〜87、173〜191行目）</span>
+<span class="listing-number">**サンプルコード26-1**　JdbcStudentRepository.java（13〜15、17〜21、53〜59、73〜87、173〜191行目）</span>
 
 ```java
 public class JdbcStudentRepository implements StudentRepository,
         AutoCloseable {
     private final Connection connection;
+    // ...
+    // SQLExceptionを投げてよい処理（トランザクションの中身）
+    @FunctionalInterface
+    private interface SqlWork {
+        void run() throws SQLException;
+    }
     // ...
     @Override
     public void save(Student student) {
@@ -234,6 +240,9 @@ S001を削除: true
     + sealedインターフェイスの子ごとに使う列が違うので、`kind`列で区分を見分け、使わない列にはNULLを入れる
 - トランザクション
     + 学生の行と成績の行は、`inTransaction`のなかでまとめて確定する。途中で失敗したら、両方を取り消す
+    + `upsertStudent`は、学生の行がなければ追加し、あれば更新する（upsertはupdateとinsertを合わせた呼び名）
+    + `inTransaction`には、処理をラムダ式で渡す。標準の関数型インターフェイスは検査例外を投げられない（第13章の節「ラムダ式のなかの検査例外」）ので、`SQLException`を投げてよい処理を表す`SqlWork`を自作した
+    + 内側の`try`は失敗したら取り消して例外を投げ直し、外側の`try`はその`SQLException`を`RepositoryException`に包む
 
 初版のフェーズ6では、`StudentService`がメモリとデータベースの両方を更新し、失敗したらメモリを元に戻していました。
 改善版では、データベースが唯一の保存先なので、元に戻す処理は`rollback`の1か所だけです。

@@ -1,13 +1,13 @@
 ---
 source: manuscripts/chapter26-integrated-project-technology.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: 0323c17a
   - key: "技術を選ぶ前に考えること"
     hash: 0d9a2ed0
   - key: "事例1：データをどこに保存するか"
-    hash: 9335894f
+    hash: d6ff748e
   - key: "事例2：CSVを自分で読むか、ライブラリを使うか"
     hash: 132d894a
   - key: "事例3：画面を何で作るか"
@@ -77,3 +77,4 @@ sections:
 
 - 2026-11-18の校閲: 26-1の実行結果が全文の`JdbcDemo`のものである旨を加えた。26-2の続きの行の改行位置、BOMの説明の主語（「実行結果の最後の行は」）、JavaFXの短所の記述（Oracle JDKの同梱の終了）、配布の大きさの項目の「第23章で学んだ」、事例5のメモリ上のSQLiteの説明を直した
 - 前提の「第14章のファイル入出力」を、第14章の題名に合わせて「ファイルI/O」に直した（2026-11-18）
+- 2026-11-23（流れ・矛盾・過不足の校閲）: 26-1の抜粋に自作の関数型インターフェイスSqlWorkを含め、トランザクションの項目に、upsertの意味、SqlWorkを自作した理由（第13章「ラムダ式のなかの検査例外」へ）、inTransactionの内側と外側のtryの役割を足した
