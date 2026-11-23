@@ -25,7 +25,7 @@ sections:
   - key: "実用的なクラス設計例"
     hash: 11aba5f7
   - key: "`==`と`equals`の違い"
-    hash: c5e5dc4a
+    hash: 4ac4e1e1
   - key: "モダンJavaにおけるオブジェクト指向"
     hash: 00307a15
   - key: "よくあるエラーと対処法"
@@ -121,7 +121,7 @@ sections:
 - 実用的なクラス設計例（L1747–1931）
     + 図書管理: 3-28のBookに貸出状況を加えた版（3-43）とBookLibraryTest（3-44）。CartItemの配列と個数で管理する税込計算付きShoppingCart（3-45、3-46）。可変長の入れ物は第9章へ
 - `==`と`equals`の違い（L1932–1969）
-    + 文字列の`==`と`equals`の違い（3-47 StringComparison、図chapter03-equals-vs-identity）。自作クラスのequals・hashCode・toStringは第5章へ誘導
+    + 文字列の`==`と`equals`の違い（3-47 StringComparison、図chapter03-equals-vs-identity）。第2章の「文字列の比較」を受け、クラス型の変数が参照を持つことから理由を整理する形にした（2026-11-23。以前は第2章と同じ説明を初出のように繰り返していた）。自作クラスのequals・hashCode・toStringは第5章へ誘導
 - モダンJavaにおけるオブジェクト指向（L1970–1984）
     + レコード、instanceofのパターンマッチング、シールクラスを1行ずつ紹介し、第5章・第8章へ誘導
 - よくあるエラーと対処法（L1985–2000）
