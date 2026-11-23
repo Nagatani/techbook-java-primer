@@ -512,11 +512,15 @@ function numberCommand(filters) {
     const next = text.split('\n').map((line) => (CAPTION.test(line) ? line : line.replace(/サンプルコード(\d+)-(\d+)/g, (m, x, y) => {
       const to = maps.get(Number(x))?.get(`${x}-${y}`);
       return to ? `サンプルコード${to}` : m;
-    }))).join('\n');
+    }))).map((line) => line.replace(/sample-code\/chapter(\d+)\/(\d+)-(\d+)\//g, (m, c, x, y) => {
+      // 脚注などに書いた全文のURL（sample-code/chapterXX/XX-YY/）も新しい番号のディレクトリにする
+      const to = maps.get(Number(x))?.get(`${Number(x)}-${Number(y)}`);
+      return to ? `sample-code/chapter${c}/${dirName(to)}/` : m;
+    })).join('\n');
     if (next !== text) fs.writeFileSync(file, next);
   }
   syncCommand(filters);
-  console.log('本文中の「サンプルコードX-Y」の参照は直しました。「12-1と12-2」のように番号だけの参照は手で確かめてください');
+  console.log('本文中の「サンプルコードX-Y」の参照と、全文のURL（sample-code/chapterXX/XX-YY/）は直しました。「12-1と12-2」のように番号だけの参照は手で確かめてください');
 }
 
 /** 全文を行番号付きで表示する（抜粋の範囲を決めるため） */
