@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.stream.Stream;
 
 public class FileSystemExample {
     public static void main(String[] args) throws IOException {
@@ -30,6 +31,16 @@ public class FileSystemExample {
         Files.copy(file, copiedFile,
                 StandardCopyOption.REPLACE_EXISTING);
         IO.println("ファイルをコピーしました: " + copiedFile.getFileName());
+
+        // ディレクトリの中身の一覧
+        // Files.list()はStream（第12章）を返す。開いたディレクトリを
+        // 閉じるため、try-with-resourcesで囲む。並び順はOSによるので並べ替える
+        IO.println("ディレクトリの中身:");
+        try (Stream<Path> entries = Files.list(dir)) {
+            entries.map(p -> p.getFileName().toString())
+                    .sorted()
+                    .forEach(name -> IO.println("  " + name));
+        }
 
         // ファイルの削除
         Files.delete(copiedFile);

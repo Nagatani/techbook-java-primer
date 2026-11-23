@@ -54,7 +54,8 @@
 
 - `new BufferedReader(new FileReader(path))`のようにストリームを重ねたときは、外側の`BufferedReader`を宣言すれば足りる
     + 外側のストリームを閉じると、内側のストリームも閉じられる
-- `Files.newBufferedReader`のように、ファイルを開いたReaderやWriterを返すメソッドの戻り値も`try-with-resources`で閉じる
+    + 第13章のサンプルコード13-10のように内側も別に宣言すると、外側を作る途中で例外が起きても内側が確実に閉じられる
+- `Files.newBufferedReader`のようにReaderやWriterを返すメソッドや、`Files.list`・`Files.lines`のようにStreamを返すメソッドの戻り値も`try-with-resources`で閉じる
     + `Files.readAllLines`や`Files.writeString`のように、開いてから閉じるまでをメソッドのなかで済ませるものは閉じなくてよい
 
 ## テキストファイルの読み書き
@@ -478,7 +479,7 @@ Java 7で導入された`java.nio.file`パッケージ（NIO.2）<span class="fo
 古いコードでは、`Path`を`Paths.get`で作っていることがあります<span class="footnote">`Path.of`はJava 11で加わりました。`Paths`クラスのAPIドキュメントは、`Path.of`を使うよう勧めており、`Paths`は将来非推奨になる可能性があると書いています。</span>。
 本書では`Path.of`を使います。
 
-<span class="listing-number">**サンプルコード14-7**　FileSystemExample.java（4〜40行目）</span>
+<span class="listing-number">**サンプルコード14-7**　FileSystemExample.java（5〜51行目）</span>
 
 ```java
 public class FileSystemExample {
@@ -511,6 +512,16 @@ public class FileSystemExample {
                 StandardCopyOption.REPLACE_EXISTING);
         IO.println("ファイルをコピーしました: " + copiedFile.getFileName());
 
+        // ディレクトリの中身の一覧
+        // Files.list()はStream（第12章）を返す。開いたディレクトリを
+        // 閉じるため、try-with-resourcesで囲む。並び順はOSによるので並べ替える
+        IO.println("ディレクトリの中身:");
+        try (Stream<Path> entries = Files.list(dir)) {
+            entries.map(p -> p.getFileName().toString())
+                    .sorted()
+                    .forEach(name -> IO.println("  " + name));
+        }
+
         // ファイルの削除
         Files.delete(copiedFile);
         Files.delete(file);
@@ -526,6 +537,9 @@ public class FileSystemExample {
 ディレクトリを作成しました: my_temp_dir
 ファイルを作成しました: my_file.txt
 ファイルをコピーしました: my_file_copy.txt
+ディレクトリの中身:
+  my_file.txt
+  my_file_copy.txt
 ファイルとディレクトリを削除しました。
 ```
 
@@ -794,9 +808,11 @@ public class Example {
 
 ### エスケープシーケンスの簡略化
 
-Text Blocksでは多くのエスケープシーケンスが不要になります。
+Text Blocksでは、`"`をそのまま書けるので、引用符のエスケープが不要になります。
+ただし、すべてのエスケープが要らなくなるわけではありません。
+`\`は通常の文字列と同じく`\\`と書き、`"""`を文字として含めるときは`\"""`と書きます。
 
-<span class="listing-number">**サンプルコード14-12**　TextBlockEscaping.java（1〜11、22〜31、42〜43行目）</span>
+<span class="listing-number">**サンプルコード14-12**　TextBlockEscaping.java</span>
 
 ```java
 public class TextBlockEscaping {
@@ -810,7 +826,16 @@ public class TextBlockEscaping {
         
         IO.println("=== 引用符のエスケープ不要 ===");
         IO.println(dialogue);
-        // ...
+        
+        // バックスラッシュの処理
+        String windowsPath = """
+                Windowsのパス: C:\\Users\\Name\\Documents
+                正規表現: \\d+\\.\\d+
+                """;
+        
+        IO.println("\n=== バックスラッシュの処理 ===");
+        IO.println(windowsPath);
+        
         // 三重引用符を含む場合（エスケープが必要）
         String codeWithTripleQuotes = """
                 Text Blockの構文:
@@ -821,7 +846,16 @@ public class TextBlockEscaping {
         
         IO.println("\n=== 三重引用符のエスケープ ===");
         IO.println(codeWithTripleQuotes);
-        // ...
+        
+        // 行末の制御
+        String trailingSpaces = """
+                この行の末尾にスペースがある   \s
+                この行は普通の改行
+                この行は改行なし\
+                """;
+        
+        IO.println("\n=== 行末の制御 ===");
+        IO.println("'" + trailingSpaces + "'");
     }
 }
 ```
@@ -852,6 +886,11 @@ String text = """
 この行は普通の改行
 この行は改行なし'
 ```
+
+Text Blocksは行末の空白を取り除くので、空白を残したい行の末尾には`\s`（空白1文字）を書きます。
+この例では`\s`の前の3つの空白も残り、行末に4つの空白が付きます。
+行末に`\`を書くと、その行の改行を入れずに次の行とつなげます。
+最後の行を`\`で終えたので、文字列の末尾に改行が付かず、閉じる`'`が同じ行に表示されています。
 
 ### 実践例：構造化データの生成と保存
 

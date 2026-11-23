@@ -1,11 +1,11 @@
 ---
 source: manuscripts/chapter14-file-io.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: 01038799
   - key: "ファイルI/Oの基礎とストリーム"
-    hash: faf5ad01
+    hash: 6888c007
   - key: "テキストファイルの読み書き"
     hash: 7538419f
   - key: "バイナリファイルの高度な処理"
@@ -13,7 +13,7 @@ sections:
   - key: "オブジェクトの直列化（シリアライズ）"
     hash: ce409f80
   - key: "ファイルシステムの操作（NIO.2）"
-    hash: 22cefbbd
+    hash: 60c1cd2f
   - key: "実践的なファイル処理例"
     hash: 4e0778ab
   - key: "日付時刻処理について"
@@ -21,7 +21,7 @@ sections:
   - key: "GUIでのファイル選択：`JFileChooser`"
     hash: f94b1663
   - key: "Text Blocks：複数行の文字列を読みやすく書く"
-    hash: e4494383
+    hash: 84f4894e
   - key: "まとめ"
     hash: 325b494a
   - key: "よくあるエラーと対処法"
@@ -116,3 +116,4 @@ sections:
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに）
 - 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）。節「日付時刻処理について」を、第6章への誘導と`FileTime.toInstant()`の1文に縮めた
 - 2026-11-18: 校閲で、節名を「ファイルシステムの操作（NIO.2）」「GUIでのファイル選択：`JFileChooser`」「Text Blocks：複数行の文字列を読みやすく書く」に直した。「キャラクタストリーム」を「キャラクターストリーム」に、14-5の重複したコメントを1つにまとめ、バッファーの効果の説明を「ディスクアクセスの回数」から「OSへの読み書きの要求の回数」に直した。章末の課題構成に導入の文を足した
+- 2026-11-23（流れ・矛盾・過不足の校閲）: try-with-resourcesの注意に、第13章の13-10のように内側も宣言する書き方との関係と、Files.list・Files.linesのStreamも閉じることを足した。14-7の全文にFiles.listでディレクトリの中身を名前順に表示する処理を足した（演習が使うため）。14-12は全体を載せ、バックスラッシュは\\\\と書くこと、行末の\\sと\\の意味を説明した

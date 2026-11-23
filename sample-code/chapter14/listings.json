@@ -49,7 +49,7 @@
     "dir": "14-07",
     "main": "FileSystemExample",
     "excerpt": [
-      { "file": "FileSystemExample.java", "from": 4, "to": 40 }
+      { "file": "FileSystemExample.java", "from": 5, "to": 51 }
     ]
   },
   "14-8": {
@@ -88,9 +88,7 @@
     "dir": "14-12",
     "main": "TextBlockEscaping",
     "excerpt": [
-      { "file": "TextBlockEscaping.java", "from": 1, "to": 11 },
-      { "file": "TextBlockEscaping.java", "from": 22, "to": 31 },
-      { "file": "TextBlockEscaping.java", "from": 42, "to": 43 }
+      { "file": "TextBlockEscaping.java", "from": 1, "to": 43 }
     ]
   },
   "14-13": {
