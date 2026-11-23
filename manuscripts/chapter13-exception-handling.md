@@ -347,7 +347,7 @@ public class BankAccount {
 ```
 
 この実行結果は、1,000円を預けた口座から500円と600円を順に引き出したときのものです。
-入金と残高の取得のメソッド、引き出しを試す`main`メソッド（`BankAccountDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-05/`</span>。
+入金と残高の取得のメソッド、引き出しを試す`main`メソッド（`BankAccountDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-06/`</span>。
 
 ### 例外の連鎖（Exception Chaining）
 
@@ -432,7 +432,7 @@ public class UserService {
 
 第11章で見たとおり、`Callable<T>`は`T`型の値を返す処理を表す関数型インターフェイスです。
 `Runnable`や`Supplier`と違って検査例外を投げられるので、ファイルやネットワークを扱う処理もそのまま渡せます。
-`executeWithRetry`には、試したい処理をラムダ式で渡します（呼び出す`main`メソッドは全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-07/`</span>）。
+`executeWithRetry`には、試したい処理をラムダ式で渡します（呼び出す`main`メソッドは全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-08/`</span>）。
 第2引数の`Class<? extends Exception>`には、再試行の対象にする例外の型を`IOException.class`のように渡します。
 
 <span class="listing-number">**サンプルコード13-8**　RetryableOperation.java（4〜6、8〜24、33〜38、56行目）</span>
@@ -907,7 +907,7 @@ public class ErrorResponse {
 
 実際のアプリケーションでの例外処理戦略の実装例として、口座間の送金処理を示します。
 入力の誤りや残高不足などのビジネス例外はそのまま呼び出し元に伝え、それ以外の予期しない例外は原因を保ったまま非検査例外に包んで投げ直します。
-`Account`や`AccountRepository`などの補助の型と、送金を試す`main`メソッド（`TransferDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-15/`</span>。
+`Account`や`AccountRepository`などの補助の型と、送金を試す`main`メソッド（`TransferDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-16/`</span>。
 
 <span class="listing-number">**サンプルコード13-16**　TransferService.java（5〜7、17〜20、24〜49、60〜74、121行目）</span>
 

@@ -772,7 +772,7 @@ public class FutureCallableExample {
     + 決めた時間内に終わらない処理を例外にする
 
 サンプルコード15-13は、`supplyAsync`で始めた処理を`thenApply`で変換し（1・2）、3つの都市の気温と湿度を並行して取得して`thenCombine`で組み合わせ（3）、時間のかかる処理を`orTimeout`で打ち切ります（4）。
-`WeatherService`の`getTemperature`と`getHumidity`は、1〜2秒待ってから値を返す処理を`supplyAsync`で始めるメソッドで、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter15/15-15/`</span>。
+`WeatherService`の`getTemperature`と`getHumidity`は、1〜2秒待ってから値を返す処理を`supplyAsync`で始めるメソッドで、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter15/15-13/`</span>。
 
 <span class="listing-number">**サンプルコード15-13**　CompletableFutureExample.java（6、41〜96行目）</span>
 
