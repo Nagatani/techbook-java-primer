@@ -11,7 +11,7 @@
     "dir": "04-02",
     "main": "BankAccountTest",
     "excerpt": [
-      { "file": "BankAccount.java", "from": 1, "to": 33 }
+      { "file": "BankAccount.java", "from": 1, "to": 37 }
     ]
   },
   "4-3": {

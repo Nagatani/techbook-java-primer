@@ -1,16 +1,21 @@
 public class BankAccount {
     private double balance;      // 外部から直接変更不可
-    private String accountId;    // 内部管理用ID
+    private int transactionCount;  // 取引の回数（内部でだけ数える）
     
     public void deposit(double amount) {
         if (amount > 0) {
             balance += amount;   // 同じクラス内からは可視
-            logTransaction();    // プライベートメソッドの呼び出し
+            recordTransaction(); // プライベートメソッドの呼び出し
         }
     }
     
-    private void logTransaction() {  // 内部処理専用メソッド
-        // トランザクションログの記録
+    public double getBalance() {
+        return balance;
+    }
+    
+    // 内部の処理を分けるためのメソッド（外からは呼ばせない）
+    private void recordTransaction() {
+        transactionCount++;
     }
 }
 
@@ -24,10 +29,9 @@ class BankAccountTest {
         
         // publicメソッドを通じて操作
         account.deposit(5000);
-        // getBalanceメソッドは未実装のため、残高は表示できません
-        IO.println("入金処理が完了しました");
+        IO.println("残高: " + account.getBalance());
         
         // privateメソッドは呼び出せない
-        // account.logTransaction(); // コンパイルエラー
+        // account.recordTransaction(); // コンパイルエラー
     }
 }

@@ -5,7 +5,7 @@
 ### この章で学ぶこと
 
 1. カプセル化の実践
-    - アクセス修飾子（public、private、protected）の使い分け
+    - 4つのアクセス修飾子（public、protected、修飾子なしのパッケージプライベート、private）の使い分け
     - getter/setterメソッドによる安全なデータアクセス
     - データ検証とバリデーションの実装
 2. コンストラクターの活用
@@ -134,17 +134,22 @@ Javaのアクセス制御は、カプセル化を実現する重要な機能で�
 ```java
 public class BankAccount {
     private double balance;      // 外部から直接変更不可
-    private String accountId;    // 内部管理用ID
+    private int transactionCount;  // 取引の回数（内部でだけ数える）
     
     public void deposit(double amount) {
         if (amount > 0) {
             balance += amount;   // 同じクラス内からは可視
-            logTransaction();    // プライベートメソッドの呼び出し
+            recordTransaction(); // プライベートメソッドの呼び出し
         }
     }
     
-    private void logTransaction() {  // 内部処理専用メソッド
-        // トランザクションログの記録
+    public double getBalance() {
+        return balance;
+    }
+    
+    // 内部の処理を分けるためのメソッド（外からは呼ばせない）
+    private void recordTransaction() {
+        transactionCount++;
     }
 }
 
@@ -158,11 +163,10 @@ class BankAccountTest {
         
         // publicメソッドを通じて操作
         account.deposit(5000);
-        // getBalanceメソッドは未実装のため、残高は表示できません
-        IO.println("入金処理が完了しました");
+        IO.println("残高: " + account.getBalance());
         
         // privateメソッドは呼び出せない
-        // account.logTransaction(); // コンパイルエラー
+        // account.recordTransaction(); // コンパイルエラー
     }
 }
 ```
@@ -170,8 +174,12 @@ class BankAccountTest {
 実行結果：
 
 ```
-入金処理が完了しました
+残高: 5000.0
 ```
+
+フィールドを`private`にすることは第3章で学びました。
+メソッドにも`private`を付けられます。
+`recordTransaction`のように、クラスの内部の処理を分けるためだけのメソッドを`private`にしておくと、外から呼ばれる心配がなく、あとで中身や名前を変えても外のコードに影響しません。
 
 ##### パッケージプライベート（デフォルト）の使用例
 
@@ -378,7 +386,9 @@ class ProductTest {
 
 ### データ検証の重要性
 
-プログラミングで、データの状態を常に有効に保つことはきわめて重要です。オブジェクト指向では、これをカプセル化とsetterメソッドによる検証で実現します。setterメソッドは単なる値の代入ではなく、オブジェクトの不変条件（invariant）を守るゲートキーパーとしての役割を担います。範囲チェック、nullチェック、ビジネスルールの検証を実装すると、バグの早期発見と予防が可能になり、システム全体の信頼性が向上します。以下の例では、実務でよく使用される検証パターンを示します。
+プログラミングで、データの状態を常に有効に保つことはきわめて重要です。オブジェクト指向では、これをカプセル化とsetterメソッドによる検証で実現します。setterメソッドは単なる値の代入ではなく、オブジェクトの不変条件（invariant）を守るゲートキーパーとしての役割を担います。
+不変条件とは、「残高は0以上」のように、オブジェクトが生成から破棄まで常に満たすべき条件です（第6章の「不変（イミュータブル）」とは別の意味です）。
+範囲チェック、nullチェック、ビジネスルールの検証を実装すると、バグの早期発見と予防が可能になり、システム全体の信頼性が向上します。以下の例では、実務でよく使用される検証パターンを示します。
 
 <span class="listing-number">**サンプルコード4-8**　Employee.java</span>
 
@@ -720,8 +730,7 @@ BankAccountV3では、口座番号のフィールドにfinalを付けたので�
 また、意味のある名前を使うと、コードが読みやすく保守しやすくなります。
 クラス名は名詞、メソッド名は動詞で始めるという慣習に従い、役割がわかる名前を選びます。
 
-最後に、不変条件を守ります。
-不変条件とは、オブジェクトの生成から破棄まで常に満たされるべき条件（「残高は0以上」など）です。
+最後に、節「データ検証の重要性」で述べた不変条件を守ります。
 不変条件を明確に決め、すべての操作でこれを保つように設計すると、オブジェクトの整合性を保証できます。
 
 ## パッケージシステムとクラスの組織化
@@ -779,22 +788,19 @@ src/
                 └── DateUtils.java
 ```
 
-### import文の使い方
+### import文の種類と注意点
 
-パッケージに含まれるクラスを使用する際は、完全限定名かimport文を使用します。
+第2章の「import文の使い方」では、標準ライブラリの`java.util.Arrays`をimportして使いました。
+import文を書かずに、パッケージ名から書いた完全限定名でクラスを指定することもできます。
 
 <span class="listing-number">**サンプルコード4-16**</span>
 
 ```java
-// 完全限定名での使用
+// 完全限定名で書く場合（import文は不要）
 java.util.List<String> names = new java.util.ArrayList<>();
-
-// import文を使用した場合
-import java.util.List;
-import java.util.ArrayList;
-
-List<String> names = new ArrayList<>();
 ```
+
+ファイルの先頭に`import java.util.List;`と`import java.util.ArrayList;`を書いておけば、同じ行を`List<String> names = new ArrayList<>();`と短く書けます。
 
 import文には、次の3つの種類があります<span class="footnote">このほかに、第1章で紹介したモジュールのimport宣言（`import module java.base;`）がJava 25で加わりました。本書のコードでは使わず、クラスごとにimport文を書きます。</span>。
 
@@ -1187,9 +1193,10 @@ public class HttpClient {
 }
 ```
 
-#### 型安全性を高めるオーバーロード
+#### 型ごとのオーバーロードと、引数の型が重なるときの注意
 
-異なるデータ型に対応しながら、型安全性を維持します。
+受け取る値の型ごとにメソッドを分けると、呼び出す側は型に合ったメソッドを意識せずに使えます。
+ただし、引数の型が重なると、意図しないメソッドが選ばれることがあります。
 
 <span class="listing-number">**サンプルコード4-28**　Logger.java</span>
 
