@@ -36,36 +36,36 @@
       { "file": "BoundedTypeExample.java", "from": 1, "to": 14 }
     ]
   },
-  "10-8": {
-    "dir": "10-08",
+  "10-9": {
+    "dir": "10-09",
     "main": "WildcardExample",
     "excerpt": [
       { "file": "WildcardExample.java", "from": 1, "to": 36 }
     ]
   },
-  "10-9": {
-    "dir": "10-09",
+  "10-10": {
+    "dir": "10-10",
     "main": "VarBasicExample",
     "excerpt": [
       { "file": "VarBasicExample.java", "from": 1, "to": 30 }
-    ]
-  },
-  "10-10": {
-    "dir": "10-10",
-    "main": null,
-    "excerpt": [
-      { "file": "VarLimitations.java", "from": 1, "to": 34 }
     ]
   },
   "10-11": {
     "dir": "10-11",
     "main": null,
     "excerpt": [
-      { "file": "VarReadabilityExample.java", "from": 5, "to": 35 }
+      { "file": "VarLimitations.java", "from": 1, "to": 34 }
     ]
   },
   "10-12": {
     "dir": "10-12",
+    "main": null,
+    "excerpt": [
+      { "file": "VarReadabilityExample.java", "from": 5, "to": 35 }
+    ]
+  },
+  "10-13": {
+    "dir": "10-13",
     "main": "VarWithGenericsExample",
     "excerpt": [
       { "file": "VarWithGenericsExample.java", "from": 7, "to": 45 }

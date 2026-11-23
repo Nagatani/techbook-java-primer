@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter10-generics.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: 1d9abcfc
@@ -11,11 +11,11 @@ sections:
   - key: "ジェネリックメソッド"
     hash: 0d5a8f14
   - key: "型制約（境界のある型パラメーター）"
-    hash: 7cb475bb
+    hash: 183367be
   - key: "ワイルドカード"
-    hash: b8a51c84
+    hash: 58061053
   - key: "var型推論とジェネリクス"
-    hash: b3c7ef2f
+    hash: fa0b4764
   - key: "よくあるエラーと対処法"
     hash: bc2020c2
   - key: "まとめ"
@@ -67,14 +67,16 @@ sections:
     + 戻り値型の前に`<T>`を宣言する`printArray`（10-6）。型推論でTが決まる
 - 型制約（境界のある型パラメーター）（L252–296）
     + `<T extends Number>`の`NumericBox`で、Numberのメソッド（doubleValue）を呼べることを示す（10-7）
+    + インターフェイスの境界も`extends`と書くことを、`<T extends Comparable<T>>`の`max`（10-8 MaxExample、2026-11-23に追加。第7章の`Comparable`の記述を受ける）で示し、`&`で複数の境界を課せることに触れる
 - ワイルドカード（L297–372）
     + `List<?>`、`? extends`（要素の型がTypeまたはそのサブクラスであるリスト、Producer）、`? super`（要素の型がTypeまたはそのスーパークラスであるリスト、Consumer）とPECS原則を文章で説明し、当てはまる型を図で示す
-    + `List<? extends Number>`の合計計算と、`List<? super Integer>`への追加（10-8）
+    + 冒頭で、`List<Number>`に`List<Integer>`を渡せない理由（渡せたら`Double`を追加できてしまう）を示してからワイルドカードへ進む（2026-11-23）
+    + `List<? extends Number>`の合計計算と、`List<? super Integer>`への追加（10-9）
 - var型推論とジェネリクス（L373–599）
     + 長いジェネリック型を繰り返さずに済む点で本章に置く理由を述べる
-    + varの基本と従来の書き方との比較（10-9）。varの変数の型は右辺の`ArrayList<String>`になり、`List<String>`とは異なること（`ArrayList`だけのメソッドを呼べる）を実行結果つきで示す
-    + 使える場面（ローカル変数、ループ変数、try-with-resources（第13章）、Java 11以降のラムダ式の引数（第11章））と使えない場面（10-10）
-    + 可読性のよい例・悪い例（10-11。数値リテラルは書き手の意図した型が伝わらない）、`Pair<T, U>`とジェネリックメソッドの戻り値との組み合わせ（10-12）
+    + varの基本と従来の書き方との比較（10-10）。varの変数の型は右辺の`ArrayList<String>`になり、`List<String>`とは異なること（`ArrayList`だけのメソッドを呼べる）を実行結果つきで示す
+    + 使える場面（ローカル変数、ループ変数、try-with-resources（第13章）、Java 11以降のラムダ式の引数（第11章））と使えない場面（10-11）
+    + 可読性のよい例・悪い例（10-12。数値リテラルは書き手の意図した型が伝わらない）、`Pair<T, U>`とジェネリックメソッドの戻り値との組み合わせ（10-13）
     + 使用判断の基準（型を明示する場面に「インターフェイスの型として扱いたい」を含む）と、varでも型安全性は変わらないこと。末尾で型消去などの高度な内容として付録B.07「型消去とジェネリクス」を参照する
 - よくあるエラーと対処法（L600–619）
     + 出会いやすい誤り6点（Raw type、型パラメーターの使い方（クラスの型パラメーターはstaticメンバーで使えない）、ワイルドカードの誤用、型消去（`Object`型の値が`List<String>`かを`instanceof`で調べられない、型引数だけが異なるオーバーロードができない）、境界型パラメーター、varの誤用）の要点と、付録E（`appendix/e-common-errors/chapters/chapter10.md`）のURL

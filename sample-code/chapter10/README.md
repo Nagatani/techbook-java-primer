@@ -21,8 +21,8 @@ javac -d out *.java
 | [10-4](./10-04/) | Box.java<br>BoxExample.java | `java -cp out BoxExample` |
 | [10-6](./10-06/) | GenericMethodExample.java | `java -cp out GenericMethodExample` |
 | [10-7](./10-07/) | BoundedTypeExample.java<br>NumericBox.java | `java -cp out BoundedTypeExample` |
-| [10-8](./10-08/) | WildcardExample.java | `java -cp out WildcardExample` |
-| [10-9](./10-09/) | VarBasicExample.java | `java -cp out VarBasicExample` |
-| [10-10](./10-10/) | VarLimitations.java | （mainメソッドなし） |
-| [10-11](./10-11/) | VarReadabilityExample.java | （mainメソッドなし） |
-| [10-12](./10-12/) | VarWithGenericsExample.java | `java -cp out VarWithGenericsExample` |
+| [10-9](./10-09/) | WildcardExample.java | `java -cp out WildcardExample` |
+| [10-10](./10-10/) | VarBasicExample.java | `java -cp out VarBasicExample` |
+| [10-11](./10-11/) | VarLimitations.java | （mainメソッドなし） |
+| [10-12](./10-12/) | VarReadabilityExample.java | （mainメソッドなし） |
+| [10-13](./10-13/) | VarWithGenericsExample.java | `java -cp out VarWithGenericsExample` |

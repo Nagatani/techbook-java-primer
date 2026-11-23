@@ -294,7 +294,54 @@ public class BoundedTypeExample {
 3.14
 ```
 
+境界には、インターフェイスも指定できます。
+このときも`implements`ではなく`extends`と書きます。
+次の`max`は、`compareTo()`で大小を比べられる型、つまり第9章で触れた`Comparable`インターフェイスを実装した型だけを受け付けるジェネリックメソッドです。
+`Comparable<T>`の`<T>`は、比べる相手の型を表します。
+
+<span class="listing-number">**サンプルコード10-8**　MaxExample.java</span>
+
+```java
+import java.util.List;
+
+public class MaxExample {
+    // TはComparable<T>を実装した型（compareToで大小を比べられる型）
+    public static <T extends Comparable<T>> T max(List<T> list) {
+        T result = list.get(0);
+        for (T item : list) {
+            // compareToは、自分のほうが大きければ正の値を返す
+            if (item.compareTo(result) > 0) {
+                result = item;
+            }
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        IO.println(max(List.of(3, 8, 5)));
+        IO.println(max(List.of("banana", "apple", "cherry")));
+    }
+}
+```
+
+実行結果：
+
+```
+8
+cherry
+```
+
+`Integer`も`String`も`Comparable`を実装しているので、`max`に渡せます。
+`Comparable`を実装していない型のリストを渡すと、コンパイルエラーになります。
+境界を`&`でつなぐと、`<T extends Number & Comparable<T>>`のように複数の条件を課せます。
+
 ## ワイルドカード
+
+ワイルドカードが必要になる理由から見ていきます。
+`Integer`は`Number`のサブクラスなので、`Number`型の変数には`Integer`の値を代入できます。
+ところが、`List<Number>`型の引数に`List<Integer>`を渡すと、コンパイルエラーになります。
+もし渡せたとすると、メソッドのなかで`list.add(3.14)`のように`Double`を追加でき、`Integer`だけのはずのリストに`Double`が混ざってしまうからです。
+そこで、「`Number`かそのサブクラスの要素を持つリストなら、どれでも受け取る」と書くための記法が、次のワイルドカードです。
 
 ジェネリクスを使ったメソッドの引数などで、より柔軟にさまざまな型を受け入れたい場合にワイルドカード（`?`）を使います。
 
@@ -316,7 +363,7 @@ public class BoundedTypeExample {
 
 </div>
 
-<span class="listing-number">**サンプルコード10-8**　WildcardExample.java</span>
+<span class="listing-number">**サンプルコード10-9**　WildcardExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -379,7 +426,7 @@ Java 10で導入されたvar型推論<span class="footnote">提案文書はJEP 2
 
 var型推論は、ローカル変数型推論（Local Variable Type Inference）とも呼ばれ、コンパイラーが変数の初期化式から型を自動的に推論する機能です<span class="footnote">C++の`auto`（C++11）やC#の`var`など、ほかの言語にも同じ機能があります。C言語の`auto`はもともと自動変数を表す記憶域クラス指定子で、型推論の意味が加わったのはC23からです。</span>。これにより、冗長な型宣言を省略できます。
 
-<span class="listing-number">**サンプルコード10-9**　VarBasicExample.java</span>
+<span class="listing-number">**サンプルコード10-10**　VarBasicExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -437,7 +484,7 @@ var型推論は、次の場面で使用できます。
 
 一方、以下の場面では使用できません。具体的な例で確認してみましょう。
 
-<span class="listing-number">**サンプルコード10-10**　VarLimitations.java</span>
+<span class="listing-number">**サンプルコード10-11**　VarLimitations.java</span>
 
 ```java
 import java.util.List;
@@ -481,7 +528,7 @@ public class VarLimitations {
 var型推論は、使いどころを選べば読みやすさを高めますが、使いすぎると逆に読みにくくなります。
 次の例で、よい使い方と悪い使い方を比べてみましょう。
 
-<span class="listing-number">**サンプルコード10-11**　VarReadabilityExample.java（5〜35行目）</span>
+<span class="listing-number">**サンプルコード10-12**　VarReadabilityExample.java（5〜35行目）</span>
 
 ```java
 public class VarReadabilityExample {
@@ -525,7 +572,7 @@ var型推論は、ジェネリクスと組み合わせると効果が大きく�
 
 サンプルの`Pair<T, U>`は、本章の「複数の型パラメーター」で学んだ、2つの型パラメーターを持つジェネリッククラスです。
 
-<span class="listing-number">**サンプルコード10-12**　VarWithGenericsExample.java（7〜45行目）</span>
+<span class="listing-number">**サンプルコード10-13**　VarWithGenericsExample.java（7〜45行目）</span>
 
 ```java
 public class VarWithGenericsExample {
