@@ -7,7 +7,7 @@ sections:
   - key: "なぜコレクションフレームワークが必要か"
     hash: 41e2fced
   - key: "コレクションフレームワークの全体像"
-    hash: c50dd219
+    hash: 04e09f8f
   - key: "List インターフェイス"
     hash: 6d25aee4
   - key: "Set インターフェイス"

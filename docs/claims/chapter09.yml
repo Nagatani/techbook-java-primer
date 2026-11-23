@@ -107,3 +107,104 @@ claims:
       probe: Sequenced.java
       version: 21
       expect: ['cannot find symbol']
+
+  # ---- 版以外の主張（2026-11-24、Issue #034）
+  - id: integer-cache
+    claim: Integerの-128〜127はキャッシュされた同じオブジェクトになるので==がtrueになり、それ以外ではfalseになりうる
+    text: -128〜127の値は同じオブジェクトが使い回されるので==でもtrueになることがあり
+    sources:
+      - title: Integer.valueOf(int)（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html
+        anchor: This method will always cache values in the range -128 to 127
+    verify:
+      kind: run
+      probe: CollectionFacts.java
+      expect: ['^127==127: true, 128==128: false, equals: true$']
+
+  - id: unbox-null
+    claim: nullのIntegerをintに変換するとNullPointerExceptionになる
+    text: 中身がnullのIntegerをintに変換しようとすると、NullPointerExceptionが発生する
+    verify:
+      kind: run
+      probe: CollectionFacts.java
+      expect: ['^unbox null -> NullPointerException$']
+
+  - id: list-remove-overload
+    claim: List<Integer>のremoveにintを渡すとインデックスの削除が選ばれる
+    text: remove(int index)とremove(Object o)の2つがあり、intを渡すと前者が選ばれる
+    verify:
+      kind: run
+      probe: CollectionFacts.java
+      expect:
+        - '^remove\(1\): \[5, 7\]$'
+        - '^remove\(Integer.valueOf\(7\)\): \[5\]$'
+
+  - id: set-null
+    claim: Comparatorなしで作ったTreeSetのadd(null)はNullPointerException、HashSetはnullを1つだけ持てる
+    text:
+      - nullはほかの要素と比べられないため、add(null)はNullPointerExceptionになります
+      - HashSetはnullを要素として扱えるので、nullを1つだけ入れられます
+    verify:
+      kind: run
+      probe: CollectionFacts.java
+      expect:
+        - '^TreeSet.add\(null\) -> NullPointerException$'
+        - '^HashSet nulls: 1$'
+
+  - id: linkedhashmap-access-order
+    claim: LinkedHashMapのコンストラクターの3つめの引数にtrueを渡すと、並び順がアクセス順になる
+    text: コンストラクターの3つめの引数にtrueを渡して並び順をアクセス順にし
+    sources:
+      - title: LinkedHashMap（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedHashMap.html
+        anchor: removeEldestEntry
+    verify:
+      kind: run
+      probe: CollectionFacts.java
+      expect: ['^access order: \[B, C, A\]$']
+
+  - id: fail-fast
+    claim: 拡張for文の途中で要素を削除すると多くの場合ConcurrentModificationExceptionになるが、最後から2番目の要素を削除すると例外が起きず残りが飛ばされる。イテレーターのremoveなら例外にならない
+    text:
+      - 削除すると、多くの場合、次の要素を取り出すときにConcurrentModificationExceptionが発生します
+      - 最後から2番目の要素を削除したときのように、例外が起きずに残りの要素が飛ばされることもあります
+      - イテレーターのremove()で削除すれば、走査中に要素を消してもConcurrentModificationExceptionは発生しません
+    verify:
+      kind: run
+      probe: CollectionFacts.java
+      expect:
+        - '^remove in for-each -> ConcurrentModificationException$'
+        - '^remove second-to-last: \[a, b, d\]$'
+        - '^iterator remove: \[a, c, d\]$'
+
+  - id: arraylist-linkedlist-get
+    claim: ArrayListのgetは要素数によらずほぼ一定の時間、LinkedListのgetは要素数に比例して時間が増える
+    text: その位置までたどるのに時間がかかる
+    verify:
+      kind: run
+      probe: ComplexityProbe.java
+      expect:
+        - '^ArrayList.get x10 elements: ほぼ一定$'
+        - '^LinkedList.get x10 elements: 大きく増えた$'
+      attempts: 3
+
+  - id: entryset-faster
+    claim: すべての要素を走査するとき、keySetでキーごとにgetするよりentrySetのほうが速い
+    text: すべての要素を走査するときは、keySet()よりentrySet()を使うほうが速くなります
+    verify:
+      kind: run
+      probe: LegacySpeed.java
+      expect: ['^entrySet faster than keySet\+get \(5 rounds\): [45]$']
+      attempts: 3
+
+  - id: vector-single-thread
+    claim: Vectorはすべてのメソッドが同期されているが、JDK 25で1つのスレッドから使ったとき、ArrayListとの差はほとんど出ないこともある
+    text: 同期には手間がかかるので、1つのスレッドで使うとArrayListやHashMapより遅くなることがありますが、いまのJVMでは差がほとんど出ないこともあります
+    sources:
+      - title: Vector（Java SE 25 API）
+        url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Vector.html
+        anchor: Vector is synchronized
+    verify:
+      kind: manual
+      checked: 2026-11-24
+      note: LegacySpeed.javaで100万要素の追加と取得を5回比べると、Vectorが遅かったのは2〜3回で、ほぼ同じ速さだった（2026-11-24、JDK 25、macOS/AArch64）。以前の本文の「遅くなる」だけの書き方を直した
