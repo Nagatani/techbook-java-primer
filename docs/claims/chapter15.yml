@@ -614,9 +614,7 @@ claims:
 
   - id: virtual-threads-cheap
     claim: 仮想スレッドはOSのスレッドに縛られない軽いスレッドで、10,000個の仮想スレッドがそれぞれ1秒sleepしても全体は数秒で終わる。Thread.ofVirtual()やExecutors.newVirtualThreadPerTaskExecutor()で作れる
-    text:
-      - 仮想スレッドなら、大量のタスクにそれぞれスレッドを割り当ててもメモリと切り替えの負担を抑えられます。
-      - 仮想スレッドはThread.ofVirtual()やExecutors.newVirtualThreadPerTaskExecutor()で作れます。
+    text: 仮想スレッドはその負担がずっと小さいので
     sources:
       - title: "JEP 444: Virtual Threads"
         url: https://openjdk.org/jeps/444
@@ -1114,3 +1112,29 @@ claims:
         - '^共通プールの並列度が2以上: true$'
         - '^並列ストリーム: \[ForkJoinPool.commonPool-worker, main\]$'
         - '^Arrays.parallelSort: \[ForkJoinPool.commonPool-worker, main\]$'
+
+  # ---- 節「新しい並行処理のしくみ」（2026-11-23、Issue #032）
+  - id: scoped-values-25
+    claim: スコープ値（ScopedValue）はJava 25で正式な機能になった（Java 24まではプレビュー）
+    text: スコープ値（scoped value）は、ある処理の範囲のなかだけで、呼び出した先のメソッドに値を見せるしくみで、Java 25で正式な機能になりました
+    sources:
+      - title: "JEP 506: Scoped Values"
+        url: https://openjdk.org/jeps/506
+    verify:
+      kind: since
+      probe: ScopedValues.java
+      version: 25
+      expect: ['ScopedValue is a preview API']
+
+  - id: structured-concurrency-preview-25
+    claim: Java 25のStructuredTaskScope（構造化並行性、JEP 505）はプレビュー機能で、--enable-previewなしではコンパイルできない
+    text: Java 25の`StructuredTaskScope`は、まだプレビュー機能
+    sources:
+      - title: "JEP 505: Structured Concurrency (Fifth Preview)"
+        url: https://openjdk.org/jeps/505
+    verify:
+      kind: javac
+      probe: StructuredPreview.java
+      fails: true
+      expect: ['StructuredTaskScope is a preview API']
+

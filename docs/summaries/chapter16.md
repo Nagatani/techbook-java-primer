@@ -23,7 +23,7 @@ sections:
   - key: "セキュリティの考慮事項"
     hash: 5158b284
   - key: "多数の接続を1つのスレッドで扱う"
-    hash: a23bfc6c
+    hash: 0a72ac19
   - key: "まとめ"
     hash: 1085f694
   - key: "章末演習"

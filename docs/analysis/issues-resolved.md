@@ -545,3 +545,8 @@ Issue #009は開いたままなので`issues-tracking.md`に移した。
 - 追記（2026-11-23）: Issue #032の用語集の英語の見出し語は、著者の判断でかなの項目にまとめた。Class・Package・Method・Method overloading・Method overriding・Variableを消し、かなの「オーバーライド」「オーバーロード」「変数」を足し、「クラス」の参照先に第2・4章を加えた。コードの名前の見出し語（String クラスなど）は残した
 - 追記（2026-11-23）: Issue #032の第20章のTreeCellRendererは、著者の判断で本文に数文の説明を足した（JListのレンダラーの後に、DefaultTreeCellRendererを継承してsuperを呼んでから文字だけ変える書き方と、setCellRendererでの設定）。発展課題の答えに近づきすぎないよう、コードは載せていない
 - 追記（2026-11-23）: Issue #032の第23章のMaven・Gradleとjlinkは、著者の判断で、Mavenの`maven-jar-plugin`で`Main-Class`を入れる設定（サンプルコード23-4）と、Gradleの`jar`ブロックの指定の名前だけを本文に足した。設定は付録Dの`maven/pom.xml`（Dockerで確かめ済み）と同じ形。jlinkは既存のjpackageの脚注のまま、Fat JARなどは付録Dへの案内のままにした
+
+#### ~~Issue #009: Modern Java機能の一部過小評価~~ ✅ **解決済み（2026-11-23）**
+- 著者の判断で、第8章（sealedインターフェイスとRecord、sealedクラスの書き方、switchのパターンとガード）と第25章の扱いで足りるとして閉じた
+- あわせて、Issue #032の第15章の項目として、章末に節「新しい並行処理のしくみ」を加え、仮想スレッド（Java 21）・構造化並行性（Java 25でプレビュー）・スコープ値（Java 25で正式）をコードなしで紹介した。版の主張は台帳（docs/claims/chapter15.yml）で確かめている
+
