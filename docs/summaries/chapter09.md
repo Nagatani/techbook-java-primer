@@ -1,11 +1,11 @@
 ---
 source: manuscripts/chapter09-collections.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: 82dc17cb
   - key: "なぜコレクションフレームワークが必要か"
-    hash: 2145bdec
+    hash: 41e2fced
   - key: "コレクションフレームワークの全体像"
     hash: c50dd219
   - key: "List インターフェイス"
@@ -118,3 +118,4 @@ sections:
 - 2026-11-16: 付録の再編（付録D・Eを本文へ移し、残りをA〜Fに振り直した）に合わせ、付録の文字とURLを直した（付録Hを付録F、付録Fを付録D、付録Gを付録Eに。h-common-errorsはf-common-errorsに。その後の再編で現在は付録E・`appendix/e-common-errors/`）
 - 2026-11-16: java.timeを第6章へ編入して付録Dを削除し、付録を振り直した（付録Eを付録D、付録Fを付録Eに。f-common-errorsはe-common-errorsに）
 - 2026-11-18: 節「今後の学習へ向けて」に小見出し「順序を持つコレクションの共通メソッド」（Java 21のSequencedCollection・SequencedSet・SequencedMap）を加えた。HashMapの内部構造の図の前に、hashからバケットを決めるしくみの説明を足した。「TreeSetには`null`を入れられない」を`Comparator`を渡さない場合に限り、LinkedHashMapの順序にアクセス順を加え、`Vector`・`Hashtable`の脚注を「遅くなることがある」にした。集合演算の用途の一文を消し、まとめの表のSetの行を「重複NG、順序は実装による」に直した。実装クラスの一覧の「Listとの二重実装」を「Listと両方を実装」に、章末の「次のステップ：」を文にした
+- 2026-11-23（流れ・矛盾・過不足の校閲）: 第9章の冒頭に、第4章からArrayListやMapを読み方だけ示して使ってきたことと、本章で正式に学ぶことを足した。第10章の小見出し「第9章で見た不思議な記法」を「これまで使ってきた<>の記法」にし、第4章から使ってきたことを受ける形にした
