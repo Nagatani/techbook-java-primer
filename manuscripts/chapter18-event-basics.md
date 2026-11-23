@@ -385,6 +385,11 @@ public class WindowEventExample {
 マウスのクリックとパネルへの出入りを検出し、ステータスラベルに現在の状態を表示します。
 マウスの移動やドラッグ（`MouseMotionListener`）、ダブルクリックの判定、右クリックメニューは、第19章「高度なイベント処理パターン」のサンプルコード19-1で学びます。
 
+ここからのサンプルは、ウィンドウを表すクラスを`JFrame`の子クラス（第5章の継承）として定義し、コンストラクターで画面を組み立てる形で書きます。
+これまでのように`JFrame`のオブジェクトを作って部品を足す形と、できる画面は同じです。
+子クラスにすると、ラベルなどの部品をフィールドに持てるので、リスナーのなかから部品を操作するコードを書きやすくなります。
+コンストラクターのなかの`setTitle(…)`や`add(…)`は、自分自身（`this`）の`JFrame`のメソッドを呼んでいます。
+
 <span class="listing-number">**サンプルコード18-6**　BasicMouseEventExample.java（5、9、24〜47、54、61行目）</span>
 
 ```java
@@ -472,6 +477,10 @@ public class BasicKeyEventExample extends JFrame {
     // ...
 }
 ```
+
+`JOptionPane.showMessageDialog`の第1引数には、ダイアログを表示する基準のウィンドウを渡します。
+匿名クラス（第8章）のなかで`this`と書くと、匿名クラスのオブジェクトを指してしまいます。
+`BasicKeyEventExample.this`のように外側のクラス名を付けて`this`と書くと、外側のクラスのオブジェクト、つまりこのウィンドウを指せます。
 
 ### ItemListenerによる選択状態の監視
 
