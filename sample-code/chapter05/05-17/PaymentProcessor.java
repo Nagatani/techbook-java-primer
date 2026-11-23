@@ -68,7 +68,7 @@ public class PaymentProcessor {
         return "DEFAULT-" + System.currentTimeMillis();
     }
     
-    // フックメソッド：子クラスでオーバーライド可能
+    // フックメソッド：子クラスでオーバーライドして処理を足せるメソッド
     protected void logTransaction(String authCode) {
         IO.println("取引ID: " + transactionId + " 承認コード: "
                 + authCode);

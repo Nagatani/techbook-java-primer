@@ -33,7 +33,7 @@ public final class DateRange {
         return new ArrayList<>(holidays);
     }
     
-    // 配列の場合の防御的コピー
+    // 配列で返す場合も、新しい配列を作って返す
     public LocalDate[] getHolidaysAsArray() {
         return holidays.toArray(new LocalDate[0]);
     }

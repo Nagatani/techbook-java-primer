@@ -37,7 +37,7 @@
       { "file": "Wizard.java", "from": 20, "to": 20 },
       { "file": "Knight.java", "from": 1, "to": 13 },
       { "file": "CharacterOverrideTest.java", "from": 1, "to": 3 },
-      { "file": "CharacterOverrideTest.java", "from": 17, "to": 21 },
+      { "file": "CharacterOverrideTest.java", "from": 10, "to": 13 },
       { "file": "CharacterOverrideTest.java", "from": 25, "to": 30 }
     ]
   },

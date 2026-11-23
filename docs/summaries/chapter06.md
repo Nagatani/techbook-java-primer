@@ -5,13 +5,13 @@ sections:
   - key: "本章の学習目標"
     hash: 014f7480
   - key: "不変性の概念と重要性"
-    hash: 0d43419a
+    hash: 03da4372
   - key: "finalキーワードの3つの用途"
-    hash: 56d8e525
+    hash: 5c92d17b
   - key: "不変オブジェクトの設計パターン"
     hash: aba29fa1
   - key: "防御的コピーとビルダーパターン"
-    hash: 388fbc4d
+    hash: c3af168a
   - key: "日付と時刻（java.time）"
     hash: 7c33546c
   - key: "数値の正確な計算（BigDecimal）"
@@ -119,3 +119,4 @@ sections:
 - 2026-11-16: 節「日付と時刻（java.time）」を「よくあるエラーと対処法」の前に加えた（著者の指示で付録Dのjava.timeを本書に必要な範囲に絞って編入）。DateとCalendarの問題、主なクラスの表、作成と計算（6-13）、差（ChronoUnit・Period・Duration、6-14）、表示と読み取り（DateTimeFormatter、SMARTとSTRICTの違い、6-15）。詳しい資料は`appendix/java-time-api/`（脚注）。学習目標とまとめに5項目めを加えた
 - 2026-11-17: 節「数値の正確な計算（BigDecimal）」を「日付と時刻（java.time）」の後に加えた（著者の指示）。サンプル6-16〜6-18、丸め方の表。学習目標・まとめに6項目め、よくあるエラーにBigDecimalの扱いの誤りを加え、付録Eの`chapters/chapter06.md`に節と全文2つ（BigDecimalMistakes・BigDecimalCorrect）を足した。用語集のBigDecimalを第6章・第8章・第24章にし、BigInteger・RoundingModeを加えた
 - 2026-11-18: 6-1の抜粋が`setY`で使う`y`のフィールド宣言を省いていた（抜粋の範囲をMutablePoint.javaの1〜4行目に広げた）。`final`のローカル変数の補足がフィールドの初期化のリストの前に割り込んでいたのを、リストの後ろに移した。DateTimeFormatterの書式の説明に`dd`（2桁の日）と`d`を加えた
+- 2026-11-23（流れ・矛盾・過不足の校閲）: 低の指摘: 冒頭の前章の振り返りの重複を削り、6-4をMath.PIを作り直す例から取り込み作業のクラス（ImportJob）に替えた。6-9の配列のコメントを内容に合わせ、ビューを返す助言の後に6-6・6-9のgetterとの関係を書いた。静的ネストクラスにstaticを付けることを添えた

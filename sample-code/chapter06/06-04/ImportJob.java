@@ -1,22 +1,23 @@
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Constants {
+// データの取り込み作業を表すクラス
+public class ImportJob {
     // クラス定数（static final）
-    public static final double PI = 3.14159265359;
-    public static final int MAX_CONNECTIONS = 100;
+    public static final int MAX_LINES = 10000;
+    public static final String DEFAULT_ENCODING = "UTF-8";
     
     // インスタンス定数（finalフィールド）
     private final String id;
     private final LocalDateTime createdAt;
     
-    public Constants(String id) {
+    public ImportJob(String id) {
         this.id = id;
         this.createdAt = LocalDateTime.now();  // コンストラクターで初期化
     }
     
     // finalローカル変数
-    public void processData(List<String> data) {
+    public void process(List<String> data) {
         final int size = data.size();
         // size = 10;  // コンパイルエラー： final変数は変更不可
         

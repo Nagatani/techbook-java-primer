@@ -23,7 +23,7 @@
 
 ## 不変性の概念と重要性
 
-第4章でカプセル化について学び、第5章で継承の実践的な活用法を習得しました。本章では、オブジェクトの状態を変更できないようにする「不変性（Immutability）」という設計概念と、それを実現するための`final`キーワードについて学習します。
+本章では、オブジェクトの状態を変更できないようにする「不変性（Immutability）」という設計概念と、それを実現するための`final`キーワードについて学習します。
 
 不変性は、一度作成されたオブジェクトの状態が変更できないという性質です。この概念は、バグの少ない堅牢なプログラムを作成するうえで非常に重要な役割を果たします。
 
@@ -170,28 +170,29 @@ public final class ImmutablePoint {
 ここでは、拡張for文で配列と同じように要素を1つずつ取り出せる、と読んでください。
 今の日時を表す`LocalDateTime`は、本章の節「日付と時刻（java.time）」で学びます。
 
-<span class="listing-number">**サンプルコード6-4**　Constants.java</span>
+<span class="listing-number">**サンプルコード6-4**　ImportJob.java</span>
 
 ```java
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Constants {
+// データの取り込み作業を表すクラス
+public class ImportJob {
     // クラス定数（static final）
-    public static final double PI = 3.14159265359;
-    public static final int MAX_CONNECTIONS = 100;
+    public static final int MAX_LINES = 10000;
+    public static final String DEFAULT_ENCODING = "UTF-8";
     
     // インスタンス定数（finalフィールド）
     private final String id;
     private final LocalDateTime createdAt;
     
-    public Constants(String id) {
+    public ImportJob(String id) {
         this.id = id;
         this.createdAt = LocalDateTime.now();  // コンストラクターで初期化
     }
     
     // finalローカル変数
-    public void processData(List<String> data) {
+    public void process(List<String> data) {
         final int size = data.size();
         // size = 10;  // コンパイルエラー： final変数は変更不可
         
@@ -486,7 +487,7 @@ public final class DateRange {
         return new ArrayList<>(holidays);
     }
     
-    // 配列の場合の防御的コピー
+    // 配列で返す場合も、新しい配列を作って返す
     public LocalDate[] getHolidaysAsArray() {
         return holidays.toArray(new LocalDate[0]);
     }
@@ -542,6 +543,7 @@ public class ViewVsCopy {
 ```
 
 不変クラスのように、元のリストをクラスの内部だけで持ち、クラス自身も変更しない場合は、getterでビューを返せばコピーの手間を省けます。
+サンプルコード6-6・6-9のgetterも、毎回`new ArrayList<>(...)`を作る代わりに、`Collections.unmodifiableList(holidays)`を返す形や、コンストラクターで`List.copyOf`したリストをそのまま返す形に置き換えられます。
 一方、コンストラクターが受け取ったリストは呼び出し元があとから変更しうるので、`List.copyOf`や`new ArrayList<>(...)`でコピーしてから保持します。
 
 ### ビルダーパターンによる不変オブジェクトの構築
@@ -549,7 +551,7 @@ public class ViewVsCopy {
 複雑な不変オブジェクトを構築する際、コンストラクターの引数が多くなりすぎる問題があります。ビルダーパターンはこの問題を解決します<span class="footnote">ビルダーパターンは、1994年の書籍『オブジェクト指向における再利用のためのデザインパターン』（いわゆるGoF本）が挙げた23のパターンの1つです。本章の形は、ジョシュア・ブロックの『Effective Java』が紹介して広まった変形です。</span>。
 
 次のサンプルでは、`Book`クラスの内側に`static class Builder`というクラスを宣言しています。
-クラスの内側に宣言するクラス（静的ネストクラス）は、第8章で学びます。
+クラスの内側に`static`を付けて宣言するクラス（静的ネストクラス）は、第8章で学びます。
 ここでは、`Book`に付属するクラスで、外からは`Book.Builder`という名前で使える、と読んでください。
 
 <span class="listing-number">**サンプルコード6-11**　Book.java（3〜7、13〜17、22〜31、37〜38、45〜53、81〜85、91行目）</span>
