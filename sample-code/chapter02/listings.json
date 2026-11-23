@@ -15,30 +15,30 @@
   },
   "2-18": {
     "dir": "02-18",
-    "main": "IOExample",
-    "excerpt": [
-      { "file": "IOExample.java", "from": 1, "to": 19 }
-    ]
-  },
-  "2-20": {
-    "dir": "02-20",
-    "main": "SafeInputExample",
-    "excerpt": [
-      { "file": "SafeInputExample.java", "from": 1, "to": 16 }
-    ]
-  },
-  "2-23": {
-    "dir": "02-23",
     "main": "SwitchExample",
     "excerpt": [
       { "file": "SwitchExample.java", "from": 1, "to": 25 }
     ]
   },
-  "2-32": {
-    "dir": "02-32",
+  "2-27": {
+    "dir": "02-27",
     "main": "Calculator",
     "excerpt": [
       { "file": "Calculator.java", "from": 1, "to": 22 }
+    ]
+  },
+  "2-44": {
+    "dir": "02-44",
+    "main": "IOExample",
+    "excerpt": [
+      { "file": "IOExample.java", "from": 1, "to": 19 }
+    ]
+  },
+  "2-46": {
+    "dir": "02-46",
+    "main": "SafeInputExample",
+    "excerpt": [
+      { "file": "SafeInputExample.java", "from": 1, "to": 16 }
     ]
   },
   "2-48": {
