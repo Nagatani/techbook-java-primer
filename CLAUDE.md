@@ -53,7 +53,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 付録B: GitHubリンク形式のインデックスとして完成
    - 付録A〜H（2026-11-16に再編）: A 開発環境の構築、B 技術的な詳細解説（Deep Dive）、C ソフトウェア工学の理論的基盤、D 高度なビルドとデプロイメント技術、E Javaのよくあるエラーと対処法、F Swingの発展的な機能、G 外部ライブラリの使用例、H 並行処理とネットワークの発展的なパターン。GitHubのディレクトリは`appendix/a-environment-setup`・`bXX-*`・`c-theoretical-foundations`・`d-build-and-deploy`・`e-common-errors`・`f-swing-advanced`・`g-library-examples`・`h-advanced-patterns`
    - 紙面の付録のページは「付録Xについて／内容／関連する章／オンライン資料」の形にそろえ、問い合わせ先は付録一覧（`appendix-index.md`）の1か所だけに置く。中身のない一般論の節（「学習のポイント」「実践への応用」）は置かない
-   - 本文に入れた旧付録: 統合プロジェクト（旧D）は第25・26章、データベース（旧E）は第24章、java.time（旧F）は第6章の最後の節「日付と時刻（java.time）」（本書に必要な範囲に絞った。詳しい資料は文字のない`appendix/java-time-api/`に残し、第6章の脚注から案内する）
+   - 本文に入れた旧付録: 統合プロジェクト（旧D）は第25・26章、データベース（旧E）は第24章、java.time（旧F）は第6章の節「日付と時刻（java.time）」（その後ろに「数値の正確な計算（BigDecimal）」がある）（本書に必要な範囲に絞った。詳しい資料は文字のない`appendix/java-time-api/`に残し、第6章の脚注から案内する）
    - 本文内に詳細な付録内容は記載しない
 
 3. **Writing Style Decisions**:

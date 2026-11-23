@@ -627,7 +627,7 @@ class Memo implements Timestamped, Identifiable, Versioned {
 }
 ```
 
-`getAge()`が返す`Duration`は、時間の長さを表す標準ライブラリのクラスです<span class="footnote">`Duration`をはじめとする日付と時刻のAPIは、第6章の最後の節で学びました。</span>。
+`getAge()`が返す`Duration`は、時間の長さを表す標準ライブラリのクラスです<span class="footnote">`Duration`をはじめとする日付と時刻のAPIは、第6章の節「日付と時刻（java.time）」で学びました。</span>。
 全文の`main`メソッド<span class="footnote">サンプルコード7-12の全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter07/07-12/`にあります。</span>で各機能を使うと、次のように表示されます。
 経過時間は実行するたびに変わるので、`main`メソッドでは1秒未満かどうかだけを表示しています。
 
