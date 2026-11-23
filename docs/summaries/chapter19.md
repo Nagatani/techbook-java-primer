@@ -1,11 +1,11 @@
 ---
 source: manuscripts/chapter19-event-advanced.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: 3c27ae30
   - key: "詳細なイベント処理の実装"
-    hash: 0692c779
+    hash: 2bc37498
   - key: "カスタムイベントとObserverパターン"
     hash: ede9558d
   - key: "ドラッグ&ドロップ"
@@ -13,7 +13,7 @@ sections:
   - key: "パフォーマンスの最適化"
     hash: 9a116576
   - key: "よくあるエラーと対処法"
-    hash: a11ccd65
+    hash: 3cc58820
   - key: "まとめ"
     hash: b7da6e7b
   - key: "章末演習"
@@ -95,3 +95,4 @@ sections:
     + 19-1・19-4の抜粋の折り返しを直し（`String.format`を`formatted`に）、キャプションの行範囲が変わった
     + 19-1の実行結果の説明に、十字のカーソルとパネルへの出入りの記録を加えた
     + よくあるエラーの「ドロップが受け入れられない」を、`DropTarget`で受け付ける場合に限った
+- 2026-11-23（流れ・矛盾・過不足の校閲）: 19-2の前に、比べるためにKeyListenerとキーバインディングの両方で書いていることを、後ろに修飾キーはisControlDownなどで調べられ、集合での追跡が要るのは修飾キー以外の同時押しだと書いた。よくあるエラーのドラッグ&ドロップの項目を、本文で説明したTransferHandlerのcanImportの誤りに差し替えた（DropTargetの注意は付録Fへ）

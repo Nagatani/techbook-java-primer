@@ -103,6 +103,8 @@ public class MouseEventCompleteExample extends JFrame {
 本節では、それに加えて複数キーの同時押しと、`InputMap`と`ActionMap`によるキーバインディングを扱います。
 
 以下のコードは、押されているキーを`HashSet`で追跡して同時押しを検出し、`InputMap`と`ActionMap`でショートカットキーを設定する例です。
+2つの書き方を比べるため、Ctrl+S・Ctrl+A・F1は第18章と同じ`KeyListener`の`if`文で処理し、Ctrl+DとF5はキーバインディングで登録しています。
+Ctrl+Shift+Dは、押されているキーの集合で同時押しを調べる例です。
 同時押しの検出では、`keyPressed()`でキーコードを集合に加え、`keyReleased()`で取り除きます。
 ダイアログが開くなどしてフォーカスが移ると、キーを離したイベントがテキストエリアに届かず、集合にキーが残ってしまいます。
 そのため、フォーカスが外れたとき（`focusLost()`）に集合を空にしています。
@@ -184,6 +186,8 @@ public class KeyboardEventAdvancedExample extends JFrame {
 `getInputMap()`の引数の`JComponent.WHEN_FOCUSED`は、その部品がフォーカスを持っているときだけキーを受け付けるという指定です<span class="footnote">ほかに、部品を含むウィンドウがフォーカスを持っていれば受け付ける`WHEN_IN_FOCUSED_WINDOW`などがあります。</span>。
 テキストのコピーや貼り付けなど、Swingの部品が既定で持つキー操作も、このしくみで登録されています。
 ショートカットキーは、`KeyListener`で`if`文を並べるより、キーバインディングで登録するほうが、キーと処理の対応を管理しやすくなります。
+なお、Ctrl・Shift・Altなどの修飾キーとの組み合わせは、`isControlDown()`・`isShiftDown()`や、`KeyStroke`の修飾キーの指定で調べられます。
+押されているキーを集合で追跡する方法が必要になるのは、矢印キーを2つ同時に押すような、修飾キー以外のキーの組み合わせです。
 
 ### DocumentListenerによるテキスト変更の監視
 
@@ -502,7 +506,7 @@ public class SwingWorkerExample extends JFrame {
 - リスナーの削除忘れによるメモリリーク
     + 不要になったリスナーを削除しないと、オブジェクトがガベージコレクションで回収されない
 - ドロップが受け入れられない
-    + `DropTarget`で受け付ける場合に`drop()`のなかで`acceptDrop()`を呼び出していない、ドロップされたデータの形式（`DataFlavor`）に対応していないといった原因がある
+    + 受け取る側の`TransferHandler`の`canImport`が`false`を返している。受け取るデータの形式を確かめる条件が、ドラッグ元のデータと合っているかを確かめる（`DropTarget`を使う場合の注意は付録Fの例にある）
 
 問題のあるコードと修正したコード、EDT違反の検出などのデバッグのヒントは、GitHubリポジトリにまとめています。<br>
 `https://github.com/Nagatani/techbook-java-primer/blob/main/appendix/e-common-errors/chapters/chapter19.md`
