@@ -251,9 +251,10 @@ public class Main {
 どちらの方法でも、スレッドを開始するのは`start()`メソッドです。
 `run()`を直接呼び出すと、新しいスレッドは作られず、呼び出したスレッドのなかでふつうのメソッドとして実行されます。
 
-### 共有リソースと同期制御
+## 共有リソースと同期制御
 
 複数のスレッドが、同じデータ（オブジェクトや変数）に同時にアクセスすると、予期せぬ問題が発生することがあります。これを競合状態（Race Condition）と呼びます。
+複数のスレッドから同時に使っても、このような問題が起きずに正しく動くことを、スレッドセーフといいます。
 
 たとえば、銀行口座の残高を更新する処理を考えてみましょう。残高10,000円の口座から「2つのATMで同時に」8,000円を引き出そうとした場合を想定します。
 同期制御がないと両方の引き出しが成功してしまい、引き出した金額と残高が合わなくなる可能性があります。これは、以下のような処理の流れで発生します。
@@ -547,7 +548,25 @@ Map<String, Integer> safeMap = new ConcurrentHashMap<>();  // ②
 さらに、`putIfAbsent`、`replace`、`computeIfAbsent`のように、確認と更新を組み合わせた操作を1つのアトミックな操作として実行できます。
 「キーがなければ追加する」という処理を`containsKey`と`put`に分けて書くと、そのあいだにほかのスレッドが割り込むので、こうしたメソッドを使います。
 
-### Executorフレームワークによる高度なスレッド管理
+### スレッドセーフにする方法の整理
+
+ここまでに見た方法を含め、複数のスレッドで共有するデータを守る方法は次のとおりです。
+
+- 共有しない
+    + データをスレッドごとに持たせ、そもそも複数のスレッドから触らないようにする
+- 不変にする
+    + 第6章で学んだ不変オブジェクトは、作ったあとに変わらないので、同期化なしで共有できる
+- 排他制御をする
+    + `synchronized`で、同時に1つのスレッドだけが処理するようにする
+- アトミックな操作を使う
+    + `AtomicInteger`などで、読み取りと更新を1つの操作として行う
+- スレッドセーフなコレクションを使う
+    + `ConcurrentHashMap`などの並行コレクションに、排他制御を任せる
+
+上にあるものほど、考えることが少なく、誤りも起きにくくなります。
+共有しない・不変にするで済むなら、それを先に考えます。
+
+## Executorフレームワークと非同期処理
 
 ここまでの例の多くは、タスクごとに`new Thread()`でスレッドを作りました。
 タスクの数が少なければこれで十分ですが、大量のタスクを同じように扱うと問題が起こります。
@@ -570,7 +589,7 @@ for (int i = 0; i < 10000; i++) {
 そこで、現代のJavaプログラミングではExecutorフレームワークを使用するのが一般的です。
 これはスレッドの生成・管理を抽象化し、用意しておいたスレッド（スレッドプール）にタスクを割り当てて実行するしくみです。
 
-#### ExecutorServiceとスレッドプール
+### ExecutorServiceとスレッドプール
 
 `ExecutorService`は、タスクの投入とスレッドプールの管理を行うためのインターフェイスです。スレッドプールは、あらかじめ作成された再利用可能なスレッドの集まりです。
 
@@ -641,7 +660,13 @@ public class ExecutorExample {
 `awaitTermination`は停止を指定した時間だけ待ち、時間内に終わらなければ`shutdownNow()`で実行中のタスクに割り込みます。
 `shutdown()`を呼ばないと、スレッドプールのスレッドが残り、プログラムが終了しません。
 
-#### スレッドプールの設計
+ここでいう割り込み（interrupt）は、スレッドに「止まってほしい」と頼むしくみです。
+`shutdownNow()`や`Thread`の`interrupt()`を呼ぶと、対象のスレッドに割り込みの印が付きます。
+`Thread.sleep()`などで待っているスレッドは、割り込まれると待つのをやめ、`InterruptedException`を投げます。
+タスクのなかで`catch (InterruptedException e)`のあとに`Thread.currentThread().interrupt()`を呼んでいるのは、例外を受け取ったときに消える割り込みの印を付け直し、呼び出し元にも「止まってほしいと頼まれた」ことを伝えるためです。
+サンプルコード15-7の`volatile`のフラグによる停止と同じく、割り込みも、止まるかどうかはスレッドの側のコードが決めます。
+
+### スレッドプールの設計
 
 スレッドプールを設計するときは、まずスレッド数を決めます。
 目安は、リトルの法則（Little's Law）<span class="footnote">1961年にジョン・リトル（John D. C. Little）が証明したことから、この名前で呼ばれます。</span>の式N = λ × Wで見積もれます。
@@ -657,9 +682,204 @@ public class ExecutorExample {
 `AbortPolicy`（既定）は`RejectedExecutionException`をスローし、`CallerRunsPolicy`はタスクを投入したスレッド自身にそのタスクを実行させます。
 `CallerRunsPolicy`では投入する側が実行で手いっぱいになるので、タスクを投入する速さが自然に落ちます。
 
-### 実践的なマルチスレッドの例
+### FutureとCallableを使った非同期処理
 
-#### プロデューサー・コンシューマーパターンの実装
+第11章と第13章で使った`Callable`は、`Runnable`と同じくタスクを定義するインターフェイスですが、戻り値のない`Runnable`と違って値を返せます。
+また、`Callable`は検査例外をスローできます。
+`Callable`のタスクを`ExecutorService`に投入すると、`Future`が返ります。
+`Future`インターフェイスは非同期処理の結果を表すオブジェクトで、結果を保持し、処理の完了を待てます。
+実行中のタスクをキャンセルすることもできます。
+
+<span class="listing-number">**サンプルコード15-12**　FutureCallableExample.java（5、7〜8、15〜24、30〜63行目）</span>
+
+```java
+public class FutureCallableExample {
+    // ...
+    // 計算に時間がかかるタスク
+    static class CalculationTask implements Callable<Long> {
+        // ...
+        @Override
+        public Long call() throws Exception {
+            IO.println("計算開始: フィボナッチ数列の第" + n + "項");
+            long start = System.currentTimeMillis();
+            long result = fibonacci(n);
+            long time = System.currentTimeMillis() - start;
+            IO.println("計算完了: F(%d) = %d (所要時間: %dms)"
+                    .formatted(n, result, time));
+            return result;
+        }
+        // ...
+    }
+    
+    public static void main(String[] args) throws Exception {
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        List<Future<Long>> futures = new ArrayList<>();
+        
+        // 複数の計算タスクを非同期で実行
+        int[] numbers = {35, 38, 40, 42};
+        for (int n : numbers) {
+            Future<Long> future =
+                    executor.submit(new CalculationTask(n));
+            futures.add(future);
+        }
+        
+        // 他の処理を実行できる
+        IO.println("計算中に他の処理を実行...");
+        Thread.sleep(100);
+        
+        // 結果を取得（必要になったタイミングで）
+        IO.println("\n=== 計算結果 ===");
+        for (int i = 0; i < futures.size(); i++) {
+            try {
+                // get()は結果が得られるまでブロック
+                Long result = futures.get(i).get(10, TimeUnit.SECONDS);
+                IO.println("F(" + numbers[i] + ") = " + result);
+            } catch (TimeoutException e) {
+                IO.println("F(" + numbers[i] + ") = タイムアウト");
+                futures.get(i).cancel(true); // タスクをキャンセル
+            }
+        }
+        
+        executor.shutdown();
+    }
+}
+```
+
+### CompletableFutureによる非同期処理
+
+`CompletableFuture`は、Java 8で導入された非同期処理のためのクラスです。
+従来の`Future`では結果を受け取るまで待つしかありませんでしたが、`CompletableFuture`では結果を受け取ったあとの処理をラムダ式で続けて書けます<span class="footnote">`Future`でも、`isDone()`で終わったかを調べることはできます。結果が出たあとに続けて行う処理を登録できないのが、`CompletableFuture`との違いです。</span>。
+
+`CompletableFuture.supplyAsync(処理)`は、値を返す処理を別のスレッドで始め、すぐに`CompletableFuture`を返します。
+実行するスレッドを指定しなければ、共通のスレッドプール（`ForkJoinPool.commonPool()`）のスレッドで実行します。
+返された`CompletableFuture`に対して、結果が出たあとに行う処理を次のメソッドで登録します。
+
+- `thenApply()`
+    + 結果を変換する。前の処理を終えたスレッドで続けて実行する
+- `thenApplyAsync()`
+    + 結果を別のスレッド（スレッドプール）で変換する
+- `thenCompose()`
+    + 結果を受け取って、別の`CompletableFuture`を返す処理（別の非同期処理）につなぐ
+- `thenCombine()`
+    + 2つの`CompletableFuture`の結果を組み合わせる
+- `thenAccept()`
+    + 結果を受け取って使う（戻り値なし）
+- `exceptionally()`、`handle()`
+    + 例外が起きたときの処理を書く
+- `allOf()`、`anyOf()`
+    + 複数の`CompletableFuture`がすべて終わるまで、またはどれか1つが終わるまで待つ
+- `orTimeout()`
+    + 決めた時間内に終わらない処理を例外にする
+
+サンプルコード15-13は、`supplyAsync`で始めた処理を`thenApply`で変換し（1・2）、3つの都市の気温と湿度を並行して取得して`thenCombine`で組み合わせ（3）、時間のかかる処理を`orTimeout`で打ち切ります（4）。
+`WeatherService`の`getTemperature`と`getHumidity`は、1〜2秒待ってから値を返す処理を`supplyAsync`で始めるメソッドで、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter15/15-15/`</span>。
+
+<span class="listing-number">**サンプルコード15-13**　CompletableFutureExample.java（6、41〜96行目）</span>
+
+```java
+public class CompletableFutureExample {
+    // ...
+    public static void main(String[] args) throws Exception {
+        // 1. 単純な非同期処理
+        CompletableFuture<String> future1 = CompletableFuture
+            .supplyAsync(() -> {
+                IO.println("非同期タスク開始");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                return "処理完了";
+            });
+        
+        // 2. チェーン処理
+        CompletableFuture<String> chainedFuture = future1
+            .thenApply(result -> result + " -> 変換処理")
+            .thenApply(result -> result + " -> 最終処理");
+        
+        IO.println("チェーン結果: " + chainedFuture.get());
+        
+        // 3. 複数の非同期処理を組み合わせる
+        String[] cities = {"東京", "大阪", "名古屋"};
+        
+        // 各都市の気温と湿度を並行して取得
+        CompletableFuture<?>[] allWeatherData = Arrays.stream(cities)
+        .map(city -> {
+            CompletableFuture<String> temp =
+                    WeatherService.getTemperature(city);
+            CompletableFuture<String> humidity =
+                    WeatherService.getHumidity(city);
+            
+            // 気温と湿度を組み合わせる
+            return temp.thenCombine(humidity, (t, h) -> t + ", " + h);
+        })
+        .map(future -> future.thenAccept(IO::println))
+        .toArray(CompletableFuture[]::new);
+        
+        // すべての処理が完了するまで待つ
+        CompletableFuture.allOf(allWeatherData).get();
+        
+        // 4. タイムアウト処理
+        CompletableFuture<String> timeoutFuture = CompletableFuture
+            .supplyAsync(() -> {
+                try {
+                    Thread.sleep(5000); // 長時間かかる処理
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                return "遅い処理の結果";
+            })
+            .orTimeout(2, TimeUnit.SECONDS)
+            .exceptionally(e -> "タイムアウトしました");
+        
+        IO.println("\nタイムアウト処理: " + timeoutFuture.get());
+    }
+}
+```
+
+次のサンプルコード15-14は、`thenCompose`で非同期処理を順につなぐ例です。
+
+<span class="listing-number">**サンプルコード15-14**　AsyncChainingExample.java（4〜14、35〜49、57行目）</span>
+
+```java
+public class AsyncChainingExample {
+    
+    // ユーザー情報を取得
+    static CompletableFuture<User> fetchUser(String userId) {
+        return CompletableFuture.supplyAsync(() -> {
+            IO.println("Fetching user: " + userId);
+            // データベースアクセスをシミュレート
+            sleep(1000);
+            return new User(userId, "User-" + userId);
+        });
+    }
+    // ...
+    
+    public static void main(String[] args) throws Exception {
+        // 非同期処理を連鎖させる
+        CompletableFuture<Integer> totalFuture = fetchUser("USER001")
+            .thenCompose(user -> fetchOrders(user))  // 別の非同期処理に連鎖
+            // 前の処理を終えたスレッドで続けて変換
+            .thenApply(orders -> calculateTotal(orders))
+            .exceptionally(ex -> {
+                System.err.println("Error occurred: " + ex.getMessage());
+                return 0;  // デフォルト値を返す
+            });
+        
+        IO.println("Total amount: " + totalFuture.get());
+    }
+    
+    // ...
+}
+```
+
+この例では、ユーザー情報の取得→注文履歴の取得→合計金額の計算という一連の処理を、メソッドの連鎖でつないでいます。
+ユーザー情報と注文履歴の取得は別のスレッドで非同期に実行され、合計金額の計算は注文履歴の取得を終えたスレッドで続けて実行されます<span class="footnote">`thenApply`を呼んだ時点で前の処理がすでに終わっていれば、`thenApply`を呼んだスレッドで変換します。この例では、注文履歴の取得に時間がかかるので、取得を終えたスレッドで変換します。</span>。
+途中で例外が起きたときは、`exceptionally`で0を返します。
+
+## スレッド間の協調
+
+### プロデューサー・コンシューマーパターンの実装
 
 プロデューサー・コンシューマーパターンは、スレッドどうしが協調して働くための、並行処理の古典的なデザインパターンです。
 プロデューサー（生産者）がデータを生成し、コンシューマー（消費者）がそれを処理します。
@@ -677,7 +897,7 @@ Javaでは、このバッファーに`java.util.concurrent`パッケージの`Bl
 `put()`はキューが満杯なら空きができるまで待ち、`take()`はキューが空なら要素が入るまで待ちます。
 次の例では、2つのプロデューサーと3つのコンシューマーが、容量10のキューを介して整数を受け渡します。
 
-<span class="listing-number">**サンプルコード15-12**　ProducerConsumerExample.java（8〜21、30〜48、57〜85、92行目）</span>
+<span class="listing-number">**サンプルコード15-15**　ProducerConsumerExample.java（8〜21、30〜48、57〜85、92行目）</span>
 
 ```java
 public class ProducerConsumerExample {
@@ -764,10 +984,10 @@ public class ProducerConsumerExample {
 
 実際のシステムでは、容量に上限のないキューを使うと、消費が追いつかないあいだにデータがたまり続け、メモリが足りなくなる危険があります。
 そこまでいかなくても、キューで待つ時間が積み重なって、データが処理されるまでの時間が長くなります。
-サンプルコード15-12のようにキューの容量を決めておけば、キューが満杯のときに`put()`で生産者が待つので、生産の速さが消費の速さに合わせて抑えられます。
+サンプルコード15-15のようにキューの容量を決めておけば、キューが満杯のときに`put()`で生産者が待つので、生産の速さが消費の速さに合わせて抑えられます。
 消費が追いつかないときは、コンシューマーの数を増やすか、データを1件ずつではなくまとめて処理するように変えます。
 
-##### wait()とnotify()による待ち合わせ
+#### wait()とnotify()による待ち合わせ
 
 `BlockingQueue`がしているような待ち合わせは、`Object`クラスの`wait()`と`notify()`でも書けます。
 Javaの初期からある、スレッドどうしで条件を待ち合わせるための低レベルなしくみです。
@@ -782,7 +1002,7 @@ Javaの初期からある、スレッドどうしで条件を待ち合わせる�
 これらのメソッドは、そのオブジェクトの`synchronized`ブロックの内側で呼び出します。
 次の例は、条件が満たされるまで待つ処理の、誤った書き方と正しい書き方です。
 
-<span class="listing-number">**サンプルコード15-13**</span>
+<span class="listing-number">**サンプルコード15-16**</span>
 
 ```java
 // 誤った実装例（危険）
@@ -810,205 +1030,13 @@ synchronized(lock) {
 `wait()`は必ずこの形のループで囲んで呼び出します。
 ただし、正しく書くのは難しいので、ふだんは`BlockingQueue`のような`java.util.concurrent`パッケージのクラスを使います。
 
-##### Semaphoreによる同時実行数の制限
+### Semaphoreによる同時実行数の制限
 
 `java.util.concurrent.Semaphore`は、同時に使える資源の数を「許可証」の数で管理するクラスです<span class="footnote">セマフォは、オランダの計算機科学者エドガー・ダイクストラが1960年代に考案した同期のしくみです。名前は鉄道の腕木式信号機（semaphore）に由来します。</span>。
 `new Semaphore(3)`で作ると許可証は3枚になり、`acquire()`で1枚受け取り、`release()`で1枚返します。
 許可証が残っていないときに`acquire()`を呼んだスレッドは、ほかのスレッドが`release()`するまで待ちます。
 データベースへの接続や外部サービスへの要求のように、同時に使える数に上限がある資源を守るときに使います。
 `release()`の呼び忘れを防ぐため、`acquire()`の後の処理は`try`ブロックに書き、`release()`は`finally`ブロックで呼び出します。
-
-#### FutureとCallableを使った非同期処理
-
-`Callable`は`Runnable`と同じくタスクを定義するインターフェイスですが、戻り値のない`Runnable`と違って値を返せます。
-また、`Callable`は検査例外をスローできます。
-`Callable`のタスクを`ExecutorService`に投入すると、`Future`が返ります。
-`Future`インターフェイスは非同期処理の結果を表すオブジェクトで、結果を保持し、処理の完了を待てます。
-実行中のタスクをキャンセルすることもできます。
-
-<span class="listing-number">**サンプルコード15-14**　FutureCallableExample.java（5、7〜8、15〜24、30〜63行目）</span>
-
-```java
-public class FutureCallableExample {
-    // ...
-    // 計算に時間がかかるタスク
-    static class CalculationTask implements Callable<Long> {
-        // ...
-        @Override
-        public Long call() throws Exception {
-            IO.println("計算開始: フィボナッチ数列の第" + n + "項");
-            long start = System.currentTimeMillis();
-            long result = fibonacci(n);
-            long time = System.currentTimeMillis() - start;
-            IO.println("計算完了: F(%d) = %d (所要時間: %dms)"
-                    .formatted(n, result, time));
-            return result;
-        }
-        // ...
-    }
-    
-    public static void main(String[] args) throws Exception {
-        ExecutorService executor = Executors.newFixedThreadPool(4);
-        List<Future<Long>> futures = new ArrayList<>();
-        
-        // 複数の計算タスクを非同期で実行
-        int[] numbers = {35, 38, 40, 42};
-        for (int n : numbers) {
-            Future<Long> future =
-                    executor.submit(new CalculationTask(n));
-            futures.add(future);
-        }
-        
-        // 他の処理を実行できる
-        IO.println("計算中に他の処理を実行...");
-        Thread.sleep(100);
-        
-        // 結果を取得（必要になったタイミングで）
-        IO.println("\n=== 計算結果 ===");
-        for (int i = 0; i < futures.size(); i++) {
-            try {
-                // get()は結果が得られるまでブロック
-                Long result = futures.get(i).get(10, TimeUnit.SECONDS);
-                IO.println("F(" + numbers[i] + ") = " + result);
-            } catch (TimeoutException e) {
-                IO.println("F(" + numbers[i] + ") = タイムアウト");
-                futures.get(i).cancel(true); // タスクをキャンセル
-            }
-        }
-        
-        executor.shutdown();
-    }
-}
-```
-
-#### CompletableFutureによる高度な非同期処理
-
-`CompletableFuture`は、Java 8で導入された非同期処理のためのクラスです。
-従来の`Future`では結果を受け取るまで待つしかありませんでしたが、`CompletableFuture`では結果を受け取ったあとの処理をラムダ式で続けて書けます<span class="footnote">`Future`でも、`isDone()`で終わったかを調べることはできます。結果が出たあとに続けて行う処理を登録できないのが、`CompletableFuture`との違いです。</span>。
-
-CompletableFutureの主な特徴は次のとおりです。
-
-- 非同期処理の連鎖
-    + `thenApply`、`thenCompose`などで処理を連鎖
-- 例外処理
-    + `exceptionally`、`handle`で例外が起きたときの処理を書く
-- 複数の非同期処理の組み合わせ
-    + `allOf`、`anyOf`で複数の処理を統合
-- タイムアウト処理
-    + `orTimeout`メソッドで、決めた時間内に終わらない処理を例外にする
-
-<span class="listing-number">**サンプルコード15-15**　CompletableFutureExample.java（6、9、12〜25、39、41、53〜78、94〜95行目）</span>
-
-```java
-public class CompletableFutureExample {
-    // ...
-    static class WeatherService {
-        // ...
-        public static CompletableFuture<String> getTemperature(
-                String city) {
-            return CompletableFuture.supplyAsync(() -> {
-                IO.println("気温取得中: " + city);
-                // APIコールをシミュレート
-                try {
-                    Thread.sleep(1000 + random.nextInt(1000));
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                int temp = 20 + random.nextInt(15);
-                return city + ": " + temp + "°C";
-            });
-        }
-        // ...
-    }
-    // ...
-    public static void main(String[] args) throws Exception {
-        // ...
-        // 2. チェーン処理
-        CompletableFuture<String> chainedFuture = future1
-            .thenApply(result -> result + " -> 変換処理")
-            .thenApply(result -> result + " -> 最終処理");
-        
-        IO.println("チェーン結果: " + chainedFuture.get());
-        
-        // 3. 複数の非同期処理を組み合わせる
-        String[] cities = {"東京", "大阪", "名古屋"};
-        
-        // 各都市の気温と湿度を並行して取得
-        CompletableFuture<?>[] allWeatherData = Arrays.stream(cities)
-        .map(city -> {
-            CompletableFuture<String> temp =
-                    WeatherService.getTemperature(city);
-            CompletableFuture<String> humidity =
-                    WeatherService.getHumidity(city);
-            
-            // 気温と湿度を組み合わせる
-            return temp.thenCombine(humidity, (t, h) -> t + ", " + h);
-        })
-        .map(future -> future.thenAccept(IO::println))
-        .toArray(CompletableFuture[]::new);
-        
-        // すべての処理が完了するまで待つ
-        CompletableFuture.allOf(allWeatherData).get();
-        // ...
-    }
-}
-```
-
-#### 非同期処理の連鎖と合成
-
-`CompletableFuture`を使うと、複数の非同期処理をつないだり、組み合わせたりできます。
-処理の手順をメソッドの連鎖で書けるため、いくつもの非同期処理が順に続く流れも読みやすく書けます。
-
-主な連鎖メソッドは次のとおりです。
-
-- `thenApply()`
-    + 前の処理を終えたスレッドで、続けて結果を変換
-- `thenApplyAsync()`
-    + 別のスレッド（スレッドプール）で結果を変換
-- `thenCompose()`
-    + 別のCompletableFutureを返す関数を適用
-- `thenCombine()`
-    + 2つのCompletableFutureの結果を結合
-- `thenAccept()`
-    + 結果を消費（戻り値なし）
-
-<span class="listing-number">**サンプルコード15-16**　AsyncChainingExample.java（4〜14、35〜49、57行目）</span>
-
-```java
-public class AsyncChainingExample {
-    
-    // ユーザー情報を取得
-    static CompletableFuture<User> fetchUser(String userId) {
-        return CompletableFuture.supplyAsync(() -> {
-            IO.println("Fetching user: " + userId);
-            // データベースアクセスをシミュレート
-            sleep(1000);
-            return new User(userId, "User-" + userId);
-        });
-    }
-    // ...
-    
-    public static void main(String[] args) throws Exception {
-        // 非同期処理を連鎖させる
-        CompletableFuture<Integer> totalFuture = fetchUser("USER001")
-            .thenCompose(user -> fetchOrders(user))  // 別の非同期処理に連鎖
-            // 前の処理を終えたスレッドで続けて変換
-            .thenApply(orders -> calculateTotal(orders))
-            .exceptionally(ex -> {
-                System.err.println("Error occurred: " + ex.getMessage());
-                return 0;  // デフォルト値を返す
-            });
-        
-        IO.println("Total amount: " + totalFuture.get());
-    }
-    
-    // ...
-}
-```
-
-この例では、ユーザー情報の取得→注文履歴の取得→合計金額の計算という一連の処理を、メソッドの連鎖でつないでいます。
-ユーザー情報と注文履歴の取得は別のスレッドで非同期に実行され、合計金額の計算は注文履歴の取得を終えたスレッドで続けて実行されます<span class="footnote">`thenApply`を呼んだ時点で前の処理がすでに終わっていれば、`thenApply`を呼んだスレッドで変換します。この例では、注文履歴の取得に時間がかかるので、取得を終えたスレッドで変換します。</span>。
-途中で例外が起きたときは、`exceptionally`で0を返します。
 
 ## 並列化の効果を確かめる
 

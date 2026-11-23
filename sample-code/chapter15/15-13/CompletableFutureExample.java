@@ -40,15 +40,16 @@ public class CompletableFutureExample {
     
     public static void main(String[] args) throws Exception {
         // 1. 単純な非同期処理
-        CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
-            IO.println("非同期タスク開始");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            return "処理完了";
-        });
+        CompletableFuture<String> future1 = CompletableFuture
+            .supplyAsync(() -> {
+                IO.println("非同期タスク開始");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                return "処理完了";
+            });
         
         // 2. チェーン処理
         CompletableFuture<String> chainedFuture = future1

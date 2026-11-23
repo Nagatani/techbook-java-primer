@@ -811,7 +811,7 @@ claims:
     claim: BlockingQueueのput()はキューが満杯なら空きができるまで待ち、take()はキューが空なら要素が入るまで待つ（待つあいだスレッドはWAITING）
     text:
       - put()はキューが満杯なら空きができるまで待ち、take()はキューが空なら要素が入るまで待ちます。
-      - サンプルコード15-12のようにキューの容量を決めておけば、キューが満杯のときにput()で生産者が待つので、生産の速さが消費の速さに合わせて抑えられます。
+      - サンプルコード15-15のようにキューの容量を決めておけば、キューが満杯のときにput()で生産者が待つので、生産の速さが消費の速さに合わせて抑えられます。
     sources:
       - title: java.util.concurrent.BlockingQueue（Java SE 25 API）
         url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/BlockingQueue.html
@@ -1009,8 +1009,8 @@ claims:
   - id: cf-thread
     claim: thenApplyは、前の処理がまだ終わっていなければ前の処理を終えたスレッドで、すでに終わっていればthenApplyを呼んだスレッドで実行される。thenApplyAsyncは既定ではForkJoinPoolの共通プールのスレッドで実行される
     text:
-      - 前の処理を終えたスレッドで、続けて結果を変換
-      - 別のスレッド（スレッドプール）で結果を変換
+      - 前の処理を終えたスレッドで続けて実行する
+      - 結果を別のスレッド（スレッドプール）で変換する
       - 合計金額の計算は注文履歴の取得を終えたスレッドで続けて実行されます
       - thenApplyを呼んだ時点で前の処理がすでに終わっていれば、thenApplyを呼んだスレッドで変換します。
     sources:
@@ -1033,9 +1033,9 @@ claims:
   - id: cf-exception
     claim: 連鎖の途中で例外が起きると、後のthenApplyは実行されずに飛ばされ、exceptionallyやhandleが例外（CompletionExceptionで包まれ、原因が元の例外）を受け取って値を返せる。get()はExecutionExceptionを投げる
     text:
-      - exceptionally、handleで例外が起きたときの処理を書く
+      - 例外が起きたときの処理を書く
       - 途中で例外が起きたときは、exceptionallyで0を返します。
-    note: exceptionallyが受け取る例外は、supplyAsyncの中で投げた例外そのものではなくCompletionExceptionで包まれている。getMessage()は「java.lang.IllegalStateException 取得に失敗」の形になる（サンプルコード15-16のexceptionallyのgetMessage()もこの形で表示される）
+    note: exceptionallyが受け取る例外は、supplyAsyncの中で投げた例外そのものではなくCompletionExceptionで包まれている。getMessage()は「java.lang.IllegalStateException 取得に失敗」の形になる（サンプルコード15-14のexceptionallyのgetMessage()もこの形で表示される）
     sources:
       - title: java.util.concurrent.CompletableFuture（Java SE 25 API）
         url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/CompletableFuture.html
@@ -1054,7 +1054,7 @@ claims:
 
   - id: cf-or-timeout
     claim: orTimeoutは、決めた時間内に終わらないCompletableFutureをTimeoutExceptionで例外として完了させる（orTimeoutはJava 9で加わった）
-    text: orTimeoutメソッドで、決めた時間内に終わらない処理を例外にする
+    text: 決めた時間内に終わらない処理を例外にする
     note: CompletableFuture自体はJava 8だが、orTimeoutはJava 9から（APIドキュメントの「Since 9」）。本文は版を書いていない
     sources:
       - title: java.util.concurrent.CompletableFuture（Java SE 25 API）orTimeout

@@ -25,7 +25,7 @@ javac -d out *.java
 | [15-7](./15-07/) | VolatileDemo.java | `java -cp out VolatileDemo` |
 | [15-8](./15-08/) | AtomicCounterExample.java | （mainメソッドなし） |
 | [15-11](./15-11/) | ExecutorExample.java | `java -cp out ExecutorExample` |
-| [15-12](./15-12/) | ProducerConsumerExample.java | `java -cp out ProducerConsumerExample` |
-| [15-14](./15-14/) | FutureCallableExample.java | `java -cp out FutureCallableExample` |
-| [15-15](./15-15/) | CompletableFutureExample.java | `java -cp out CompletableFutureExample` |
-| [15-16](./15-16/) | AsyncChainingExample.java<br>Models.java | `java -cp out AsyncChainingExample` |
+| [15-12](./15-12/) | FutureCallableExample.java | `java -cp out FutureCallableExample` |
+| [15-13](./15-13/) | CompletableFutureExample.java | `java -cp out CompletableFutureExample` |
+| [15-14](./15-14/) | AsyncChainingExample.java<br>Models.java | `java -cp out AsyncChainingExample` |
+| [15-15](./15-15/) | ProducerConsumerExample.java | `java -cp out ProducerConsumerExample` |
