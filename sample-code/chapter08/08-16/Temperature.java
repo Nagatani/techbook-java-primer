@@ -1,5 +1,5 @@
 public record Temperature(double value, String unit) {
-    // 静的ファクトリメソッド
+    // ファクトリメソッド
     public static Temperature ofCelsius(double celsius) {
         return new Temperature(celsius, "C");
     }

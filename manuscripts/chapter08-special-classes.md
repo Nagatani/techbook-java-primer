@@ -625,17 +625,16 @@ public record Tile(double width, double height) {
 }
 ```
 
-### 静的ファクトリメソッド
+### ファクトリメソッド
 
-静的ファクトリメソッドは、`new`の代わりにオブジェクトを作って返す`static`メソッドです。
+第3章で学んだファクトリメソッド（`new`の代わりにオブジェクトを作って返す`static`メソッド）は、Recordにも定義できます。
 コンストラクターと違ってメソッドに名前を付けられるので、`ofCelsius`のように、どの単位の値から作るのかを名前で表せます。
-Recordでも、この静的ファクトリメソッドを定義できます。
 
 <span class="listing-number">**サンプルコード8-16**　Temperature.java</span>
 
 ```java
 public record Temperature(double value, String unit) {
-    // 静的ファクトリメソッド
+    // ファクトリメソッド
     public static Temperature ofCelsius(double celsius) {
         return new Temperature(celsius, "C");
     }
