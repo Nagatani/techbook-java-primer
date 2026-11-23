@@ -12,16 +12,14 @@
     "main": "TextFileReaderExample",
     "excerpt": [
       { "file": "TextFileReaderExample.java", "from": 8, "to": 9 },
-      { "file": "TextFileReaderExample.java", "from": 14, "to": 29 },
-      { "file": "TextFileReaderExample.java", "from": 32, "to": 33 },
-      { "file": "TextFileReaderExample.java", "from": 36, "to": 44 }
+      { "file": "TextFileReaderExample.java", "from": 14, "to": 36 }
     ]
   },
   "14-3": {
     "dir": "14-03",
     "main": "TextFileWriterExample",
     "excerpt": [
-      { "file": "TextFileWriterExample.java", "from": 1, "to": 28 }
+      { "file": "TextFileWriterExample.java", "from": 8, "to": 28 }
     ]
   },
   "14-4": {
@@ -42,14 +40,14 @@
     "dir": "14-06",
     "main": "SerializationExample",
     "excerpt": [
-      { "file": "SerializationExample.java", "from": 4, "to": 50 }
+      { "file": "SerializationExample.java", "from": 4, "to": 44 }
     ]
   },
   "14-7": {
     "dir": "14-07",
     "main": "FileSystemExample",
     "excerpt": [
-      { "file": "FileSystemExample.java", "from": 5, "to": 51 }
+      { "file": "FileSystemExample.java", "from": 5, "to": 45 }
     ]
   },
   "14-8": {

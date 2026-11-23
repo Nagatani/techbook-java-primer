@@ -7,9 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ProducerConsumerExample {
     // 共有キュー
-    // BlockingQueueは、スレッド間でデータを安全に受け渡すための
-    // 特殊なキューです。キューが満杯の時は生産者が自動的にブロックされ、
-    // キューが空の時は消費者が自動的にブロックされます。
     private static final BlockingQueue<Integer> queue =
             new LinkedBlockingQueue<>(10);
     private static final AtomicInteger producedCount =
@@ -34,8 +31,7 @@ public class ProducerConsumerExample {
                     int item = producedCount.incrementAndGet();
                     queue.put(item); // キューがいっぱいの場合はブロック
                     IO.println("%s produced: %d (queue size: %d)"
-                            .formatted(
-                        name, item, queue.size()));
+                            .formatted(name, item, queue.size()));
                     Thread.sleep(100); // 生産に時間がかかることをシミュレート
                 }
             } catch (InterruptedException e) {
@@ -61,8 +57,7 @@ public class ProducerConsumerExample {
                     Integer item = queue.take(); // キューが空の場合はブロック
                     consumedCount.incrementAndGet();
                     IO.println("%s consumed: %d (queue size: %d)"
-                            .formatted(
-                        name, item, queue.size()));
+                            .formatted(name, item, queue.size()));
                     Thread.sleep(200); // 消費に時間がかかることをシミュレート
                 }
             } catch (InterruptedException e) {

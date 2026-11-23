@@ -724,7 +724,7 @@ UDPでは、送ったパケットや応答のパケットが途中で失われ�
 各クライアントは、送信に使う`PrintWriter`を用意してから集合に加えます。
 先に加えると、準備の済んでいないクライアントへほかのスレッドがメッセージを送ろうとして、`NullPointerException`が発生することがあります。
 
-<span class="listing-number">**サンプルコード16-9**　ChatServer.java（6〜39、46、56〜80、96〜102行目）</span>
+<span class="listing-number">**サンプルコード16-9**　ChatServer.java（6〜37、44、54〜78、93〜100行目）</span>
 
 ```java
 public class ChatServer {
@@ -736,8 +736,6 @@ public class ChatServer {
         ConcurrentHashMap.newKeySet();
     
     public static void main(String[] args) {
-        // 1人のクライアントが接続しているあいだ、スレッドを1つ使い続ける。
-        // 上限のあるプールにして、接続が増えてもスレッドが増え続けないようにする
         ExecutorService executor =
                 Executors.newFixedThreadPool(MAX_CLIENTS);
         
@@ -790,6 +788,7 @@ public class ChatServer {
                     broadcast(username + ": " + message, this);
                 }
                 // ...
+            }
         }
         
         public void sendMessage(String message) {
@@ -803,7 +802,7 @@ public class ChatServer {
 
 以下のコードは、チャットクライアントの実装例です。このクライアントは、サーバーに接続し、別スレッドでメッセージの受信を処理しながら、メインスレッドでキーボードからの入力を受け付けます。この設計により、メッセージの送受信を同時に行えます。
 
-<span class="listing-number">**サンプルコード16-10**　ChatClient.java（4、8〜40、47〜48行目）</span>
+<span class="listing-number">**サンプルコード16-10**　ChatClient.java（4、8〜48行目）</span>
 
 ```java
 public class ChatClient {
@@ -841,7 +840,12 @@ public class ChatClient {
             // 受信側を閉じて受信スレッドのreadLine()を終わらせてから、資源を閉じる
             socket.shutdownInput();
             receiveThread.join();
-            // ...
+            
+        } catch (IOException e) {
+            System.err.println("接続エラー: " + e.getMessage());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }
 ```

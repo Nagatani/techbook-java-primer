@@ -42,7 +42,8 @@
     "dir": "15-06",
     "main": null,
     "excerpt": [
-      { "file": "BankAccount.java", "from": 1, "to": 35 }
+      { "file": "BankAccount.java", "from": 1, "to": 18 },
+      { "file": "BankAccount.java", "from": 35, "to": 35 }
     ]
   },
   "15-7": {
@@ -98,10 +99,10 @@
     "dir": "15-15",
     "main": "ProducerConsumerExample",
     "excerpt": [
-      { "file": "ProducerConsumerExample.java", "from": 8, "to": 21 },
-      { "file": "ProducerConsumerExample.java", "from": 30, "to": 48 },
-      { "file": "ProducerConsumerExample.java", "from": 57, "to": 85 },
-      { "file": "ProducerConsumerExample.java", "from": 92, "to": 92 }
+      { "file": "ProducerConsumerExample.java", "from": 8, "to": 18 },
+      { "file": "ProducerConsumerExample.java", "from": 27, "to": 44 },
+      { "file": "ProducerConsumerExample.java", "from": 53, "to": 80 },
+      { "file": "ProducerConsumerExample.java", "from": 86, "to": 87 }
     ]
   }
 }

@@ -24,10 +24,6 @@ public class SerializationExample {
         UserProfile user = new UserProfile("testuser", "secret123");
         String filename = "user.ser";
 
-        // ObjectOutputStreamを使用してJavaオブジェクトをバイナリ形式で
-        // ファイルに保存します。
-        // オブジェクトの構造や状態をそのまま保持できるため、データの
-        // 永続化やキャッシュ機能に便利です。
         // 1. 直列化してファイルに保存
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(filename))) {
@@ -35,8 +31,6 @@ public class SerializationExample {
             IO.println("保存されたオブジェクト: " + user);
         } catch (IOException e) { e.printStackTrace(); }
 
-        // ObjectInputStreamでファイルからオブジェクトを復元します。
-        // transientを付けたフィールド以外が、保存したときの値で復元されます。
         // 2. ファイルから非直列化して復元
         try (ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream(filename))) {

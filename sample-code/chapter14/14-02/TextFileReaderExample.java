@@ -12,10 +12,6 @@ public class TextFileReaderExample {
         try { Files.writeString(filePath, "Line 1\nLine 2"); } catch (IOException e) { e.printStackTrace(); }
 
         // 方法1: 1行ずつ読み込む (大きなファイルに最適)
-        // BufferedReaderを使用することで、ファイルから効率的に行単位で
-        // データを読み込めます。
-        // 大容量ファイルでもメモリを節約しながら処理できるため、
-        // 大きなファイルではこの方法を使います。
         IO.println("--- 1行ずつ読み込み ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 filePath, StandardCharsets.UTF_8)) {
@@ -27,12 +23,8 @@ public class TextFileReaderExample {
             e.printStackTrace();
         }
 
-        // readAllLines()は小さなファイル（数MBまで）に適しています。
-        // 大容量ファイルではメモリ不足の原因となるため、上記の1行ずつ読み込み方式を使用してください。
         // 方法2: 全行を一度に読み込む (小さなファイル向き)
         IO.println("\n--- 全行を一度に読み込み ---");
-        // readAllLines()は小容量ファイル専用の便利メソッドです。
-        // 設定ファイルや小さなデータファイルの処理に適していますが、大容量ファイルではOutOfMemoryErrorの原因となります。
         try {
             List<String> lines = Files.readAllLines(
                     filePath, StandardCharsets.UTF_8);

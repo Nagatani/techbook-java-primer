@@ -12,8 +12,6 @@ public class ChatServer {
         ConcurrentHashMap.newKeySet();
     
     public static void main(String[] args) {
-        // 1人のクライアントが接続しているあいだ、スレッドを1つ使い続ける。
-        // 上限のあるプールにして、接続が増えてもスレッドが増え続けないようにする
         ExecutorService executor =
                 Executors.newFixedThreadPool(MAX_CLIENTS);
         

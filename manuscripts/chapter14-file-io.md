@@ -126,17 +126,13 @@ apple banana cherry
 整数: 100, 小数: 3.14, 真偽値: true
 ```
 
-<span class="listing-number">**サンプルコード14-2**　TextFileReaderExample.java（8〜9、14〜29、32〜33、36〜44行目）</span>
+<span class="listing-number">**サンプルコード14-2**　TextFileReaderExample.java（8〜9、14〜36行目）</span>
 
 ```java
 public class TextFileReaderExample {
     public static void main(String[] args) {
         // ...
         // 方法1: 1行ずつ読み込む (大きなファイルに最適)
-        // BufferedReaderを使用することで、ファイルから効率的に行単位で
-        // データを読み込めます。
-        // 大容量ファイルでもメモリを節約しながら処理できるため、
-        // 大きなファイルではこの方法を使います。
         IO.println("--- 1行ずつ読み込み ---");
         try (BufferedReader reader = Files.newBufferedReader(
                 filePath, StandardCharsets.UTF_8)) {
@@ -148,10 +144,8 @@ public class TextFileReaderExample {
             e.printStackTrace();
         }
 
-        // ...
         // 方法2: 全行を一度に読み込む (小さなファイル向き)
         IO.println("\n--- 全行を一度に読み込み ---");
-        // ...
         try {
             List<String> lines = Files.readAllLines(
                     filePath, StandardCharsets.UTF_8);
@@ -179,16 +173,9 @@ Line 2
 
 書き込みにも、読み込みと同様に`Files`クラスを使い、`BufferedWriter`で書き出します。
 
-<span class="listing-number">**サンプルコード14-3**　TextFileWriterExample.java</span>
+<span class="listing-number">**サンプルコード14-3**　TextFileWriterExample.java（8〜28行目）</span>
 
 ```java
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-
 public class TextFileWriterExample {
     public static void main(String[] args) {
         Path filePath = Path.of("output.txt");
@@ -405,7 +392,7 @@ Javaオブジェクトの状態をそのままバイト列に変換して保存�
 そのクラスのオブジェクトを`ObjectOutputStream`で直列化し、`ObjectInputStream`で非直列化します。
 パスワードのように保存したくないフィールドには`transient`修飾子を付けると、そのフィールドを直列化の対象から外せます。
 
-<span class="listing-number">**サンプルコード14-6**　SerializationExample.java（4〜50行目）</span>
+<span class="listing-number">**サンプルコード14-6**　SerializationExample.java（4〜44行目）</span>
 
 ```java
 // Serializableを実装したクラス
@@ -431,10 +418,6 @@ public class SerializationExample {
         UserProfile user = new UserProfile("testuser", "secret123");
         String filename = "user.ser";
 
-        // ObjectOutputStreamを使用してJavaオブジェクトをバイナリ形式で
-        // ファイルに保存します。
-        // オブジェクトの構造や状態をそのまま保持できるため、データの
-        // 永続化やキャッシュ機能に便利です。
         // 1. 直列化してファイルに保存
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(filename))) {
@@ -442,8 +425,6 @@ public class SerializationExample {
             IO.println("保存されたオブジェクト: " + user);
         } catch (IOException e) { e.printStackTrace(); }
 
-        // ObjectInputStreamでファイルからオブジェクトを復元します。
-        // transientを付けたフィールド以外が、保存したときの値で復元されます。
         // 2. ファイルから非直列化して復元
         try (ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream(filename))) {
@@ -479,7 +460,7 @@ Java 7で導入された`java.nio.file`パッケージ（NIO.2）<span class="fo
 古いコードでは、`Path`を`Paths.get`で作っていることがあります<span class="footnote">`Path.of`はJava 11で加わりました。`Paths`クラスのAPIドキュメントは、`Path.of`を使うよう勧めており、`Paths`は将来非推奨になる可能性があると書いています。</span>。
 本書では`Path.of`を使います。
 
-<span class="listing-number">**サンプルコード14-7**　FileSystemExample.java（5〜51行目）</span>
+<span class="listing-number">**サンプルコード14-7**　FileSystemExample.java（5〜45行目）</span>
 
 ```java
 public class FileSystemExample {
@@ -488,7 +469,6 @@ public class FileSystemExample {
         Path file = dir.resolve("my_file.txt");
 
         // ディレクトリ作成
-        // Files.createDirectory()は指定されたディレクトリを作成します。
         // createDirectories()は、親ディレクトリがなければ同時に作成する
         if (Files.notExists(dir)) {
             Files.createDirectory(dir);
@@ -497,16 +477,11 @@ public class FileSystemExample {
 
         // ファイル作成と書き込み
         // writeString()は、小さなテキストをファイルに保存する便利なメソッド
-        // ファイルを開いて書き込み、閉じるまでをメソッドのなかで済ませます。
         Files.writeString(file, "Hello, NIO.2!");
         IO.println("ファイルを作成しました: " + file.getFileName());
 
         // ファイルのコピー
-        // Files.copy()はファイルのコピーを行います。StandardCopyOptionで
-        // 動作を制御できます。
-        // ここではREPLACE_EXISTING（同名ファイルがある場合は上書き）を指定する。
-        // ほかに、COPY_ATTRIBUTES（最終更新日時などの属性もコピー。
-        // どの属性をコピーできるかはOSによる）も指定できる
+        // REPLACE_EXISTING: 同名のファイルがあれば上書きする
         Path copiedFile = dir.resolve("my_file_copy.txt");
         Files.copy(file, copiedFile,
                 StandardCopyOption.REPLACE_EXISTING);

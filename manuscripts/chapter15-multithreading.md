@@ -365,7 +365,7 @@ class SynchronizedCounter {
 
 メソッド全体ではなく、特定のコードブロックだけを同期化したい場合は、`synchronized`ブロックを使用します。これにより、必要最小限の範囲だけをロックすることができ、パフォーマンスの向上につながります。
 
-<span class="listing-number">**サンプルコード15-6**　BankAccount.java</span>
+<span class="listing-number">**サンプルコード15-6**　BankAccount.java（1〜18、35行目）</span>
 
 ```java
 class BankAccount {
@@ -386,22 +386,7 @@ class BankAccount {
             IO.println("入金後残高: " + balance);
         }
     }
-    
-    public boolean withdraw(double amount) {
-        if (amount <= 0) {
-            return false;
-        }
-        
-        synchronized (lock) {
-            if (balance >= amount) {
-                IO.println("引き出し前残高: " + balance);
-                balance -= amount;
-                IO.println("引き出し後残高: " + balance);
-                return true;
-            }
-            return false;
-        }
-    }
+    // ...
 }
 ```
 
@@ -900,14 +885,11 @@ Javaでは、このバッファーに`java.util.concurrent`パッケージの`Bl
 `put()`はキューが満杯なら空きができるまで待ち、`take()`はキューが空なら要素が入るまで待ちます。
 次の例では、2つのプロデューサーと3つのコンシューマーが、容量10のキューを介して整数を受け渡します。
 
-<span class="listing-number">**サンプルコード15-15**　ProducerConsumerExample.java（8〜21、30〜48、57〜85、92行目）</span>
+<span class="listing-number">**サンプルコード15-15**　ProducerConsumerExample.java（8〜18、27〜44、53〜80、86〜87行目）</span>
 
 ```java
 public class ProducerConsumerExample {
     // 共有キュー
-    // BlockingQueueは、スレッド間でデータを安全に受け渡すための
-    // 特殊なキューです。キューが満杯の時は生産者が自動的にブロックされ、
-    // キューが空の時は消費者が自動的にブロックされます。
     private static final BlockingQueue<Integer> queue =
             new LinkedBlockingQueue<>(10);
     private static final AtomicInteger producedCount =
@@ -925,8 +907,7 @@ public class ProducerConsumerExample {
                     int item = producedCount.incrementAndGet();
                     queue.put(item); // キューがいっぱいの場合はブロック
                     IO.println("%s produced: %d (queue size: %d)"
-                            .formatted(
-                        name, item, queue.size()));
+                            .formatted(name, item, queue.size()));
                     Thread.sleep(100); // 生産に時間がかかることをシミュレート
                 }
             } catch (InterruptedException e) {
@@ -945,8 +926,7 @@ public class ProducerConsumerExample {
                     Integer item = queue.take(); // キューが空の場合はブロック
                     consumedCount.incrementAndGet();
                     IO.println("%s consumed: %d (queue size: %d)"
-                            .formatted(
-                        name, item, queue.size()));
+                            .formatted(name, item, queue.size()));
                     Thread.sleep(200); // 消費に時間がかかることをシミュレート
                 }
             } catch (InterruptedException e) {
@@ -968,6 +948,7 @@ public class ProducerConsumerExample {
         executor.shutdown();
         executor.awaitTermination(30, TimeUnit.SECONDS);
         // ...
+    }
 }
 ```
 

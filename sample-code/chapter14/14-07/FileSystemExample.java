@@ -8,7 +8,6 @@ public class FileSystemExample {
         Path file = dir.resolve("my_file.txt");
 
         // ディレクトリ作成
-        // Files.createDirectory()は指定されたディレクトリを作成します。
         // createDirectories()は、親ディレクトリがなければ同時に作成する
         if (Files.notExists(dir)) {
             Files.createDirectory(dir);
@@ -17,16 +16,11 @@ public class FileSystemExample {
 
         // ファイル作成と書き込み
         // writeString()は、小さなテキストをファイルに保存する便利なメソッド
-        // ファイルを開いて書き込み、閉じるまでをメソッドのなかで済ませます。
         Files.writeString(file, "Hello, NIO.2!");
         IO.println("ファイルを作成しました: " + file.getFileName());
 
         // ファイルのコピー
-        // Files.copy()はファイルのコピーを行います。StandardCopyOptionで
-        // 動作を制御できます。
-        // ここではREPLACE_EXISTING（同名ファイルがある場合は上書き）を指定する。
-        // ほかに、COPY_ATTRIBUTES（最終更新日時などの属性もコピー。
-        // どの属性をコピーできるかはOSによる）も指定できる
+        // REPLACE_EXISTING: 同名のファイルがあれば上書きする
         Path copiedFile = dir.resolve("my_file_copy.txt");
         Files.copy(file, copiedFile,
                 StandardCopyOption.REPLACE_EXISTING);
