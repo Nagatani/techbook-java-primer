@@ -689,7 +689,7 @@ public class ComplexLayoutExample {
 
 以下のコードは、さらに高度なレイアウトの組み合わせ例を示しています。メニューバー、ツールバー、コンテンツエリア、サイドパネルなど、実際のアプリケーションでよく使われるパターンを、複数のレイアウトマネージャーを使って構築しています。
 
-<span class="listing-number">**サンプルコード17-13**　CombinedLayoutExample.java（4、9〜20、33、42〜53、65〜68、82〜90、99、103〜104行目）</span>
+<span class="listing-number">**サンプルコード17-13**　CombinedLayoutExample.java（4、9〜25、33、42〜53、65〜73、82〜90、99、103〜104行目）</span>
 
 ```java
 public class CombinedLayoutExample {
@@ -706,6 +706,11 @@ public class CombinedLayoutExample {
         
         // メニューバー
         JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("ファイル");
+        fileMenu.add(new JMenuItem("新規"));
+        fileMenu.add(new JMenuItem("開く"));
+        fileMenu.add(new JMenuItem("保存"));
+        menuBar.add(fileMenu);
         // ...
         frame.setJMenuBar(menuBar);
         // ...
@@ -726,6 +731,11 @@ public class CombinedLayoutExample {
         
         // 右側パネル（タブ付き）
         JTabbedPane tabbedPane = new JTabbedPane();
+        
+        // エディタータブ
+        JTextArea editor = new JTextArea();
+        editor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        tabbedPane.addTab("エディター", new JScrollPane(editor));
         // ...
         splitPane.setRightComponent(tabbedPane);
         
@@ -745,6 +755,19 @@ public class CombinedLayoutExample {
 
 実行結果：
 このプログラムを実行すると、IDEのような複雑なレイアウトのアプリケーションが表示されます。上部にはメニューバー（ファイル・編集メニュー）とツールバー（新規・開く・保存ボタン）が並びます。中央は左右に分割され、左側に「プロジェクト」パネル（src/test/resourcesのリストと追加・削除ボタン）、右側にタブ付きパネル（エディタータブと黒い背景のコンソールタブ）が配置されます。下部はステータスバーで、「準備完了」と「行: 1 列: 1 エンコーディング: UTF-8」が表示されます。分割バーをドラッグすると左右のパネルの幅を調整できます。
+
+このサンプルで新しく使った部品の役割は次のとおりです。
+
+- `JMenuBar`・`JMenu`・`JMenuItem`
+    + メニューバーに`JMenu`（「ファイル」などのメニュー）を並べ、各メニューに`JMenuItem`（選べる項目）を加える。メニューバーは`setJMenuBar`でフレームに付ける
+- `JSplitPane`
+    + 2つの部品を左右（または上下）に並べ、あいだの分割バーで幅を変えられるようにする。`setDividerLocation`で分割バーの最初の位置を決める
+- `JTabbedPane`
+    + `addTab(見出し, 部品)`で加えた部品を、タブで切り替えて表示する
+- `JScrollPane`
+    + 中に入れた部品が表示できる大きさを超えたときに、スクロールバーを付けて表示する
+
+メニュー項目を選んだときの処理は、ボタンと同じく`ActionListener`で書きます（第18章）。
 
 ## カスタムコンポーネントの作成
 
