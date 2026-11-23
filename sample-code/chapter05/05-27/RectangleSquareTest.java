@@ -16,7 +16,7 @@ public class RectangleSquareTest {
         if (expectedArea == actualArea) {
             IO.println("✓ テスト成功");
         } else {
-            IO.println("✗ テスト失敗！");
+            IO.println("× テスト失敗！");
         }
     }
     

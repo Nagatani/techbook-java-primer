@@ -40,6 +40,8 @@
 /* ページ（本文のテーマと同じ版面・ノンブル。柱は「索引」） */
 @page {
   size: B5;
+  /* 柱とノンブルの書体（このテーマは本文のテーマを重ねないので、ここで指定する） */
+  font-family: "BIZ UDPGothic", sans-serif;
   @bottom-center {
     content: none;
   }
@@ -87,6 +89,7 @@
   }
 }
 
+html,
 body {
   margin: 0;
   font-family: "BIZ UDPGothic", sans-serif;
