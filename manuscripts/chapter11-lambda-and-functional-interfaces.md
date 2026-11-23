@@ -155,7 +155,7 @@ javacは「ラムダ式から参照されるローカル変数は、finalまた�
 - 複数のスレッドから同時に呼び出しても、共有している状態を壊さない（第15章）
 
 ラムダ式で計算した結果は、外の変数に書き込まず、戻り値として返すようにしましょう。
-書き換えの例は、章の後半の「ラムダ式から外部の状態を変えない」（サンプルコード11-16）で示します。
+書き換えの例は、章の後半の「ラムダ式から外部の状態を変えない」（サンプルコード11-24）で示します。
 
 ### `Comparator`による並べ替え
 
@@ -910,129 +910,6 @@ public class HigherOrderFunctionExample {
 `withRiskManagement`は、取引の戦略を表す関数とリスクを判定する条件を受け取り、条件を満たすときだけ戦略を適用する新しい関数を返します。
 変動率が0.8の2つ目のデータは条件を満たさないので、戦略を適用せずに既定の値の`HOLD`を返します。
 
-### 関数型プログラミングのベストプラクティス
-
-#### ラムダ式を深く入れ子にしない
-
-ラムダ式の本体にさらにラムダ式を書くと、どの処理がどの値を扱っているのかを追いにくくなります。
-サンプルコード11-15は、「名前:点数」を並べた行から行ごとの合計点を求める処理を、2通りに書いたものです。
-
-<span class="listing-number">**サンプルコード11-15**　NestedLambdaExample.java（5〜47行目）</span>
-
-```java
-public class NestedLambdaExample {
-    public static void main(String[] args) {
-        // 1行に「名前:点数」を並べたデータから、行ごとの合計点を求める
-        List<String> lines =
-                List.of("Alice:80,Bob:65", "Carol:90,Dave:70");
-
-        // 悪い例：ラムダ式の中にラムダ式を重ねていて、何をしているか読み取りにくい
-        List<Integer> bad = lines.stream()
-            .map(line -> {
-                return Arrays.stream(line.split(","))
-                    .map(entry -> {
-                        String[] parts = entry.split(":");
-                        return Integer.parseInt(parts[1]);
-                    })
-                    .reduce(0, (a, b) -> {
-                        return a + b;
-                    });
-            })
-            .collect(Collectors.toList());
-
-        // 良い例：処理に名前を付けたメソッドに分け、メソッド参照で渡す
-        List<Integer> good = lines.stream()
-            .map(NestedLambdaExample::sumScores)
-            .collect(Collectors.toList());
-
-        IO.println("悪い例: " + bad);
-        IO.println("良い例: " + good);
-    }
-
-    // 1行の合計点を求める
-    private static int sumScores(String line) {
-        int total = 0;
-        for (String entry : line.split(",")) {
-            total += scoreOf(entry);
-        }
-        return total;
-    }
-
-    // 「名前:点数」から点数を取り出す
-    private static int scoreOf(String entry) {
-        return Integer.parseInt(entry.split(":")[1]);
-    }
-}
-```
-
-実行結果：
-
-```
-悪い例: [145, 160]
-良い例: [145, 160]
-```
-
-2つの書き方の結果は同じです。
-悪い例では、行を区切る処理、点数を取り出す処理、足し合わせる処理が1つの式に入れ子になっています。
-よい例では、それぞれを`sumScores`と`scoreOf`という名前のメソッドに分けたので、メソッド名から処理の内容がわかります。
-メソッドに分けると、`scoreOf("Alice:80")`のように1つずつ呼び出して確かめることもできます。
-
-#### ラムダ式から外部の状態を変えない
-
-サンプルコード11-16は、文字列のリストを大文字に変換した結果を、2通りの方法で作ります。
-
-<span class="listing-number">**サンプルコード11-16**　SideEffectExample.java（5〜27行目）</span>
-
-```java
-public class SideEffectExample {
-    public static void main(String[] args) {
-        List<String> items = List.of("apple", "banana", "cherry");
-
-        // 悪い例：ラムダ式の中から、外のリストを書き換えている（副作用）
-        List<String> results = new ArrayList<>();
-        items.forEach(item -> {
-            results.add(processItem(item));
-        });
-
-        // 良い例：変換した結果を、新しいリストとして受け取る
-        List<String> processed = items.stream()
-            .map(SideEffectExample::processItem)
-            .collect(Collectors.toList());
-
-        IO.println("悪い例: " + results);
-        IO.println("良い例: " + processed);
-    }
-
-    private static String processItem(String item) {
-        return item.toUpperCase();
-    }
-}
-```
-
-実行結果：
-
-```
-悪い例: [APPLE, BANANA, CHERRY]
-良い例: [APPLE, BANANA, CHERRY]
-```
-
-この例では、どちらも同じ結果になります。
-しかし悪い例のラムダ式は、外にある`results`に要素を追加するので、呼び出す順序や回数によって結果が変わります。
-たとえば、同じラムダ式を第12章で学ぶ並列ストリームの`forEach`に渡すと、複数のスレッドから同時に呼び出され、`ArrayList`への追加がぶつかって要素が欠けることがあります。
-よい例のラムダ式は、受け取った値から新しい値を返すだけなので、どの順序で呼び出しても同じ結果になります。
-
-### 実世界での応用例：リアクティブストリーム処理
-
-動画配信サービスのNetflixは、大量のAPIリクエストを処理するために、関数型プログラミングとリアクティブストリームを活用してきました<span class="footnote">NetflixはMicrosoftのReactive Extensions（Rx）をJavaに移植したRxJavaを開発しました。2013年にオープンソースとして公開しています。</span>。
-ここでは、その考え方を、動画のおすすめを計算するサービスを題材に説明します。
-おすすめを計算するには、利用者の情報、視聴履歴、人気の動画の3つを、それぞれ別のサービスから取得します。
-
-同期的なアプローチでは、3つのサービスの呼び出しを順に待つため、応答までの時間は3つの待ち時間の合計になります。
-リアクティブなアプローチでは、3つを同時に呼び出し、結果がそろったときに行う計算をラムダ式で渡しておきます。
-そのため、待ち時間はもっとも遅い1つの分で済みます。
-また、応答を待つ間にスレッドを占有しないため、同じ数のスレッドでより多くのリクエストを処理できます。
-Javaでこのような処理を書くときは、Reactorなどの外部ライブラリを使います<span class="footnote">Java 9で、リアクティブストリームの共通のインターフェイスが`java.util.concurrent.Flow`として標準ライブラリに入りました。ただし、処理を組み立てるメソッドは持たないので、実際にはライブラリと組み合わせて使います。</span>。
-
 ### 関数型プログラミングの実装パターン集
 
 処理を受け取って別の処理を返す高階関数は、失敗した処理を呼び出し直す「再試行（リトライ）」にも使えます。
@@ -1042,7 +919,7 @@ Javaでこのような処理を書くときは、Reactorなどの外部ライブ
 
 イベント駆動アーキテクチャにおいて、関数型プログラミングはとくに有効です。イベントハンドラーをラムダ式として定義し、関数の組み合わせでイベント処理パイプラインを構築することで、保守性と拡張性の高いシステムを実現できます。
 
-<span class="listing-number">**サンプルコード11-17**　EventProcessor.java（8〜55行目）</span>
+<span class="listing-number">**サンプルコード11-15**　EventProcessor.java（8〜55行目）</span>
 
 ```java
 public class EventProcessor {
@@ -1112,9 +989,9 @@ public class EventProcessor {
 Webのサーバーは、届いたリクエスト（要求）を本来の処理に渡す前に、いくつかの検査を順に行います。
 たとえば、記録を取る処理や、短い時間に届きすぎていないかを確かめる処理、利用者を認証する処理です。
 このような、本来の処理の前に挟む処理をミドルウェアと呼びます。
-サンプルコード11-18は、検査をラムダ式で書いてつなぎます<span class="footnote">`Request`などの補助の型は、全文（`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-19/`）にあります。</span>。
+サンプルコード11-16は、検査をラムダ式で書いてつなぎます<span class="footnote">`Request`などの補助の型は、全文（`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter11/11-19/`）にあります。</span>。
 
-<span class="listing-number">**サンプルコード11-18**　MiddlewareChain.java（3、9〜32、48〜52、61行目）</span>
+<span class="listing-number">**サンプルコード11-16**　MiddlewareChain.java（3、9〜32、48〜52、61行目）</span>
 
 ```java
 public class MiddlewareChain {
@@ -1161,7 +1038,7 @@ public class MiddlewareChain {
 
 テンプレートメソッドパターンでは、アルゴリズムの骨格を定義し、具体的な処理ステップをサブクラスに委ねます。関数型アプローチでは、これを継承ではなく関数の組み合わせとして実現でき、より柔軟で再利用しやすい設計が可能になります。
 
-<span class="listing-number">**サンプルコード11-19**　DataProcessingTemplate.java（5、12〜35、52行目）</span>
+<span class="listing-number">**サンプルコード11-17**　DataProcessingTemplate.java（5、12〜35、52行目）</span>
 
 ```java
 public class DataProcessingTemplate {
@@ -1209,7 +1086,7 @@ public class DataProcessingTemplate {
 イベントソーシングは、口座の残高のような現在の状態をそのまま記録するのではなく、「口座を作った」「入金した」「出金した」といった出来事（イベント）の列を記録する設計です。
 現在の状態が必要になったら、記録したイベントを順に適用して求めます。
 
-<span class="listing-number">**サンプルコード11-20**　EventSourcedAccount.java（3〜39行目）</span>
+<span class="listing-number">**サンプルコード11-18**　EventSourcedAccount.java（3〜39行目）</span>
 
 ```java
 public class EventSourcedAccount {
@@ -1259,7 +1136,7 @@ public class EventSourcedAccount {
 ファクトリパターンは、オブジェクトを生成する処理を1か所にまとめ、呼び出す側が具体的なクラスを知らなくても済むようにする設計です。
 `Supplier`にコンストラクター参照を入れておくと、形式の名前から生成する処理を選ぶファクトリを、`Map`1つで書けます。
 
-<span class="listing-number">**サンプルコード11-21**　ProcessorFactory.java（4〜7、27〜41、53行目）</span>
+<span class="listing-number">**サンプルコード11-19**　ProcessorFactory.java（4〜7、27〜41、53行目）</span>
 
 ```java
 public class ProcessorFactory {
@@ -1298,57 +1175,13 @@ JSONとして読み込み: {"a": 1}
 `Map`に入れた時点ではオブジェクトは作られず、`supplier.get()`を呼び出したときにはじめてコンストラクターが実行されます。
 新しい形式に対応するときは、`Map`に1行を足すだけで済みます。
 
-### ラムダ式の内部実装とメモリ使用
-
-ラムダ式を評価すると、関数型インターフェイスを実装したオブジェクトができます<span class="footnote">匿名クラスはコンパイルすると`Outer$1.class`のような別のクラスファイルになりますが、ラムダ式はなりません。ラムダ式の本体は同じクラスのprivateメソッドになり、実行時に`invokedynamic`命令（Java 7で追加）を使ってオブジェクトを作ります。</span>。
-サンプルコード11-22は、同じラムダ式を2回評価してできたオブジェクトが、同じインスタンスかどうかを`==`で比べます。
-
-<span class="listing-number">**サンプルコード11-22**　LambdaCapture.java（5〜25行目）</span>
-
-```java
-public class LambdaCapture {
-    public static void main(String[] args) {
-        List<IntUnaryOperator> noCaptures = new ArrayList<>();
-        List<IntUnaryOperator> captures = new ArrayList<>();
-
-        // 同じラムダ式を2回評価して、できたオブジェクトを比べる
-        for (int i = 1; i <= 2; i++) {
-            // キャプチャなし：外側の変数を使わない
-            noCaptures.add(x -> x * 2);
-
-            // キャプチャあり：外側の変数multiplierを使う
-            int multiplier = i;
-            captures.add(x -> x * multiplier);
-        }
-
-        IO.println("キャプチャなし: 同じインスタンスか = "
-            + (noCaptures.get(0) == noCaptures.get(1)));
-        IO.println("キャプチャあり: 同じインスタンスか = "
-            + (captures.get(0) == captures.get(1)));
-    }
-}
-```
-
-実行結果：
-
-```
-キャプチャなし: 同じインスタンスか = true
-キャプチャあり: 同じインスタンスか = false
-```
-
-外側の変数をキャプチャしないラムダ式は、OpenJDKの実装では同じインスタンスを使い回します。
-キャプチャするラムダ式は、評価するたびに、キャプチャした値を持つ新しいインスタンスを作ります。
-ただし、インスタンスを使い回すかどうかは言語仕様で決められておらず、JVMの実装によって変わることがあります。
-ラムダ式のオブジェクトを`==`で比べる処理を、プログラムの動作に使ってはいけません。
-キャプチャによる性能の違いは小さいことが多いので、気になるときはJMH（Java Microbenchmark Harness）<span class="footnote">JMHはOpenJDKのプロジェクトとして開発されている、小さな処理の実行時間を測るためのツールです。JVMが実行中にコードを最適化する影響を考えて測定します。</span>などのツールで測ってから判断します。
-
 ### 実践的なデザインパターン：関数型ビルダー
 
 関数型プログラミングでは、デザインパターンの一部をクラスを増やさずに書けます。
 戦略パターン、コマンドパターン、テンプレートメソッドパターンなどでは、ラムダ式で振る舞いを直接渡せるので、振る舞いごとのクラスを定義せずに済みます。
 ここでは、オブジェクトの設定を組み立てるビルダーを関数型で実装する例を紹介します。
 
-<span class="listing-number">**サンプルコード11-23**　FunctionalBuilder.java（5、26〜61行目）</span>
+<span class="listing-number">**サンプルコード11-20**　FunctionalBuilder.java（5、26〜61行目）</span>
 
 ```java
 public class FunctionalBuilder {
@@ -1405,9 +1238,9 @@ Person{name='Alice', age=30, adult=true}
 #### 条件に応じた設定の組み立て
 
 関数型のビルダーは、実行する環境によって設定を変えるような、条件のある組み立てにも向いています。
-サンプルコード11-24の`whenCondition`は、条件が成り立つときだけ設定の操作を加えます。
+サンプルコード11-21の`whenCondition`は、条件が成り立つときだけ設定の操作を加えます。
 
-<span class="listing-number">**サンプルコード11-24**　ConfigurationBuilder.java（6〜32、51〜63、71行目）</span>
+<span class="listing-number">**サンプルコード11-21**　ConfigurationBuilder.java（6〜32、51〜63、71行目）</span>
 
 ```java
 public class ConfigurationBuilder {
@@ -1470,9 +1303,9 @@ production: db.example.com:5432/app_db (SSL: true)
 ### 関数合成によるビジネスロジックの設計
 
 業務の処理を、入力から結果を返すだけの小さな関数に分けておくと、関数ごとに確かめやすく、組み替えもしやすくなります。
-サンプルコード11-25は、注文の検証、金額の計算、割引、消費税の加算、明細の文字列の作成を、それぞれ1つのメソッドにしています。
+サンプルコード11-22は、注文の検証、金額の計算、割引、消費税の加算、明細の文字列の作成を、それぞれ1つのメソッドにしています。
 
-<span class="listing-number">**サンプルコード11-25**　OrderPipeline.java（3〜14、41〜48、57〜58行目）</span>
+<span class="listing-number">**サンプルコード11-22**　OrderPipeline.java（3〜14、41〜48、57〜58行目）</span>
 
 ```java
 public class OrderPipeline {
@@ -1516,6 +1349,175 @@ public class OrderPipeline {
 `processOrder.apply(order)`と呼ぶと、5つの処理が順に適用されます。
 電卓の注文は、金額12000円が10000円以上なので1割引きの10800円になり、消費税を加えて11880円になります。
 数量が0の注文は、最初の`validate`で例外がスローされ、あとの処理は行われません。
+
+### 実世界での応用例：リアクティブストリーム処理
+
+動画配信サービスのNetflixは、大量のAPIリクエストを処理するために、関数型プログラミングとリアクティブストリームを活用してきました<span class="footnote">NetflixはMicrosoftのReactive Extensions（Rx）をJavaに移植したRxJavaを開発しました。2013年にオープンソースとして公開しています。</span>。
+ここでは、その考え方を、動画のおすすめを計算するサービスを題材に説明します。
+おすすめを計算するには、利用者の情報、視聴履歴、人気の動画の3つを、それぞれ別のサービスから取得します。
+
+同期的なアプローチでは、3つのサービスの呼び出しを順に待つため、応答までの時間は3つの待ち時間の合計になります。
+リアクティブなアプローチでは、3つを同時に呼び出し、結果がそろったときに行う計算をラムダ式で渡しておきます。
+そのため、待ち時間はもっとも遅い1つの分で済みます。
+また、応答を待つ間にスレッドを占有しないため、同じ数のスレッドでより多くのリクエストを処理できます。
+Javaでこのような処理を書くときは、Reactorなどの外部ライブラリを使います<span class="footnote">Java 9で、リアクティブストリームの共通のインターフェイスが`java.util.concurrent.Flow`として標準ライブラリに入りました。ただし、処理を組み立てるメソッドは持たないので、実際にはライブラリと組み合わせて使います。</span>。
+
+### 関数型プログラミングのベストプラクティス
+
+ここまでの例のように、ラムダ式で処理を組み立てるときに気をつけたいことを2つ挙げます。
+
+#### ラムダ式を深く入れ子にしない
+
+ラムダ式の本体にさらにラムダ式を書くと、どの処理がどの値を扱っているのかを追いにくくなります。
+サンプルコード11-23は、「名前:点数」を並べた行から行ごとの合計点を求める処理を、2通りに書いたものです。
+
+<span class="listing-number">**サンプルコード11-23**　NestedLambdaExample.java（5〜47行目）</span>
+
+```java
+public class NestedLambdaExample {
+    public static void main(String[] args) {
+        // 1行に「名前:点数」を並べたデータから、行ごとの合計点を求める
+        List<String> lines =
+                List.of("Alice:80,Bob:65", "Carol:90,Dave:70");
+
+        // 悪い例：ラムダ式の中にラムダ式を重ねていて、何をしているか読み取りにくい
+        List<Integer> bad = lines.stream()
+            .map(line -> {
+                return Arrays.stream(line.split(","))
+                    .map(entry -> {
+                        String[] parts = entry.split(":");
+                        return Integer.parseInt(parts[1]);
+                    })
+                    .reduce(0, (a, b) -> {
+                        return a + b;
+                    });
+            })
+            .collect(Collectors.toList());
+
+        // 良い例：処理に名前を付けたメソッドに分け、メソッド参照で渡す
+        List<Integer> good = lines.stream()
+            .map(NestedLambdaExample::sumScores)
+            .collect(Collectors.toList());
+
+        IO.println("悪い例: " + bad);
+        IO.println("良い例: " + good);
+    }
+
+    // 1行の合計点を求める
+    private static int sumScores(String line) {
+        int total = 0;
+        for (String entry : line.split(",")) {
+            total += scoreOf(entry);
+        }
+        return total;
+    }
+
+    // 「名前:点数」から点数を取り出す
+    private static int scoreOf(String entry) {
+        return Integer.parseInt(entry.split(":")[1]);
+    }
+}
+```
+
+実行結果：
+
+```
+悪い例: [145, 160]
+良い例: [145, 160]
+```
+
+2つの書き方の結果は同じです。
+悪い例では、行を区切る処理、点数を取り出す処理、足し合わせる処理が1つの式に入れ子になっています。
+よい例では、それぞれを`sumScores`と`scoreOf`という名前のメソッドに分けたので、メソッド名から処理の内容がわかります。
+メソッドに分けると、`scoreOf("Alice:80")`のように1つずつ呼び出して確かめることもできます。
+
+#### ラムダ式から外部の状態を変えない
+
+サンプルコード11-24は、文字列のリストを大文字に変換した結果を、2通りの方法で作ります。
+
+<span class="listing-number">**サンプルコード11-24**　SideEffectExample.java（5〜27行目）</span>
+
+```java
+public class SideEffectExample {
+    public static void main(String[] args) {
+        List<String> items = List.of("apple", "banana", "cherry");
+
+        // 悪い例：ラムダ式の中から、外のリストを書き換えている（副作用）
+        List<String> results = new ArrayList<>();
+        items.forEach(item -> {
+            results.add(processItem(item));
+        });
+
+        // 良い例：変換した結果を、新しいリストとして受け取る
+        List<String> processed = items.stream()
+            .map(SideEffectExample::processItem)
+            .collect(Collectors.toList());
+
+        IO.println("悪い例: " + results);
+        IO.println("良い例: " + processed);
+    }
+
+    private static String processItem(String item) {
+        return item.toUpperCase();
+    }
+}
+```
+
+実行結果：
+
+```
+悪い例: [APPLE, BANANA, CHERRY]
+良い例: [APPLE, BANANA, CHERRY]
+```
+
+この例では、どちらも同じ結果になります。
+しかし悪い例のラムダ式は、外にある`results`に要素を追加するので、呼び出す順序や回数によって結果が変わります。
+たとえば、同じラムダ式を第12章で学ぶ並列ストリームの`forEach`に渡すと、複数のスレッドから同時に呼び出され、`ArrayList`への追加がぶつかって要素が欠けることがあります。
+よい例のラムダ式は、受け取った値から新しい値を返すだけなので、どの順序で呼び出しても同じ結果になります。
+
+### ラムダ式の内部実装とメモリ使用
+
+ラムダ式を評価すると、関数型インターフェイスを実装したオブジェクトができます<span class="footnote">匿名クラスはコンパイルすると`Outer$1.class`のような別のクラスファイルになりますが、ラムダ式はなりません。ラムダ式の本体は同じクラスのprivateメソッドになり、実行時に`invokedynamic`命令（Java 7で追加）を使ってオブジェクトを作ります。</span>。
+サンプルコード11-25は、同じラムダ式を2回評価してできたオブジェクトが、同じインスタンスかどうかを`==`で比べます。
+
+<span class="listing-number">**サンプルコード11-25**　LambdaCapture.java（5〜25行目）</span>
+
+```java
+public class LambdaCapture {
+    public static void main(String[] args) {
+        List<IntUnaryOperator> noCaptures = new ArrayList<>();
+        List<IntUnaryOperator> captures = new ArrayList<>();
+
+        // 同じラムダ式を2回評価して、できたオブジェクトを比べる
+        for (int i = 1; i <= 2; i++) {
+            // キャプチャなし：外側の変数を使わない
+            noCaptures.add(x -> x * 2);
+
+            // キャプチャあり：外側の変数multiplierを使う
+            int multiplier = i;
+            captures.add(x -> x * multiplier);
+        }
+
+        IO.println("キャプチャなし: 同じインスタンスか = "
+            + (noCaptures.get(0) == noCaptures.get(1)));
+        IO.println("キャプチャあり: 同じインスタンスか = "
+            + (captures.get(0) == captures.get(1)));
+    }
+}
+```
+
+実行結果：
+
+```
+キャプチャなし: 同じインスタンスか = true
+キャプチャあり: 同じインスタンスか = false
+```
+
+外側の変数をキャプチャしないラムダ式は、OpenJDKの実装では同じインスタンスを使い回します。
+キャプチャするラムダ式は、評価するたびに、キャプチャした値を持つ新しいインスタンスを作ります。
+ただし、インスタンスを使い回すかどうかは言語仕様で決められておらず、JVMの実装によって変わることがあります。
+ラムダ式のオブジェクトを`==`で比べる処理を、プログラムの動作に使ってはいけません。
+キャプチャによる性能の違いは小さいことが多いので、気になるときはJMH（Java Microbenchmark Harness）<span class="footnote">JMHはOpenJDKのプロジェクトとして開発されている、小さな処理の実行時間を測るためのツールです。JVMが実行中にコードを最適化する影響を考えて測定します。</span>などのツールで測ってから判断します。
 
 ## よくあるエラーと対処法
 
