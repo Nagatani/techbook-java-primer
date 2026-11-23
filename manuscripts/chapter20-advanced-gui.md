@@ -307,6 +307,11 @@ public class BasicTreeExample extends JFrame {
 `JPanel`は既定で自分の背景を塗るため、中のパネルを`setOpaque(false)`で透明にし、外側のパネルに設定した選択色が見えるようにしています。
 文字色も、選択状態に合わせて中の部品ごとに設定します。
 表のセルやツリーのノードの表示も、同じ考え方のレンダラー（`TableCellRenderer`・`TreeCellRenderer`）で変えられます。
+ツリーでは、標準のレンダラー`DefaultTreeCellRenderer`を継承して`getTreeCellRendererComponent`をオーバーライドするのが手軽です。
+最初に`super.getTreeCellRendererComponent(...)`を呼ぶと、選択したときの色や、フォルダーとファイルのアイコンを標準のとおりに設定してくれます。
+そのあとで、ノードが持つオブジェクトに合わせて`setText`で表示する文字だけを変えます。
+`DefaultTreeCellRenderer`は`JLabel`を継承しているので、`setText`や`setIcon`をそのまま呼べます。
+作ったレンダラーは、ツリーの`setCellRenderer`で設定します。
 
 <span class="listing-number">**サンプルコード20-4**　AdvancedListExample.java（29、42〜55、67〜71、78、90〜91、99〜100、104〜140、143、147、151〜155、206、213行目）</span>
 
