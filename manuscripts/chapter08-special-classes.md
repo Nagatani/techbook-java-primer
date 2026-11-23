@@ -205,20 +205,24 @@ public class TrafficLight {
 
 各列挙子でメソッドをオーバーライドすることで、列挙子ごとに異なる振る舞いをさせることができます。
 
-<span class="listing-number">**サンプルコード8-6**　Operation.java</span>
+<span class="listing-number">**サンプルコード8-6**　Operation.java（1〜27行目）</span>
 
 ```java
 public enum Operation {
     PLUS("+") {
+        @Override
         public double apply(double x, double y) { return x + y; }
     },
     MINUS("-") {
+        @Override
         public double apply(double x, double y) { return x - y; }
     },
     TIMES("*") {
+        @Override
         public double apply(double x, double y) { return x * y; }
     },
     DIVIDE("/") {
+        @Override
         public double apply(double x, double y) { return x / y; }
     };
 
@@ -231,10 +235,6 @@ public enum Operation {
     public abstract double apply(double x, double y);
     
     @Override
-    public String toString() {
-        return symbol;
-    }
-}
 ```
 
 実行結果：
@@ -249,11 +249,19 @@ x = 6.0, y = 2.0
 
 この実行結果は、GitHubの全文に付けた`OperationDemo.java`<span class="footnote">サンプルコード8-6の全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter08/08-06/`にあります。</span>で、6.0と2.0に4つの演算を適用したときのものです。
 
+列挙子の後ろの`{ … }`は、その列挙子だけが持つクラスの本体です。
+`Operation`には本体のない`public abstract double apply(…)`があり、これは第7章で学んだ抽象メソッドと同じ意味を持ちます。
+各列挙子は、自分の本体でこの抽象メソッドを実装します。
+どれか1つでも`apply`の実装を書き忘れると、コンパイルエラーになります<span class="footnote">列挙子の本体は、その列挙子のためだけに作られる名前のないクラスになります。このようなクラスを匿名クラスといい、本章の後半で学びます。</span>。
+
 ### enumを使ったデザインパターン
 
 #### Singletonパターン
 
-`enum`を使うと、最も簡潔で安全なシングルトンを実装できます<span class="footnote">enumによるシングルトンは、ジョシュア・ブロックの『Effective Java』（第2版、2008年）で勧められたことで広く知られるようになりました。</span>。
+Singletonパターンは、あるクラスのインスタンスをプログラム全体で1つだけに限る設計です。
+設定や接続のように、プログラムのなかに1つだけあればよく、複数あると食い違いが起きるものに使います。
+enumの列挙子は、プログラムのなかで1つずつしか作られません。
+この性質をそのまま使うと、`enum`で簡潔なシングルトンを実装できます<span class="footnote">enumによるシングルトンは、ジョシュア・ブロックの『Effective Java』（第2版、2008年）で勧められたことで広く知られるようになりました。</span>。
 次のサンプルの`Connection`は、データベースとの接続を表す`java.sql`パッケージのインターフェイスです。
 ここでは接続の処理そのものは扱わず、列挙子`INSTANCE`がただ1つのインスタンスとして接続を持ち続ける形に注目してください。
 
