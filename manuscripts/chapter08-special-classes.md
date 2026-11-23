@@ -128,7 +128,7 @@ public class EnumMethodsExample {
 
 </div>
 
-<span class="listing-number">**サンプルコード8-4**　Planet.java</span>
+<span class="listing-number">**サンプルコード8-4**　Planet.java（1〜14、24〜29行目）</span>
 
 ```java
 public enum Planet {
@@ -145,15 +145,7 @@ public enum Planet {
         this.mass = mass;
         this.radius = radius;
     }
-    
-    public double getMass() {
-        return mass;
-    }
-    
-    public double getRadius() {
-        return radius;
-    }
-    
+    // ...
     // 表面重力を計算
     public double surfaceGravity() {
         double G = 6.67300E-11; // 万有引力定数
@@ -205,7 +197,7 @@ public class TrafficLight {
 
 各列挙子でメソッドをオーバーライドすることで、列挙子ごとに異なる振る舞いをさせることができます。
 
-<span class="listing-number">**サンプルコード8-6**　Operation.java（1〜27行目）</span>
+<span class="listing-number">**サンプルコード8-6**　Operation.java（1〜5、14〜27行目）</span>
 
 ```java
 public enum Operation {
@@ -213,14 +205,7 @@ public enum Operation {
         @Override
         public double apply(double x, double y) { return x + y; }
     },
-    MINUS("-") {
-        @Override
-        public double apply(double x, double y) { return x - y; }
-    },
-    TIMES("*") {
-        @Override
-        public double apply(double x, double y) { return x * y; }
-    },
+    // ...
     DIVIDE("/") {
         @Override
         public double apply(double x, double y) { return x / y; }
@@ -298,7 +283,7 @@ public enum DatabaseConnection {
 
 `enum`はインターフェイスを実装することもできます。
 
-<span class="listing-number">**サンプルコード8-8**　Printable.java、DocumentType.java</span>
+<span class="listing-number">**サンプルコード8-8**　Printable.java、DocumentType.java（1〜7、14〜20行目）</span>
 
 ```java
 public interface Printable {
@@ -312,12 +297,7 @@ public enum DocumentType implements Printable {
             IO.println("PDFドキュメントを印刷します");
         }
     },
-    WORD {
-        @Override
-        public void print() {
-            IO.println("Wordドキュメントを印刷します");
-        }
-    },
+    // ...
     TEXT {
         @Override
         public void print() {
@@ -591,7 +571,7 @@ public record Tile(double width, double height) {
 第3章で学んだファクトリメソッド（`new`の代わりにオブジェクトを作って返す`static`メソッド）は、Recordにも定義できます。
 コンストラクターと違ってメソッドに名前を付けられるので、`ofCelsius`のように、どの単位の値から作るのかを名前で表せます。
 
-<span class="listing-number">**サンプルコード8-15**　Temperature.java</span>
+<span class="listing-number">**サンプルコード8-15**　Temperature.java（1〜5、15〜25行目）</span>
 
 ```java
 public record Temperature(double value, String unit) {
@@ -599,15 +579,7 @@ public record Temperature(double value, String unit) {
     public static Temperature ofCelsius(double celsius) {
         return new Temperature(celsius, "C");
     }
-    
-    public static Temperature ofFahrenheit(double fahrenheit) {
-        return new Temperature(fahrenheit, "F");
-    }
-    
-    public static Temperature ofKelvin(double kelvin) {
-        return new Temperature(kelvin, "K");
-    }
-    
+    // ...
     // 摂氏に変換
     public double toCelsius() {
         return switch (unit) {
@@ -626,7 +598,7 @@ public record Temperature(double value, String unit) {
 Recordの値は書き換えられないので、一部の成分だけを変えたいときは、その成分だけを差し替えた新しいRecordを作って返すメソッドを用意します。
 このようなメソッドを`withHost`のように「with＋成分名」と名付けることが多く、withメソッドパターンと呼びます。
 
-<span class="listing-number">**サンプルコード8-16**　Configuration.java</span>
+<span class="listing-number">**サンプルコード8-16**　Configuration.java（1〜12、22〜25行目）</span>
 
 ```java
 import java.time.Duration;
@@ -641,15 +613,7 @@ public record Configuration(
     public Configuration withHost(String newHost) {
         return new Configuration(newHost, port, useSsl, timeout);
     }
-    
-    public Configuration withPort(int newPort) {
-        return new Configuration(host, newPort, useSsl, timeout);
-    }
-    
-    public Configuration withSsl(boolean newUseSsl) {
-        return new Configuration(host, port, newUseSsl, timeout);
-    }
-    
+    // ...
     public Configuration withTimeout(Duration newTimeout) {
         return new Configuration(host, port, useSsl, newTimeout);
     }
@@ -726,31 +690,14 @@ switchは上のcaseから順に調べるので、ガードの付いたcaseは、
 次のサンプルでは、配列から求めた件数・平均・最大・最小を、メソッド内で宣言したRecordにまとめています。
 メソッドのなかで型を宣言する書き方は、本章の後半で学ぶローカル内部クラスと同じで、宣言したメソッドのなかだけで使えます。
 
-<span class="listing-number">**サンプルコード8-18**　LocalRecordExample.java</span>
+<span class="listing-number">**サンプルコード8-18**　LocalRecordExample.java（1〜4、23〜29行目）</span>
 
 ```java
 public class LocalRecordExample {
     public static void analyzeData(int[] numbers) {
         // ローカルRecord
         record Statistics(int count, double average, int max, int min) {}
-        
-        if (numbers.length == 0) {
-            IO.println("データがありません");
-            return;
-        }
-        
-        int sum = 0;
-        int max = numbers[0];
-        int min = numbers[0];
-        for (int n : numbers) {
-            sum += n;
-            if (n > max) {
-                max = n;
-            }
-            if (n < min) {
-                min = n;
-            }
-        }
+        // ...
         double average = (double) sum / numbers.length;
         
         Statistics stats =
@@ -824,7 +771,7 @@ Value Objectは、金額や日付のように、値そのものを表す小さ�
 次の`Money`は、金額を第6章で学んだ`BigDecimal`で持ち、コンパクトコンストラクターで引数`amount`に丸めた値を代入し直しています。
 フィールドへの代入は本体の最後に行われるため、丸めたあとの値がフィールドに入ります。
 
-<span class="listing-number">**サンプルコード8-21**　Money.java</span>
+<span class="listing-number">**サンプルコード8-21**　Money.java（1〜5、12〜27行目）</span>
 
 ```java
 import java.math.BigDecimal;
@@ -832,12 +779,7 @@ import java.math.RoundingMode;
 
 public record Money(BigDecimal amount, String currency) {
     public Money {
-        if (amount == null) {
-            throw new IllegalArgumentException("金額はnullにできません");
-        }
-        if (currency == null || currency.isBlank()) {
-            throw new IllegalArgumentException("通貨は必須です");
-        }
+        // ...
         // 金額を小数点以下2桁に丸める
         amount = amount.setScale(2, RoundingMode.HALF_UP);
     }
@@ -975,7 +917,7 @@ public class OrderProcessor {
 この`Order`は、サンプルコード8-23の`Order`とは別に、状態の移り変わりを表すために定義し直したものです。
 `updateStatus`は自分を書き換えず、新しい状態を持つ`Order`を作って返します。
 
-<span class="listing-number">**サンプルコード8-24**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜28行目）</span>
+<span class="listing-number">**サンプルコード8-24**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜10、21〜28行目）</span>
 
 ```java
 public enum OrderStatus {
@@ -997,16 +939,7 @@ public record Order(
     OrderStatus status,
     BigDecimal totalAmount
 ) {
-    public Order {
-        if (orderId == null || orderId.isBlank()) {
-            throw new IllegalArgumentException("注文IDは必須です");
-        }
-        if (totalAmount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(
-                    "合計金額は0以上でなければなりません");
-        }
-    }
-    
+    // ...
     public Order updateStatus(OrderStatus newStatus) {
         if (this.status.isFinal()) {
             throw new IllegalStateException("最終状態の注文は更新できません");
@@ -1022,7 +955,7 @@ public record Order(
 次のサンプルは、ゲームのキャラクターを、職業を表すEnumの`CharacterClass`と、能力値を表すRecordの`CharacterStats`で組み立てたものです。
 職業ごとの初期値はEnumの列挙子に持たせ、レベルアップでは能力値を書き換えずに新しいRecordを作って返します。
 
-<span class="listing-number">**サンプルコード8-25**　CharacterClass.java（1〜5、24行目）、CharacterStats.java、GameCharacter.java</span>
+<span class="listing-number">**サンプルコード8-25**　CharacterClass.java（1〜5、24行目）、CharacterStats.java、GameCharacter.java（1〜5、20〜24行目）</span>
 
 ```java
 // キャラクターの職業
@@ -1050,20 +983,7 @@ public record GameCharacter(
     CharacterClass characterClass,
     CharacterStats stats
 ) {
-    public static GameCharacter create(String playerName,
-            CharacterClass characterClass) {
-        return new GameCharacter(
-            playerName,
-            characterClass,
-            new CharacterStats(
-                1,
-                characterClass.getBaseHealth(),
-                characterClass.getBaseAttack(),
-                characterClass.getBaseMagic()
-            )
-        );
-    }
-    
+    // ...
     public GameCharacter levelUp() {
         return new GameCharacter(playerName, characterClass,
                 stats.levelUp());
