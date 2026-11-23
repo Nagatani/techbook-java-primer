@@ -1,3 +1,9 @@
+---
+config:
+  class:
+    nodeSpacing: 10
+    rankSpacing: 20
+---
 classDiagram
     direction LR
 
@@ -32,7 +38,7 @@ classDiagram
         +negate() Predicate
     }
 
-    Function~T,R~ <|-- UnaryOperator~T~ : extends
+    Function~T,R~ <|-- UnaryOperator~T~
 
     note "どれも@Functional<br/>Interfaceが付いている"
     note for Function "T型を受け取り<br/>R型を返す関数"

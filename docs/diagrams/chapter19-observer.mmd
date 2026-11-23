@@ -1,14 +1,14 @@
 classDiagram
     class TemperatureSensor {
         -List~TemperatureChangeListener~ listeners
-        +addTemperatureChangeListener(listener) void
-        +removeTemperatureChangeListener(listener) void
-        +setTemperature(double newTemperature) void
-        #fireTemperatureChanged(double oldTemp, double newTemp) void
+        +addTemperatureChangeListener(listener)
+        +removeTemperatureChangeListener(listener)
+        +setTemperature(double)
+        #fireTemperatureChanged(double, double)
     }
     class TemperatureChangeListener {
         <<interface>>
-        +temperatureChanged(TemperatureChangeEvent e) void
+        +temperatureChanged(event)
     }
     class TemperatureChangeEvent {
         -double oldTemperature

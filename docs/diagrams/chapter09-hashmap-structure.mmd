@@ -1,3 +1,9 @@
+---
+config:
+  flowchart:
+    nodeSpacing: 8
+    rankSpacing: 20
+---
 graph TD
     subgraph "HashMap内部構造"
         buckets["Node[] table<br/>capacity = 16"]
@@ -7,8 +13,6 @@ graph TD
         b3["[3] → Node → Node"]
         b4["[4] null"]
         b5["[5] → Node"]
-        b6["[6] null"]
-        b7["[7] null"]
         dots["..."]
         b15["[15] null"]
         
@@ -23,8 +27,6 @@ graph TD
         buckets --> b3
         buckets --> b4
         buckets --> b5
-        buckets --> b6
-        buckets --> b7
         buckets --> dots
         buckets --> b15
         

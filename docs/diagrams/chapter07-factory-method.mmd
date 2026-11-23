@@ -1,14 +1,15 @@
 classDiagram
+    direction LR
     class DocumentFactory {
         <<abstract>>
-        +createDocument()* Document
+        +createDocument()*
         +newDocument() Document
     }
     class WordDocumentFactory {
-        +createDocument() Document
+        +createDocument()
     }
     class PdfDocumentFactory {
-        +createDocument() Document
+        +createDocument()
     }
     class Document {
         <<interface>>

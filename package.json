@@ -55,6 +55,7 @@
     "@vivliostyle/theme-techbook": "^3.1.0",
     "glob": "^14.0.4",
     "js-yaml": "^4.3.2",
+    "subset-font": "2.8.0",
     "textlint": "^15.8.0",
     "textlint-rule-ja-hiraku": "^1.4.0",
     "textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet": "^1.0.1",

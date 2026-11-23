@@ -34,11 +34,11 @@ classDiagram
     class Comparator~T~ {
         <<interface>>
         +compare(T o1, T o2) int
-        +reversed() Comparator
-        +thenComparing(...) Comparator
+        +reversed()
+        +thenComparing(...)
     }
 
-    BiFunction~T,U,R~ <|-- BinaryOperator~T~ : extends
+    BiFunction~T,U,R~ <|-- BinaryOperator~T~
 
     note "どれも@Functional<br/>Interfaceが付いている"
     note for BiFunction "引数2つ<br/>結果を返す"

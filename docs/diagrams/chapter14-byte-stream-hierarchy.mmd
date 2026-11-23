@@ -2,9 +2,8 @@ classDiagram
     direction LR
     class InputStream {
         <<abstract>>
-        +read() int
-        +read(byte[] b) int
-        +close() void
+        +read()
+        +read(byte[] b)
     }
     
     class FileInputStream
@@ -16,21 +15,19 @@ classDiagram
     }
     
     class DataInputStream {
-        +readInt() int
-        +readDouble() double
-        +readUTF() String
+        +readInt()
+        +readUTF()
     }
     
     class ObjectInputStream {
-        +readObject() Object
+        +readObject()
     }
     
     class OutputStream {
         <<abstract>>
-        +write(int b) void
-        +write(byte[] b) void
-        +flush() void
-        +close() void
+        +write(int b)
+        +write(byte[] b)
+        +flush()
     }
     
     class FileOutputStream
@@ -42,13 +39,12 @@ classDiagram
     }
     
     class DataOutputStream {
-        +writeInt(int) void
-        +writeDouble(double) void
-        +writeUTF(String) void
+        +writeInt(int)
+        +writeUTF(String)
     }
     
     class ObjectOutputStream {
-        +writeObject(Object) void
+        +writeObject(Object)
     }
     
     InputStream <|-- FileInputStream

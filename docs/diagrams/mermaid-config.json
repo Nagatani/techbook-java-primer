@@ -1,4 +1,8 @@
 {
+  "fontFamily": "\"BIZ UDPGothic\", sans-serif",
+  "themeVariables": {
+    "fontFamily": "\"BIZ UDPGothic\", sans-serif"
+  },
   "flowchart": {
     "useMaxWidth": false,
     "nodeSpacing": 25,

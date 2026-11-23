@@ -1,4 +1,5 @@
 classDiagram
+    direction LR
 
     class Component {
         <<abstract>>
@@ -37,6 +38,6 @@ classDiagram
     JTextComponent <|-- JTextArea
     JComponent <|-- JScrollPane
 
-    note for Component "AWT（java.awt）"
-    note for JComponent "Swingの部品の基底クラス<br/>（javax.swing）"
-    note for JFrame "トップレベルコンテナー<br/>（ウィンドウ）"
+    note for Window "Component・Container・<br/>Window・FrameはAWT<br/>（java.awt）"
+    note for JComponent "Swingの部品の<br/>基底クラス<br/>（javax.swing）"
+    note for JFrame "トップレベル<br/>コンテナー"

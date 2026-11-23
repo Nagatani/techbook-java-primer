@@ -2,50 +2,45 @@ classDiagram
     direction LR
     class Reader {
         <<abstract>>
-        +read() int
-        +read(char[] cbuf) int
-        +close() void
+        +read()
+        +read(char[] cbuf)
     }
     
     class FileReader {
         +FileReader(String)
-        +FileReader(File)
     }
     
     class BufferedReader {
-        +readLine() String
+        +readLine()
         +BufferedReader(Reader)
     }
     
     class InputStreamReader {
-        +InputStreamReader(InputStream)
+        +InputStreamReader(in)
     }
     
     class Writer {
         <<abstract>>
-        +write(int c) void
-        +write(String str) void
-        +flush() void
-        +close() void
+        +write(int c)
+        +write(String str)
+        +flush()
     }
     
     class FileWriter {
         +FileWriter(String)
-        +FileWriter(File)
     }
     
     class BufferedWriter {
-        +newLine() void
+        +newLine()
         +BufferedWriter(Writer)
     }
     
     class OutputStreamWriter {
-        +OutputStreamWriter(OutputStream)
+        +OutputStreamWriter(out)
     }
     
     class PrintWriter {
-        +println(String) void
-        +printf(String, Object...) void
+        +println(String)
     }
     
     Reader <|-- BufferedReader
