@@ -16,6 +16,8 @@ sections:
     hash: 52408bbf
   - key: "並列化の効果を確かめる"
     hash: f4a3c98e
+  - key: "新しい並行処理のしくみ"
+    hash: 635c9a43
   - key: "よくあるエラーと対処法"
     hash: f20876cc
   - key: "まとめ"
@@ -72,6 +74,8 @@ sections:
     + 分けても速くならないことがある理由と、`System.nanoTime()`で時間を測って確かめる考え方（比べ方は第12章を参照）
     + Fork/Joinフレームワーク（`ForkJoinPool`・`RecursiveTask`、`fork`と`join`）のしくみを文章で説明し、並列ストリームと`Arrays.parallelSort`も内部で使う旨
     + Fork/Joinの合計と並列ソートの比較、スレッドセーフなシングルトン、パイプライン、リトライとサーキットブレーカーのコード例は付録Hへ案内する
+- 新しい並行処理のしくみ
+    + 仮想スレッド（Java 21で正式。待ち時間の長いタスクを大量に扱える、`newVirtualThreadPerTaskExecutor`、計算の重いタスクは速くならない）、構造化並行性（`StructuredTaskScope`、Java 25ではプレビュー）、スコープ値（`ScopedValue`、Java 25で正式、`ThreadLocal`との違い）をコードなしで紹介する（2026-11-23、Issue #032）
 - よくあるエラーと対処法（L1021–1036）
     + 競合状態、デッドロック、スレッドセーフでないコレクションの使用、ExecutorServiceのシャットダウン忘れの要点と、`appendix/e-common-errors/chapters/chapter15.md`のURL
 - まとめ（L1037–1062）
