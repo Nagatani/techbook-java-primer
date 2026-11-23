@@ -1,17 +1,17 @@
 ---
 source: manuscripts/chapter12-advanced-collections.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: a46ea38e
   - key: "Stream APIによる現代的なコレクション操作"
-    hash: 10343d64
+    hash: 19bf1cfd
   - key: "Optional型による安全なnull処理"
-    hash: 54ed6c8e
+    hash: 9dfdcae3
   - key: "並列ストリームによるパフォーマンス向上"
-    hash: d489fe8e
+    hash: 6d2916b0
   - key: "高度なStream操作"
-    hash: 63f11e2a
+    hash: 4480c7f0
   - key: "よくあるエラーと対処法"
     hash: 92c24189
   - key: "まとめ"
@@ -29,7 +29,7 @@ sections:
 - 第9章のコレクションと第11章のラムダ式を土台に、宣言的なデータ処理を教える
 - 主な内容は、Stream API（遅延評価、filter・map・sorted・flatMap・reduce・Collectors）、Optional、並列ストリーム
 - Optionalを正式に説明する章（2026-11-11に、本章内の二重の説明を「Optional型による安全なnull処理」の1か所にまとめた）。Comparatorは第11章を参照し、本章では`sorted`に渡す使い方だけを示す
-- 共通の題材は`Student`（name・score・height）で、サンプルコード12-4で定義し以降のサンプルで使い回す
+- 共通の題材は`Student`（name・score・height）で、サンプルコード12-5で定義し以降のサンプルで使い回す
 - 前提は第9章・第10章・第11章（L20）。並列ストリームのスレッドセーフティは第15章で学ぶ旨を案内している（L716）
 
 ## 構成上の問題
@@ -39,7 +39,7 @@ sections:
     + 「高度なStream操作」にあったOptionalの再説明を削り、nullを含むリストを`filter(Objects::nonNull)`で処理する小節（12-19）に置き換え、Optionalの節を参照するようにした
 - 第9章・第11章との重複（2026-11-11に解消）
     + 「データ構造の選択」を削除し、学習目標の前提で第9章「コレクションの選択指針」へ誘導した（L22–23）
-    + 「ラムダ式によるカスタムソート」を削除し、Stream APIの節に`sorted`の小節（12-4）を置いて、Comparatorは第11章で学んだとした
+    + 「ラムダ式によるカスタムソート」を削除し、Stream APIの節に`sorted`の小節（12-5）を置いて、Comparatorは第11章で学んだとした
 - 学習目標と本文の不一致が残る
     + 学習目標の「カスタムCollectorの作成」（L12）は本文で扱っていない（2026-11-12に解消。学習目標から外した）
     + 本文の大きな部分を占めるOptionalは学習目標に挙がっていない（2026-11-12に解消。学習目標に「Optional型」を加えた）
@@ -55,24 +55,25 @@ sections:
     + 遅延評価のしくみ（12-1）と、要素が1つずつ全操作を通る図
     + 基本パターンとパイプラインの図、生成・中間操作・終端操作の3フェーズと主なメソッド一覧。Java 24からの`gather`と`Gatherers`を脚注で紹介し、終端操作を呼んだストリームをもう一度操作すると`IllegalStateException`になる旨を書く
     + filter（12-2）と、`collect(Collectors.toList())`の説明（Java 16以降の`toList()`は脚注）、map（12-3）
-    + `sorted`による並べ替え（12-4、2026-11-11に新設）。`Student`クラスの定義、Comparatorは第11章で学んだ旨、`List.sort`との違い
-    + 組み合わせた例（12-5）
+    + 数値のストリーム（12-4 NumberStreamExample、2026-11-23に追加）: `Stream<Integer>`に`sum()`がないこと、mapToInt・mapToLong・mapToDoubleでIntStreamなどに変換すること、sum・average（OptionalDouble、orElse。Optionalの節へ誘導）、IntStream.range・rangeClosed、boxed。演習の基礎課題が前提にする
+    + `sorted`による並べ替え（12-5、2026-11-11に新設）。`Student`クラスの定義、Comparatorは第11章で学んだ旨、`List.sort`との違い
+    + 組み合わせた例（12-6）
 - Optional型による安全なnull処理（L263–728）
     + null参照の問題とTony Hoareの「10億ドルの過ち」、Optionalの概念（型で示せる、扱いを意識させる、チェインできる）
-    + 作成（12-6）、値の取得（12-7、`get`を避ける理由とorElse・orElseGetの評価の違いを含む）、存在確認と条件付き処理（12-8、`isPresent`＋`get`を避ける注意）、map・flatMap・filter（12-9）、Stream連携（12-10）、リポジトリ・設定値の実例（12-11、クラスの外側とmain全体を載せる）、アンチパターン（12-12）
+    + 作成（12-7）、値の取得（12-8、`get`を避ける理由とorElse・orElseGetの評価の違いを含む）、存在確認と条件付き処理（12-9、`isPresent`＋`get`を避ける注意）、map・flatMap・filter（12-10）、Stream連携（12-11）、リポジトリ・設定値の実例（12-12、クラスの外側とmain全体を載せる）、アンチパターン（12-13）
     + ベストプラクティスを文章でまとめる（2026-11-11に箇条書きを文章にした）。orElseの引数は常に評価されるのでコストが高い既定値はorElseGetを使う、と理由を書いた
     + コラム「Optionalはどこまで使うか――現場の線引き」（2026-11-19）。APIドキュメントの注記（主に戻り値、Optional型の変数をnullにしない）、フィールド・引数に使わない理由（Serializableでない、呼び出す側の手間）
 - 並列ストリームによるパフォーマンス向上（L709–853）
     + マルチコアと、スレッドセーフティは第15章で学ぶ旨
-    + parallelStreamの使い方（12-13）と、作成済みのストリームに`parallel()`を呼ぶ方法。Fork/Joinによる分割・処理・統合と図（共通プールのスレッド数はコア数より1少なく、呼び出したスレッドも加わる旨を脚注で説明）、計測例（12-14、`System.nanoTime`でミリ秒を求める。高速化率は小数1桁。結果は環境で変わる旨とJITの影響を脚注で説明）
-    + 注意点としてオーバーヘッド（分割・統合・スレッド間の受け渡し）、スレッドセーフティ（12-15）、順序（forEach・findAnyは変わりうるが、forEachOrderedとリストに集める`collect(Collectors.toList())`は並列でも順序を保つ）
+    + parallelStreamの使い方（12-14）と、作成済みのストリームに`parallel()`を呼ぶ方法。Fork/Joinによる分割・処理・統合と図（共通プールのスレッド数はコア数より1少なく、呼び出したスレッドも加わる旨を脚注で説明）、計測例（12-15、`System.nanoTime`でミリ秒を求める。高速化率は小数1桁。結果は環境で変わる旨とJITの影響を脚注で説明）
+    + 注意点としてオーバーヘッド（分割・統合・スレッド間の受け渡し）、スレッドセーフティ（12-16）、順序（forEach・findAnyは変わりうるが、forEachOrderedとリストに集める`collect(Collectors.toList())`は並列でも順序を保つ）
     + 使うとよい4条件（4つ目は、findFirst・limitのような順序を守る操作は並列で速くなりにくい点）
     + 第15章の並列ストリームの説明は本章へ寄せた（2026-11-11）
 - 高度なStream操作（L854–1202）
-    + flatMap（12-16、図あり）、reduce（12-17）、CollectorsのtoList・groupingBy・partitioningBy（12-18）
-    + nullを含むデータの処理（12-19、`Objects::nonNull`と`isBlank`）
-    + 早期終了操作allMatch・anyMatch・limit（12-20、`peek`の説明あり）、toArray（12-21、引数なしは`Object[]`を返す旨と`String[]::new`）
-    + groupingBy＋collectingAndThen・averagingIntの複合パイプライン（12-22）。返すMapの種類は仕様で決まっておらず（現在の実装はHashMap）表示順が保証されない注意と`TreeMap::new`
+    + flatMap（12-17、図あり）、reduce（12-18）、CollectorsのtoList・groupingBy・partitioningBy（12-19）
+    + nullを含むデータの処理（12-20、`Objects::nonNull`と`isBlank`）
+    + 早期終了操作allMatch・anyMatch・limit（12-21、`peek`の説明あり）、toArray（12-22、引数なしは`Object[]`を返す旨と`String[]::new`）
+    + groupingBy＋collectingAndThen・averagingIntの複合パイプライン（12-23）。返すMapの種類は仕様で決まっておらず（現在の実装はHashMap）表示順が保証されない注意と`TreeMap::new`
 - よくあるエラーと対処法（L1203–1222）
     + 中間操作の順序の誤り、終端操作の書き忘れ、並列ストリームでの共有データの変更、Optionalの誤用、同じ処理の繰り返しによる性能の低下、ラムダ式のなかでの検査例外の要点と、`appendix/e-common-errors/chapters/chapter12.md`のURL
 - まとめ（L1223–1238）

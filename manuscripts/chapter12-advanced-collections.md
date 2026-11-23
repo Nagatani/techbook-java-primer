@@ -136,7 +136,7 @@ Stream操作の基本の形は`コレクション.stream().中間操作1().中�
 ### `filter`: 条件に合う要素だけを抽出
 
 `filter`は、条件（`Predicate`）に一致する要素だけを残します。学生のリストから高得点者を抽出する例で確認してみましょう。以下のコードは、filter操作の基本的な使い方を示しています。
-`Student`は名前・点数・身長を持つクラスで、定義はサンプルコード12-4で示します。
+`Student`は名前・点数・身長を持つクラスで、定義はサンプルコード12-5で示します。
 
 <span class="listing-number">**サンプルコード12-2**</span>
 
@@ -164,6 +164,56 @@ List<String> names = list.stream()
     .collect(Collectors.toList());
 ```
 
+### 数値のストリーム
+
+`Stream<Integer>`には、合計を求める`sum()`がありません。
+数値を合計したり平均したりするときは、`mapToInt`・`mapToLong`・`mapToDouble`で数値専用のストリーム（`IntStream`・`LongStream`・`DoubleStream`）に変換します。
+数値専用のストリームには、`sum()`・`average()`・`max()`・`min()`などのメソッドがあります。
+
+<span class="listing-number">**サンプルコード12-4**　NumberStreamExample.java</span>
+
+```java
+import java.util.List;
+import java.util.stream.IntStream;
+
+public class NumberStreamExample {
+    public static void main(String[] args) {
+        List<Integer> scores = List.of(80, 65, 92);
+
+        // Stream<Integer>からIntStreamに変換してから合計する
+        int total = scores.stream().mapToInt(n -> n).sum();
+        IO.println("合計: " + total);
+
+        // averageは要素がないときに備えてOptionalDoubleを返す
+        double average = scores.stream()
+                .mapToInt(n -> n)
+                .average()
+                .orElse(0.0);
+        IO.println("平均: " + average);
+
+        // 1から5までの整数のストリームを作り、boxedでStream<Integer>に戻す
+        List<Integer> oneToFive = IntStream.rangeClosed(1, 5)
+                .boxed()
+                .toList();
+        IO.println(oneToFive);
+    }
+}
+```
+
+実行結果：
+
+```
+合計: 237
+平均: 79.0
+[1, 2, 3, 4, 5]
+```
+
+`average()`は、要素が1つもないと平均を計算できないので、値がない場合もある数値を表す`OptionalDouble`を返します。
+`orElse(0.0)`は、値がないときに使う値を指定して取り出すメソッドです。
+値がない場合を表すしくみは、本章の「Optional型による安全なnull処理」で詳しく学びます。
+`IntStream.range(開始, 終了)`は終了の値を含まない整数の並びを、`rangeClosed`は終了の値を含む並びを作ります。
+`boxed()`は、`int`の値を`Integer`に包んだ`Stream<Integer>`に戻します。
+
 ### `sorted`による並べ替え
 
 `sorted`は、要素を並べ替えたストリームを返す中間操作です。
@@ -171,7 +221,7 @@ List<String> names = list.stream()
 `Comparator`をラムダ式やメソッド参照で組み立てる方法（`comparing`・`thenComparing`・`reversed`）は、第11章で学びました。
 次のサンプルでは、本章で使う`Student`クラス（名前・点数・身長）を定義し、Streamで並べ替えます。
 
-<span class="listing-number">**サンプルコード12-4**　AdvancedSortExample.java</span>
+<span class="listing-number">**サンプルコード12-5**　AdvancedSortExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -229,7 +279,7 @@ public class AdvancedSortExample {
 
 実際のStream APIの威力は、複数の操作を組み合わせたときに発揮されます。以下は、複数の条件でフィルタリングし、変換、ソートを順次実行する例です。
 
-<span class="listing-number">**サンプルコード12-5**　StreamExample.java</span>
+<span class="listing-number">**サンプルコード12-6**　StreamExample.java</span>
 
 ```java
 import java.util.ArrayList;
@@ -280,7 +330,7 @@ Java 8で導入されたOptionalクラス<span class="footnote">同じ考え方�
 Optionalの基本的な使い方を理解するために、まずはOptionalオブジェクトの作成方法を見てみましょう。
 Optionalオブジェクトは、`Optional.of()`・`Optional.ofNullable()`・`Optional.empty()`の3つのメソッドで作ります。
 
-<span class="listing-number">**サンプルコード12-6**　OptionalCreationExample.java</span>
+<span class="listing-number">**サンプルコード12-7**　OptionalCreationExample.java</span>
 
 ```java
 import java.util.Optional;
@@ -317,7 +367,7 @@ public class OptionalCreationExample {
 
 Optionalから値を取得する方法は、安全性のレベルに応じて複数用意されています。以下のコードは、各種の値取得メソッドの使い方とその特徴を示しています。
 
-<span class="listing-number">**サンプルコード12-7**　OptionalRetrievalExample.java（4〜44行目）</span>
+<span class="listing-number">**サンプルコード12-8**　OptionalRetrievalExample.java（4〜44行目）</span>
 
 ```java
 public class OptionalRetrievalExample {
@@ -367,7 +417,7 @@ public class OptionalRetrievalExample {
 
 値の存在を確認し、存在する場合だけ処理を実行する方法を見ていきます。以下のコードは、Optionalの存在確認メソッドを使った条件付き処理の例です。
 
-<span class="listing-number">**サンプルコード12-8**　OptionalPresenceExample.java</span>
+<span class="listing-number">**サンプルコード12-9**　OptionalPresenceExample.java</span>
 
 ```java
 import java.util.Optional;
@@ -415,7 +465,7 @@ public class OptionalPresenceExample {
 
 Optionalは関数型プログラミングのコンテナーとして、map、flatMap、filterなどの操作をサポートします。以下のコードは、Optional内の値を安全に変換・操作する方法を示しています。
 
-<span class="listing-number">**サンプルコード12-9**　OptionalTransformationExample.java（3〜6、13〜18、20〜57行目）</span>
+<span class="listing-number">**サンプルコード12-10**　OptionalTransformationExample.java（3〜6、13〜18、20〜57行目）</span>
 
 ```java
 public class OptionalTransformationExample {
@@ -485,7 +535,7 @@ filter (failed): false
 
 OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。以下のコードは、Stream操作でOptionalを活用する実践的な例です。
 
-<span class="listing-number">**サンプルコード12-10**　OptionalStreamExample.java（7〜8、19、21〜22、27〜62、63行目）</span>
+<span class="listing-number">**サンプルコード12-11**　OptionalStreamExample.java（7〜8、19、21〜22、27〜62、63行目）</span>
 
 ```java
 public class OptionalStreamExample {
@@ -548,7 +598,7 @@ public class OptionalStreamExample {
 
 実際のアプリケーションでOptionalを効果的に使用する例を見てみましょう。以下のコードは、データベース検索や設定値取得といった実用的なシナリオでのOptional活用例です。
 
-<span class="listing-number">**サンプルコード12-11**　OptionalPracticalExample.java（5〜8、15〜19、21、34〜37、39、48〜59、61〜92行目）</span>
+<span class="listing-number">**サンプルコード12-12**　OptionalPracticalExample.java（5〜8、15〜19、21、34〜37、39、48〜59、61〜92行目）</span>
 
 ```java
 public class OptionalPracticalExample {
@@ -631,7 +681,7 @@ public class OptionalPracticalExample {
 
 Optionalを使う際に避けるべき間違いと、その代わりの書き方を示します。
 
-<span class="listing-number">**サンプルコード12-12**　OptionalAntiPatternsExample.java（5〜58、67〜68行目）</span>
+<span class="listing-number">**サンプルコード12-13**　OptionalAntiPatternsExample.java（5〜58、67〜68行目）</span>
 
 ```java
 public class OptionalAntiPatternsExample {
@@ -738,9 +788,9 @@ Optionalをメソッドの戻り値やチェイン操作で使うと、NullPoint
 ### 並列ストリームの使い方
 
 並列ストリームの使用は非常に簡単で、`.stream()`の代わりに`.parallelStream()`を使うだけです。
-作成済みのストリームに`parallel()`を呼んでも、並列ストリームにできます（サンプルコード12-14）。
+作成済みのストリームに`parallel()`を呼んでも、並列ストリームにできます（サンプルコード12-15）。
 
-<span class="listing-number">**サンプルコード12-13**</span>
+<span class="listing-number">**サンプルコード12-14**</span>
 
 ```java
 List<Integer> numbers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
@@ -784,7 +834,7 @@ IO.println("並列処理の結果: " + sumParallel);
 
 </div>
 
-<span class="listing-number">**サンプルコード12-14**　ParallelStreamExample.java</span>
+<span class="listing-number">**サンプルコード12-15**　ParallelStreamExample.java</span>
 
 ```java
 import java.util.stream.IntStream;
@@ -838,7 +888,7 @@ public class ParallelStreamExample {
 
 並列処理では、複数のスレッドが同じデータにアクセスする可能性があるため、スレッドセーフでない操作は避ける必要があります。
 
-<span class="listing-number">**サンプルコード12-15**</span>
+<span class="listing-number">**サンプルコード12-16**</span>
 
 ```java
 // スレッドセーフでない例（避けるとよい）
@@ -856,7 +906,7 @@ List<Integer> safeResults = numbers.parallelStream()
 
 並列ストリームでは、`forEach`で要素を処理する順序や`findAny`が返す要素は、実行のたびに変わることがあります。
 一方、`forEachOrdered`や、リストに集める`collect(Collectors.toList())`は、並列ストリームでも元の要素の順序を保ちます。
-サンプルコード12-15の`safeResults`も、元のリストと同じ順に並びます。
+サンプルコード12-16の`safeResults`も、元のリストと同じ順に並びます。
 
 ### 並列ストリームを使うとよい場合
 
@@ -883,7 +933,7 @@ List<Integer> safeResults = numbers.parallelStream()
 
 </div>
 
-<span class="listing-number">**サンプルコード12-16**　FlatMapExample.java</span>
+<span class="listing-number">**サンプルコード12-17**　FlatMapExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -938,7 +988,7 @@ public class FlatMapExample {
 
 `reduce`操作<span class="footnote">mapとreduceは、Lispなどの関数型言語で古くから使われてきた名前です。Googleが2004年に発表した大規模データ処理のしくみMapReduceも、この2つの関数から名前を取っています。</span>は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
 
-<span class="listing-number">**サンプルコード12-17**　ReduceExample.java（5〜27、41〜42行目）</span>
+<span class="listing-number">**サンプルコード12-18**　ReduceExample.java（5〜27、41〜42行目）</span>
 
 ```java
 public class ReduceExample {
@@ -978,13 +1028,13 @@ Java is awesome
 平均点: 85.0
 ```
 
-`reduce`は非常に強力ですが、多くの一般的な集約操作には専用のメソッド（`sum()`、`max()`、`min()`など）や`collect()`操作が用意されているため、それらを優先して使用することが推奨されます<span class="footnote">`reduce`を並列ストリームで使うときは、渡す演算が結合法則を満たす（`(a + b) + c`と`a + (b + c)`が等しい）ことが条件です。初期値には、足し算なら0のように、結果を変えない値を渡します。</span>。
+`reduce`は非常に強力ですが、多くの一般的な集約操作には、数値のストリームの`sum()`・`max()`・`min()`や`collect()`操作が用意されているため、それらを優先して使用することが推奨されます<span class="footnote">`reduce`を並列ストリームで使うときは、渡す演算が結合法則を満たす（`(a + b) + c`と`a + (b + c)`が等しい）ことが条件です。初期値には、足し算なら0のように、結果を変えない値を渡します。</span>。
 
 ### Collectorsによる高度なデータ収集
 
 `Collectors`クラスは、ストリームの要素をさまざまな形で収集するための豊富なメソッドを提供します。単純なリスト作成から、複雑なグループ化や統計処理まで対応できます。
 
-<span class="listing-number">**サンプルコード12-18**　CollectorsExample.java</span>
+<span class="listing-number">**サンプルコード12-19**　CollectorsExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1043,7 +1093,7 @@ public class CollectorsExample {
 `Objects::nonNull`は、`name -> name != null`と同じ判定をするメソッド参照です。
 値が1つだけで、それが存在しない場合もあるときは、本章の「Optional型による安全なnull処理」で学んだ`Optional`を使います。
 
-<span class="listing-number">**サンプルコード12-19**　NullSafeProcessingExample.java</span>
+<span class="listing-number">**サンプルコード12-20**　NullSafeProcessingExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1081,7 +1131,7 @@ public class NullSafeProcessingExample {
 Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを高速に処理する際に重要です。
 次のサンプルの`peek`は、要素をそのまま次へ渡しながら途中の値を確かめる処理をはさむ中間操作で、主にデバッグに使います。
 
-<span class="listing-number">**サンプルコード12-20**　ShortCircuitExample.java</span>
+<span class="listing-number">**サンプルコード12-21**　ShortCircuitExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1130,7 +1180,7 @@ public class ShortCircuitExample {
 ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。引数なしの`toArray()`は`Object[]`を返します。
 `String[]`のように要素の型に合った配列を受け取るには、`String[]::new`のような配列のコンストラクター参照を渡します。
 
-<span class="listing-number">**サンプルコード12-21**　ToArrayExample.java</span>
+<span class="listing-number">**サンプルコード12-22**　ToArrayExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1170,7 +1220,7 @@ public class ToArrayExample {
 
 実際のアプリケーションでは、複数のStream操作を組み合わせた複雑な処理パイプラインを構築することがよくあります。以下の例では、実用的なデータ処理シナリオを示します。
 
-<span class="listing-number">**サンプルコード12-22**　ComplexProcessingExample.java（6〜8、16〜36、48〜49行目）</span>
+<span class="listing-number">**サンプルコード12-23**　ComplexProcessingExample.java（6〜8、16〜36、48〜49行目）</span>
 
 ```java
 public class ComplexProcessingExample {
