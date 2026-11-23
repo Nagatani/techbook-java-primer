@@ -613,7 +613,7 @@ public class BuilderExample {
         Book book1 = new Book.Builder("978-4-123456-78-9",
                 "Javaプログラミング入門")
             .author("山田太郎")
-            .publisher("みなと出版")
+            .publisher("サンプル出版")
             .publicationYear(2024)
             .pages(350)
             .genre("プログラミング")
@@ -635,7 +635,7 @@ public class BuilderExample {
         Book textbook = new Book.Builder("978-4-222222-22-2",
                 "オブジェクト指向設計")
             .author("佐藤一郎")
-            .publisher("さくら書房")
+            .publisher("例題書房")
             .publicationYear(2023)
             .pages(450)
             .genre("ソフトウェア工学")

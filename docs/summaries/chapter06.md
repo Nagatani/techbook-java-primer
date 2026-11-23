@@ -11,7 +11,7 @@ sections:
   - key: "不変オブジェクトの設計パターン"
     hash: aba29fa1
   - key: "防御的コピーとビルダーパターン"
-    hash: c3af168a
+    hash: 639bc478
   - key: "日付と時刻（java.time）"
     hash: 7c33546c
   - key: "数値の正確な計算（BigDecimal）"
