@@ -1,4 +1,36 @@
+/* 書体はOFLのものをGoogle Fontsから読み込む（2026-11-24）。本文はBIZ UDPゴシック、コードはSource Code Pro（日本語はBIZ UDゴシック） */
+@import url("https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=BIZ+UDGothic:wght@400;700&display=swap");
 @import url(./theme-all.css);
+
+/* コードの書体は、可変フォントがType3で埋め込まれるのを避けるため、静的なフォントを同梱する（fonts/source-code-pro/README.md） */
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  font-weight: 400;
+  src: url(./fonts/source-code-pro/source-code-pro-latin-ext-400-normal.woff2) format("woff2");
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  font-weight: 400;
+  src: url(./fonts/source-code-pro/source-code-pro-latin-400-normal.woff2) format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  font-weight: 700;
+  src: url(./fonts/source-code-pro/source-code-pro-latin-ext-700-normal.woff2) format("woff2");
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  font-weight: 700;
+  src: url(./fonts/source-code-pro/source-code-pro-latin-700-normal.woff2) format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
 
 /**
  * Theme variables
@@ -56,14 +88,13 @@
 }
 
 :root {
-  --vs-font-family: 'Neue Frutiger World', 'Verdana', 'Hiragino Sans', sans-serif;
+  --vs-font-family: "BIZ UDPGothic", sans-serif;
   --vs-font-size-on-print: 75%;
   --vs-line-height: 1.6;
   --vs-widows-orphans: 3;
 
   --vs--heading-line-height: 1.2;
-  --vs--monospace-font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono',
-    monospace;
+  --vs--monospace-font-family: "Source Code Pro", "BIZ UDGothic", monospace;
   --vs--h1-font-size: 2.4em;
   --vs--h2-font-size: 1.8em;
   --vs--h3-font-size: 1.4em;
@@ -250,7 +281,7 @@ nav[role='doc-toc'] {
 body {
   font-size: 13Q;
   line-height: 21Q;
-  font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
+  font-family: var(--vs-font-family);
   font-weight: 400;
   text-spacing: auto;
   text-justify: inter-ideograph;
@@ -691,7 +722,7 @@ pre code {
   display: block;
   /* 上下の余白は半行分 */
   padding: 0.75em 1em;
-  font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
+  font-family: var(--vs--monospace-font-family);
   font-size: 8pt;
   line-height: 1.5;
   
@@ -801,7 +832,7 @@ pre.code-excerpt .code-segment-label {
   background-color: #ececec;
   border-bottom: 1px solid #ccc;
   color: #444;
-  font-family: "Noto Sans JP", sans-serif;
+  font-family: var(--vs-font-family);
   font-size: 7pt;
   font-weight: bold;
   line-height: 1.5;
@@ -906,7 +937,7 @@ code:not(pre code) {
      「、　public　や」のように前後が大きく空いて見えるため */
   padding: 0.2em 0.15em;
   border-radius: 3px;
-  font-family: "Consolas", "Monaco", "Andale Mono", "Ubuntu Mono", monospace;
+  font-family: var(--vs--monospace-font-family);
   font-size: 0.9em;
   /* インラインコードも改行対応 */
   word-wrap: break-word;
@@ -1898,7 +1929,7 @@ article:has(h1:contains("目次")),
 section:has(h1:contains("目次")) {
   break-before: page;
   break-after: page;
-  font-family: "Noto Sans JP", sans-serif;
+  font-family: var(--vs-font-family);
 }
 
 /* 印刷時のコードブロック調整 */

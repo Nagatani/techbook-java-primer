@@ -8,6 +8,7 @@
   "main": "theme.css",
   "files": [
     "css/*.css",
-    "*.css"
+    "*.css",
+    "fonts/**"
   ]
 }

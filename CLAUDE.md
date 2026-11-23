@@ -163,6 +163,7 @@ The book follows a spiral curriculum model where concepts are introduced at basi
    - 両端揃えで字間が開かないようにする（2026-11-11〜）。ビルド時に`scripts/vfm-line-breaks.js`（`documentProcessor`に組み込み）が、和文に接する原稿の改行を取り除き（HTMLでは改行がスペースになり、「ます。　なお」のように空く）、インラインコード・URL・本文に書いた長い名前に折り返し位置（`<wbr>`、「.」「/」「(」などの後ろと、12字以上の名前のキャメルケースの区切り）を入れる。URLはどの文字の後ろでも折り返す（`a.code-url`の`word-break: break-all`）。インラインコードの左右の余白は0.15em（和欧間のアキに重なるため）。原稿は1文ごとに改行したままでよい
    - コードブロックは前に空行を入れる。VFMでは空行なしで段落に続く```がコードブロックにならず、段落に吸収される（2026-11-10に123か所を修正）
    - コードの地は印刷用の設定（`@media print`の`pre`）で明るい色に固定される。コードの文字色は暗い地を前提にした淡い色を使わず、明るい地でコントラスト比4.5以上にする（2026-11-11に、bashのブロックを暗い地に明るい文字にしていたため、PDFで文字が背景に溶けて読めなかった。bashのブロックは左の緑の線で区別する）
+   - 書体（2026-11-24〜）: 本文はBIZ UDPゴシック、コードはSource Code Pro（コードの中の日本語はBIZ UDゴシック）。どれもOFL。BIZの2つはGoogle Fontsから読み込み、Source Code Proは`theme/my-theme/fonts/source-code-pro/`に静的なフォントを同梱する。Google Fontsが配る可変フォントは、ChromeがPDFにType3で埋め込み、検索や文字の取り出しで漢字が部首の文字（「⾏」など）になるため使わない。Macの書体（ヒラギノ・Verdana・Monacoなど）を指定に書かない（ビルドする環境で見た目が変わる）。埋め込まれた書体は、pypdfでページの`/Font`を見て確かめる
    - テーマは`theme/my-theme/theme.css`。変更したら`npm run build`でPDFを確認する
 
 ## Git運用
