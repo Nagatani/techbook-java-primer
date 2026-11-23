@@ -7,7 +7,7 @@ sections:
   - key: "エラーの種類と対処法"
     hash: b35b8e8c
   - key: "例外処理の基本：`try-catch-finally`"
-    hash: 4a7e0f1b
+    hash: 953b63ac
   - key: "検査例外と非検査例外"
     hash: bf83a4ed
   - key: "独自例外と例外の連鎖"

@@ -97,7 +97,7 @@ java.lang.NullPointerException: Cannot invoke "String.length()" because "<local1
 
 ### `finally`ブロック
 
-`finally`ブロックは、`try`ブロック内で例外が発生したかどうかにかかわらず、必ず実行される処理を記述します。主に、ファイルやネットワーク接続などのリソースを解放する後片付け処理に使われます。
+`finally`ブロックは、`try`ブロック内で例外が発生したかどうかにかかわらず、必ず実行される処理を記述します<span class="footnote">`try`ブロックのなかで`System.exit`を呼んだときやJVMが強制的に止められたときは実行されません。</span>。主に、ファイルやネットワーク接続などのリソースを解放する後片付け処理に使われます。
 
 <div class="figure">
 

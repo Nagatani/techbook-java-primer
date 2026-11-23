@@ -111,3 +111,105 @@ claims:
       kind: manual
       checked: 2026-11-19
       note: printStackTraceの説明の「Note the presence of lines containing the characters "..."」の段落を読んだ
+
+  # ---- 版以外の主張（2026-11-24、Issue #034）
+  - id: finally-always
+    claim: finallyブロックは例外の有無にかかわらず実行されるが、tryのなかでSystem.exitを呼んだときは実行されない
+    text:
+      - tryブロック内で例外が発生したかどうかにかかわらず、必ず実行される処理を記述します
+      - tryブロックのなかでSystem.exitを呼んだときやJVMが強制的に止められたときは実行されません
+    simplified: true
+    note: 「必ず実行される」は、System.exitやJVMの強制終了を除いた説明。脚注でその旨を書いた（2026-11-24）
+    sources:
+      - title: JLS 25 14.20.2 Execution of try-finally and try-catch-finally
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+    verify:
+      kind: run
+      probe: FinallyExit.java
+      args: [exit]
+      expect: ['^try$']
+      absent: ['^finally$']
+
+  - id: catch-order
+    claim: 親クラスの例外を先にcatchすると、後ろのサブクラスのcatchに届かずコンパイルエラーになる
+    text: 親クラスの例外（Exceptionなど）を先に書くと、後ろにあるサブクラスのcatchには処理が届かないため、コンパイルエラーになります
+    verify:
+      kind: javac
+      probe: compile-errors/CatchOrder.java
+      fails: true
+      expect: ['exception FileNotFoundException has already been caught']
+
+  - id: multi-catch-7
+    claim: マルチキャッチはJava 7から使える
+    text: のように、例外の型を|で区切って1つのcatchにまとめられます（マルチキャッチ、Java 7以降）
+    sources:
+      - title: Java SE 7 Features and Enhancements（Catching Multiple Exception Types）
+        url: https://www.oracle.com/java/technologies/javase/jdk7-relnotes.html
+    verify:
+      kind: run
+      probe: ExceptionFacts.java
+      expect: ['^multi-catch: io$']
+      note: Java 7より前の版はJDK 25のjavacの--releaseで指定できない（8が最小）ので、Java 7での導入はリリースノートで確かめた
+
+  - id: checked-must-handle
+    claim: 検査例外をtry-catchもthrowsもせずに投げうるメソッドを呼ぶとコンパイルエラーになる
+    text: どちらも書かずに検査例外を発生させうるメソッドを呼ぶと、コンパイルエラーになります
+    sources:
+      - title: JLS 25 11.2 Compile-Time Checking of Exceptions
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-11.html
+    verify:
+      kind: javac
+      probe: compile-errors/UnreportedChecked.java
+      fails: true
+      expect: ['unreported exception FileNotFoundException; must be caught or declared to be thrown']
+
+  - id: override-throws-broader
+    claim: オーバーライドするメソッドのthrowsに親より広い検査例外を書くとコンパイルエラーになる
+    text: throws Exceptionのように、より広い検査例外を書くとコンパイルエラーになります
+    sources:
+      - title: JLS 25 8.4.8.3 Requirements in Overriding and Hiding
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+    verify:
+      kind: javac
+      probe: compile-errors/OverrideBroader.java
+      fails: true
+      expect: ['load\(\) in Child cannot override load\(\) in Parent']
+
+  - id: override-throws-narrower
+    claim: オーバーライドするメソッドは、親の検査例外のサブクラスと、任意の非検査例外をthrowsに書ける
+    text:
+      - throwsに書けるのは、親クラスのメソッドが宣言した検査例外か、その子クラスの例外だけです
+      - 非検査例外には、この制約はありません
+    verify:
+      kind: run
+      probe: ExceptionFacts.java
+      expect: ['^body$']
+
+  - id: lambda-checked
+    claim: 検査例外を投げるメソッドをラムダ式のなかで呼ぶとコンパイルエラーになり、日本語のjavacは「例外IOExceptionは報告されません。スローするには、捕捉または宣言する必要があります」と報告する
+    text:
+      - 検査例外を投げるメソッドをラムダ式のなかで呼ぶと、その例外をラムダ式の外へ投げられず、コンパイルエラーになります
+      - 例外IOExceptionは報告されません。スローするには、捕捉または宣言する必要があります
+    verify:
+      kind: javac
+      probe: compile-errors/LambdaChecked.java
+      fails: true
+      expect: ['unreported exception IOException; must be caught or declared to be thrown']
+      note: 日本語の表示は-J-Duser.language=jaで実行して確かめた（2026-11-24）
+
+  - id: twr-close-order-suppressed
+    claim: try-with-resourcesは宣言と逆の順にリソースを閉じ、tryの例外を投げてcloseの例外を抑制された例外として付け加える。finallyで閉じる書き方ではcloseの例外が元の例外を上書きする
+    text:
+      - このときtry-with-resourcesは、tryブロックで発生した例外を呼び出し元へ投げ、closeの例外はその例外に「抑制された例外（suppressed exception）」として付け加えます
+      - finallyブロックで閉じる書き方では、closeの例外が元の例外を上書きし、本当の原因がわからなくなることがあります
+    sources:
+      - title: JLS 25 14.20.3 try-with-resources
+        url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+        anchor: closed in the reverse order from that in which they were initialized
+    verify:
+      kind: run
+      probe: ExceptionFacts.java
+      expect:
+        - '^close B\nclose A$'
+        - '^thrown: original, suppressed: close failed: C$'
+        - '^finally style thrown: close failed: D$'
