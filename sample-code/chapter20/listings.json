@@ -10,6 +10,11 @@
     "dir": "20-02",
     "main": "SortableTableExample",
     "excerpt": [
+      { "file": "PersonTableModel.java", "from": 6, "to": 6 },
+      { "file": "PersonTableModel.java", "from": 15, "to": 16 },
+      { "file": "PersonTableModel.java", "from": 18, "to": 19 },
+      { "file": "PersonTableModel.java", "from": 30, "to": 39 },
+      { "file": "PersonTableModel.java", "from": 50, "to": 59 },
       { "file": "SortableTableExample.java", "from": 6, "to": 6 },
       { "file": "SortableTableExample.java", "from": 11, "to": 11 },
       { "file": "SortableTableExample.java", "from": 15, "to": 38 },

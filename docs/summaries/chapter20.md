@@ -1,13 +1,13 @@
 ---
 source: manuscripts/chapter20-advanced-gui.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: f30b2d60
   - key: "JTableのしくみと基本"
     hash: 41d25014
   - key: "テーブルのソートとフィルタリング"
-    hash: ac8ffa96
+    hash: 423948f8
   - key: "JTreeの実装"
     hash: 12dbd6fc
   - key: "JListの高度な使用法"
@@ -55,7 +55,7 @@ sections:
     + JTableは仕事を部品に分けている（値は`TableModel`、描画は`TableCellRenderer`、編集は`TableCellEditor`、並べ替えと絞り込みは`TableRowSorter`）と文章で述べ、役割分担の図（chapter20-jtable-roles）を示す
     + 2次元配列と列名からJTableを作り、JScrollPaneに入れる基本例（20-1）と、表示される内容（列: ID・名前・年齢・メールアドレス、セルはダブルクリックで編集できる）
 - テーブルのソートとフィルタリング（L118–194）
-    + TableRowSorterによるヘッダークリックのソートと、RowFilterによる名前列のフィルタ（「適用」ボタンで実行）、行の追加・削除（20-2）。PersonTableModel（AbstractTableModelを継承）の役割を前置きで述べ、定義は全文にある
+    + TableRowSorterによるヘッダークリックのソートと、RowFilterによる名前列のフィルタ（「適用」ボタンで実行）、行の追加・削除（20-2）。20-2の抜粋にPersonTableModel（AbstractTableModelを継承）の主要部分を含め、JTableがgetRowCount・getColumnCount・getValueAtでモデルに問い合わせることと、fireTableRowsInserted・fireTableRowsDeletedで変更を知らせること（第19章のObserverパターン）を説明する（2026-11-23）
     + コードのあとで、`RowFilter.regexFilter(正規表現, 列の番号)`、`Pattern.quote`で記号を文字として扱うこと、`(?i)`を説明する。並べ替え・絞り込みをした表では画面とモデルの行の順が違うため、「削除」ボタンでは`getSelectedRow()`の結果を`convertRowIndexToModel()`で変換すると説明する（抜粋に削除ボタンのリスナーを含む）
 - JTreeの実装（L195–247）
     + DefaultMutableTreeNodeでファイルシステム風のツリーを作る基本例（20-3）。子を持つノードにはハンドルが出て、`setShowsRootHandles(true)`はルートにもハンドルを出す指定だと説明する

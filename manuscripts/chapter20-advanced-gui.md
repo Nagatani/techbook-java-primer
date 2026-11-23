@@ -121,13 +121,44 @@ JTableは組み込みのソート機能を提供しています<span class="foot
 
 以下のコードは、`TableRowSorter`を使用してテーブルのソートとフィルタリングを実装する例です。
 ヘッダーをクリックすると列の値で行を並べ替え、フィルターフィールドに文字列を入力して「適用」ボタンを押すと、その文字列を名前に含む行だけを表示します。
-表のデータは、`AbstractTableModel`を継承した`PersonTableModel`が持ちます。
-このクラスは、行数・列数・各セルの値を返すメソッドと、行を追加・削除するメソッドを持ちます。
+サンプルコード20-1のように2次元配列を`JTable`に渡すと、あとから行を足したり消したりできません。
+そこで、表のデータを自分で作ったテーブルモデルに持たせます。
+この例では、`AbstractTableModel`を継承した`PersonTableModel`が、`Person`（第8章で学んだRecord）のリストを持ちます。
 全文はGitHubリポジトリの`sample-code/chapter20/20-02/`にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter20/20-02/`</span>。
 
-<span class="listing-number">**サンプルコード20-2**　SortableTableExample.java（6、11、15〜38、58〜64、72、79行目）</span>
+<span class="listing-number">**サンプルコード20-2**　PersonTableModel.java（6、15〜16、18〜19、30〜39、50〜59行目）、SortableTableExample.java（6、11、15〜38、58〜64、72、79行目）</span>
 
 ```java
+public class PersonTableModel extends AbstractTableModel {
+    // ...
+    @Override
+    public int getRowCount() { return people.size(); }
+    // ...
+    @Override
+    public int getColumnCount() { return columnNames.length; }
+    // ...
+    @Override
+    public Object getValueAt(int row, int column) {
+        Person p = people.get(row);
+        return switch (column) {
+            case 0 -> p.id();
+            case 1 -> p.name();
+            case 2 -> p.age();
+            default -> p.email();
+        };
+    }
+    // ...
+    public void addPerson(Person person) {
+        people.add(person);
+        fireTableRowsInserted(people.size() - 1, people.size() - 1);
+    }
+
+    public void removePerson(int row) {
+        people.remove(row);
+        fireTableRowsDeleted(row, row);
+    }
+}
+
 public class SortableTableExample extends JFrame {
     // ...
     public SortableTableExample() {
@@ -169,6 +200,15 @@ public class SortableTableExample extends JFrame {
     // ...
 }
 ```
+
+`JTable`は、表を描くときにモデルの`getRowCount()`で行数を、`getColumnCount()`で列数を、`getValueAt(行, 列)`で各セルの値を問い合わせます。
+`AbstractTableModel`を継承したクラスは、この3つのメソッドを実装するだけでテーブルモデルになります<span class="footnote">列の見出しを返す`getColumnName`と、列の値の型を返す`getColumnClass`も、全文ではオーバーライドしています。`getColumnClass`で年齢の列を`Integer`と知らせると、その列は文字列ではなく数値として並べ替えられます。</span>。
+`JTable`はモデルのデータを写し取らず、描くたびにモデルへ問い合わせるので、データはモデルの1か所にだけあります。
+
+ただし、モデルのリストを書き換えただけでは、`JTable`はデータが変わったことに気づきません。
+`addPerson`と`removePerson`は、リストを変えたあとに`fireTableRowsInserted(最初の行, 最後の行)`や`fireTableRowsDeleted(最初の行, 最後の行)`を呼んで、変わった行を`JTable`に知らせます。
+知らせを受けた`JTable`は、その行を描き直します。
+データを変えたら変更を知らせるというこの形は、第19章で学んだObserverパターンです。
 
 `RowFilter.regexFilter(正規表現, 列の番号)`は、指定した列の値が正規表現に当てはまる行だけを残すフィルターを作ります。
 入力を`Pattern.quote`で囲むと、`(`や`.`などの記号も正規表現の記号ではなく、ただの文字として探します。
