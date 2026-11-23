@@ -786,7 +786,7 @@ class BasicUserService implements UserRepository,
 インターフェイスを継承して版を重ね、新しいメソッドをdefaultメソッドで追加していくと、古い版に合わせて書いた実装クラスを壊さずにAPIを広げられます。
 次の例の`ServiceConfig`は、タイムアウトなどの設定値を持つクラスです（全文に含めています）<span class="footnote">サンプルコード7-15の全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter07/07-15/`にあります。</span>。
 
-<span class="listing-number">**サンプルコード7-15**　ServiceV1.java</span>
+<span class="listing-number">**サンプルコード7-15**　ServiceV1.java（1〜45、53行目）</span>
 
 ```java
 // API進化の管理
@@ -834,13 +834,7 @@ class ServiceImpl implements ServiceV3 {
     public String process(String input) {
         return "Processed: " + input.toUpperCase();
     }
-    
-    // オプションで新機能をオーバーライド
-    @Override
-    public String processWithConfig(String input, ServiceConfig config) {
-        return "Processed with timeout " + config.getTimeout() + ": "
-                + input.toUpperCase();
-    }
+    // ...
 }
 ```
 

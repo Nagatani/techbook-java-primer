@@ -22,23 +22,11 @@ public class BuilderExample {
             .pages(280)
             .build();
         
-        // メソッドチェーンによる可読性の高いコード
-        Book textbook = new Book.Builder("978-4-222222-22-2",
-                "オブジェクト指向設計")
-            .author("佐藤一郎")
-            .publisher("例題書房")
-            .publicationYear(2023)
-            .pages(450)
-            .genre("ソフトウェア工学")
-            .build();
-
         IO.println("Book 1: " + book1.getTitle() + " by "
                 + book1.getAuthor());
         IO.println("Book 2: " + book2.getTitle() + " by "
                 + book2.getAuthor());
         IO.println("Book 3: " + book3.getTitle() + " by "
                 + book3.getAuthor());
-        IO.println("Textbook: " + textbook.getTitle() + " by "
-                + textbook.getAuthor());
     }
 }

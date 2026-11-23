@@ -71,7 +71,8 @@
     "main": "UserSystemAfter",
     "excerpt": [
       { "file": "User.java", "from": 2, "to": 2 },
-      { "file": "User.java", "from": 16, "to": 32 },
+      { "file": "User.java", "from": 16, "to": 19 },
+      { "file": "User.java", "from": 32, "to": 32 },
       { "file": "UserSystemAfter.java", "from": 1, "to": 19 },
       { "file": "UserSystemAfter.java", "from": 28, "to": 45 },
       { "file": "UserSystemAfter.java", "from": 56, "to": 56 }
@@ -145,7 +146,8 @@
     "dir": "05-19",
     "main": "PaymentExample",
     "excerpt": [
-      { "file": "PaymentExample.java", "from": 1, "to": 37 }
+      { "file": "PaymentExample.java", "from": 1, "to": 30 },
+      { "file": "PaymentExample.java", "from": 36, "to": 37 }
     ]
   },
   "5-20": {
@@ -169,7 +171,8 @@
     "main": null,
     "excerpt": [
       { "file": "WordDocument.java", "from": 1, "to": 12 },
-      { "file": "PDFDocument.java", "from": 1, "to": 24 },
+      { "file": "PDFDocument.java", "from": 1, "to": 16 },
+      { "file": "PDFDocument.java", "from": 24, "to": 24 },
       { "file": "ExcelDocument.java", "from": 1, "to": 16 }
     ]
   },
@@ -198,7 +201,9 @@
     "dir": "05-25",
     "main": null,
     "excerpt": [
-      { "file": "MyStack.java", "from": 1, "to": 35 }
+      { "file": "MyStack.java", "from": 1, "to": 1 },
+      { "file": "MyStack.java", "from": 5, "to": 18 },
+      { "file": "MyStack.java", "from": 27, "to": 35 }
     ]
   },
   "5-26": {
@@ -228,7 +233,9 @@
     "dir": "05-28",
     "main": null,
     "excerpt": [
-      { "file": "Shape.java", "from": 1, "to": 39 }
+      { "file": "Shape.java", "from": 1, "to": 8 },
+      { "file": "Shape.java", "from": 15, "to": 26 },
+      { "file": "Shape.java", "from": 32, "to": 39 }
     ]
   }
 }

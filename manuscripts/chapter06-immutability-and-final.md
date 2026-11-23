@@ -371,13 +371,9 @@ public final class ImmutablePerson {
 
 ### 不変オブジェクトの使用例
 
-<span class="listing-number">**サンプルコード6-7**　ImmutableExample.java</span>
+<span class="listing-number">**サンプルコード6-7**　ImmutableExample.java（5〜28行目）</span>
 
 ```java
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class ImmutableExample {
     public static void main(String[] args) {
         // 不変オブジェクトの作成
@@ -449,13 +445,9 @@ Recordの書き方や、コンパイラーが自動で作るメソッド、値�
 次の`DateRange`は、開始日と終了日の`LocalDate`はそのまま持ち、休日のリストだけをコピーします。
 休日を配列で返すメソッドもあります。
 
-<span class="listing-number">**サンプルコード6-9**　DateRange.java</span>
+<span class="listing-number">**サンプルコード6-9**　DateRange.java（5〜13、21〜40行目）</span>
 
 ```java
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 // 防御的コピーの実装例
 public final class DateRange {
     private final LocalDate startDate;
@@ -465,13 +457,7 @@ public final class DateRange {
     public DateRange(LocalDate start, LocalDate end,
             List<LocalDate> holidays) {
         // パラメーターの検証
-        if (start == null || end == null) {
-            throw new IllegalArgumentException("日付はnullにできません");
-        }
-        if (start.isAfter(end)) {
-            throw new IllegalArgumentException(
-                    "開始日は終了日以前にしてください");
-        }
+        // ...
         
         this.startDate = start;  // LocalDateは不変なのでコピー不要
         this.endDate = end;
@@ -631,24 +617,12 @@ public class BuilderExample {
             .pages(280)
             .build();
         
-        // メソッドチェーンによる可読性の高いコード
-        Book textbook = new Book.Builder("978-4-222222-22-2",
-                "オブジェクト指向設計")
-            .author("佐藤一郎")
-            .publisher("例題書房")
-            .publicationYear(2023)
-            .pages(450)
-            .genre("ソフトウェア工学")
-            .build();
-
         IO.println("Book 1: " + book1.getTitle() + " by "
                 + book1.getAuthor());
         IO.println("Book 2: " + book2.getTitle() + " by "
                 + book2.getAuthor());
         IO.println("Book 3: " + book3.getTitle() + " by "
                 + book3.getAuthor());
-        IO.println("Textbook: " + textbook.getTitle() + " by "
-                + textbook.getAuthor());
     }
 }
 ```
@@ -659,7 +633,6 @@ public class BuilderExample {
 Book 1: Javaプログラミング入門 by 山田太郎
 Book 2: データベース設計 by Unknown
 Book 3: アルゴリズム入門 by 鈴木花子
-Textbook: オブジェクト指向設計 by 佐藤一郎
 ```
 
 #### ビルダーパターンの利点

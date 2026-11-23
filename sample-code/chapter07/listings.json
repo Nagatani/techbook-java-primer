@@ -122,7 +122,8 @@
     "dir": "07-15",
     "main": null,
     "excerpt": [
-      { "file": "ServiceV1.java", "from": 1, "to": 53 }
+      { "file": "ServiceV1.java", "from": 1, "to": 45 },
+      { "file": "ServiceV1.java", "from": 53, "to": 53 }
     ]
   },
   "7-16": {

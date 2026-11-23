@@ -526,7 +526,7 @@ guest_session123 には DELETE 権限がありません
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-9**　User.java（2、16〜32行目）、UserSystemAfter.java（1〜19、28〜45、56行目）</span>
+<span class="listing-number">**サンプルコード5-9**　User.java（2、16〜19、32行目）、UserSystemAfter.java（1〜19、28〜45、56行目）</span>
 
 ```java
 public class User {
@@ -535,18 +535,7 @@ public class User {
         // デフォルトでは読み取り権限のみ
         return resource.equals("READ");
     }
-    
-    public void notify(String message) {
-        // 通知を送信
-        IO.println(userId + " への通知: " + message);
-    }
-    
-    public boolean isActive() {
-        return true; // デフォルトではアクティブ
-    }
-    
-    public String getUserId() { return userId; }
-    public String getEmail() { return email; }
+    // ...
 }
 
 // 統一的な処理で全ての型を扱える
@@ -1236,7 +1225,7 @@ public class PayPalPayment extends PaymentProcessor {
 
 #### 決済処理の使用例
 
-<span class="listing-number">**サンプルコード5-19**　PaymentExample.java</span>
+<span class="listing-number">**サンプルコード5-19**　PaymentExample.java（1〜30、36〜37行目）</span>
 
 ```java
 import java.math.BigDecimal;
@@ -1269,11 +1258,7 @@ public class PaymentExample {
         );
         
         PaymentResult ppResult = ppPayment.processPayment();
-        if (ppResult.isSuccess()) {
-            IO.println("決済成功: " + ppResult.getAuthorizationCode());
-        } else {
-            IO.println("決済失敗: " + ppResult.getMessage());
-        }
+        // ...
     }
 }
 ```
@@ -1407,7 +1392,7 @@ public class Document {
 子クラスは`Document`を継承し、自分に固有の部分だけを書きます。
 コンストラクターでは`super(...)`で親クラスの初期化を呼び、保存の方法が違う`PDFDocument`と`ExcelDocument`は`save()`をオーバーライドします。
 
-<span class="listing-number">**サンプルコード5-22**　WordDocument.java、PDFDocument.java、ExcelDocument.java</span>
+<span class="listing-number">**サンプルコード5-22**　WordDocument.java、PDFDocument.java（1〜16、24行目）、ExcelDocument.java</span>
 
 ```java
 // リファクタリング後：重複が除去された
@@ -1439,13 +1424,7 @@ public class PDFDocument extends Document {
         IO.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
     }
     
-    public void generatePDF() {
-        if (pageCount > 0) {
-            IO.println("PDF形式で " + pageCount + " ページを生成");
-        } else {
-            IO.println("ページ数が指定されていません");
-        }
-    }
+    // ...
 }
 
 public class ExcelDocument extends Document {
@@ -1599,13 +1578,11 @@ public class StackProblem {
 
 #### 解決策：コンポジションを使用
 
-<span class="listing-number">**サンプルコード5-25**　MyStack.java</span>
+<span class="listing-number">**サンプルコード5-25**　MyStack.java（1、5〜18、27〜35行目）</span>
 
 ```java
 // 良い例：内部実装を隠蔽
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-
+// ...
 public class MyStack {
     // privateで隠蔽
     private final ArrayList<String> elements = new ArrayList<>();
@@ -1620,14 +1597,7 @@ public class MyStack {
         }
         return elements.remove(elements.size() - 1);
     }
-    
-    public String peek() {
-        if (isEmpty()) {
-            throw new EmptyStackException();
-        }
-        return elements.get(elements.size() - 1);
-    }
-    
+    // ...
     public boolean isEmpty() {
         return elements.isEmpty();
     }
@@ -1782,7 +1752,7 @@ public class RectangleSquareTest {
 `interface Shape`は「`getArea()`メソッドを持つ」という約束だけを決めた型で、`implements Shape`と書いたクラスはその約束どおりに`getArea()`を実装します。
 ここでは、`Rectangle`と`Square`が継承の関係を持たず、それぞれが独立に`getArea()`を実装している点だけを読み取ってください。
 
-<span class="listing-number">**サンプルコード5-28**　Shape.java</span>
+<span class="listing-number">**サンプルコード5-28**　Shape.java（1〜8、15〜26、32〜39行目）</span>
 
 ```java
 // 解決策の例：インターフェイスを使用
@@ -1793,12 +1763,7 @@ interface Shape {
 class Rectangle implements Shape {
     private int width;
     private int height;
-    
-    public Rectangle(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-    
+    // ...
     @Override
     public double getArea() {
         return width * height;
@@ -1811,11 +1776,7 @@ class Rectangle implements Shape {
 
 class Square implements Shape {
     private int side;
-    
-    public Square(int side) {
-        this.side = side;
-    }
-    
+    // ...
     @Override
     public double getArea() {
         return side * side;
