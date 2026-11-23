@@ -46,7 +46,7 @@
     "excerpt": [
       { "file": "JdbcUserDao.java", "from": 12, "to": 36 },
       { "file": "JdbcUserDao.java", "from": 79, "to": 85 },
-      { "file": "DaoExample.java", "from": 21, "to": 33 }
+      { "file": "DaoExample.java", "from": 19, "to": 33 }
     ],
     "libs": [
       "com.h2database:h2:2.5.252"

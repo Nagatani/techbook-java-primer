@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter24-database-programming.md
-summarized: 2026-11-18
+summarized: 2026-11-23
 sections:
   - key: "本章の学習目標"
     hash: db8337c1
@@ -11,9 +11,9 @@ sections:
   - key: "JDBCのしくみ"
     hash: 89e80a0a
   - key: "行を操作する"
-    hash: 9375efa2
+    hash: d1502ab0
   - key: "DAOパターン"
-    hash: 4430fcf3
+    hash: 71539d56
   - key: "日付と時刻の列とjava.time"
     hash: 4adcf547
   - key: "トランザクション"
@@ -76,3 +76,4 @@ sections:
 ## 校正で見つけた個別の問題
 
 - 2026-11-18の校閲: 前提に第3章を加えた。IDの自動採番の説明を標準SQLから書き直した。24-5の説明の「3回目の`delete`」を実際のコードに合わせて「2回目」に直した。24-7の`toUser`の続きの行の字下げ、24-11のコメントの位置と文、24-12の抜粋範囲（`first`の宣言を含める）を直した
+- 2026-11-23（流れ・矛盾・過不足の校閲）: 24-5の実行結果の前に、全文のmainが誰を追加・更新・削除するかを書いた（抜粋にmainがなく、実行結果を読み解けなかった）。24-8の抜粋を、DAOをインターフェイスの型で受ける行（UserDao dao = new JdbcUserDao(conn);）から始まる範囲に広げた

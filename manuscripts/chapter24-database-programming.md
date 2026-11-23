@@ -290,6 +290,9 @@ GitHubの全文では、表の作成に`Statement`を使っています<span cla
 }
 ```
 
+全文の`main`は、`tanaka`と`sato`を追加して一覧を表示し、`sato`のメールアドレスを変えます。
+そのあと`tanaka`と、登録していない`suzuki`を削除してから、もう一度一覧を表示します。
+
 実行結果：
 
 ```
@@ -437,7 +440,7 @@ Recordは不変なので、メールアドレスを変えるときは`withEmail`
 
 DAOの実装クラスでは、各メソッドでSQLを実行し、`ResultSet`の行を`User`に変換します。
 
-<span class="listing-number">**サンプルコード24-8**　JdbcUserDao.java（12〜36、79〜85行目）、DaoExample.java（21〜33行目）</span>
+<span class="listing-number">**サンプルコード24-8**　JdbcUserDao.java（12〜36、79〜85行目）、DaoExample.java（19〜33行目）</span>
 
 ```java
 public class JdbcUserDao implements UserDao {
@@ -473,6 +476,8 @@ public class JdbcUserDao implements UserDao {
                 rs.getObject("created_at", LocalDateTime.class));
     }
 }
+
+            UserDao dao = new JdbcUserDao(conn);
 
             User tanaka = dao.create(User.newUser("tanaka",
                     "tanaka@example.com"));
