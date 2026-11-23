@@ -137,7 +137,7 @@ Javaを通じて身につけた知識と経験は、Python、JavaScript、Go、R
 1. Javaプログラムの書き方
     - 「Hello, World!!」から始めて、基本的なJavaコードの記述方法を学ぶ
 2. プログラムの実行確認
-    - 付録Aの手順でコンパイル・実行し、エラーが出たときの対処方法を覚える
+    - `javac`でコンパイルして`java`で実行し、エラーが出たときの対処方法を覚える
 3. Java言語の特徴
     - C言語との違いや、Javaならではの便利な機能を理解する
 4. Java 25の簡潔な書き方
@@ -386,7 +386,23 @@ C言語のmain関数と同じ役割を果たしますが、必ずクラスのな
 `IO`クラスの`println`メソッドを呼び出しています。
 本書では、標準入出力にこの`IO`クラスを使います（本章の「画面に文字列を出力する方法」で詳しく説明します）。
 
-> コンパイルと実行の方法や、標準入力の扱い方については、`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/a-environment-setup/`を参照してください。
+### コンパイルと実行
+
+C言語のプログラムをコンパイラーで実行ファイルにしてから動かしたように、Javaのプログラムもコンパイルしてから実行します。
+HelloWorld.javaを保存したディレクトリで、次の2つのコマンドを順に入力します。
+
+```bash
+$ javac HelloWorld.java
+$ java HelloWorld
+Hello, World!!
+```
+
+1行目の`javac`はJavaのコンパイラーで、ソースファイルHelloWorld.javaから、JVMが実行するバイトコードを収めたHelloWorld.classを作ります。
+2行目の`java`はJVMを起動するコマンドで、実行するクラスの名前を渡します。
+ここに渡すのはファイル名ではなくクラス名なので、`.java`や`.class`の拡張子は付けません。
+
+IntelliJ IDEAでは、実行ボタンを押すと、この2つの手順をまとめて行います。
+環境ごとの詳しい手順と、IDEでの実行の方法は付録Aにあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/a-environment-setup/`</span>。
 
 ## Javaプログラムの基本構文
 
