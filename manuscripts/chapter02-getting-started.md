@@ -1096,12 +1096,56 @@ public static 戻り値の型 メソッド名(引数リスト) {
 ### staticメソッドの特徴
 
 staticメソッドは、mainメソッドから直接呼び出せます。
-mainメソッドもstaticなので、同じクラスのなかのstaticメソッドをそのまま呼び出せるのです。
-一方、staticを付けていないメソッドはmainメソッドから直接呼び出せません。
-呼び出すには、そのメソッドを持つクラスをインスタンス化します。
+本書のmainメソッドは`public static void main(String[] args)`とstaticを付けて書くので、同じクラスのなかのstaticメソッドをそのまま呼び出せるのです。
+一方、staticを付けていないメソッドは、staticのmainメソッドから直接呼び出せません。
+呼び出すには、そのメソッドを持つクラスをインスタンス化します<span class="footnote">第1章で紹介したstaticのない`void main()`は、そのクラスのインスタンスのメソッドとして動くので、同じクラスのstaticでないメソッドも直接呼び出せます。インスタンスとstaticの違いは第3章で学びます。</span>。
 
 同じ処理を何度も書く代わりに、メソッドとして定義しておけば、何度でも呼び出して再利用できます。
 また、処理を機能ごとにメソッドへ分割すると、プログラムの構造がはっきりして読みやすくなります。
+
+### 引数の渡し方
+
+Javaでは、メソッドの引数はつねに値をコピーして渡します。
+C言語の関数と同じく、`int`などの引数をメソッドのなかで変えても、呼び出し元の変数は変わりません。
+
+配列を渡したときは、配列を指す参照（配列の場所を表す値）がコピーされます。
+コピーされた参照も同じ配列を指すので、メソッドのなかで要素を書き換えると、呼び出し元の配列の要素も変わります。
+C言語で配列を関数に渡すと先頭のアドレスが渡り、関数のなかで要素を変えられるのと似ています。
+
+<span class="listing-number">**サンプルコード2-34**　ArgumentPassing.java</span>
+
+```java
+public class ArgumentPassing {
+    public static void addOne(int n) {
+        n = n + 1;  // コピーを変えるだけ
+    }
+
+    public static void addOneToFirst(int[] array) {
+        array[0] = array[0] + 1;  // 同じ配列の要素を変える
+    }
+
+    public static void main(String[] args) {
+        int x = 10;
+        addOne(x);
+        IO.println("x = " + x);
+
+        int[] numbers = {10, 20};
+        addOneToFirst(numbers);
+        IO.println("numbers[0] = " + numbers[0]);
+    }
+}
+```
+
+実行結果：
+
+```
+x = 10
+numbers[0] = 11
+```
+
+`addOne`は引数`n`を変えていますが、`n`は`x`の値のコピーなので、`x`は10のままです。
+`addOneToFirst`の`array`は`numbers`と同じ配列を指しているので、要素の変更が呼び出し元にも見えます。
+オブジェクトを引数に渡したときも、配列と同じく参照がコピーされます（第3章）。
 
 ### C言語との比較における学習ポイント
 
@@ -1129,7 +1173,7 @@ Javaにおける文字列処理は、C言語のアプローチとは根本的に
 
 #### C言語の文字列処理の課題
 
-<span class="listing-number">**サンプルコード2-34**</span>
+<span class="listing-number">**サンプルコード2-35**</span>
 
 ```c
 // #include <string.h> が必要
@@ -1145,7 +1189,7 @@ strcpy(copy, str);
 
 #### Javaの文字列処理の利点
 
-<span class="listing-number">**サンプルコード2-35**</span>
+<span class="listing-number">**サンプルコード2-36**</span>
 
 ```java
 // Javaでの文字列処理
@@ -1168,7 +1212,7 @@ String copy = str;  // 参照のコピー（安全）
 
 #### 文字列の長さ取得
 
-<span class="listing-number">**サンプルコード2-36**</span>
+<span class="listing-number">**サンプルコード2-37**</span>
 
 ```c
 // #include <string.h> が必要
@@ -1177,7 +1221,7 @@ String copy = str;  // 参照のコピー（安全）
 int len = strlen(str);  // 毎回文字列を走査
 ```
 
-<span class="listing-number">**サンプルコード2-37**</span>
+<span class="listing-number">**サンプルコード2-38**</span>
 
 ```java
 // Java - 長さによらず一定の時間で取得できる
@@ -1186,7 +1230,7 @@ int len = str.length();  // 内部フィールドを返すだけ
 
 #### 文字列の比較
 
-<span class="listing-number">**サンプルコード2-38**</span>
+<span class="listing-number">**サンプルコード2-39**</span>
 
 ```c
 // #include <string.h> が必要
@@ -1197,7 +1241,7 @@ if (strcmp(str1, str2) == 0) {
 }
 ```
 
-<span class="listing-number">**サンプルコード2-39**</span>
+<span class="listing-number">**サンプルコード2-40**</span>
 
 ```java
 // Java
@@ -1208,7 +1252,7 @@ if (str1.equals(str2)) {
 
 #### 部分文字列の取得
 
-<span class="listing-number">**サンプルコード2-40**</span>
+<span class="listing-number">**サンプルコード2-41**</span>
 
 ```c
 // #include <string.h> が必要
@@ -1219,7 +1263,7 @@ strncpy(sub, str + 5, 9);
 sub[9] = '\0';
 ```
 
-<span class="listing-number">**サンプルコード2-41**</span>
+<span class="listing-number">**サンプルコード2-42**</span>
 
 ```java
 // Java - 簡潔で安全
@@ -1231,7 +1275,7 @@ String sub = str.substring(5, 14);
 文字列オブジェクトの作成と基本操作は、Javaプログラミングにおいてもっとも頻繁に使用される機能の1つです。
 以下のコード例では、文字列の作成、連結、長さの取得、個別文字へのアクセスという基本的な操作を示します。
 
-<span class="listing-number">**サンプルコード2-42**</span>
+<span class="listing-number">**サンプルコード2-43**</span>
 
 ```java
 // 文字列の作成
@@ -1259,7 +1303,7 @@ char firstChar = message.charAt(0);  // 'H'
 C言語では`strcmp()`関数で比較しますが、Javaではオブジェクトの比較という観点から、より慎重なアプローチが必要です。
 以下のコード例で、参照の比較と内容の比較の重要な違いを示します。
 
-<span class="listing-number">**サンプルコード2-43**</span>
+<span class="listing-number">**サンプルコード2-44**</span>
 
 ```java
 String s1 = "Java";
@@ -1291,7 +1335,7 @@ Javaの`String`クラスは、テキスト処理に必要な豊富なメソッ�
 これらのメソッドは、Web開発でのユーザー入力の処理、データベースから取得した文字列の整形、ファイルの読み書きなど、実際の開発で頻繁に使用されます。
 以下のコード例で、もっとも重要な文字列操作メソッドを実践的に学習します。
 
-<span class="listing-number">**サンプルコード2-44**</span>
+<span class="listing-number">**サンプルコード2-45**</span>
 
 ```java
 String text = "  Java Programming  ";
@@ -1332,7 +1376,7 @@ Javaの文字列設計におけるもっとも重要な特徴の1つが不変性
 複数の処理を同時に動かすマルチスレッド（第15章）でも、文字列を安全に共有できます。
 以下のコード例で、この重要な概念を実際に確認してみましょう。
 
-<span class="listing-number">**サンプルコード2-45**</span>
+<span class="listing-number">**サンプルコード2-46**</span>
 
 ```java
 String str = "Hello";
@@ -1362,7 +1406,7 @@ Javaでは、文字列操作メソッドはつねに新しい文字列オブジ�
 この問題を解決するために、Javaは`StringBuilder`クラス<span class="footnote">`StringBuilder`はJava 5で加わりました。それ以前からある`StringBuffer`も同じ働きをしますが、複数のスレッドから使うための同期処理が入っている分、処理に時間がかかります。</span>を提供しています。
 `StringBuilder`は内部に可変長の文字配列を持ち、メモリの再割り当てを最小限に抑えながら文字列操作を行います。
 
-<span class="listing-number">**サンプルコード2-46**</span>
+<span class="listing-number">**サンプルコード2-47**</span>
 
 ```java
 StringBuilder sb = new StringBuilder();
@@ -1392,7 +1436,7 @@ String result = sb.toString();
 Javaの標準ライブラリのクラスは、パッケージという単位に分けて置かれています。
 `java.lang`以外のパッケージにあるクラス（配列の節で使った`java.util.Arrays`など）を使うときは、ファイルの先頭に`import`文を書きます。
 
-<span class="listing-number">**サンプルコード2-47**　ImportExample.java</span>
+<span class="listing-number">**サンプルコード2-48**　ImportExample.java</span>
 
 ```java
 import java.util.Arrays;  // Arraysクラスを使用するための宣言

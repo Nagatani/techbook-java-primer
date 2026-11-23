@@ -22,4 +22,4 @@ javac -d out *.java
 | [2-20](./02-20/) | SafeInputExample.java | `java -cp out SafeInputExample` |
 | [2-23](./02-23/) | SwitchExample.java | `java -cp out SwitchExample` |
 | [2-32](./02-32/) | Calculator.java | `java -cp out Calculator` |
-| [2-47](./02-47/) | ImportExample.java | `java -cp out ImportExample` |
+| [2-48](./02-48/) | ImportExample.java | `java -cp out ImportExample` |
