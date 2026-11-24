@@ -1,11 +1,7 @@
 import java.time.Duration;
 
-public record Configuration(
-    String host,
-    int port,
-    boolean useSsl,
-    Duration timeout
-) {
+public record Configuration(String host, int port, boolean useSsl,
+        Duration timeout) {
     // withメソッド群
     public Configuration withHost(String newHost) {
         return new Configuration(newHost, port, useSsl, timeout);

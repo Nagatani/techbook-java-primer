@@ -20,7 +20,6 @@ interface Measurable {
     }
 }
 
-// 使用例
 class Temperature implements Measurable {
     private final double celsius;
 

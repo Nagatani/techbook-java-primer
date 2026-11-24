@@ -5,14 +5,10 @@ public class PatternMatchingExample {
                 String.format("座標(%d, %d)の点（直線y = xの上）", x, y);
             case Point(int x, int y) -> 
                 String.format("座標(%d, %d)の点", x, y);
-            case String s when s.isEmpty() -> 
-                "空の文字列";
-            case String s -> 
-                String.format("文字列: %s", s);
-            case null -> 
-                "null値";
-            default -> 
-                "未知のオブジェクト";
+            case String s when s.isEmpty() -> "空の文字列";
+            case String s -> String.format("文字列: %s", s);
+            case null -> "null値";
+            default -> "未知のオブジェクト";
         };
     }
     

@@ -1,13 +1,9 @@
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record Order(
-    String orderId,
-    String customerId,
-    LocalDateTime orderDate,
-    OrderStatus status,
-    BigDecimal totalAmount
-) {
+public record Order(String orderId, String customerId,
+        LocalDateTime orderDate, OrderStatus status,
+        BigDecimal totalAmount) {
     public Order {
         if (orderId == null || orderId.isBlank()) {
             throw new IllegalArgumentException("注文IDは必須です");

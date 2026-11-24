@@ -1,4 +1,3 @@
-// 使用例
 public class FactoryDemo {
     public static void main(String[] args) {
         // ファクトリを使って図形を生成

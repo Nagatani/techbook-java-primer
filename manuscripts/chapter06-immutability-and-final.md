@@ -39,7 +39,7 @@
 スレッド（`Thread`）は第15章「マルチスレッドプログラミング」で、`() -> { … }`という書き方（ラムダ式）は第11章「ラムダ式と関数型インターフェイス」で詳しく学びます。
 ここでは、「2つの処理が同時に動き、同じオブジェクトを書き換えている」ことだけを読み取ってください。
 
-<span class="listing-number">**サンプルコード6-1**　MutablePoint.java（1〜4、11〜15行目）、ThreadSafetyProblem.java（1〜21、30〜34行目）</span>
+<span class="listing-number">**サンプルコード6-1**　MutablePoint.java（1〜4、11〜15行目）、ThreadSafetyProblem.java（1〜21、31〜34行目）</span>
 
 ```java
 // 可変オブジェクトの問題例
@@ -75,7 +75,6 @@ public class ThreadSafetyProblem {
         t2.start();
         
         // ...
-        
         // 期待値: 2000, 実際の値: 予測不可能（2000より小さくなることがある）
         IO.println("X座標: " + point.getX());
     }
@@ -319,7 +318,7 @@ class ColoredPoint extends ImmutablePoint { }
 
 ### 実践例：不変な`ImmutablePerson`クラス
 
-<span class="listing-number">**サンプルコード6-6**　ImmutablePerson.java（5〜12、19〜28、37〜51、73行目）</span>
+<span class="listing-number">**サンプルコード6-6**　ImmutablePerson.java（5〜12、20〜28、37〜51、73行目）</span>
 
 ```java
 // 完全な不変クラスの例
@@ -331,7 +330,6 @@ public final class ImmutablePerson {
     public ImmutablePerson(String name, int age, List<String> hobbies) {
         // パラメーターの検証
         // ...
-        
         this.name = name.trim();
         this.age = age;
         // 防御的コピー：外部のリストが変更されても影響を受けない
@@ -371,12 +369,11 @@ public final class ImmutablePerson {
 
 ### 不変オブジェクトの使用例
 
-<span class="listing-number">**サンプルコード6-7**　ImmutableExample.java（5〜28行目）</span>
+<span class="listing-number">**サンプルコード6-7**　ImmutableExample.java（5〜26行目）</span>
 
 ```java
 public class ImmutableExample {
     public static void main(String[] args) {
-        // 不変オブジェクトの作成
         List<String> hobbies =
                 new ArrayList<>(Arrays.asList("読書", "映画鑑賞"));
         ImmutablePerson person =
@@ -391,7 +388,6 @@ public class ImmutableExample {
         IO.println("元の人: " + person); // age=25
         IO.println("新しい人: " + olderPerson); // age=26
         
-        // 趣味を追加
         ImmutablePerson personWithNewHobby =
                 person.addHobby("プログラミング");
         IO.println("元の趣味: " + person.getHobbies());
@@ -445,7 +441,7 @@ Recordの書き方や、コンパイラーが自動で作るメソッド、値�
 次の`DateRange`は、開始日と終了日の`LocalDate`はそのまま持ち、休日のリストだけをコピーします。
 休日を配列で返すメソッドもあります。
 
-<span class="listing-number">**サンプルコード6-9**　DateRange.java（5〜13、21〜40行目）</span>
+<span class="listing-number">**サンプルコード6-9**　DateRange.java（5〜13、22〜40行目）</span>
 
 ```java
 // 防御的コピーの実装例
@@ -458,7 +454,6 @@ public final class DateRange {
             List<LocalDate> holidays) {
         // パラメーターの検証
         // ...
-        
         this.startDate = start;  // LocalDateは不変なのでコピー不要
         this.endDate = end;
         
@@ -540,7 +535,7 @@ public class ViewVsCopy {
 クラスの内側に`static`を付けて宣言するクラス（静的ネストクラス）は、第8章で学びます。
 ここでは、`Book`に付属するクラスで、外からは`Book.Builder`という名前で使える、と読んでください。
 
-<span class="listing-number">**サンプルコード6-11**　Book.java（3〜7、13〜17、22〜31、37〜38、45〜53、81〜85、91行目）</span>
+<span class="listing-number">**サンプルコード6-11**　Book.java（3〜7、13〜17、22〜30、36〜37、44〜52、80〜83、89行目）</span>
 
 ```java
 // ビルダーパターンを使った不変オブジェクトの構築
@@ -557,7 +552,6 @@ public final class Book {
         // ...
     }
     
-    // ビルダークラス
     public static class Builder {
         // 必須パラメーター
         private final String isbn;
@@ -579,7 +573,6 @@ public final class Book {
             return this;
         }
         // ...
-        // Bookオブジェクトの構築
         public Book build() {
             return new Book(this);
         }
@@ -595,7 +588,6 @@ public final class Book {
 ```java
 public class BuilderExample {
     public static void main(String[] args) {
-        // ビルダーパターンによる不変オブジェクトの構築
         Book book1 = new Book.Builder("978-4-123456-78-9",
                 "Javaプログラミング入門")
             .author("山田太郎")

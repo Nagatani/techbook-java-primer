@@ -59,7 +59,6 @@ public enum DayOfWeek {
 public class EnumExample {
     public static void main(String[] args) {
         DayOfWeek today = DayOfWeek.WEDNESDAY;
-        
         IO.println("今日は " + today + " です。");
         // 列挙型のtoString()は既定で列挙子の名前を返す（"WEDNESDAY"と表示）
         
@@ -197,7 +196,7 @@ public class TrafficLight {
 
 各列挙子でメソッドをオーバーライドすることで、列挙子ごとに異なる振る舞いをさせることができます。
 
-<span class="listing-number">**サンプルコード8-6**　Operation.java（1〜5、14〜27行目）</span>
+<span class="listing-number">**サンプルコード8-6**　Operation.java（1〜5、14〜31行目）</span>
 
 ```java
 public enum Operation {
@@ -220,6 +219,10 @@ public enum Operation {
     public abstract double apply(double x, double y);
     
     @Override
+    public String toString() {
+        return symbol;
+    }
+}
 ```
 
 実行結果：
@@ -264,7 +267,6 @@ public enum DatabaseConnection {
     private Connection connection;
     
     DatabaseConnection() {
-        // データベース接続の初期化
         this.connection = initializeConnection();
     }
     
@@ -598,17 +600,13 @@ public record Temperature(double value, String unit) {
 Recordの値は書き換えられないので、一部の成分だけを変えたいときは、その成分だけを差し替えた新しいRecordを作って返すメソッドを用意します。
 このようなメソッドを`withHost`のように「with＋成分名」と名付けることが多く、withメソッドパターンと呼びます。
 
-<span class="listing-number">**サンプルコード8-16**　Configuration.java（1〜12、22〜25行目）</span>
+<span class="listing-number">**サンプルコード8-16**　Configuration.java（1〜8、18〜21行目）</span>
 
 ```java
 import java.time.Duration;
 
-public record Configuration(
-    String host,
-    int port,
-    boolean useSsl,
-    Duration timeout
-) {
+public record Configuration(String host, int port, boolean useSsl,
+        Duration timeout) {
     // withメソッド群
     public Configuration withHost(String newHost) {
         return new Configuration(newHost, port, useSsl, timeout);
@@ -636,14 +634,10 @@ public class PatternMatchingExample {
                 String.format("座標(%d, %d)の点（直線y = xの上）", x, y);
             case Point(int x, int y) -> 
                 String.format("座標(%d, %d)の点", x, y);
-            case String s when s.isEmpty() -> 
-                "空の文字列";
-            case String s -> 
-                String.format("文字列: %s", s);
-            case null -> 
-                "null値";
-            default -> 
-                "未知のオブジェクト";
+            case String s when s.isEmpty() -> "空の文字列";
+            case String s -> String.format("文字列: %s", s);
+            case null -> "null値";
+            default -> "未知のオブジェクト";
         };
     }
     
@@ -722,12 +716,9 @@ public record Employee(String name, String id, Company company) {
     // 従業員の勤務先と、その所在地を返す
     public String getFullAddress() {
         return String.format("%sの勤務先は%s（所在地: %s %s %s）",
-            name,
-            company.name(),
-            company.headquarters().country(),
-            company.headquarters().city(),
-            company.headquarters().street()
-        );
+                name, company.name(), company.headquarters().country(),
+                company.headquarters().city(),
+                company.headquarters().street());
     }
 }
 ```
@@ -743,12 +734,8 @@ DTO（Data Transfer Object）は、処理の間やシステムの間でデータ
 
 ```java
 // APIレスポンス用のDTO
-public record ApiResponse(
-    boolean success,
-    String data,
-    String message,
-    long timestamp
-) {
+public record ApiResponse(boolean success, String data, String message,
+        long timestamp) {
     public ApiResponse(boolean success, String data, String message) {
         this(success, data, message, System.currentTimeMillis());
     }
@@ -825,10 +812,10 @@ public class ShapeCalculator {
     public static double calculateArea(Shape shape) {
         return switch (shape) {
             case Circle(double radius) -> Math.PI * radius * radius;
-            case Rectangle(double width, double height) -> width
-                    * height;
-            case Triangle(double base, double height) -> 0.5 * base
-                    * height;
+            case Rectangle(double width, double height) ->
+                    width * height;
+            case Triangle(double base, double height) ->
+                    0.5 * base * height;
         };
     }
 }
@@ -917,7 +904,7 @@ public class OrderProcessor {
 この`Order`は、サンプルコード8-23の`Order`とは別に、状態の移り変わりを表すために定義し直したものです。
 `updateStatus`は自分を書き換えず、新しい状態を持つ`Order`を作って返します。
 
-<span class="listing-number">**サンプルコード8-24**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜10、21〜28行目）</span>
+<span class="listing-number">**サンプルコード8-24**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜6、17〜24行目）</span>
 
 ```java
 public enum OrderStatus {
@@ -932,14 +919,10 @@ public enum OrderStatus {
     }
 }
 
-public record Order(
-    String orderId,
-    String customerId,
-    LocalDateTime orderDate,
-    OrderStatus status,
-    BigDecimal totalAmount
-) {
-    // ...
+public record Order(String orderId, String customerId,
+        LocalDateTime orderDate, OrderStatus status,
+        BigDecimal totalAmount) {
+        // ...
     public Order updateStatus(OrderStatus newStatus) {
         if (this.status.isFinal()) {
             throw new IllegalStateException("最終状態の注文は更新できません");
@@ -955,7 +938,7 @@ public record Order(
 次のサンプルは、ゲームのキャラクターを、職業を表すEnumの`CharacterClass`と、能力値を表すRecordの`CharacterStats`で組み立てたものです。
 職業ごとの初期値はEnumの列挙子に持たせ、レベルアップでは能力値を書き換えずに新しいRecordを作って返します。
 
-<span class="listing-number">**サンプルコード8-25**　CharacterClass.java（1〜5、24行目）、CharacterStats.java、GameCharacter.java（1〜5、20〜24行目）</span>
+<span class="listing-number">**サンプルコード8-25**　CharacterClass.java（1〜5、24行目）、CharacterStats.java、GameCharacter.java（1〜2、17〜21行目）</span>
 
 ```java
 // キャラクターの職業
@@ -969,21 +952,14 @@ public enum CharacterClass {
 public record CharacterStats(int level, int health, int attack,
         int magic) {
     public CharacterStats levelUp() {
-        return new CharacterStats(
-            level + 1,
-            health + 10,
-            attack + 2,
-            magic + 2
-        );
+        return new CharacterStats(level + 1, health + 10, attack + 2,
+                magic + 2);
     }
 }
 
-public record GameCharacter(
-    String playerName,
-    CharacterClass characterClass,
-    CharacterStats stats
-) {
-    // ...
+public record GameCharacter(String playerName,
+        CharacterClass characterClass, CharacterStats stats) {
+        // ...
     public GameCharacter levelUp() {
         return new GameCharacter(playerName, characterClass,
                 stats.levelUp());

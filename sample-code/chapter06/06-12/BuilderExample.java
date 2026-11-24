@@ -1,6 +1,5 @@
 public class BuilderExample {
     public static void main(String[] args) {
-        // ビルダーパターンによる不変オブジェクトの構築
         Book book1 = new Book.Builder("978-4-123456-78-9",
                 "Javaプログラミング入門")
             .author("山田太郎")

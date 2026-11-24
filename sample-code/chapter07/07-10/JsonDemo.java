@@ -1,6 +1,5 @@
 public class JsonDemo {
     public static void main(String[] args) {
-        // 使用例
         User[] users = { new User("Alice"), new User("Bob") };
         IO.println("Serialized users: "
                 + JsonSerializable.serializeAll(users));

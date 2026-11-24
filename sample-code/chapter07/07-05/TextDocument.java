@@ -1,4 +1,3 @@
-// TextDocument.java
 // ExportableとArchivableの両方のインターフェイスを実装する
 public class TextDocument implements Exportable, Archivable {
     private String title;

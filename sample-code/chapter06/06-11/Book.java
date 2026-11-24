@@ -21,7 +21,6 @@ public final class Book {
         this.genre = builder.genre;
     }
     
-    // ビルダークラス
     public static class Builder {
         // 必須パラメーター
         private final String isbn;
@@ -78,7 +77,6 @@ public final class Book {
             return this;
         }
         
-        // Bookオブジェクトの構築
         public Book build() {
             return new Book(this);
         }

@@ -6,7 +6,7 @@
       { "file": "MutablePoint.java", "from": 1, "to": 4 },
       { "file": "MutablePoint.java", "from": 11, "to": 15 },
       { "file": "ThreadSafetyProblem.java", "from": 1, "to": 21 },
-      { "file": "ThreadSafetyProblem.java", "from": 30, "to": 34 }
+      { "file": "ThreadSafetyProblem.java", "from": 31, "to": 34 }
     ]
   },
   "6-3": {
@@ -35,7 +35,7 @@
     "main": null,
     "excerpt": [
       { "file": "ImmutablePerson.java", "from": 5, "to": 12 },
-      { "file": "ImmutablePerson.java", "from": 19, "to": 28 },
+      { "file": "ImmutablePerson.java", "from": 20, "to": 28 },
       { "file": "ImmutablePerson.java", "from": 37, "to": 51 },
       { "file": "ImmutablePerson.java", "from": 73, "to": 73 }
     ]
@@ -44,7 +44,7 @@
     "dir": "06-07",
     "main": "ImmutableExample",
     "excerpt": [
-      { "file": "ImmutableExample.java", "from": 5, "to": 28 }
+      { "file": "ImmutableExample.java", "from": 5, "to": 26 }
     ],
     "uses": [
       "6-6"
@@ -55,7 +55,7 @@
     "main": null,
     "excerpt": [
       { "file": "DateRange.java", "from": 5, "to": 13 },
-      { "file": "DateRange.java", "from": 21, "to": 40 }
+      { "file": "DateRange.java", "from": 22, "to": 40 }
     ]
   },
   "6-10": {
@@ -71,18 +71,18 @@
     "excerpt": [
       { "file": "Book.java", "from": 3, "to": 7 },
       { "file": "Book.java", "from": 13, "to": 17 },
-      { "file": "Book.java", "from": 22, "to": 31 },
-      { "file": "Book.java", "from": 37, "to": 38 },
-      { "file": "Book.java", "from": 45, "to": 53 },
-      { "file": "Book.java", "from": 81, "to": 85 },
-      { "file": "Book.java", "from": 91, "to": 91 }
+      { "file": "Book.java", "from": 22, "to": 30 },
+      { "file": "Book.java", "from": 36, "to": 37 },
+      { "file": "Book.java", "from": 44, "to": 52 },
+      { "file": "Book.java", "from": 80, "to": 83 },
+      { "file": "Book.java", "from": 89, "to": 89 }
     ]
   },
   "6-12": {
     "dir": "06-12",
     "main": "BuilderExample",
     "excerpt": [
-      { "file": "BuilderExample.java", "from": 1, "to": 32 }
+      { "file": "BuilderExample.java", "from": 1, "to": 31 }
     ],
     "uses": [
       "6-11"

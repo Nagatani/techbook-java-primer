@@ -1,8 +1,5 @@
-public record GameCharacter(
-    String playerName,
-    CharacterClass characterClass,
-    CharacterStats stats
-) {
+public record GameCharacter(String playerName,
+        CharacterClass characterClass, CharacterStats stats) {
     public static GameCharacter create(String playerName,
             CharacterClass characterClass) {
         return new GameCharacter(

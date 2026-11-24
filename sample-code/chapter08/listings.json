@@ -10,7 +10,7 @@
     "dir": "08-02",
     "main": "EnumExample",
     "excerpt": [
-      { "file": "EnumExample.java", "from": 1, "to": 11 }
+      { "file": "EnumExample.java", "from": 1, "to": 10 }
     ],
     "uses": [
       "8-1"
@@ -46,14 +46,14 @@
     "main": "OperationDemo",
     "excerpt": [
       { "file": "Operation.java", "from": 1, "to": 5 },
-      { "file": "Operation.java", "from": 14, "to": 27 }
+      { "file": "Operation.java", "from": 14, "to": 31 }
     ]
   },
   "8-7": {
     "dir": "08-07",
     "main": null,
     "excerpt": [
-      { "file": "DatabaseConnection.java", "from": 1, "to": 21 }
+      { "file": "DatabaseConnection.java", "from": 1, "to": 20 }
     ]
   },
   "8-8": {
@@ -122,8 +122,8 @@
     "dir": "08-16",
     "main": null,
     "excerpt": [
-      { "file": "Configuration.java", "from": 1, "to": 12 },
-      { "file": "Configuration.java", "from": 22, "to": 25 }
+      { "file": "Configuration.java", "from": 1, "to": 8 },
+      { "file": "Configuration.java", "from": 18, "to": 21 }
     ]
   },
   "8-17": {
@@ -131,7 +131,7 @@
     "main": "PatternMatchingExample",
     "excerpt": [
       { "file": "Point.java", "from": 1, "to": 1 },
-      { "file": "PatternMatchingExample.java", "from": 1, "to": 28 }
+      { "file": "PatternMatchingExample.java", "from": 1, "to": 24 }
     ]
   },
   "8-18": {
@@ -148,7 +148,7 @@
     "excerpt": [
       { "file": "Address.java", "from": 1, "to": 1 },
       { "file": "Company.java", "from": 1, "to": 1 },
-      { "file": "Employee.java", "from": 1, "to": 12 }
+      { "file": "Employee.java", "from": 1, "to": 9 }
     ]
   },
   "8-21": {
@@ -186,8 +186,8 @@
     "excerpt": [
       { "file": "OrderStatus.java", "from": 1, "to": 6 },
       { "file": "OrderStatus.java", "from": 20, "to": 23 },
-      { "file": "Order.java", "from": 4, "to": 10 },
-      { "file": "Order.java", "from": 21, "to": 28 }
+      { "file": "Order.java", "from": 4, "to": 6 },
+      { "file": "Order.java", "from": 17, "to": 24 }
     ]
   },
   "8-25": {
@@ -196,9 +196,9 @@
     "excerpt": [
       { "file": "CharacterClass.java", "from": 1, "to": 5 },
       { "file": "CharacterClass.java", "from": 24, "to": 24 },
-      { "file": "CharacterStats.java", "from": 1, "to": 11 },
-      { "file": "GameCharacter.java", "from": 1, "to": 5 },
-      { "file": "GameCharacter.java", "from": 20, "to": 24 }
+      { "file": "CharacterStats.java", "from": 1, "to": 7 },
+      { "file": "GameCharacter.java", "from": 1, "to": 2 },
+      { "file": "GameCharacter.java", "from": 17, "to": 21 }
     ]
   },
   "8-26": {

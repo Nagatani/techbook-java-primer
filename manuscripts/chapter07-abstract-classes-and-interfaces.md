@@ -85,7 +85,6 @@ public abstract class Shape {
 <span class="listing-number">**サンプルコード7-2**　Circle.java、Rectangle.java</span>
 
 ```java
-// Circle.java
 public class Circle extends Shape {
     private double radius;
 
@@ -101,7 +100,6 @@ public class Circle extends Shape {
     }
 }
 
-// Rectangle.java
 public class Rectangle extends Shape {
     private double width;
     private double height;
@@ -112,7 +110,6 @@ public class Rectangle extends Shape {
         this.height = height;
     }
 
-    // 抽象メソッドの実装
     @Override
     public double getArea() {
         return this.width * this.height;
@@ -127,7 +124,6 @@ public class Rectangle extends Shape {
 <span class="listing-number">**サンプルコード7-3**　Main.java</span>
 
 ```java
-// Main.java
 public class Main {
     public static void main(String[] args) {
         // コンパイルエラー！ 抽象クラスはインスタンス化できない
@@ -181,13 +177,11 @@ public class Main {
 <span class="listing-number">**サンプルコード7-4**　Exportable.java、Archivable.java</span>
 
 ```java
-// Exportable.java
 public interface Exportable {
     // インターフェイス内のメソッドは自動的に public abstract になる
     void exportToFormat(String format);
 }
 
-// Archivable.java
 public interface Archivable {
     void archiveToStorage(String location);
 }
@@ -200,7 +194,6 @@ public interface Archivable {
 <span class="listing-number">**サンプルコード7-5**　TextDocument.java</span>
 
 ```java
-// TextDocument.java
 // ExportableとArchivableの両方のインターフェイスを実装する
 public class TextDocument implements Exportable, Archivable {
     private String title;
@@ -396,7 +389,6 @@ interface C extends A {
 // ダイヤモンド問題：BとCの両方を継承
 class D implements B, C {
     // オーバーライドしないと、どちらのmethod()を使うか決まらずコンパイルエラーになる
-    
     // 解決策：明示的にオーバーライド
     @Override
     public void method() {
@@ -498,7 +490,6 @@ public interface JsonSerializable {
 
 public class JsonDemo {
     public static void main(String[] args) {
-        // 使用例
         User[] users = { new User("Alice"), new User("Bob") };
         IO.println("Serialized users: "
                 + JsonSerializable.serializeAll(users));
@@ -672,7 +663,7 @@ Mixinは、サンプルコード7-12の`Memo`のように、小さな機能を�
 Javaの標準ライブラリにも、大小を比べる`compareTo()`を実装クラスに求める`Comparable`インターフェイスがあります。
 `Comparable`は、第10章「ジェネリクス」で学ぶ型パラメーターを使って比べる相手の型を決めるため、ここでは`double`の値で比べる形にしました。
 
-<span class="listing-number">**サンプルコード7-13**　Measurable.java（1〜12、18〜44行目）</span>
+<span class="listing-number">**サンプルコード7-13**　Measurable.java（1〜12、18〜43行目）</span>
 
 ```java
 // 大きさを比べられるオブジェクトのトレイト（状態を持たず、振る舞いだけを提供する）
@@ -693,7 +684,6 @@ interface Measurable {
     }
 }
 
-// 使用例
 class Temperature implements Measurable {
     private final double celsius;
 
@@ -861,7 +851,7 @@ Factoryパターンは、オブジェクトの生成を専門に行うクラス�
 
 </div>
 
-<span class="listing-number">**サンプルコード7-16**　FigureFactory.java（3〜10、17〜20、26、68〜78、91〜96行目）、FactoryDemo.java</span>
+<span class="listing-number">**サンプルコード7-16**　FigureFactory.java（3〜10、17〜20、26、68〜77、91〜96行目）、FactoryDemo.java</span>
 
 ```java
 // 共通のインターフェイス
@@ -890,7 +880,6 @@ public class FigureFactory {
                             "円には半径が必要です");
                 }
                 return new CircleFigure(params[0]);
-                
                 // ...
             default:
                 throw new IllegalArgumentException("不明な図形タイプ: "
@@ -899,7 +888,6 @@ public class FigureFactory {
     }
 }
 
-// 使用例
 public class FactoryDemo {
     public static void main(String[] args) {
         // ファクトリを使って図形を生成
@@ -932,7 +920,7 @@ public class FactoryDemo {
 
 </div>
 
-<span class="listing-number">**サンプルコード7-17**　DocumentFactory.java（1〜21、29〜42、52行目）</span>
+<span class="listing-number">**サンプルコード7-17**　DocumentFactory.java（1〜20、30〜41、52行目）</span>
 
 ```java
 // ファクトリの抽象クラス
@@ -955,9 +943,7 @@ class WordDocumentFactory extends DocumentFactory {
         return new WordDocument();
     }
 }
-
 // ...
-// ドキュメントインターフェイス
 interface Document {
     void open();
     void save();
@@ -970,7 +956,6 @@ class WordDocument implements Document {
     public void open() {
         IO.println("Word文書を開いています...");
     }
-    
     // ...
 }
 ```

@@ -6,7 +6,6 @@ public enum DatabaseConnection {
     private Connection connection;
     
     DatabaseConnection() {
-        // データベース接続の初期化
         this.connection = initializeConnection();
     }
     
