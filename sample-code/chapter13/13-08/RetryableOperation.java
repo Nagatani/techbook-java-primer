@@ -17,11 +17,9 @@ public class RetryableOperation {
                 if (!retryableException.isInstance(e)) {
                     throw e; // リトライ対象外の例外は即座に再スロー
                 }
-                
                 lastException = e;
                 IO.println("試行 %d/%d 失敗: %s".formatted(
                     attempt, MAX_RETRY_COUNT, e.getMessage()));
-                
                 if (attempt < MAX_RETRY_COUNT) {
                     try {
                         Thread.sleep(RETRY_DELAY_MS);

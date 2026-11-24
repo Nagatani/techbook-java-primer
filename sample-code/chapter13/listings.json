@@ -24,8 +24,8 @@
     "dir": "13-06",
     "main": "BankAccountDemo",
     "excerpt": [
-      { "file": "BankAccount.java", "from": 1, "to": 18 },
-      { "file": "BankAccount.java", "from": 27, "to": 27 }
+      { "file": "BankAccount.java", "from": 1, "to": 17 },
+      { "file": "BankAccount.java", "from": 26, "to": 26 }
     ]
   },
   "13-7": {
@@ -40,25 +40,25 @@
     "main": "RetryableOperation",
     "excerpt": [
       { "file": "RetryableOperation.java", "from": 4, "to": 6 },
-      { "file": "RetryableOperation.java", "from": 8, "to": 24 },
-      { "file": "RetryableOperation.java", "from": 33, "to": 38 },
-      { "file": "RetryableOperation.java", "from": 56, "to": 56 }
+      { "file": "RetryableOperation.java", "from": 8, "to": 22 },
+      { "file": "RetryableOperation.java", "from": 31, "to": 36 },
+      { "file": "RetryableOperation.java", "from": 54, "to": 54 }
     ]
   },
   "13-9": {
     "dir": "13-09",
     "main": null,
     "excerpt": [
-      { "file": "ExceptionAggregator.java", "from": 3, "to": 29 },
-      { "file": "ExceptionAggregator.java", "from": 39, "to": 56 }
+      { "file": "ExceptionAggregator.java", "from": 3, "to": 27 },
+      { "file": "ExceptionAggregator.java", "from": 38, "to": 54 }
     ]
   },
   "13-10": {
     "dir": "13-10",
     "main": null,
     "excerpt": [
-      { "file": "MultiResourceExample.java", "from": 4, "to": 22 },
-      { "file": "MultiResourceExample.java", "from": 51, "to": 51 }
+      { "file": "MultiResourceExample.java", "from": 4, "to": 19 },
+      { "file": "MultiResourceExample.java", "from": 49, "to": 49 }
     ]
   },
   "13-11": {
@@ -66,8 +66,8 @@
     "main": "ResourcePoolDemo",
     "excerpt": [
       { "file": "ResourcePool.java", "from": 3, "to": 7 },
-      { "file": "ResourcePool.java", "from": 15, "to": 45 },
-      { "file": "ResourcePool.java", "from": 59, "to": 59 },
+      { "file": "ResourcePool.java", "from": 15, "to": 44 },
+      { "file": "ResourcePool.java", "from": 58, "to": 58 },
       { "file": "ResourcePoolDemo.java", "from": 1, "to": 12 }
     ]
   },
@@ -75,8 +75,8 @@
     "dir": "13-12",
     "main": null,
     "excerpt": [
-      { "file": "ExceptionLogging.java", "from": 5, "to": 47 },
-      { "file": "ExceptionLogging.java", "from": 68, "to": 68 }
+      { "file": "ExceptionLogging.java", "from": 5, "to": 38 },
+      { "file": "ExceptionLogging.java", "from": 59, "to": 59 }
     ]
   },
   "13-13": {
@@ -93,8 +93,8 @@
     "main": null,
     "excerpt": [
       { "file": "BusinessException.java", "from": 4, "to": 13 },
-      { "file": "BusinessException.java", "from": 22, "to": 24 },
-      { "file": "BusinessException.java", "from": 30, "to": 33 },
+      { "file": "BusinessException.java", "from": 22, "to": 22 },
+      { "file": "BusinessException.java", "from": 28, "to": 31 },
       { "file": "InsufficientBalanceException.java", "from": 3, "to": 12 },
       { "file": "SystemException.java", "from": 4, "to": 13 },
       { "file": "SystemException.java", "from": 28, "to": 28 }
@@ -120,10 +120,10 @@
     "main": "TransferDemo",
     "excerpt": [
       { "file": "TransferService.java", "from": 5, "to": 7 },
-      { "file": "TransferService.java", "from": 17, "to": 20 },
-      { "file": "TransferService.java", "from": 24, "to": 49 },
-      { "file": "TransferService.java", "from": 60, "to": 74 },
-      { "file": "TransferService.java", "from": 121, "to": 121 }
+      { "file": "TransferService.java", "from": 17, "to": 19 },
+      { "file": "TransferService.java", "from": 23, "to": 48 },
+      { "file": "TransferService.java", "from": 58, "to": 71 },
+      { "file": "TransferService.java", "from": 118, "to": 118 }
     ]
   }
 }

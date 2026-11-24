@@ -9,7 +9,6 @@ public class TextFileWriterExample {
     public static void main(String[] args) {
         Path filePath = Path.of("output.txt");
 
-        // ファイルへの書き込み
         // BufferedWriterを使用してテキストデータを効率的にファイルに書き込みます。
         // CREATE: ファイルが存在しない場合は新規作成
         // TRUNCATE_EXISTING: 既存ファイルがある場合は内容を消去して上書き

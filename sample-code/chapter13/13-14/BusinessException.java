@@ -19,9 +19,7 @@ public abstract class BusinessException extends Exception {
         this.details = new HashMap<>(details);
     }
     
-    public String getErrorCode() {
-        return errorCode;
-    }
+    public String getErrorCode() { return errorCode; }
     
     public Map<String, Object> getDetails() {
         return Collections.unmodifiableMap(details);

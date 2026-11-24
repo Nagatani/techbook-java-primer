@@ -173,14 +173,13 @@ Line 2
 
 書き込みにも、読み込みと同様に`Files`クラスを使い、`BufferedWriter`で書き出します。
 
-<span class="listing-number">**サンプルコード14-3**　TextFileWriterExample.java（8〜28行目）</span>
+<span class="listing-number">**サンプルコード14-3**　TextFileWriterExample.java（8〜27行目）</span>
 
 ```java
 public class TextFileWriterExample {
     public static void main(String[] args) {
         Path filePath = Path.of("output.txt");
 
-        // ファイルへの書き込み
         // BufferedWriterを使用してテキストデータを効率的にファイルに書き込みます。
         // CREATE: ファイルが存在しない場合は新規作成
         // TRUNCATE_EXISTING: 既存ファイルがある場合は内容を消去して上書き
@@ -331,7 +330,6 @@ public class DataStreamExample {
         try (DataOutputStream dos = new DataOutputStream(
                 new BufferedOutputStream(
                 new FileOutputStream(filename)))) {
-            // プリミティブ型の書き込み
             dos.writeInt(12345);
             dos.writeLong(9876543210L);
             dos.writeDouble(3.14159);
@@ -528,7 +526,7 @@ CSV（Comma-Separated Values）形式は、表計算データやデータベー�
 基本的なCSV処理は標準ライブラリだけで実装できますが、値にカンマや改行を含むデータを扱う場合は、Apache Commons CSVなどの専用ライブラリを使用します。
 次は、基本的なCSVの読み込みと書き込みの実装例です。
 
-<span class="listing-number">**サンプルコード14-8**　CSVProcessingExample.java（6〜59、72行目）</span>
+<span class="listing-number">**サンプルコード14-8**　CSVProcessingExample.java（6〜54、67行目）</span>
 
 ```java
 public class CSVProcessingExample {
@@ -536,15 +534,12 @@ public class CSVProcessingExample {
         Path csvFile = Path.of("sample.csv");
         // 読み書きの失敗は、呼び出し側のmainでまとめて受け止める
         try {
-            // CSVファイルの作成（サンプルデータ）
             createSampleCSV(csvFile);
             
-            // CSVファイルの読み込み
             List<List<String>> csvData = readCSV(csvFile);
             IO.println("読み込んだCSVデータ:");
             csvData.forEach(row -> IO.println(String.join(" | ", row)));
             
-            // CSVファイルの書き込み
             writeCSV(Path.of("output.csv"), csvData);
         } catch (IOException e) {
             System.err.println("CSVファイルを読み書きできません: "
@@ -552,7 +547,6 @@ public class CSVProcessingExample {
         }
     }
     
-    // CSVファイルの読み込み
     public static List<List<String>> readCSV(Path filePath)
             throws IOException {
         List<List<String>> result = new ArrayList<>();
@@ -573,7 +567,6 @@ public class CSVProcessingExample {
         return Arrays.asList(line.split(",", -1));
     }
     
-    // CSVファイルの書き込み
     public static void writeCSV(Path filePath, List<List<String>> data)
             throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(filePath,
@@ -680,7 +673,6 @@ public class TextBlockBasics {
                 複数行にわたる文字列を
                 簡潔に記述できます。
                 """;
-        
         IO.println("=== Text Block の出力 ===");
         IO.println(textBlock);
         
@@ -688,7 +680,6 @@ public class TextBlockBasics {
         String traditional = "これは Text Block の例です。\n" +
                 "複数行にわたる文字列を\n" +
                 "簡潔に記述できます。\n";
-        
         IO.println("\n=== 従来の文字列との同等性 ===");
         IO.println("同じ内容？: " + textBlock.equals(traditional));
         
@@ -725,7 +716,7 @@ public class TextBlockBasics {
 
 Text Blocksのもっとも重要な特徴の1つは、共通インデントの自動除去です<span class="footnote">基準となるインデントを決めるときは、閉じる`"""`だけの行も数に入ります。閉じる`"""`を本文の行より左に置くと、その差の分だけ各行の先頭に空白が残ります。</span>。
 
-<span class="listing-number">**サンプルコード14-11**　TextBlockIndentation.java（1〜16、29〜38、49〜50行目）</span>
+<span class="listing-number">**サンプルコード14-11**　TextBlockIndentation.java（1〜15、27〜35、46〜47行目）</span>
 
 ```java
 public class TextBlockIndentation {
@@ -741,7 +732,6 @@ public class TextBlockIndentation {
                     }
                 }
                 """;
-        
         IO.println("=== インデント自動処理の例 ===");
         IO.println(codeExample);
         // ...
@@ -752,7 +742,6 @@ public class TextBlockIndentation {
             浅いインデント
                     再び深いインデント
             """;
-        
         IO.println("\n=== 混合インデント（もっとも浅い行が基準） ===");
         IO.println(mixedIndent);
         // ...
@@ -814,7 +803,6 @@ public class TextBlockEscaping {
                 '時は金なり'という諺があります。
                 "引用符をエスケープする必要がない"
                 """;
-        
         IO.println("=== 引用符のエスケープ不要 ===");
         IO.println(dialogue);
         
@@ -823,7 +811,6 @@ public class TextBlockEscaping {
                 Windowsのパス: C:\\Users\\Name\\Documents
                 正規表現: \\d+\\.\\d+
                 """;
-        
         IO.println("\n=== バックスラッシュの処理 ===");
         IO.println(windowsPath);
         
@@ -834,7 +821,6 @@ public class TextBlockEscaping {
                     複数行文字列
                     \""";
                 """;
-        
         IO.println("\n=== 三重引用符のエスケープ ===");
         IO.println(codeWithTripleQuotes);
         
@@ -844,7 +830,6 @@ public class TextBlockEscaping {
                 この行は普通の改行
                 この行は改行なし\
                 """;
-        
         IO.println("\n=== 行末の制御 ===");
         IO.println("'" + trailingSpaces + "'");
     }

@@ -9,14 +9,12 @@ public class MultiResourceExample {
              FileOutputStream fos = new FileOutputStream(destPath);
              BufferedInputStream bis = new BufferedInputStream(fis);
              BufferedOutputStream bos = new BufferedOutputStream(fos)) {
-            
             byte[] buffer = new byte[1024];
             int bytesRead;
             
             while ((bytesRead = bis.read(buffer)) != -1) {
                 bos.write(buffer, 0, bytesRead);
             }
-            
         } // すべてのリソースが逆順（宣言と逆の順序）で自動的にクローズされる
     }
     

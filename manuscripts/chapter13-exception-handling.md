@@ -314,7 +314,7 @@ public class LambdaCheckedException {
 
 アプリケーション固有のエラー状況を表現するために、独自の例外クラスを作成できます。`Exception`または`RuntimeException`を継承して定義します。`throw`キーワードを使うと、任意の場所で意図的に例外を発生させることができます。
 
-<span class="listing-number">**サンプルコード13-6**　BankAccount.java（1〜18、27行目）</span>
+<span class="listing-number">**サンプルコード13-6**　BankAccount.java（1〜17、26行目）</span>
 
 ```java
 // 独自の検査例外クラス
@@ -324,7 +324,6 @@ class InsufficientBalanceException extends Exception {
     }
 }
 
-// 使用例
 public class BankAccount {
     private int balance;
     public void withdraw(int amount)
@@ -441,7 +440,7 @@ public class UserService {
 `retryableException.isInstance(e)`は、例外`e`がその型（またはその子クラス）のオブジェクトかどうかを調べます。
 `instanceof`と同じ判定を、型を変数で受け取って行う書き方です。
 
-<span class="listing-number">**サンプルコード13-8**　RetryableOperation.java（4〜6、8〜24、33〜38、56行目）</span>
+<span class="listing-number">**サンプルコード13-8**　RetryableOperation.java（4〜6、8〜22、31〜36、54行目）</span>
 
 ```java
 public class RetryableOperation {
@@ -460,12 +459,10 @@ public class RetryableOperation {
                 if (!retryableException.isInstance(e)) {
                     throw e; // リトライ対象外の例外は即座に再スロー
                 }
-                
                 lastException = e;
                 IO.println("試行 %d/%d 失敗: %s".formatted(
                     attempt, MAX_RETRY_COUNT, e.getMessage()));
-                
-                // ...
+                    // ...
             }
         }
         
@@ -496,7 +493,7 @@ public class RetryableOperation {
 
 複数の処理を順に実行し、途中で失敗しても残りの処理を続けたい場合は、発生した例外を集めておき、最後にまとめて報告します。
 
-<span class="listing-number">**サンプルコード13-9**　ExceptionAggregator.java（3〜29、39〜56行目）</span>
+<span class="listing-number">**サンプルコード13-9**　ExceptionAggregator.java（3〜27、38〜54行目）</span>
 
 ```java
 public class ExceptionAggregator {
@@ -512,7 +509,6 @@ public class ExceptionAggregator {
         }
     }
     
-    // 集約例外クラス
     public static class AggregateException extends Exception {
         private final List<Exception> exceptions;
         
@@ -525,11 +521,9 @@ public class ExceptionAggregator {
         public List<Exception> getExceptions() {
             return Collections.unmodifiableList(exceptions);
         }
-        
         // ...
     }
     
-    // 使用例
     public static void processMultipleTasks(List<Runnable> tasks) 
             throws AggregateException {
         ExceptionAggregator aggregator = new ExceptionAggregator();
@@ -557,7 +551,7 @@ public class ExceptionAggregator {
 
 実際の開発では、複数のリソースを同時に扱うことが多くあります。`try-with-resources`では、複数のリソースを1つの`try`の括弧内にまとめて宣言できます。
 
-<span class="listing-number">**サンプルコード13-10**　MultiResourceExample.java（4〜22、51行目）</span>
+<span class="listing-number">**サンプルコード13-10**　MultiResourceExample.java（4〜19、49行目）</span>
 
 ```java
 public class MultiResourceExample {
@@ -568,17 +562,14 @@ public class MultiResourceExample {
              FileOutputStream fos = new FileOutputStream(destPath);
              BufferedInputStream bis = new BufferedInputStream(fis);
              BufferedOutputStream bos = new BufferedOutputStream(fos)) {
-            
             byte[] buffer = new byte[1024];
             int bytesRead;
             
             while ((bytesRead = bis.read(buffer)) != -1) {
                 bos.write(buffer, 0, bytesRead);
             }
-            
         } // すべてのリソースが逆順（宣言と逆の順序）で自動的にクローズされる
     }
-    
     // ...
 }
 ```
@@ -596,7 +587,7 @@ public class MultiResourceExample {
 
 独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェイスを実装すると、`try-with-resources`で使えるようになります。
 
-<span class="listing-number">**サンプルコード13-11**　ResourcePool.java（3〜7、15〜45、59行目）、ResourcePoolDemo.java</span>
+<span class="listing-number">**サンプルコード13-11**　ResourcePool.java（3〜7、15〜44、58行目）、ResourcePoolDemo.java</span>
 
 ```java
 public class ResourcePool implements AutoCloseable {
@@ -627,7 +618,6 @@ public class ResourcePool implements AutoCloseable {
     @Override
     public void close() {
         closed = true;
-        
         // すべてのリソースをクリーンアップ
         for (Resource resource : availableResources) {
             resource.cleanup();
@@ -674,7 +664,7 @@ tryブロックを抜けました
 
 ログ記録は例外処理の重要な要素です<span class="footnote">サンプルコード13-12の`Logger`と`Level`は、Java 1.4で標準ライブラリに加わった`java.util.logging`パッケージのクラスです。実務では、SLF4JやLog4j 2などのライブラリもよく使われます。</span>。目的に応じたログレベルを選ぶと、問題の深刻度を正確に伝えられます。
 
-<span class="listing-number">**サンプルコード13-12**　ExceptionLogging.java（5〜47、68行目）</span>
+<span class="listing-number">**サンプルコード13-12**　ExceptionLogging.java（5〜38、59行目）</span>
 
 ```java
 public class ExceptionLogging {
@@ -683,22 +673,15 @@ public class ExceptionLogging {
     
     public void processUserRequest(String userId) {
         try {
-            // ユーザー情報の取得
             User user = findUser(userId);
-            
-            // 処理の実行
             performBusinessLogic(user);
-            
         } catch (UserNotFoundException e) {
             // ビジネス例外：警告レベル
             logger.log(Level.WARNING, 
                 "ユーザーが見つかりません: " + userId, e);
-            
         } catch (ValidationException e) {
             // 入力検証エラー：情報レベル（想定内のエラー）
-            logger.log(Level.INFO, 
-                "検証エラー: " + e.getMessage());
-            
+            logger.log(Level.INFO, "検証エラー: " + e.getMessage());
         } catch (DatabaseException e) {
             // システム例外：エラーレベル
             logger.log(Level.SEVERE, 
@@ -706,11 +689,9 @@ public class ExceptionLogging {
             
             // アラート送信などの追加処理
             notifyAdministrator(e);
-            
         } catch (Exception e) {
             // 予期せぬ例外：重大エラー
-            logger.log(Level.SEVERE, 
-                "予期せぬエラーが発生しました", e);
+            logger.log(Level.SEVERE, "予期せぬエラーが発生しました", e);
             
             // エラーIDを生成してユーザーに提示
             String errorId = generateErrorId();
@@ -787,7 +768,7 @@ public class StructuredExceptionLogger {
 同じI/Oの異常でも、その場で回復できる場所があるかどうかで、検査例外にするか非検査例外にするかを選びます（第25章でも、この方針で例外を設計します）。
 サンプルコード13-6の`InsufficientBalanceException`は、ここでは`BusinessException`を継承する形に定義し直しています。
 
-<span class="listing-number">**サンプルコード13-14**　BusinessException.java（4〜13、22〜24、30〜33行目）、InsufficientBalanceException.java（3〜12行目）、SystemException.java（4〜13、28行目）</span>
+<span class="listing-number">**サンプルコード13-14**　BusinessException.java（4〜13、22、28〜31行目）、InsufficientBalanceException.java（3〜12行目）、SystemException.java（4〜13、28行目）</span>
 
 ```java
 // ビジネス例外の基底クラス
@@ -801,9 +782,7 @@ public abstract class BusinessException extends Exception {
         this.details = new HashMap<>();
     }
     // ...
-    public String getErrorCode() {
-        return errorCode;
-    }
+    public String getErrorCode() { return errorCode; }
     // ...
     public void addDetail(String key, Object value) {
         details.put(key, value);
@@ -910,16 +889,15 @@ public class ErrorResponse {
 入力の誤りや残高不足などのビジネス例外はそのまま呼び出し元に伝え、それ以外の予期しない例外は原因を保ったまま非検査例外に包んで投げ直します。
 `Account`や`AccountRepository`などの補助の型と、送金を試す`main`メソッド（`TransferDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-16/`</span>。
 
-<span class="listing-number">**サンプルコード13-16**　TransferService.java（5〜7、17〜20、24〜49、60〜74、121行目）</span>
+<span class="listing-number">**サンプルコード13-16**　TransferService.java（5〜7、17〜19、23〜48、58〜71、118行目）</span>
 
 ```java
 public class TransferService {
     private static final Logger logger =
         Logger.getLogger(TransferService.class.getName());
         // ...
-    public TransferResult transfer(String fromAccountId, 
-                                 String toAccountId, 
-                                 BigDecimal amount) 
+    public TransferResult transfer(String fromAccountId,
+            String toAccountId, BigDecimal amount)
             throws BusinessException {
             // ...
         try {
@@ -954,7 +932,6 @@ public class TransferService {
             logger.log(Level.WARNING, "送金処理でビジネスエラー: "
                     + e.getMessage());
             throw e;
-            
         } catch (Exception e) {
             // 予期せぬエラー（DataAccessExceptionなども含む）
             logger.log(Level.SEVERE,

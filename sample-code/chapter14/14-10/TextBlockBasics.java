@@ -6,7 +6,6 @@ public class TextBlockBasics {
                 複数行にわたる文字列を
                 簡潔に記述できます。
                 """;
-        
         IO.println("=== Text Block の出力 ===");
         IO.println(textBlock);
         
@@ -14,7 +13,6 @@ public class TextBlockBasics {
         String traditional = "これは Text Block の例です。\n" +
                 "複数行にわたる文字列を\n" +
                 "簡潔に記述できます。\n";
-        
         IO.println("\n=== 従来の文字列との同等性 ===");
         IO.println("同じ内容？: " + textBlock.equals(traditional));
         

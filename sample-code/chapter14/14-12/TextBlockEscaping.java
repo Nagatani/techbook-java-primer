@@ -6,7 +6,6 @@ public class TextBlockEscaping {
                 '時は金なり'という諺があります。
                 "引用符をエスケープする必要がない"
                 """;
-        
         IO.println("=== 引用符のエスケープ不要 ===");
         IO.println(dialogue);
         
@@ -15,7 +14,6 @@ public class TextBlockEscaping {
                 Windowsのパス: C:\\Users\\Name\\Documents
                 正規表現: \\d+\\.\\d+
                 """;
-        
         IO.println("\n=== バックスラッシュの処理 ===");
         IO.println(windowsPath);
         
@@ -26,7 +24,6 @@ public class TextBlockEscaping {
                     複数行文字列
                     \""";
                 """;
-        
         IO.println("\n=== 三重引用符のエスケープ ===");
         IO.println(codeWithTripleQuotes);
         
@@ -36,7 +33,6 @@ public class TextBlockEscaping {
                 この行は普通の改行
                 この行は改行なし\
                 """;
-        
         IO.println("\n=== 行末の制御 ===");
         IO.println("'" + trailingSpaces + "'");
     }

@@ -5,7 +5,7 @@
     "excerpt": [
       { "file": "SingleThreadExample.java", "from": 1, "to": 24 },
       { "file": "SingleThreadExample.java", "from": 28, "to": 28 },
-      { "file": "SingleThreadExample.java", "from": 35, "to": 36 },
+      { "file": "SingleThreadExample.java", "from": 36, "to": 36 },
       { "file": "SingleThreadExample.java", "from": 42, "to": 43 }
     ]
   },
@@ -21,7 +21,7 @@
     "dir": "15-03",
     "main": "Main",
     "excerpt": [
-      { "file": "Main.java", "from": 1, "to": 21 }
+      { "file": "Main.java", "from": 1, "to": 19 }
     ]
   },
   "15-4": {
@@ -50,7 +50,7 @@
     "dir": "15-07",
     "main": "VolatileDemo",
     "excerpt": [
-      { "file": "VolatileDemo.java", "from": 1, "to": 39 }
+      { "file": "VolatileDemo.java", "from": 1, "to": 35 }
     ]
   },
   "15-8": {
@@ -65,7 +65,7 @@
     "dir": "15-11",
     "main": "ExecutorExample",
     "excerpt": [
-      { "file": "ExecutorExample.java", "from": 1, "to": 33 }
+      { "file": "ExecutorExample.java", "from": 1, "to": 32 }
     ]
   },
   "15-12": {
@@ -90,9 +90,9 @@
     "dir": "15-14",
     "main": "AsyncChainingExample",
     "excerpt": [
-      { "file": "AsyncChainingExample.java", "from": 4, "to": 14 },
-      { "file": "AsyncChainingExample.java", "from": 35, "to": 49 },
-      { "file": "AsyncChainingExample.java", "from": 57, "to": 57 }
+      { "file": "AsyncChainingExample.java", "from": 4, "to": 13 },
+      { "file": "AsyncChainingExample.java", "from": 35, "to": 47 },
+      { "file": "AsyncChainingExample.java", "from": 56, "to": 56 }
     ]
   },
   "15-15": {

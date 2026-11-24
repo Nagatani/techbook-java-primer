@@ -14,9 +14,8 @@ public class TransferService {
         this.transactionRepository = transactionRepository;
     }
     
-    public TransferResult transfer(String fromAccountId, 
-                                 String toAccountId, 
-                                 BigDecimal amount) 
+    public TransferResult transfer(String fromAccountId,
+            String toAccountId, BigDecimal amount)
             throws BusinessException {
         
         IO.println("送金処理開始: " + fromAccountId + " -> " + toAccountId + ", 金額: " + amount);
@@ -56,13 +55,11 @@ public class TransferService {
             
             IO.println("送金処理完了: " + result);
             return result;
-            
         } catch (BusinessException e) {
             // ビジネス例外は記録してから呼び出し元に伝える
             logger.log(Level.WARNING, "送金処理でビジネスエラー: "
                     + e.getMessage());
             throw e;
-            
         } catch (Exception e) {
             // 予期せぬエラー（DataAccessExceptionなども含む）
             logger.log(Level.SEVERE,

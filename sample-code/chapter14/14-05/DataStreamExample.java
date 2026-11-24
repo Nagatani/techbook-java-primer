@@ -10,7 +10,6 @@ public class DataStreamExample {
         try (DataOutputStream dos = new DataOutputStream(
                 new BufferedOutputStream(
                 new FileOutputStream(filename)))) {
-            // プリミティブ型の書き込み
             dos.writeInt(12345);
             dos.writeLong(9876543210L);
             dos.writeDouble(3.14159);

@@ -2,7 +2,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class AsyncChainingExample {
-    
     // ユーザー情報を取得
     static CompletableFuture<User> fetchUser(String userId) {
         return CompletableFuture.supplyAsync(() -> {

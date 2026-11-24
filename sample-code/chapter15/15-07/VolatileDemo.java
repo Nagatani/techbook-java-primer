@@ -24,16 +24,12 @@ class ThreadStopExample {
     }
 }
 
-// 使用例
 public class VolatileDemo {
     public static void main(String[] args) throws InterruptedException {
         ThreadStopExample example = new ThreadStopExample();
         example.startWorker();
-        
         // 3秒間動作させる
         Thread.sleep(3000);
-        
-        // ワーカーを停止
         example.stopWorker();
     }
 }

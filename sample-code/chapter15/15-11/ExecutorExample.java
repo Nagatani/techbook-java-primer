@@ -20,7 +20,6 @@ public class ExecutorExample {
             });
         }
 
-        // ExecutorServiceをシャットダウン
         executor.shutdown();
         try {
             if (!executor.awaitTermination(15, TimeUnit.SECONDS)) {

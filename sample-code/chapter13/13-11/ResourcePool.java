@@ -34,7 +34,6 @@ public class ResourcePool implements AutoCloseable {
     @Override
     public void close() {
         closed = true;
-        
         // すべてのリソースをクリーンアップ
         for (Resource resource : availableResources) {
             resource.cleanup();

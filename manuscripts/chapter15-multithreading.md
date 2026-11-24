@@ -78,7 +78,7 @@
 
 以下のコードは、朝食の準備を順番に行うシングルスレッドのプログラムです。コーヒー（3秒）、トースト（2秒）、卵（5秒）を順番に処理するため、合計10秒かかります。各処理が完了するまで次の処理を開始できないため、待ち時間が無駄になっています。
 
-<span class="listing-number">**サンプルコード15-1**　SingleThreadExample.java（1〜24、28、35〜36、42〜43行目）</span>
+<span class="listing-number">**サンプルコード15-1**　SingleThreadExample.java（1〜24、28、36、42〜43行目）</span>
 
 ```java
 public class SingleThreadExample {
@@ -108,7 +108,6 @@ public class SingleThreadExample {
     // ...
     }
     // ...
-    
     private static void sleep(int milliseconds) {
     // ...
     }
@@ -236,10 +235,8 @@ public class Main {
         thread.start(); // スレッドを開始
 
         // ラムダ式を使えばさらに簡潔
-        new Thread(() -> {
-            IO.println("ラムダ式でのタスク実行: " + Thread.currentThread()
-                    .getName());
-        }).start();
+        new Thread(() -> IO.println("ラムダ式でのタスク実行: "
+                + Thread.currentThread().getName())).start();
     }
 }
 ```
@@ -438,16 +435,12 @@ class ThreadStopExample {
     }
 }
 
-// 使用例
 public class VolatileDemo {
     public static void main(String[] args) throws InterruptedException {
         ThreadStopExample example = new ThreadStopExample();
         example.startWorker();
-        
         // 3秒間動作させる
         Thread.sleep(3000);
-        
-        // ワーカーを停止
         example.stopWorker();
     }
 }
@@ -629,7 +622,6 @@ public class ExecutorExample {
             });
         }
 
-        // ExecutorServiceをシャットダウン
         executor.shutdown();
         try {
             if (!executor.awaitTermination(15, TimeUnit.SECONDS)) {
@@ -827,11 +819,10 @@ public class CompletableFutureExample {
 
 次のサンプルコード15-14は、`thenCompose`で非同期処理を順につなぐ例です。
 
-<span class="listing-number">**サンプルコード15-14**　AsyncChainingExample.java（4〜14、35〜49、57行目）</span>
+<span class="listing-number">**サンプルコード15-14**　AsyncChainingExample.java（4〜13、35〜47、56行目）</span>
 
 ```java
 public class AsyncChainingExample {
-    
     // ユーザー情報を取得
     static CompletableFuture<User> fetchUser(String userId) {
         return CompletableFuture.supplyAsync(() -> {
@@ -842,7 +833,6 @@ public class AsyncChainingExample {
         });
     }
     // ...
-    
     public static void main(String[] args) throws Exception {
         // 非同期処理を連鎖させる
         CompletableFuture<Integer> totalFuture = fetchUser("USER001")
@@ -856,7 +846,6 @@ public class AsyncChainingExample {
         
         IO.println("Total amount: " + totalFuture.get());
     }
-    
     // ...
 }
 ```

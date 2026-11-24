@@ -13,9 +13,7 @@ public class Main {
         thread.start(); // スレッドを開始
 
         // ラムダ式を使えばさらに簡潔
-        new Thread(() -> {
-            IO.println("ラムダ式でのタスク実行: " + Thread.currentThread()
-                    .getName());
-        }).start();
+        new Thread(() -> IO.println("ラムダ式でのタスク実行: "
+                + Thread.currentThread().getName())).start();
     }
 }

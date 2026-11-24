@@ -19,7 +19,7 @@
     "dir": "14-03",
     "main": "TextFileWriterExample",
     "excerpt": [
-      { "file": "TextFileWriterExample.java", "from": 8, "to": 28 }
+      { "file": "TextFileWriterExample.java", "from": 8, "to": 27 }
     ]
   },
   "14-4": {
@@ -33,7 +33,7 @@
     "dir": "14-05",
     "main": "DataStreamExample",
     "excerpt": [
-      { "file": "DataStreamExample.java", "from": 1, "to": 38 }
+      { "file": "DataStreamExample.java", "from": 1, "to": 37 }
     ]
   },
   "14-6": {
@@ -54,8 +54,8 @@
     "dir": "14-08",
     "main": "CSVProcessingExample",
     "excerpt": [
-      { "file": "CSVProcessingExample.java", "from": 6, "to": 59 },
-      { "file": "CSVProcessingExample.java", "from": 72, "to": 72 }
+      { "file": "CSVProcessingExample.java", "from": 6, "to": 54 },
+      { "file": "CSVProcessingExample.java", "from": 67, "to": 67 }
     ]
   },
   "14-9": {
@@ -69,23 +69,23 @@
     "dir": "14-10",
     "main": "TextBlockBasics",
     "excerpt": [
-      { "file": "TextBlockBasics.java", "from": 1, "to": 32 }
+      { "file": "TextBlockBasics.java", "from": 1, "to": 30 }
     ]
   },
   "14-11": {
     "dir": "14-11",
     "main": "TextBlockIndentation",
     "excerpt": [
-      { "file": "TextBlockIndentation.java", "from": 1, "to": 16 },
-      { "file": "TextBlockIndentation.java", "from": 29, "to": 38 },
-      { "file": "TextBlockIndentation.java", "from": 49, "to": 50 }
+      { "file": "TextBlockIndentation.java", "from": 1, "to": 15 },
+      { "file": "TextBlockIndentation.java", "from": 27, "to": 35 },
+      { "file": "TextBlockIndentation.java", "from": 46, "to": 47 }
     ]
   },
   "14-12": {
     "dir": "14-12",
     "main": "TextBlockEscaping",
     "excerpt": [
-      { "file": "TextBlockEscaping.java", "from": 1, "to": 43 }
+      { "file": "TextBlockEscaping.java", "from": 1, "to": 39 }
     ]
   },
   "14-13": {

@@ -13,7 +13,6 @@ public class ExceptionAggregator {
         }
     }
     
-    // 集約例外クラス
     public static class AggregateException extends Exception {
         private final List<Exception> exceptions;
         
@@ -38,7 +37,6 @@ public class ExceptionAggregator {
         }
     }
     
-    // 使用例
     public static void processMultipleTasks(List<Runnable> tasks) 
             throws AggregateException {
         ExceptionAggregator aggregator = new ExceptionAggregator();

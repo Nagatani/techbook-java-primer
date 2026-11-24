@@ -5,7 +5,6 @@ class InsufficientBalanceException extends Exception {
     }
 }
 
-// 使用例
 public class BankAccount {
     private int balance;
     public void withdraw(int amount)

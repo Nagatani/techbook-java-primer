@@ -8,22 +8,15 @@ public class ExceptionLogging {
     
     public void processUserRequest(String userId) {
         try {
-            // ユーザー情報の取得
             User user = findUser(userId);
-            
-            // 処理の実行
             performBusinessLogic(user);
-            
         } catch (UserNotFoundException e) {
             // ビジネス例外：警告レベル
             logger.log(Level.WARNING, 
                 "ユーザーが見つかりません: " + userId, e);
-            
         } catch (ValidationException e) {
             // 入力検証エラー：情報レベル（想定内のエラー）
-            logger.log(Level.INFO, 
-                "検証エラー: " + e.getMessage());
-            
+            logger.log(Level.INFO, "検証エラー: " + e.getMessage());
         } catch (DatabaseException e) {
             // システム例外：エラーレベル
             logger.log(Level.SEVERE, 
@@ -31,11 +24,9 @@ public class ExceptionLogging {
             
             // アラート送信などの追加処理
             notifyAdministrator(e);
-            
         } catch (Exception e) {
             // 予期せぬ例外：重大エラー
-            logger.log(Level.SEVERE, 
-                "予期せぬエラーが発生しました", e);
+            logger.log(Level.SEVERE, "予期せぬエラーが発生しました", e);
             
             // エラーIDを生成してユーザーに提示
             String errorId = generateErrorId();

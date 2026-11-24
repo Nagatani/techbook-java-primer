@@ -11,7 +11,6 @@ public class TextBlockIndentation {
                     }
                 }
                 """;
-        
         IO.println("=== インデント自動処理の例 ===");
         IO.println(codeExample);
         
@@ -22,7 +21,6 @@ public class TextBlockIndentation {
                     レベル3
             レベル1に戻る
             """;
-        
         IO.println("\n=== カスタムインデント ===");
         IO.println(customIndent);
         
@@ -33,7 +31,6 @@ public class TextBlockIndentation {
             浅いインデント
                     再び深いインデント
             """;
-        
         IO.println("\n=== 混合インデント（もっとも浅い行が基準） ===");
         IO.println(mixedIndent);
         
