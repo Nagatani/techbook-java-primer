@@ -383,7 +383,9 @@ Loaded Task: プログラミング
 
 ### Jackson - 多機能なJSONライブラリ
 
-Jacksonは、Gsonと並んで人気の高いJSONライブラリで、エンタープライズアプリケーションで広く使われています。ストリーミングAPIによるメモリ使用量を最小限に抑えた処理とアノテーションベースの柔軟なマッピングが特徴です<span class="footnote">2025年10月に公開されたJackson 3では、groupIdが`tools.jackson.core`に、パッケージ名が`tools.jackson`に変わりました。本書のコードは、いまも更新が続いているJackson 2の系列（`com.fasterxml.jackson.core`）で書いています。</span>。
+Jacksonは、Gsonと並んで人気の高いJSONライブラリで、Spring Frameworkなどの業務アプリケーションで広く使われています。大きなJSONを少しずつ読むストリーミングAPIと、アノテーションでJSONの名前とフィールドの対応を細かく決められる点が特徴です<span class="footnote">2025年10月に公開されたJackson 3では、groupIdが`tools.jackson.core`に、パッケージ名が`tools.jackson`に変わりました。本書のコードは、いまも更新が続いているJackson 2の系列（`com.fasterxml.jackson.core`）で書いています。</span>。
+本書の第16章と演習では、依存が1つで設定なしに使えるGsonを使います。
+Jacksonは、Springなどを使う開発で出会うことが多いので、ここではGsonとの書き方の違いだけを見ておきます。
 
 #### Mavenの依存関係
 

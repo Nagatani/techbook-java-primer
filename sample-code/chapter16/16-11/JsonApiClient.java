@@ -2,17 +2,17 @@ import java.net.URI;
 import java.net.http.*;
 import java.util.Map;
 import java.util.HashMap;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 public class JsonApiClient {
     private final HttpClient client;
-    private final ObjectMapper mapper;
+    private final Gson gson;
 
     public JsonApiClient() {
         this.client = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .build();
-        this.mapper = new ObjectMapper();
+        this.gson = new Gson();
     }
 
     public <T> T get(String url, Class<T> responseType)
@@ -29,9 +29,9 @@ public class JsonApiClient {
         return readBody(response, responseType);
     }
 
-    public <T> T post(String url, Object data, Class<T> responseType) 
+    public <T> T post(String url, Object data, Class<T> responseType)
             throws Exception {
-        String json = mapper.writeValueAsString(data);
+        String json = gson.toJson(data);
 
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url))
@@ -51,7 +51,7 @@ public class JsonApiClient {
             Class<T> responseType) throws Exception {
         int status = response.statusCode();
         if (status >= 200 && status < 300) {
-            return mapper.readValue(response.body(), responseType);
+            return gson.fromJson(response.body(), responseType);
         } else {
             throw new RuntimeException("HTTP error: " + status);
         }

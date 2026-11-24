@@ -843,26 +843,26 @@ public class ChatClient {
 JSONは、第7章の脚注で触れたとおり、`{"name": "田中", "age": 20}`のように名前と値の組でデータを書き表す文字列の形式です。
 JavaでJSON APIを扱う方法を学びます。
 
-以下のコードは、汎用的なJSON APIクライアントの実装例です。Jacksonライブラリを使用してJSONのシリアライズ/デシリアライズを行い、Java 11のHttpClientでHTTPリクエストを送信します。このクライアントはGETとPOSTメソッドをサポートし、受け取る型を指定してJSONデータを扱えます。
+以下のコードは、汎用的なJSON APIクライアントの実装例です。Gsonライブラリを使用してJSONのシリアライズ/デシリアライズを行い、Java 11のHttpClientでHTTPリクエストを送信します。このクライアントはGETとPOSTメソッドをサポートし、受け取る型を指定してJSONデータを扱えます。
 POSTのメソッドは紙面では省いており、GitHubの全文に載せています<span class="footnote">全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter16/16-11/`にあります。</span>。
 
-JacksonはJavaの標準APIではなく、外部ライブラリです。
-このサンプルを動かすには、Jacksonをプロジェクトに追加します。
-外部ライブラリの追加方法とJacksonの使い方は、第22章「ドキュメントと外部ライブラリ」で学びます。
-ここでは、`ObjectMapper`の`readValue`メソッドがJSONの文字列を指定した型のオブジェクトに変換する、とだけ押さえてコードを読んでください。
+GsonはJavaの標準APIではなく、外部ライブラリです。
+このサンプルを動かすには、Gsonをプロジェクトに追加します。
+外部ライブラリの追加方法とGsonの使い方は、第22章「ドキュメントと外部ライブラリ」で学びます。
+ここでは、`Gson`の`fromJson`メソッドがJSONの文字列を指定した型のオブジェクトに変換する、とだけ押さえてコードを読んでください。
 
 <span class="listing-number">**サンプルコード16-11**　JsonApiClient.java（7〜30、49〜58、80行目）</span>
 
 ```java
 public class JsonApiClient {
     private final HttpClient client;
-    private final ObjectMapper mapper;
+    private final Gson gson;
 
     public JsonApiClient() {
         this.client = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .build();
-        this.mapper = new ObjectMapper();
+        this.gson = new Gson();
     }
 
     public <T> T get(String url, Class<T> responseType)
@@ -884,7 +884,7 @@ public class JsonApiClient {
             Class<T> responseType) throws Exception {
         int status = response.statusCode();
         if (status >= 200 && status < 300) {
-            return mapper.readValue(response.body(), responseType);
+            return gson.fromJson(response.body(), responseType);
         } else {
             throw new RuntimeException("HTTP error: " + status);
         }
@@ -893,7 +893,8 @@ public class JsonApiClient {
 }
 ```
 
-JSONとJavaのオブジェクトとの変換（シリアライズとデシリアライズ）は自分で書かず、JacksonやGsonなどのライブラリに任せます。
+JSONとJavaのオブジェクトとの変換（シリアライズとデシリアライズ）は自分で書かず、ライブラリに任せます。
+本書では、設定を書かずにすぐ使えるGsonを使います。
 `get`メソッドでは、受け取りたい型を`Class<T>`で渡すので、JSONの内容を型の決まったオブジェクトとして受け取れます。
 リクエストには、送るデータの形式を表すContent-Typeヘッダーや、受け取りたい形式を表すAcceptヘッダーを正しく付けます。
 また、レスポンスを使う前にHTTPステータスコードを確かめ、成功を表す200番台（200〜299）以外のときはエラーとして扱います。
