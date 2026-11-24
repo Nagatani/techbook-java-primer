@@ -21,8 +21,8 @@
     "main": "GreetingApp",
     "excerpt": [
       { "file": "GreetingApp.java", "from": 8, "to": 8 },
-      { "file": "GreetingApp.java", "from": 14, "to": 34 },
-      { "file": "GreetingApp.java", "from": 39, "to": 40 }
+      { "file": "GreetingApp.java", "from": 14, "to": 32 },
+      { "file": "GreetingApp.java", "from": 37, "to": 38 }
     ]
   },
   "18-4": {
@@ -48,9 +48,9 @@
     "excerpt": [
       { "file": "BasicMouseEventExample.java", "from": 5, "to": 5 },
       { "file": "BasicMouseEventExample.java", "from": 9, "to": 9 },
-      { "file": "BasicMouseEventExample.java", "from": 24, "to": 47 },
-      { "file": "BasicMouseEventExample.java", "from": 54, "to": 54 },
-      { "file": "BasicMouseEventExample.java", "from": 61, "to": 61 }
+      { "file": "BasicMouseEventExample.java", "from": 24, "to": 46 },
+      { "file": "BasicMouseEventExample.java", "from": 53, "to": 53 },
+      { "file": "BasicMouseEventExample.java", "from": 60, "to": 60 }
     ]
   },
   "18-7": {
@@ -59,9 +59,9 @@
     "excerpt": [
       { "file": "BasicKeyEventExample.java", "from": 5, "to": 5 },
       { "file": "BasicKeyEventExample.java", "from": 9, "to": 9 },
-      { "file": "BasicKeyEventExample.java", "from": 23, "to": 40 },
-      { "file": "BasicKeyEventExample.java", "from": 47, "to": 47 },
-      { "file": "BasicKeyEventExample.java", "from": 54, "to": 54 }
+      { "file": "BasicKeyEventExample.java", "from": 23, "to": 39 },
+      { "file": "BasicKeyEventExample.java", "from": 46, "to": 46 },
+      { "file": "BasicKeyEventExample.java", "from": 53, "to": 53 }
     ]
   },
   "18-8": {
@@ -82,9 +82,9 @@
     "excerpt": [
       { "file": "FocusListenerExample.java", "from": 5, "to": 5 },
       { "file": "FocusListenerExample.java", "from": 9, "to": 9 },
-      { "file": "FocusListenerExample.java", "from": 21, "to": 46 },
-      { "file": "FocusListenerExample.java", "from": 72, "to": 72 },
-      { "file": "FocusListenerExample.java", "from": 86, "to": 86 }
+      { "file": "FocusListenerExample.java", "from": 21, "to": 45 },
+      { "file": "FocusListenerExample.java", "from": 71, "to": 71 },
+      { "file": "FocusListenerExample.java", "from": 85, "to": 85 }
     ]
   },
   "18-10": {

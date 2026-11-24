@@ -10,7 +10,6 @@ public class SSLClient {
             (SSLSocketFactory) SSLSocketFactory.getDefault();
         try (SSLSocket socket =
                 (SSLSocket) factory.createSocket(host, port)) {
-
             // 使うプロトコルをTLS 1.2以上に限る（JDK 25の既定と同じ）
             socket.setEnabledProtocols(
                 new String[] {"TLSv1.2", "TLSv1.3"});
@@ -43,7 +42,6 @@ public class SSLClient {
             while ((line = in.readLine()) != null && !line.isEmpty()) {
                 IO.println(line);
             }
-
         } catch (IOException e) {
             System.err.println("SSL接続エラー: " + e.getMessage());
         }

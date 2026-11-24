@@ -197,7 +197,7 @@ public class LambdaButtonExample {
 
 以下のコードは、テキストフィールドとボタン、ラベルを組み合わせたインタラクティブな挨拶アプリケーションの例です。ラムダ式を使用して、ボタンクリック時にテキストフィールドから入力を取得し、ラベルに動的にメッセージを表示します。
 
-<span class="listing-number">**サンプルコード18-3**　GreetingApp.java（8、14〜34、39〜40行目）</span>
+<span class="listing-number">**サンプルコード18-3**　GreetingApp.java（8、14〜32、37〜38行目）</span>
 
 ```java
 public class GreetingApp {
@@ -213,9 +213,7 @@ public class GreetingApp {
 
         // ボタンにラムダ式でイベントリスナーを登録
         greetButton.addActionListener(e -> {
-            // テキストフィールドから入力された文字列を取得
             String name = nameField.getText();
-            // ラベルに挨拶メッセージを設定
             messageLabel.setText("こんにちは、" + name + "さん！");
         });
 
@@ -368,14 +366,13 @@ public class WindowEventExample {
 子クラスにすると、ラベルなどの部品をフィールドに持てるので、リスナーのなかから部品を操作するコードを書きやすくなります。
 コンストラクターのなかの`setTitle(…)`や`add(…)`は、自分自身（`this`）の`JFrame`のメソッドを呼んでいます。
 
-<span class="listing-number">**サンプルコード18-6**　BasicMouseEventExample.java（5、9、24〜47、54、61行目）</span>
+<span class="listing-number">**サンプルコード18-6**　BasicMouseEventExample.java（5、9、24〜46、53、60行目）</span>
 
 ```java
 public class BasicMouseEventExample extends JFrame {
     // ...
     public BasicMouseEventExample() {
         // ...
-        // マウスリスナーの追加
         clickPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -388,12 +385,12 @@ public class BasicMouseEventExample extends JFrame {
                 statusLabel.setText(button + "ボタンがクリックされました: "
                         + e.getPoint());
             }
-            
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 clickPanel.setBackground(Color.YELLOW);
             }
-            
+
             @Override
             public void mouseExited(MouseEvent e) {
                 clickPanel.setBackground(Color.LIGHT_GRAY);
@@ -425,20 +422,19 @@ public class BasicMouseEventExample extends JFrame {
 以下のコードは、KeyListenerを使用してキーボードイベントを処理する例です。キーの押下を検出し、押されたキーの情報を表示します。また、Ctrl+Sのようなショートカットキーの検出方法も示しています<span class="footnote">macOSでは、保存などのショートカットにCtrlではなくCommandキーを使うのが一般的です。Javaでは、Commandキーが押されているかを`isMetaDown()`で調べます。</span>。`consume()`メソッドを呼ぶと、そのイベントを処理済みにして、このあとに続くキーバインディングなどの処理へ渡さないようにできます。
 複数のキーの同時押しや、`InputMap`と`ActionMap`によるキーバインディングは、第19章のサンプルコード19-2で学びます。
 
-<span class="listing-number">**サンプルコード18-7**　BasicKeyEventExample.java（5、9、23〜40、47、54行目）</span>
+<span class="listing-number">**サンプルコード18-7**　BasicKeyEventExample.java（5、9、23〜39、46、53行目）</span>
 
 ```java
 public class BasicKeyEventExample extends JFrame {
     // ...
     public BasicKeyEventExample() {
         // ...
-        // キーリスナーの追加
         inputArea.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 String keyText = KeyEvent.getKeyText(e.getKeyCode());
                 statusLabel.setText("押されたキー: " + keyText);
-                
+
                 // Ctrl+Sのショートカット検出
                 if (e.isControlDown()
                         && e.getKeyCode() == KeyEvent.VK_S) {
@@ -512,14 +508,13 @@ public class ItemListenerExample extends JFrame {
 
 以下のコードは、FocusListenerを使用してテキストフィールドのフォーカス状態を管理する例です。フォーカスを取得したフィールドの背景色を変更し、フォーカスを失った際には入力内容を検証します。この例では、名前のフィールドが空のままフォーカスを失うと、背景をピンクにしてメッセージを表示します。
 
-<span class="listing-number">**サンプルコード18-9**　FocusListenerExample.java（5、9、21〜46、72、86行目）</span>
+<span class="listing-number">**サンプルコード18-9**　FocusListenerExample.java（5、9、21〜45、71、85行目）</span>
 
 ```java
 public class FocusListenerExample extends JFrame {
     // ...
     public FocusListenerExample() {
         // ...
-        // FocusListenerの作成
         FocusListener focusListener = new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -528,12 +523,12 @@ public class FocusListenerExample extends JFrame {
                 statusLabel.setText("フォーカスを取得: "
                         + getFieldName(source));
             }
-            
+
             @Override
             public void focusLost(FocusEvent e) {
                 JTextField source = (JTextField) e.getSource();
                 source.setBackground(Color.WHITE);
-                
+
                 // バリデーションの例
                 if (source == field1 && source.getText().isEmpty()) {
                     statusLabel.setText("名前を入力してください");
@@ -541,7 +536,7 @@ public class FocusListenerExample extends JFrame {
                 }
             }
         };
-        
+
         field1.addFocusListener(focusListener);
         field2.addFocusListener(focusListener);
         field3.addFocusListener(focusListener);

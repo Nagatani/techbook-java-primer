@@ -8,7 +8,6 @@ public class WindowSettings {
 
     private static void createAndShowGUI() {
         JFrame frame = new JFrame();
-        
         frame.setTitle("カスタマイズされたウィンドウ");     // ①
         frame.setSize(500, 400);                      // ②
         frame.setResizable(false);                    // ③

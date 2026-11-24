@@ -3,7 +3,7 @@
     "dir": "17-01",
     "main": "HelloSwing",
     "excerpt": [
-      { "file": "HelloSwing.java", "from": 1, "to": 12 }
+      { "file": "HelloSwing.java", "from": 1, "to": 11 }
     ]
   },
   "17-2": {
@@ -17,14 +17,14 @@
     "dir": "17-03",
     "main": "WindowSettings",
     "excerpt": [
-      { "file": "WindowSettings.java", "from": 1, "to": 19 }
+      { "file": "WindowSettings.java", "from": 1, "to": 18 }
     ]
   },
   "17-4": {
     "dir": "17-04",
     "main": "HelloLabel",
     "excerpt": [
-      { "file": "HelloLabel.java", "from": 1, "to": 25 }
+      { "file": "HelloLabel.java", "from": 1, "to": 23 }
     ]
   },
   "17-5": {
@@ -53,8 +53,8 @@
     "excerpt": [
       { "file": "FlowLayoutExample.java", "from": 4, "to": 4 },
       { "file": "FlowLayoutExample.java", "from": 9, "to": 9 },
-      { "file": "FlowLayoutExample.java", "from": 14, "to": 24 },
-      { "file": "FlowLayoutExample.java", "from": 28, "to": 29 }
+      { "file": "FlowLayoutExample.java", "from": 14, "to": 23 },
+      { "file": "FlowLayoutExample.java", "from": 27, "to": 28 }
     ]
   },
   "17-8": {
@@ -63,8 +63,8 @@
     "excerpt": [
       { "file": "AdvancedLabel.java", "from": 4, "to": 4 },
       { "file": "AdvancedLabel.java", "from": 9, "to": 9 },
-      { "file": "AdvancedLabel.java", "from": 13, "to": 29 },
-      { "file": "AdvancedLabel.java", "from": 33, "to": 34 }
+      { "file": "AdvancedLabel.java", "from": 13, "to": 27 },
+      { "file": "AdvancedLabel.java", "from": 31, "to": 32 }
     ]
   },
   "17-9": {
@@ -116,9 +116,9 @@
       { "file": "CombinedLayoutExample.java", "from": 33, "to": 33 },
       { "file": "CombinedLayoutExample.java", "from": 42, "to": 53 },
       { "file": "CombinedLayoutExample.java", "from": 65, "to": 73 },
-      { "file": "CombinedLayoutExample.java", "from": 82, "to": 90 },
-      { "file": "CombinedLayoutExample.java", "from": 99, "to": 99 },
-      { "file": "CombinedLayoutExample.java", "from": 103, "to": 104 }
+      { "file": "CombinedLayoutExample.java", "from": 82, "to": 89 },
+      { "file": "CombinedLayoutExample.java", "from": 98, "to": 98 },
+      { "file": "CombinedLayoutExample.java", "from": 102, "to": 103 }
     ]
   },
   "17-14": {

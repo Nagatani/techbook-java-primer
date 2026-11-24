@@ -154,20 +154,18 @@ public class SimpleTCPClient {
     public static void main(String[] args) {
         String serverAddress = "localhost";
         int serverPort = 8080;
-        
+
         try (Socket socket = new Socket(serverAddress, serverPort);
              PrintWriter out = new PrintWriter(
                  socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(
                  new InputStreamReader(socket.getInputStream()))) {
-            
             // サーバーにメッセージを送信
             out.println("Hello, Server!");
-            
+
             // サーバーからの応答を受信
             String response = in.readLine();
             IO.println("サーバーからの応答: " + response);
-            
         } catch (UnknownHostException e) {
             System.err.println("ホストが見つかりません: " + serverAddress);
         } catch (IOException e) {
@@ -196,43 +194,39 @@ TCPサーバーは、ServerSocketを使用してクライアントからの接�
 
 以下のコードは、基本的なTCPサーバーの実装例です。このサーバーは8080番ポート<span class="footnote">Linuxなどでは、1023番以下のポートで待ち受けるには管理者の権限が要ります。そのため、例では8080番のような大きな番号を使っています。</span>で待機し、クライアントから受信したメッセージをエコーバックします。accept()メソッドは新しい接続があるまでブロックし、接続が確立されると各クライアントとの通信を個別に処理します。
 
-<span class="listing-number">**サンプルコード16-2**　SimpleTCPServer.java（4〜42行目）</span>
+<span class="listing-number">**サンプルコード16-2**　SimpleTCPServer.java（4〜38行目）</span>
 
 ```java
 public class SimpleTCPServer {
     public static void main(String[] args) {
         int port = 8080;
-        
+
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             IO.println("サーバーがポート " + port + " で起動しました");
-            
+
             while (true) {
                 // クライアントからの接続を待機
                 Socket clientSocket = serverSocket.accept();
                 IO.println("クライアントが接続しました: " + 
                     clientSocket.getInetAddress());
-                
-                // クライアントとの通信を処理
                 handleClient(clientSocket);
             }
         } catch (IOException e) {
             System.err.println("サーバーエラー: " + e.getMessage());
         }
     }
-    
+
     private static void handleClient(Socket clientSocket) {
         try (BufferedReader in = new BufferedReader(
                  new InputStreamReader(clientSocket.getInputStream()));
              PrintWriter out = new PrintWriter(
                  clientSocket.getOutputStream(), true)) {
-            
             // クライアントからのメッセージを受信
             String message = in.readLine();
             IO.println("受信: " + message);
-            
+
             // 応答を送信
             out.println("Echo: " + message);
-            
         } catch (IOException e) {
             System.err.println("クライアント処理エラー: " + e.getMessage());
         }
@@ -271,20 +265,20 @@ public class SimpleTCPServer {
 
 </div>
 
-<span class="listing-number">**サンプルコード16-3**　MultiThreadedServer.java（5〜27、29、36〜62、71〜73行目）</span>
+<span class="listing-number">**サンプルコード16-3**　MultiThreadedServer.java（5〜27、29、36〜59、68〜70行目）</span>
 
 ```java
 public class MultiThreadedServer {
     private static final int PORT = 8080;
     private static final int THREAD_POOL_SIZE = 10;
-    
+
     public static void main(String[] args) {
         ExecutorService executor = 
             Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-        
+
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             IO.println("マルチスレッドサーバーが起動しました");
-            
+
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 // 新しいクライアントの処理を別スレッドで実行
@@ -306,13 +300,11 @@ class ClientHandler implements Runnable {
                  new InputStreamReader(clientSocket.getInputStream()));
              PrintWriter out = new PrintWriter(
                  clientSocket.getOutputStream(), true)) {
-            
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                IO.println(
-                    Thread.currentThread().getName() + 
-                    " - 受信: " + inputLine);
-                
+                IO.println(Thread.currentThread().getName()
+                        + " - 受信: " + inputLine);
+
                 // 簡単なプロトコル処理
                 if (inputLine.equalsIgnoreCase("quit")) {
                     out.println("Goodbye!");
@@ -320,8 +312,7 @@ class ClientHandler implements Runnable {
                 } else if (inputLine.startsWith("ECHO ")) {
                     out.println(inputLine.substring(5));
                 } else if (inputLine.equals("TIME")) {
-                    out.println(java.time.LocalDateTime.now()
-                            .toString());
+                    out.println(java.time.LocalDateTime.now());
                 } else {
                     out.println("Unknown command: " + inputLine);
                 }
@@ -376,7 +367,7 @@ Content-Length: 1234
 ソケットを使用して直接HTTPプロトコルを話すクライアントの実装例です。この方法は教育的価値が高く、HTTPプロトコルの動作を理解するのに役立ちます。
 実際の開発では、後述するHttpURLConnectionやHttpClientを使用することが一般的ですが、基礎となるしくみを理解することは重要です。
 
-<span class="listing-number">**サンプルコード16-4**　SimpleHTTPClient.java（4〜23、27〜53行目）</span>
+<span class="listing-number">**サンプルコード16-4**　SimpleHTTPClient.java（4〜21、26〜51行目）</span>
 
 ```java
 public class SimpleHTTPClient {
@@ -384,13 +375,12 @@ public class SimpleHTTPClient {
         String host = "www.example.com";
         int port = 80;
         String path = "/";
-        
+
         try (Socket socket = new Socket(host, port);
              PrintWriter out = new PrintWriter(
                  socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(
                  new InputStreamReader(socket.getInputStream()))) {
-            
             // HTTPリクエストを送信（HTTP/1.0で送ると、ボディが分割されずに届く）
             // HTTPの行の終わりはCRLF（\r\n）なので、printlnではなくprintで書く
             out.print("GET " + path + " HTTP/1.0\r\n");
@@ -398,13 +388,12 @@ public class SimpleHTTPClient {
             out.print("Connection: close\r\n");
             out.print("\r\n"); // 空行でヘッダー終了
             out.flush();
-            
             // ...
             String line;
             boolean isHeader = true;
             StringBuilder headers = new StringBuilder();
             StringBuilder body = new StringBuilder();
-            
+
             while ((line = in.readLine()) != null) {
                 if (isHeader) {
                     if (line.isEmpty()) {
@@ -416,12 +405,11 @@ public class SimpleHTTPClient {
                     body.append(line).append("\n");
                 }
             }
-            
+
             IO.println("=== Headers ===");
             IO.println(headers);
             IO.println("=== Body ===");
             IO.println(body);
-            
         } catch (IOException e) {
             System.err.println("エラー: " + e.getMessage());
         }
@@ -459,7 +447,7 @@ Javaは、より高レベルなHTTP通信のためのAPIも提供しています
 
 以下のコードは、HttpURLConnectionを使用したHTTP GETリクエストの実装例です。このクラスはソケットレベルの詳細を隠蔽し、HTTPヘッダーの設定、レスポンスコードの取得、タイムアウトの設定などを簡単に行えます。この例では、GitHub APIにアクセスしてJSON形式のユーザー情報を取得しています<span class="footnote">認証なしでGitHub APIを呼び出せるのは、1つのIPアドレスから1時間に60回までです。回数を超えると、レスポンスコードが403や429になります。</span>。
 
-<span class="listing-number">**サンプルコード16-5**　HttpURLConnectionExample.java（4〜38、44〜45行目）</span>
+<span class="listing-number">**サンプルコード16-5**　HttpURLConnectionExample.java（4〜33、39〜40行目）</span>
 
 ```java
 public class HttpURLConnectionExample {
@@ -469,34 +457,29 @@ public class HttpURLConnectionExample {
                     .toURL();
             HttpURLConnection conn = 
                 (HttpURLConnection) url.openConnection();
-            
+
             // リクエストの設定
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
             conn.setConnectTimeout(5000);
             conn.setReadTimeout(5000);
-            
+
             // レスポンスコードの確認
             int responseCode = conn.getResponseCode();
             IO.println("Response Code: " + responseCode);
-            
+
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 // レスポンスの読み取り
                 try (BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(
-                            conn.getInputStream()))) {
+                        new InputStreamReader(conn.getInputStream()))) {
                     String line;
                     StringBuilder response = new StringBuilder();
-                    
                     while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
-                    
-                    IO.println(
-                        "Response: " + response.toString());
+                    IO.println("Response: " + response.toString());
                 }
             }
-            
             // ...
     }
 }
@@ -513,18 +496,17 @@ Response: {"login":"github","id":9919,"node_id":"MDEyOk9yZ2FuaXphdGlvbjk5MTk=","
 
 Java 11で標準になったHTTPクライアントAPI（`java.net.http`パッケージ）<span class="footnote">このAPIはJava 9とJava 10で試験的なモジュール（incubator）として提供され、Java 11で正式な標準APIになりました。</span>は、非同期処理をサポートし、HTTP/2にも対応しています。CompletableFutureを使用することで、ノンブロッキングなHTTP通信が可能になります。
 
-<span class="listing-number">**サンプルコード16-6**　AsyncHttpClientExample.java（8〜52行目）</span>
+<span class="listing-number">**サンプルコード16-6**　AsyncHttpClientExample.java（8〜49行目）</span>
 
 ```java
 public class AsyncHttpClientExample {
-    
     public static void main(String[] args) throws Exception {
         // HTTPクライアントの作成
         HttpClient client = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .connectTimeout(Duration.ofSeconds(10))
             .build();
-        
+
         // HTTPリクエストの作成
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(
@@ -533,29 +515,27 @@ public class AsyncHttpClientExample {
             .header("Accept", "application/json")
             .GET()
             .build();
-        
+
         // 非同期でリクエストを送信
         CompletableFuture<HttpResponse<String>> future = 
             client.sendAsync(request,
             HttpResponse.BodyHandlers.ofString());
-        
+
         // 非同期処理の連鎖
         CompletableFuture<Void> done = future
             .thenApply(response -> {
                 IO.println("Status: " + response.statusCode());
                 return response.body();
             })
-            .thenAccept(body -> {
-                IO.println("Response Body: " + body);
-            })
+            .thenAccept(body -> IO.println("Response Body: " + body))
             .exceptionally(e -> {
                 System.err.println("Error: " + e.getMessage());
                 return null;
             });
-        
+
         // 他の処理を並行して実行可能
         IO.println("他の処理を継続中...");
-        
+
         // 連鎖させた処理がすべて終わるまで待つ（mainが先に終わるとプログラムが
         // 終了するため）
         done.join();
@@ -617,24 +597,24 @@ import java.nio.charset.StandardCharsets;
 
 public class UDPServer {
     private static final int PORT = 9999;
-    
+
     public static void main(String[] args) {
         try (DatagramSocket socket = new DatagramSocket(PORT)) {
             IO.println("UDPサーバーがポート " + PORT + " で起動しました");
-            
+
             byte[] buffer = new byte[1024];
             DatagramPacket packet =
                     new DatagramPacket(buffer, buffer.length);
-            
+
             while (true) {
                 // データを受信
                 socket.receive(packet);
-                
+
                 String received = new String(packet.getData(), 0, 
                     packet.getLength(), StandardCharsets.UTF_8);
                 IO.println("受信: " + received + " from " + 
                     packet.getAddress());
-                
+
                 // エコーレスポンスを送信
                 String response = "Echo: " + received;
                 byte[] responseData =
@@ -642,7 +622,6 @@ public class UDPServer {
                 DatagramPacket responsePacket = new DatagramPacket(
                     responseData, responseData.length,
                     packet.getAddress(), packet.getPort());
-                
                 socket.send(responsePacket);
             }
         } catch (Exception e) {
@@ -675,27 +654,24 @@ public class UDPClient {
             InetAddress serverAddress =
                     InetAddress.getByName("localhost");
             int serverPort = 9999;
-            
+
             // データを送信
             String message = "Hello UDP Server!";
             byte[] buffer = message.getBytes(StandardCharsets.UTF_8);
             DatagramPacket packet = new DatagramPacket(
                 buffer, buffer.length, serverAddress, serverPort);
-            
             socket.send(packet);
             IO.println("送信: " + message);
-            
+
             // レスポンスを受信
             byte[] responseBuffer = new byte[1024];
             DatagramPacket responsePacket = new DatagramPacket(
                 responseBuffer, responseBuffer.length);
-            
             socket.receive(responsePacket);
-            
+
             String response = new String(responsePacket.getData(), 0,
                 responsePacket.getLength(), StandardCharsets.UTF_8);
             IO.println("受信: " + response);
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -724,7 +700,7 @@ UDPでは、送ったパケットや応答のパケットが途中で失われ�
 各クライアントは、送信に使う`PrintWriter`を用意してから集合に加えます。
 先に加えると、準備の済んでいないクライアントへほかのスレッドがメッセージを送ろうとして、`NullPointerException`が発生することがあります。
 
-<span class="listing-number">**サンプルコード16-9**　ChatServer.java（6〜37、44、54〜78、93〜100行目）</span>
+<span class="listing-number">**サンプルコード16-9**　ChatServer.java（6〜37、44、54〜77、92〜99行目）</span>
 
 ```java
 public class ChatServer {
@@ -734,14 +710,14 @@ public class ChatServer {
     // 複数のスレッドから追加・削除・反復しても安全な集合
     private static Set<ClientHandler> clients =
         ConcurrentHashMap.newKeySet();
-    
+
     public static void main(String[] args) {
         ExecutorService executor =
                 Executors.newFixedThreadPool(MAX_CLIENTS);
-        
+
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             IO.println("チャットサーバーが起動しました");
-            
+
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 executor.submit(new ClientHandler(clientSocket));
@@ -750,7 +726,7 @@ public class ChatServer {
             System.err.println("サーバーエラー: " + e.getMessage());
         }
     }
-    
+
     // すべてのクライアントにメッセージをブロードキャスト
     public static void broadcast(String message, ClientHandler sender) {
         for (ClientHandler client : clients) {
@@ -767,18 +743,17 @@ public class ChatServer {
             try {
                 in = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
-                out = new PrintWriter(
-                    socket.getOutputStream(), true);
+                out = new PrintWriter(socket.getOutputStream(), true);
                 // 送信の準備ができてから、ブロードキャストの対象に加える
                 clients.add(this);
-                
+
                 // ユーザー名を取得
                 out.println("ユーザー名を入力してください:");
                 username = in.readLine();
-                
+
                 // 入室メッセージをブロードキャスト
                 broadcast(username + " が入室しました", this);
-                
+
                 // メッセージを受信してブロードキャスト
                 String message;
                 while ((message = in.readLine()) != null) {
@@ -790,7 +765,7 @@ public class ChatServer {
                 // ...
             }
         }
-        
+
         public void sendMessage(String message) {
             out.println(message);
         }
@@ -802,7 +777,7 @@ public class ChatServer {
 
 以下のコードは、チャットクライアントの実装例です。このクライアントは、サーバーに接続し、別スレッドでメッセージの受信を処理しながら、メインスレッドでキーボードからの入力を受け付けます。この設計により、メッセージの送受信を同時に行えます。
 
-<span class="listing-number">**サンプルコード16-10**　ChatClient.java（4、8〜48行目）</span>
+<span class="listing-number">**サンプルコード16-10**　ChatClient.java（4、8〜45行目）</span>
 
 ```java
 public class ChatClient {
@@ -813,7 +788,6 @@ public class ChatClient {
                  socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(
                  new InputStreamReader(socket.getInputStream()))) {
-            
             // 受信スレッドを開始
             Thread receiveThread = new Thread(() -> {
                 try {
@@ -826,21 +800,19 @@ public class ChatClient {
                 }
             });
             receiveThread.start();
-            
+
             // メッセージ送信ループ（入力の終わりでIO.readlnはnullを返す）
             String userInput;
             while ((userInput = IO.readln()) != null) {
                 out.println(userInput);
-                
                 if (userInput.equalsIgnoreCase("/quit")) {
                     break;
                 }
             }
-            
+
             // 受信側を閉じて受信スレッドのreadLine()を終わらせてから、資源を閉じる
             socket.shutdownInput();
             receiveThread.join();
-            
         } catch (IOException e) {
             System.err.println("接続エラー: " + e.getMessage());
         } catch (InterruptedException e) {
@@ -879,21 +851,20 @@ JacksonはJavaの標準APIではなく、外部ライブラリです。
 外部ライブラリの追加方法とJacksonの使い方は、第22章「ドキュメントと外部ライブラリ」で学びます。
 ここでは、`ObjectMapper`の`readValue`メソッドがJSONの文字列を指定した型のオブジェクトに変換する、とだけ押さえてコードを読んでください。
 
-<span class="listing-number">**サンプルコード16-11**　JsonApiClient.java（7〜31、51〜61、83行目）</span>
+<span class="listing-number">**サンプルコード16-11**　JsonApiClient.java（7〜30、49〜58、80行目）</span>
 
 ```java
 public class JsonApiClient {
     private final HttpClient client;
     private final ObjectMapper mapper;
-    
+
     public JsonApiClient() {
         this.client = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .build();
         this.mapper = new ObjectMapper();
     }
-    
-    // GETリクエスト
+
     public <T> T get(String url, Class<T> responseType)
             throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
@@ -901,17 +872,16 @@ public class JsonApiClient {
             .header("Accept", "application/json")
             .GET()
             .build();
-        
-        HttpResponse<String> response = client.send(request, 
+
+        HttpResponse<String> response = client.send(request,
             HttpResponse.BodyHandlers.ofString());
-        
+
         return readBody(response, responseType);
     }
     // ...
     // ステータスコードが成功（200番台）のときだけ、JSONをオブジェクトに変換する
     private <T> T readBody(HttpResponse<String> response,
-            Class<T> responseType)
-            throws Exception {
+            Class<T> responseType) throws Exception {
         int status = response.statusCode();
         if (status >= 200 && status < 300) {
             return mapper.readValue(response.body(), responseType);
@@ -976,7 +946,6 @@ public class SSLClient {
             (SSLSocketFactory) SSLSocketFactory.getDefault();
         try (SSLSocket socket =
                 (SSLSocket) factory.createSocket(host, port)) {
-
             // 使うプロトコルをTLS 1.2以上に限る（JDK 25の既定と同じ）
             socket.setEnabledProtocols(
                 new String[] {"TLSv1.2", "TLSv1.3"});
@@ -1009,7 +978,6 @@ public class SSLClient {
             while ((line = in.readLine()) != null && !line.isEmpty()) {
                 IO.println(line);
             }
-
         } catch (IOException e) {
             System.err.println("SSL接続エラー: " + e.getMessage());
         }

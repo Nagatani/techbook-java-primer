@@ -10,14 +10,14 @@ public class ChatServer {
     // 複数のスレッドから追加・削除・反復しても安全な集合
     private static Set<ClientHandler> clients =
         ConcurrentHashMap.newKeySet();
-    
+
     public static void main(String[] args) {
         ExecutorService executor =
                 Executors.newFixedThreadPool(MAX_CLIENTS);
-        
+
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             IO.println("チャットサーバーが起動しました");
-            
+
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 executor.submit(new ClientHandler(clientSocket));
@@ -26,7 +26,7 @@ public class ChatServer {
             System.err.println("サーバーエラー: " + e.getMessage());
         }
     }
-    
+
     // すべてのクライアントにメッセージをブロードキャスト
     public static void broadcast(String message, ClientHandler sender) {
         for (ClientHandler client : clients) {
@@ -35,39 +35,38 @@ public class ChatServer {
             }
         }
     }
-    
+
     // クライアントを削除
     public static void removeClient(ClientHandler client) {
         clients.remove(client);
     }
-    
+
     static class ClientHandler implements Runnable {
         private Socket socket;
         private PrintWriter out;
         private BufferedReader in;
         private String username;
-        
+
         public ClientHandler(Socket socket) {
             this.socket = socket;
         }
-        
+
         @Override
         public void run() {
             try {
                 in = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
-                out = new PrintWriter(
-                    socket.getOutputStream(), true);
+                out = new PrintWriter(socket.getOutputStream(), true);
                 // 送信の準備ができてから、ブロードキャストの対象に加える
                 clients.add(this);
-                
+
                 // ユーザー名を取得
                 out.println("ユーザー名を入力してください:");
                 username = in.readLine();
-                
+
                 // 入室メッセージをブロードキャスト
                 broadcast(username + " が入室しました", this);
-                
+
                 // メッセージを受信してブロードキャスト
                 String message;
                 while ((message = in.readLine()) != null) {
@@ -92,7 +91,7 @@ public class ChatServer {
                 }
             }
         }
-        
+
         public void sendMessage(String message) {
             out.println(message);
         }

@@ -6,13 +6,12 @@ public class SimpleHTTPClient {
         String host = "www.example.com";
         int port = 80;
         String path = "/";
-        
+
         try (Socket socket = new Socket(host, port);
              PrintWriter out = new PrintWriter(
                  socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(
                  new InputStreamReader(socket.getInputStream()))) {
-            
             // HTTPリクエストを送信（HTTP/1.0で送ると、ボディが分割されずに届く）
             // HTTPの行の終わりはCRLF（\r\n）なので、printlnではなくprintで書く
             out.print("GET " + path + " HTTP/1.0\r\n");
@@ -20,7 +19,7 @@ public class SimpleHTTPClient {
             out.print("Connection: close\r\n");
             out.print("\r\n"); // 空行でヘッダー終了
             out.flush();
-            
+
             // HTTPレスポンスの取得
             // HTTPレスポンスは、ステータスライン、ヘッダー、空行、ボディの順で構成されています。
             // ヘッダーとボディは空行で区切られているため、これを検出して処理を分けます。
@@ -28,7 +27,7 @@ public class SimpleHTTPClient {
             boolean isHeader = true;
             StringBuilder headers = new StringBuilder();
             StringBuilder body = new StringBuilder();
-            
+
             while ((line = in.readLine()) != null) {
                 if (isHeader) {
                     if (line.isEmpty()) {
@@ -40,12 +39,11 @@ public class SimpleHTTPClient {
                     body.append(line).append("\n");
                 }
             }
-            
+
             IO.println("=== Headers ===");
             IO.println(headers);
             IO.println("=== Body ===");
             IO.println(body);
-            
         } catch (IOException e) {
             System.err.println("エラー: " + e.getMessage());
         }

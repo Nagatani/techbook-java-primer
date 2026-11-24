@@ -22,9 +22,7 @@ public class GreetingApp {
 
         // ボタンにラムダ式でイベントリスナーを登録
         greetButton.addActionListener(e -> {
-            // テキストフィールドから入力された文字列を取得
             String name = nameField.getText();
-            // ラベルに挨拶メッセージを設定
             messageLabel.setText("こんにちは、" + name + "さん！");
         });
 
@@ -32,7 +30,7 @@ public class GreetingApp {
         frame.add(nameField);
         frame.add(greetButton);
         frame.add(messageLabel);
-        
+
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

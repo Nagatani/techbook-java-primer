@@ -10,11 +10,10 @@ public class FlowLayoutExample {
         JFrame frame = new JFrame("FlowLayoutの例");
         frame.setSize(400, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         // FlowLayoutを設定（中央揃え、水平間隔10px、垂直間隔5px）
-        frame.setLayout(new FlowLayout(
-            FlowLayout.CENTER, 10, 5));
-        
+        frame.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
+
         // さまざまなサイズのボタンを追加
         frame.add(new JButton("短い"));
         frame.add(new JButton("もう少し長いボタン"));
@@ -22,7 +21,7 @@ public class FlowLayoutExample {
         frame.add(new JButton("キャンセル"));
         frame.add(new JButton("ヘルプ"));
         frame.add(new JButton("設定"));
-        
+
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }

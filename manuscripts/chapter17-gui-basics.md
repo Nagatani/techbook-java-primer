@@ -41,7 +41,6 @@ import javax.swing.JFrame;
 public class HelloSwing {
     public static void main(String[] args) {
         JFrame frame = new JFrame("はじめてのSwingアプリケーション"); // ①
-        
         frame.setSize(400, 300);                          // ②
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // ③
         frame.setLocationRelativeTo(null);                // ④
@@ -134,7 +133,6 @@ public class WindowSettings {
 
     private static void createAndShowGUI() {
         JFrame frame = new JFrame();
-        
         frame.setTitle("カスタマイズされたウィンドウ");     // ①
         frame.setSize(500, 400);                      // ②
         frame.setResizable(false);                    // ③
@@ -206,14 +204,12 @@ public class HelloLabel {
         JFrame frame = new JFrame("ラベルの表示");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         // JLabelを作成して文字を設定
         JLabel label = new JLabel("Hello, Swing!");
         label.setHorizontalAlignment(JLabel.CENTER);  // 中央揃え
-        
-        // フレームにラベルを追加
         frame.add(label);
-        
+
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
@@ -331,7 +327,7 @@ public class GridLayoutExample {
 
 以下のコードは、FlowLayoutを使用したボタン配置の例です。コンポーネントは追加された順番に左から右へ配置され、ウィンドウ幅に収まらない場合は自動的に次の行に折り返されます。ウィンドウサイズの変更に柔軟に対応できるため、FlowLayoutはツールバーなどの実装に適しています。
 
-<span class="listing-number">**サンプルコード17-7**　FlowLayoutExample.java（4、9、14〜24、28〜29行目）</span>
+<span class="listing-number">**サンプルコード17-7**　FlowLayoutExample.java（4、9、14〜23、27〜28行目）</span>
 
 ```java
 public class FlowLayoutExample {
@@ -339,9 +335,8 @@ public class FlowLayoutExample {
     private static void createAndShowGUI() {
         // ...
         // FlowLayoutを設定（中央揃え、水平間隔10px、垂直間隔5px）
-        frame.setLayout(new FlowLayout(
-            FlowLayout.CENTER, 10, 5));
-        
+        frame.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
+
         // さまざまなサイズのボタンを追加
         frame.add(new JButton("短い"));
         frame.add(new JButton("もう少し長いボタン"));
@@ -365,7 +360,7 @@ public class FlowLayoutExample {
 
 以下のコードは、JLabelでHTMLを表示する例です。JLabelはHTMLタグをサポートしており、太字、斜体、色付き文字などのリッチテキストを表示できます<span class="footnote">HTMLとして扱うのは、文字列が`<html>`で始まるときだけです。使えるのはHTML 3.2相当の基本的なタグで、Webブラウザーと同じ表示になるとは限りません。</span>。また、HTMLの`<br>`タグを使えば、複数行のテキストも表示できます。
 
-<span class="listing-number">**サンプルコード17-8**　AdvancedLabel.java（4、9、13〜29、33〜34行目）</span>
+<span class="listing-number">**サンプルコード17-8**　AdvancedLabel.java（4、9、13〜27、31〜32行目）</span>
 
 ```java
 public class AdvancedLabel {
@@ -373,19 +368,17 @@ public class AdvancedLabel {
     private static void createAndShowGUI() {
         // ...
         frame.setLayout(new FlowLayout());
-        
+
         // テキストのみのラベル
         JLabel textLabel = new JLabel("通常のテキスト");
-        
         // HTMLを使用したリッチテキスト
         JLabel htmlLabel = new JLabel(
             "<html><b>太字</b>と<i>斜体</i>と<font "
             + "color='red'>赤色</font></html>");
-        
         // 複数行テキスト
         JLabel multiLineLabel =
                 new JLabel("<html>複数行の<br>テキストを<br>表示</html>");
-        
+
         frame.add(textLabel);
         frame.add(htmlLabel);
         frame.add(multiLineLabel);
@@ -637,7 +630,7 @@ public class ComplexLayoutExample {
 
 以下のコードは、さらに高度なレイアウトの組み合わせ例を示しています。メニューバー、ツールバー、コンテンツエリア、サイドパネルなど、実際のアプリケーションでよく使われるパターンを、複数のレイアウトマネージャーを使って構築しています。
 
-<span class="listing-number">**サンプルコード17-13**　CombinedLayoutExample.java（4、9〜25、33、42〜53、65〜73、82〜90、99、103〜104行目）</span>
+<span class="listing-number">**サンプルコード17-13**　CombinedLayoutExample.java（4、9〜25、33、42〜53、65〜73、82〜89、98、102〜103行目）</span>
 
 ```java
 public class CombinedLayoutExample {
@@ -647,11 +640,11 @@ public class CombinedLayoutExample {
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
-        
+
         // 上部：ツールバーを置くパネル
         // （メニューバーはパネルではなく、setJMenuBarでフレームに付ける）
         JPanel topPanel = new JPanel(new BorderLayout());
-        
+
         // メニューバー
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("ファイル");
@@ -663,36 +656,35 @@ public class CombinedLayoutExample {
         frame.setJMenuBar(menuBar);
         // ...
         frame.add(topPanel, BorderLayout.NORTH);
-        
+
         // 中央：分割パネル
         JSplitPane splitPane = new JSplitPane(
             JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setDividerLocation(200);
-        
+
         // 左側パネル
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.setBorder(
             BorderFactory.createTitledBorder("プロジェクト"));
-        
+
         // ...
         splitPane.setLeftComponent(leftPanel);
-        
+
         // 右側パネル（タブ付き）
         JTabbedPane tabbedPane = new JTabbedPane();
-        
+
         // エディタータブ
         JTextArea editor = new JTextArea();
         editor.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         tabbedPane.addTab("エディター", new JScrollPane(editor));
         // ...
         splitPane.setRightComponent(tabbedPane);
-        
+
         frame.add(splitPane, BorderLayout.CENTER);
-        
+
         // 下部：ステータスバー
         JPanel statusBar = new JPanel(new BorderLayout());
-        statusBar.setBorder(
-            BorderFactory.createLoweredBevelBorder());
+        statusBar.setBorder(BorderFactory.createLoweredBevelBorder());
         statusBar.add(new JLabel("準備完了"), BorderLayout.WEST);
         // ...
         frame.add(statusBar, BorderLayout.SOUTH);
