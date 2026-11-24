@@ -87,7 +87,8 @@ button.addActionListener(new ActionListener() {
 
 このコード<span class="footnote">GUIアプリケーションで使う例で、`button`はあらかじめ`JButton`として作ってあるものとします。ボタンなどのGUIの部品は第17章で学びます。</span>では、`actionPerformed`という1つのメソッドを実装するためだけに、`new ActionListener() { ... }`という定型的な記述を書かなければならず、冗長でした。
 
-ラムダ式は、この匿名クラスの記述を、本質的な処理だけを抜き出して劇的に簡潔にするために導入されました。
+サンプルコード11-2で本当に書きたい処理は`IO.println`の1行だけですが、匿名クラスで書くと、それを囲む定型の行が5行も要ります。
+ラムダ式は、この定型の行を省き、書きたい処理だけを残すために導入されました。
 サンプルコード11-2をラムダ式で書くと、次のように1行になります<span class="footnote">サンプルコード11-2と同じく、`button`はあらかじめ`JButton`として作ってあるものとします。</span>。
 
 <span class="listing-number">**サンプルコード11-3**</span>
@@ -154,6 +155,8 @@ public class FunctionalInterfaceExample {
 ラムダ式の外で、あとから`count = 1;`のように代入し直した場合も、ラムダ式で`count`を参照した箇所がエラーになります。
 javacは「ラムダ式から参照されるローカル変数は、finalまたは事実上のfinalである必要があります」と表示します。
 英語の環境では「local variables referenced from a lambda expression must be final or effectively final」です。
+このエラーは、要素の数や合計を数えようとして書いたときによく出ます。
+数を数えたり合計を求めたりするだけなら、拡張for文で書くか、第12章で学ぶStreamの`count()`や`sum()`を使います。
 
 この制限は変数への代入を禁じるもので、変数が指すオブジェクトの中身を変えることは禁じていません。
 そのため、ラムダ式のなかから外のリストに要素を追加する書き方は、コンパイルできます。
