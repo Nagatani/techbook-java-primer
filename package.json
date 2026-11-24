@@ -26,6 +26,7 @@
     "check:deep-dive": "node scripts/check-claims.js --appendix",
     "check:claims": "node scripts/check-claims.js --chapters",
     "check:api-names": "node scripts/check-api-names.js",
+    "check:style": "node scripts/check-ai-style.js",
     "crossref": "node scripts/check-structure.js crossref",
     "samples:sync": "node scripts/sample-code.js sync",
     "samples:extract": "node scripts/sample-code.js extract",
