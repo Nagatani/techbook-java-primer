@@ -3,23 +3,23 @@ source: manuscripts/chapter03-oop-basics.md
 summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
-    hash: d78bde0d
+    hash: c41c417f
   - key: "なぜオブジェクト指向が必要なのか"
-    hash: 4ce2e7d3
+    hash: 35e82278
   - key: "オブジェクト指向とは"
     hash: 1910ecaa
   - key: "オブジェクト指向の重要な用語と概念"
-    hash: ecb9d99b
+    hash: 4824d17d
   - key: "オブジェクト指向の基本概念を実際のコードで理解する"
-    hash: bbc8efb8
+    hash: 1c63f422
   - key: "クラスの構成要素"
     hash: e1c4e12a
   - key: "クラスからオブジェクトを作る"
-    hash: 239c0a55
+    hash: 472fb087
   - key: "アクセス修飾子：publicとprivate"
     hash: b33b266e
   - key: "static：クラスに属するメンバー"
-    hash: 75406194
+    hash: b6ce5a93
   - key: "オブジェクトの配列"
     hash: 2b25678e
   - key: "実用的なクラス設計例"
@@ -173,3 +173,4 @@ sections:
 - 2026-11-24: 発展の節（オーバーロードの解決規則）を付録Iへ移し、本文には要点と案内の2〜4文を残した。サンプルコードの番号を振り直した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 著者の経験（「なぜJavaか」の質問、課題の規模では構造体と関数の分離で困らないこと、staticは理由がなければ付けない、表計算ソフトでメモリを描く参照の説明、メッセージで頼むたとえ、if文で書いてよい場面）を本文に入れた
