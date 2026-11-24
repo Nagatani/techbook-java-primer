@@ -41,8 +41,11 @@
 | `guides/bullet-point-usage-guide.md` | 箇条書きにする内容と文章で書く内容の目安 |
 | `guides/code-styling-guide.md` | コードブロックの書き方とビルドで付く見た目 |
 | `guides/column-guidelines.md` | コラムの書き方 |
+| `guides/ai-style-rules.yml` | `npm run check:style`のルール（AIが書いた文章に見える語・文の形、直さない箇所） |
 | `summaries/README.md` | 章ごとの要約と、章全体を読まずに作業する方法 |
 | `analysis/issues-tracking.md` | 開いている課題と、継続して見直す点 |
+| `analysis/author-voice-points.md` | 著者の判断・経験を書き足してほしい箇所（第1〜26章、2026-11-24） |
+| `analysis/ai-style-report.md` | `npm run check:style -- --report`の出力（生成物） |
 
 ## 主なコマンド
 
