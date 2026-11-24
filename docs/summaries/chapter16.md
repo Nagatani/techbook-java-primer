@@ -1,6 +1,6 @@
 ---
 source: manuscripts/chapter16-network-programming.md
-summarized: 2026-11-23
+summarized: 2026-11-24
 sections:
   - key: "本章の学習目標"
     hash: 2a5f0769
@@ -19,7 +19,7 @@ sections:
   - key: "実践的な例：チャットアプリケーション"
     hash: 98d2a81c
   - key: "JSON APIクライアントの実装"
-    hash: 3add835f
+    hash: 702b72c6
   - key: "セキュリティの考慮事項"
     hash: 3c43566d
   - key: "多数の接続を1つのスレッドで扱う"
@@ -85,7 +85,7 @@ sections:
     + 終了時に`shutdownInput()`と`join()`で受信スレッドを終わらせてから資源を閉じる理由（BufferedReaderのロック）を説明する
     + 実行結果はサーバー未起動時の接続エラーの例として示す
 - JSON APIクライアントの実装（L820–881）
-    + JacksonとHttpClientで汎用GET/POSTクライアントを作る（16-11）。受け取る型を指定してJSONを扱う。POSTのメソッドは紙面で省き、GitHubの全文に載せている旨を脚注のURLとともに書く。Jacksonは外部ライブラリで、追加方法は第22章で学ぶと断る
+    + GsonとHttpClientで汎用GET/POSTクライアントを作る（16-11）。受け取る型を指定してJSONを扱う。POSTのメソッドは紙面で省き、GitHubの全文に載せている旨を脚注のURLとともに書く。Gsonは外部ライブラリで、追加方法は第22章で学ぶと断る。本書はGsonを使う旨を書く（2026-11-24にJacksonから変えた。docs/guides/book-defaults.md）
     + GET・POSTに共通の`readBody`で、ステータスが200番台のときだけJSONを変換する（POSTの成功は201が多いため）
     + JSON処理のポイント（ライブラリに任せる、`Class<T>`で型を渡す、Content-Type/Accept、ステータスコードの確認）を文章で述べる
 - セキュリティの考慮事項（L882–982）
@@ -105,7 +105,7 @@ sections:
 
 - 第14章（ファイルI/O）: ストリームの使い方を前提とする
 - 第15章（マルチスレッド）: ExecutorServiceとCompletableFutureを前提とし、16-3と16-6で再利用する
-- 第22章（ドキュメントと外部ライブラリ）: Jacksonの導入方法と使い方を扱う。16-11から誘導している
+- 第22章（ドキュメントと外部ライブラリ）: Gsonの導入方法と使い方を扱う。16-11から誘導している
 - 第17章: 章末演習の最後の文で誘導する
 - 付録E: エラー集の詳細を置く
 - 付録H: NIOのSelectorによるエコーサーバーを置く

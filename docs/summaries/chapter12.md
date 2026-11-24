@@ -1,17 +1,17 @@
 ---
 source: manuscripts/chapter12-advanced-collections.md
-summarized: 2026-11-23
+summarized: 2026-11-24
 sections:
   - key: "本章の学習目標"
     hash: a46ea38e
   - key: "Stream APIによる現代的なコレクション操作"
-    hash: 6bf2b0e0
+    hash: 2b6692e9
   - key: "Optional型による安全なnull処理"
-    hash: a1302193
+    hash: 1125e9af
   - key: "並列ストリームによるパフォーマンス向上"
-    hash: a8248f56
+    hash: b27f9a2d
   - key: "高度なStream操作"
-    hash: ee17f633
+    hash: 19becb55
   - key: "よくあるエラーと対処法"
     hash: 92c24189
   - key: "まとめ"
@@ -54,7 +54,7 @@ sections:
     + Stream APIが必要な理由（文章で説明。null安全はStreamではなくOptionalが扱う旨）
     + 遅延評価のしくみ（12-1）と、要素が1つずつ全操作を通る図
     + 基本パターンとパイプラインの図、生成・中間操作・終端操作の3フェーズと主なメソッド一覧。Java 24からの`gather`と`Gatherers`を脚注で紹介し、終端操作を呼んだストリームをもう一度操作すると`IllegalStateException`になる旨を書く
-    + filter（12-2）と、`collect(Collectors.toList())`の説明（Java 16以降の`toList()`は脚注）、map（12-3）
+    + filter（12-2）と、終端操作`toList()`の説明（変更できないリストを返すこと、`collect(Collectors.toList())`を使う場面は脚注）、map（12-3）
     + 数値のストリーム（12-4 NumberStreamExample、2026-11-23に追加）: `Stream<Integer>`に`sum()`がないこと、mapToInt・mapToLong・mapToDoubleでIntStreamなどに変換すること、sum・average（OptionalDouble、orElse。Optionalの節へ誘導）、IntStream.range・rangeClosed、boxed。演習の基礎課題が前提にする
     + `sorted`による並べ替え（12-5、2026-11-11に新設）。`Student`クラスの定義、Comparatorは第11章で学んだ旨、`List.sort`との違い
     + 組み合わせた例（12-6）
@@ -66,7 +66,7 @@ sections:
 - 並列ストリームによるパフォーマンス向上（L709–853）
     + マルチコアと、スレッドセーフティは第15章で学ぶ旨
     + parallelStreamの使い方（12-14）と、作成済みのストリームに`parallel()`を呼ぶ方法。Fork/Joinによる分割・処理・統合と図（共通プールのスレッド数はコア数より1少なく、呼び出したスレッドも加わる旨を脚注で説明）、計測例（12-15、`System.nanoTime`でミリ秒を求める。高速化率は小数1桁。結果は環境で変わる旨とJITの影響を脚注で説明）
-    + 注意点としてオーバーヘッド（分割・統合・スレッド間の受け渡し）、スレッドセーフティ（12-16）、順序（forEach・findAnyは変わりうるが、forEachOrderedとリストに集める`collect(Collectors.toList())`は並列でも順序を保つ）
+    + 注意点としてオーバーヘッド（分割・統合・スレッド間の受け渡し）、スレッドセーフティ（12-16）、順序（forEach・findAnyは変わりうるが、forEachOrderedとリストに集める`toList()`は並列でも順序を保つ）
     + 使うとよい4条件（4つ目は、findFirst・limitのような順序を守る操作は並列で速くなりにくい点）
     + 第15章の並列ストリームの説明は本章へ寄せた（2026-11-11）
 - 高度なStream操作（L854–1202）
@@ -111,3 +111,4 @@ sections:
 - 2026-11-18: 校閲で、Gatherer（脚注）・使い終わったストリームの`IllegalStateException`・`parallel()`を足し、12-14の計測を`Instant`から`System.nanoTime`に、12-19の`trim().isEmpty()`を`isBlank()`にした。並列での順序の説明を「リストに集める`collect`」に絞り、小見出しの後とコードブロックの後の空行、読点区切りを直した
 - 2026-11-23（流れ・矛盾・過不足の校閲）: 低の指摘: 第12章は、12-11のfindAnyを並列ストリームの節より前ではstream()で示し、Optionalの心得の分かりにくい文を「その場でorElseなどで値を決め、Optionalのまま持ち回らない」に改め、コラムに12-13のアンチパターンとの関係を添え、groupingByの表示順の説明を初出の12-19の後へ移した。第15章は、並列化の手間を「処理を分けて受け渡す手間」と第12章に合う言い方にした
 - 2026-11-23（流れ・矛盾・過不足の校閲）: 横断検査の低の指摘: 第2章の参照の「メモリアドレス」の言い換えと「インスタンス化」の先取りを直し、文字列の不変性から第6章へ案内した。デザインパターンの語を初出の第3章の脚注で説明した。第25章の「合成」を第5章のコンポジションとつなぎ、第20章の前提のinvokeLaterを第17章に、第12章のFork/Joinの案内を第15章と付録Hに直した。章末の節名を第2章「よくあるエラーと対処法」・第15章「まとめ」にそろえた
+- 2026-11-24: 本書の既定（docs/guides/book-defaults.md）に合わせ、本文とサンプル（12-1〜12-3・12-5・12-6・12-11・12-16・12-17・12-20・12-21）の`collect(Collectors.toList())`を`toList()`にした。12-19の`groupingBy`の下流などCollectorsが要る箇所は残した
