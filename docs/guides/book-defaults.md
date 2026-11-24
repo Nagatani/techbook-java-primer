@@ -17,8 +17,13 @@
 | switch | アロー形式（`->`） | | 第2章 |
 | `var` | ほとんど使わない | | 第10章 |
 | ログ | `java.util.logging` | 依存を増やさない | 第13章・第26章 |
+| 小さなテキストファイルの読み書き | `Files.readAllLines`・`Files.writeString`。1行ずつ処理するときや大きなファイルは`Files.newBufferedReader` | 課題の規模なら全体を読むほうが短く書ける | 第14章 |
+| データを保存する形式 | CSVかJSON（Gson）。直列化は使わない | クラスを変えると読めなくなる。信頼できないデータの非直列化は危険。直列化は既存のコードを読むために知る（付録I） | 第14章 |
+| for文とStream | 短い処理はどちらでもよい。途中で抜ける・検査例外・添え字・外の変数の書き換えはfor文 | 入れ子で読みにくくなったらStreamに書き換える | 第12章 |
+| ジェネリクス | まず標準ライブラリの型を読んで使えること。自作は型ごとに書き分けそうになったとき | | 第10章 |
+| EDTの外で動かす処理 | 結果を表示するだけなら`Thread`と`invokeLater`、進捗の表示や中断が要るなら`SwingWorker` | | 第19章 |
+| Javadoc | `public`なクラスとメソッドに、何をするかの1文と`@param`・`@return`・`@throws` | メソッド名の言い換えではなく、値の範囲や`null`の扱いなど使う側が知りたいことを書く | 第22章 |
 
 ## まだ決めていないもの
 
 - Swing・IntelliJ IDEAを選んだ理由（著者にしか書けない。`docs/analysis/author-voice-points.md`の第1章・第17章・第26章）
-- `Thread`と`invokeLater`の組み合わせか`SwingWorker`か（第19章）

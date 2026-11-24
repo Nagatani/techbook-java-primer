@@ -61,6 +61,8 @@
 
 テキストファイルを読み込む方法は複数あります。
 ここでは、区切り文字や型ごとに解析できる`Scanner`と、1行ずつ読み込む`BufferedReader`、ファイル全体をまとめて読む`Files.readAllLines`を順に紹介します。
+課題で扱うくらいの小さなテキストファイルなら、まず`Files.readAllLines`で読み、`Files.writeString`で書きます。
+1行ずつ処理したいときや大きなファイルを読むときは、`Files.newBufferedReader`で開いた`BufferedReader`を使います。
 
 ### Scannerクラスによる柔軟な入力処理
 
@@ -317,6 +319,8 @@ public class CharacterEncodingExample {
 オブジェクトの状態をそのままバイト列にして保存するしくみを直列化、バイト列からオブジェクトを復元することを非直列化と呼びます。
 `Serializable`インターフェイスを実装したクラスのオブジェクトを`ObjectOutputStream`で書き、`ObjectInputStream`で読み戻します。
 パスワードのように保存したくないフィールドには`transient`を付けます。
+ただし、クラスを書き換えると以前に保存したデータを読めなくなることがあり、信頼できないデータを非直列化すると危険なので、本書では新しく作る保存処理に直列化を使いません。
+既存のコードを読むために知っておき、自分で保存の形式を決めるときはCSVか、第22章で学ぶGsonによるJSONを使います。
 詳しい説明とコード例（信頼できないデータを非直列化する危険も含む）は付録I「オブジェクト指向と言語機能の発展的な内容」の「オブジェクトの直列化（シリアライズ）」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ## ファイルシステムの操作（NIO.2）
@@ -781,7 +785,8 @@ Text Blocksがもっとも役に立つのは、JSON、XML、SQL、HTMLのよう�
 
 ファイルを扱うときは、まず中身がテキストかバイナリかで、文字ストリームとバイトストリームのどちらを使うかを決めます。
 テキストを読み書きするときは、文字コードを指定します。
-`Files.readAllLines`はファイル全体をまとめて読むので、大きなファイルでは`OutOfMemoryError`にならないよう1行ずつ読みます。
+小さなファイルは`Files.readAllLines`と`Files.writeString`で読み書きし、大きなファイルは`OutOfMemoryError`にならないよう`BufferedReader`で1行ずつ読みます。
+データを保存する形式を自分で決めるときは、直列化ではなくCSVかJSONにします。
 ファイルやフォルダーの操作は`Path.of`と`Files`で書き、`Files.newBufferedReader`などで開いたストリームは、`try-with-resources`で閉じます。
 
 この章でいちばん持ち帰ってほしいのは、ファイルの中身はバイト列で、文字として読むには文字コードという対応表が要るということです。
