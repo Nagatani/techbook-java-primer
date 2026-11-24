@@ -7,17 +7,17 @@ sections:
   - key: "なぜ継承とポリモーフィズムが必要なのか"
     hash: 22dde6d5
   - key: "継承の基本"
-    hash: a5b749f0
+    hash: 5d54ddcc
   - key: "メソッドのオーバーライド"
-    hash: 2f77d108
+    hash: ae2f060f
   - key: "ポリモーフィズム（多態性）"
-    hash: ce67498f
+    hash: 3fce817e
   - key: "`instanceof`演算子とキャスト"
     hash: 3a4899bf
   - key: "`Object`クラスのメソッド（toString・equals・hashCode）"
     hash: beabbf61
   - key: "実践的な継承設計パターン"
-    hash: 0b12ab13
+    hash: 9ccb8a85
   - key: "よくあるエラーと対処法"
     hash: fb101c28
   - key: "まとめ"
@@ -131,3 +131,4 @@ sections:
 - 2026-11-24: 発展の節（継承設計の実践例：決済システム）を付録Iへ移し、本文には要点と案内の2〜4文を残した。サンプルコードの番号を振り直した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 著者の経験（ECサイトの商品でis-aを考える、継承の関係を図に描いて呼ばれるメソッドを読む、誤用の典型、引数なしのコンストラクターがないエラーで止まる学生）を本文に入れた
