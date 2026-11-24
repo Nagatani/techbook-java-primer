@@ -16,11 +16,9 @@ public class OptionalPresenceExample {
         }
         
         // 3. ifPresent() - 値が存在する場合のみ処理を実行（関数型スタイル）
-        present.ifPresent(value -> 
-            IO.println("ifPresent: " + value));
+        present.ifPresent(value -> IO.println("ifPresent: " + value));
         
-        empty.ifPresent(value -> 
-            IO.println("この行は実行されません"));
+        empty.ifPresent(value -> IO.println("この行は実行されません"));
         
         // 4. ifPresentOrElse() - 値の有無で処理を分岐（Java 9以降）
         present.ifPresentOrElse(

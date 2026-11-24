@@ -34,7 +34,7 @@
     "dir": "12-09",
     "main": "OptionalPresenceExample",
     "excerpt": [
-      { "file": "OptionalPresenceExample.java", "from": 1, "to": 36 }
+      { "file": "OptionalPresenceExample.java", "from": 1, "to": 34 }
     ]
   },
   "12-10": {
@@ -89,7 +89,7 @@
     "dir": "12-17",
     "main": "FlatMapExample",
     "excerpt": [
-      { "file": "FlatMapExample.java", "from": 5, "to": 37 }
+      { "file": "FlatMapExample.java", "from": 5, "to": 36 }
     ]
   },
   "12-18": {
@@ -107,7 +107,7 @@
     "dir": "12-19",
     "main": "CollectorsExample",
     "excerpt": [
-      { "file": "CollectorsExample.java", "from": 6, "to": 37 }
+      { "file": "CollectorsExample.java", "from": 6, "to": 36 }
     ],
     "uses": [
       "12-5"

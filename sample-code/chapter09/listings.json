@@ -3,7 +3,7 @@
     "dir": "09-01",
     "main": "StudentManager",
     "excerpt": [
-      { "file": "StudentManager.java", "from": 1, "to": 17 }
+      { "file": "StudentManager.java", "from": 1, "to": 16 }
     ]
   },
   "9-6": {

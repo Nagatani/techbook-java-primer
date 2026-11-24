@@ -218,12 +218,11 @@ public class ComparatorLambdaExample {
 実際の業務では、1つの条件だけでなく、複数の条件を組み合わせて並べ替えることがよくあります。
 `thenComparing`メソッドを使うと、前の条件で順序が決まらなかった要素どうしを次の条件で比べる`Comparator`を作れます。
 
-<span class="listing-number">**サンプルコード11-6**　MultiConditionSortExample.java（7〜53行目）</span>
+<span class="listing-number">**サンプルコード11-6**　MultiConditionSortExample.java（7〜52行目）</span>
 
 ```java
 public class MultiConditionSortExample {
     public static void main(String[] args) {
-        // 学生のサンプルデータ
         List<Student> students = Arrays.asList(
             new Student("Alice", 2, "S003"),
             new Student("Bob", 1, "S001"),
@@ -480,7 +479,6 @@ import java.util.function.*;
 public class MethodReferenceExample {
     public static void main(String[] args) {
         List<String> words = Arrays.asList("apple", "banana", "cherry");
-        
         IO.println("元のリスト: " + words);
 
         // 静的メソッド参照の例
@@ -556,9 +554,7 @@ import java.util.function.Function;
 
 public class LambdaVsMethodReference {
     public static void main(String[] args) {
-        // ラムダ式 vs メソッド参照の比較
         List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
-        
         IO.println("元のリスト: " + names);
         
         // ラムダ式：やや冗長
@@ -688,12 +684,11 @@ Thread t1 (Anonymous) finished
 `ExecutorService`は、用意したスレッドにタスクを割り振って実行するしくみで、第15章で学びます。
 `Callable<String>`は値を返すタスクを表す関数型インターフェイスなので、タスクの中身をラムダ式で書けます。
 
-<span class="listing-number">**サンプルコード11-12**　ExecutorLambdaExample.java（4〜48行目）</span>
+<span class="listing-number">**サンプルコード11-12**　ExecutorLambdaExample.java（4〜47行目）</span>
 
 ```java
 public class ExecutorLambdaExample {
     public static void main(String[] args) {
-        // ExecutorServiceとラムダ式の組み合わせ
         ExecutorService executor = Executors.newFixedThreadPool(4);
         
         // 複数のタスクを並行実行
@@ -756,7 +751,7 @@ Task 3 completed
 
 複雑なバリデーションロジックは、関数型アプローチを使うことで、再利用可能で組み合わせ可能な小さな検証関数として実装できます。これにより、ビジネスルールの変更に柔軟に対応できるバリデーションシステムを構築できます。
 
-<span class="listing-number">**サンプルコード11-13**　ValidationFramework.java（6〜26、40〜80行目）</span>
+<span class="listing-number">**サンプルコード11-13**　ValidationFramework.java（6〜26、40〜79行目）</span>
 
 ```java
 public class ValidationFramework {
@@ -801,7 +796,6 @@ public class ValidationFramework {
     };
     
     public static void main(String[] args) {
-        // テストユーザー
         User validUser =
                 new User("太郎", "taro@example.com", "password123");
         User invalidUser = new User("", "invalid-email", "123");
@@ -853,7 +847,7 @@ Stream API（第12章）を使う例もあるので、最初はラムダ式を�
 
 高階関数（Higher-Order Function）は、関数を引数として受け取ったり、関数を戻り値として返したりする関数です。これにより、共通的な処理パターンを抽象化できます。
 
-<span class="listing-number">**サンプルコード11-14**　HigherOrderFunctionExample.java（4〜42、49行目）</span>
+<span class="listing-number">**サンプルコード11-14**　HigherOrderFunctionExample.java（4〜41、48行目）</span>
 
 ```java
 public class HigherOrderFunctionExample {
@@ -862,7 +856,6 @@ public class HigherOrderFunctionExample {
         Function<T, R> strategy,
         Predicate<T> riskCheck,
         R defaultValue) {
-        
         return input -> {
             if (riskCheck.test(input)) {
                 return strategy.apply(input);

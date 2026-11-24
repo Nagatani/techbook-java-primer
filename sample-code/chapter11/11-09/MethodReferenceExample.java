@@ -4,7 +4,6 @@ import java.util.function.*;
 public class MethodReferenceExample {
     public static void main(String[] args) {
         List<String> words = Arrays.asList("apple", "banana", "cherry");
-        
         IO.println("元のリスト: " + words);
 
         // 静的メソッド参照の例

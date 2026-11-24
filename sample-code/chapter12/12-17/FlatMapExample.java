@@ -11,7 +11,6 @@ public class FlatMapExample {
         );
         
         // flatMapを使ってネストしたリストを平坦化する
-        // この例では、リストのリストから単一の文字列リストを作成
         List<String> flatList = nestedList.stream()
             .flatMap(List::stream)  // 各内部リストをストリームに変換して結合
             .collect(Collectors.toList());

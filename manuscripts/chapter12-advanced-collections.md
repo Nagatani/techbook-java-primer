@@ -434,11 +434,9 @@ public class OptionalPresenceExample {
         }
         
         // 3. ifPresent() - 値が存在する場合のみ処理を実行（関数型スタイル）
-        present.ifPresent(value -> 
-            IO.println("ifPresent: " + value));
+        present.ifPresent(value -> IO.println("ifPresent: " + value));
         
-        empty.ifPresent(value -> 
-            IO.println("この行は実行されません"));
+        empty.ifPresent(value -> IO.println("この行は実行されません"));
         
         // 4. ifPresentOrElse() - 値の有無で処理を分岐（Java 9以降）
         present.ifPresentOrElse(
@@ -932,7 +930,7 @@ List<Integer> safeResults = numbers.parallelStream()
 
 </div>
 
-<span class="listing-number">**サンプルコード12-17**　FlatMapExample.java（5〜37行目）</span>
+<span class="listing-number">**サンプルコード12-17**　FlatMapExample.java（5〜36行目）</span>
 
 ```java
 public class FlatMapExample {
@@ -944,7 +942,6 @@ public class FlatMapExample {
         );
         
         // flatMapを使ってネストしたリストを平坦化する
-        // この例では、リストのリストから単一の文字列リストを作成
         List<String> flatList = nestedList.stream()
             .flatMap(List::stream)  // 各内部リストをストリームに変換して結合
             .collect(Collectors.toList());
@@ -1029,7 +1026,7 @@ Java is awesome
 
 `Collectors`クラスは、ストリームの要素をさまざまな形で収集するための豊富なメソッドを提供します。単純なリスト作成から、複雑なグループ化や統計処理まで対応できます。
 
-<span class="listing-number">**サンプルコード12-19**　CollectorsExample.java（6〜37行目）</span>
+<span class="listing-number">**サンプルコード12-19**　CollectorsExample.java（6〜36行目）</span>
 
 ```java
 public class CollectorsExample {
@@ -1051,7 +1048,6 @@ public class CollectorsExample {
         IO.println("高得点者: " + highScorers);
         
         // グループ化の例：点数でグループ分け
-        // 同じ点数の学生をグループ化する実用的な例
         Map<Integer, List<Student>> scoreGroups = students.stream()
             .collect(Collectors.groupingBy(Student::getScore));
         IO.println("点数別グループ: " + scoreGroups);

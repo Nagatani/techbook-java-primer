@@ -31,7 +31,6 @@
 <span class="listing-number">**サンプルコード9-1**　StudentManager.java</span>
 
 ```java
-// 学生の名前を管理するプログラム
 public class StudentManager {
     public static void main(String[] args) {
         // 5人分の学生名を格納する配列

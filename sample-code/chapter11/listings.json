@@ -24,7 +24,7 @@
     "dir": "11-06",
     "main": "MultiConditionSortExample",
     "excerpt": [
-      { "file": "MultiConditionSortExample.java", "from": 7, "to": 53 }
+      { "file": "MultiConditionSortExample.java", "from": 7, "to": 52 }
     ]
   },
   "11-7": {
@@ -45,14 +45,14 @@
     "dir": "11-09",
     "main": "MethodReferenceExample",
     "excerpt": [
-      { "file": "MethodReferenceExample.java", "from": 1, "to": 42 }
+      { "file": "MethodReferenceExample.java", "from": 1, "to": 41 }
     ]
   },
   "11-10": {
     "dir": "11-10",
     "main": "LambdaVsMethodReference",
     "excerpt": [
-      { "file": "LambdaVsMethodReference.java", "from": 1, "to": 34 }
+      { "file": "LambdaVsMethodReference.java", "from": 1, "to": 32 }
     ]
   },
   "11-11": {
@@ -68,7 +68,7 @@
     "dir": "11-12",
     "main": "ExecutorLambdaExample",
     "excerpt": [
-      { "file": "ExecutorLambdaExample.java", "from": 4, "to": 48 }
+      { "file": "ExecutorLambdaExample.java", "from": 4, "to": 47 }
     ]
   },
   "11-13": {
@@ -76,15 +76,15 @@
     "main": "ValidationFramework",
     "excerpt": [
       { "file": "ValidationFramework.java", "from": 6, "to": 26 },
-      { "file": "ValidationFramework.java", "from": 40, "to": 80 }
+      { "file": "ValidationFramework.java", "from": 40, "to": 79 }
     ]
   },
   "11-14": {
     "dir": "11-14",
     "main": "HigherOrderFunctionExample",
     "excerpt": [
-      { "file": "HigherOrderFunctionExample.java", "from": 4, "to": 42 },
-      { "file": "HigherOrderFunctionExample.java", "from": 49, "to": 49 }
+      { "file": "HigherOrderFunctionExample.java", "from": 4, "to": 41 },
+      { "file": "HigherOrderFunctionExample.java", "from": 48, "to": 48 }
     ]
   },
   "11-15": {

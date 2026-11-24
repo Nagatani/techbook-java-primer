@@ -7,7 +7,6 @@ public class HigherOrderFunctionExample {
         Function<T, R> strategy,
         Predicate<T> riskCheck,
         R defaultValue) {
-        
         return input -> {
             if (riskCheck.test(input)) {
                 return strategy.apply(input);

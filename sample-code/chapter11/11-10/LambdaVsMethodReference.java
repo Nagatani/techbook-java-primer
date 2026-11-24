@@ -3,9 +3,7 @@ import java.util.function.Function;
 
 public class LambdaVsMethodReference {
     public static void main(String[] args) {
-        // ラムダ式 vs メソッド参照の比較
         List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
-        
         IO.println("元のリスト: " + names);
         
         // ラムダ式：やや冗長

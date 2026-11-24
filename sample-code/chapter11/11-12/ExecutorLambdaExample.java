@@ -3,7 +3,6 @@ import java.util.concurrent.*;
 
 public class ExecutorLambdaExample {
     public static void main(String[] args) {
-        // ExecutorServiceとラムダ式の組み合わせ
         ExecutorService executor = Executors.newFixedThreadPool(4);
         
         // 複数のタスクを並行実行

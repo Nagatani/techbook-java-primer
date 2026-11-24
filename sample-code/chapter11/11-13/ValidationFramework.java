@@ -57,7 +57,6 @@ public class ValidationFramework {
     };
     
     public static void main(String[] args) {
-        // テストユーザー
         User validUser =
                 new User("太郎", "taro@example.com", "password123");
         User invalidUser = new User("", "invalid-email", "123");

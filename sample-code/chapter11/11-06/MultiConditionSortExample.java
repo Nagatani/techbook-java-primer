@@ -6,7 +6,6 @@ import java.util.List;
 
 public class MultiConditionSortExample {
     public static void main(String[] args) {
-        // 学生のサンプルデータ
         List<Student> students = Arrays.asList(
             new Student("Alice", 2, "S003"),
             new Student("Bob", 1, "S001"),

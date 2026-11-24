@@ -22,7 +22,6 @@ public class CollectorsExample {
         IO.println("高得点者: " + highScorers);
         
         // グループ化の例：点数でグループ分け
-        // 同じ点数の学生をグループ化する実用的な例
         Map<Integer, List<Student>> scoreGroups = students.stream()
             .collect(Collectors.groupingBy(Student::getScore));
         IO.println("点数別グループ: " + scoreGroups);

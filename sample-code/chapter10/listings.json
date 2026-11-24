@@ -3,7 +3,7 @@
     "dir": "10-02",
     "main": "CollectionProblem",
     "excerpt": [
-      { "file": "CollectionProblem.java", "from": 1, "to": 26 }
+      { "file": "CollectionProblem.java", "from": 1, "to": 25 }
     ]
   },
   "10-3": {
@@ -54,7 +54,7 @@
     "dir": "10-11",
     "main": null,
     "excerpt": [
-      { "file": "VarLimitations.java", "from": 1, "to": 34 }
+      { "file": "VarLimitations.java", "from": 1, "to": 28 }
     ]
   },
   "10-12": {

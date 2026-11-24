@@ -59,7 +59,6 @@ public class CollectionProblem {
         for (int i = 0; i < list.size(); i++) {
             // Object型として取り出される
             Object item = list.get(i);
-            
             // 文字列として使いたい場合は型変換が必要
             String language = (String) item;  // 3番目の要素で実行時エラー！
             IO.println(language.toUpperCase());
@@ -487,14 +486,11 @@ var型推論は、次の場面で使用できます。
 <span class="listing-number">**サンプルコード10-11**　VarLimitations.java</span>
 
 ```java
-import java.util.List;
 import java.util.ArrayList;
 
 public class VarLimitations {
     // var field = new ArrayList<String>(); // フィールドでは使用不可
-    
     // public void method(var param) { } // パラメーターでは使用不可
-    
     // public var method() { return ""; } // 戻り値型では使用不可
     
     public static void demonstrateLimitations() {
@@ -516,9 +512,6 @@ public class VarLimitations {
         // 注意: ダイヤモンド演算子単体はコンパイルできるが、
         // ArrayList<Object>と推論される
         var diamond = new ArrayList<>(); // ArrayList<Object>
-        
-        // OK: 型が推論可能
-        var inferredList = new ArrayList<String>();
     }
 }
 ```

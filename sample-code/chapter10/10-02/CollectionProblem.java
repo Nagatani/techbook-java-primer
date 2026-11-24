@@ -17,7 +17,6 @@ public class CollectionProblem {
         for (int i = 0; i < list.size(); i++) {
             // Object型として取り出される
             Object item = list.get(i);
-            
             // 文字列として使いたい場合は型変換が必要
             String language = (String) item;  // 3番目の要素で実行時エラー！
             IO.println(language.toUpperCase());
