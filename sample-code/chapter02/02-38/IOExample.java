@@ -5,7 +5,6 @@ public class IOExample {
         IO.println("文字列: %-10s | 右寄せ: %10s"
                 .formatted("左寄せ", "右寄せ"));
 
-        // === IO.readln による入力処理 ===
         // 文字列入力（メッセージを表示してから1行を読み取る）
         String name = IO.readln("名前を入力してください: ");
 

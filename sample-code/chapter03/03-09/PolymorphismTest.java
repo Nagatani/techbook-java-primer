@@ -1,4 +1,3 @@
-// PolymorphismTest.java
 public class PolymorphismTest {
     public static void main(String[] args) {
         PaymentMethod[] payments = {

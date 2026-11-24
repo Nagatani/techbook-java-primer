@@ -14,7 +14,6 @@ public class Rectangle {
         return width * height;
     }
     
-    // 戻り値があるメソッド
     public double calculatePerimeter() {
         return 2 * (width + height);
     }

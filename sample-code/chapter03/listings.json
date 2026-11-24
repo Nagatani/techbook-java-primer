@@ -18,7 +18,7 @@
     "dir": "03-05",
     "main": "BankAccountTest",
     "excerpt": [
-      { "file": "BankAccountTest.java", "from": 1, "to": 13 }
+      { "file": "BankAccountTest.java", "from": 1, "to": 12 }
     ],
     "uses": [
       "3-4"
@@ -36,7 +36,7 @@
     "dir": "03-07",
     "main": "InheritanceTest",
     "excerpt": [
-      { "file": "InheritanceTest.java", "from": 1, "to": 13 }
+      { "file": "InheritanceTest.java", "from": 1, "to": 12 }
     ],
     "uses": [
       "3-6"
@@ -55,7 +55,7 @@
     "dir": "03-09",
     "main": "PolymorphismTest",
     "excerpt": [
-      { "file": "PolymorphismTest.java", "from": 1, "to": 14 }
+      { "file": "PolymorphismTest.java", "from": 1, "to": 13 }
     ],
     "uses": [
       "3-8"
@@ -79,8 +79,8 @@
     "dir": "03-14",
     "main": "RectangleExample",
     "excerpt": [
-      { "file": "Rectangle.java", "from": 1, "to": 38 },
-      { "file": "RectangleExample.java", "from": 1, "to": 18 }
+      { "file": "Rectangle.java", "from": 1, "to": 37 },
+      { "file": "RectangleExample.java", "from": 1, "to": 16 }
     ]
   },
   "3-15": {
@@ -94,7 +94,7 @@
     "dir": "03-16",
     "main": "PersonTest",
     "excerpt": [
-      { "file": "PersonTest.java", "from": 1, "to": 17 }
+      { "file": "PersonTest.java", "from": 1, "to": 16 }
     ],
     "uses": [
       "3-15"
@@ -111,7 +111,7 @@
     "dir": "03-18",
     "main": "BookTest",
     "excerpt": [
-      { "file": "BookTest.java", "from": 1, "to": 14 }
+      { "file": "BookTest.java", "from": 1, "to": 13 }
     ],
     "uses": [
       "3-17"
@@ -122,7 +122,7 @@
     "main": "OverloadExample",
     "excerpt": [
       { "file": "PrintHelper.java", "from": 1, "to": 16 },
-      { "file": "OverloadExample.java", "from": 1, "to": 11 }
+      { "file": "OverloadExample.java", "from": 1, "to": 10 }
     ]
   },
   "3-24": {
@@ -154,7 +154,7 @@
     "dir": "03-27",
     "main": "StudentAccessTest",
     "excerpt": [
-      { "file": "StudentAccessTest.java", "from": 1, "to": 16 }
+      { "file": "StudentAccessTest.java", "from": 1, "to": 15 }
     ],
     "uses": [
       "3-26"
@@ -173,14 +173,14 @@
     "main": "StaticExample",
     "excerpt": [
       { "file": "MathHelper.java", "from": 1, "to": 10 },
-      { "file": "StaticExample.java", "from": 1, "to": 11 }
+      { "file": "StaticExample.java", "from": 1, "to": 10 }
     ]
   },
   "3-30": {
     "dir": "03-30",
     "main": "StaticMemberExample",
     "excerpt": [
-      { "file": "StaticMemberExample.java", "from": 1, "to": 48 }
+      { "file": "StaticMemberExample.java", "from": 1, "to": 46 }
     ]
   },
   "3-31": {
@@ -243,7 +243,7 @@
     "dir": "03-40",
     "main": "BookLibraryTest",
     "excerpt": [
-      { "file": "BookLibraryTest.java", "from": 1, "to": 24 }
+      { "file": "BookLibraryTest.java", "from": 1, "to": 23 }
     ],
     "uses": [
       "3-39"
@@ -261,7 +261,7 @@
     "dir": "03-42",
     "main": "ShoppingCartTest",
     "excerpt": [
-      { "file": "ShoppingCartTest.java", "from": 1, "to": 12 }
+      { "file": "ShoppingCartTest.java", "from": 1, "to": 11 }
     ],
     "uses": [
       "3-41"

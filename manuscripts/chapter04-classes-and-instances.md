@@ -51,7 +51,6 @@ public class BankAccountV0 {
     }
 }
 
-// 使用例
 public class ProblemDemo {
     public static void main(String[] args) {
         BankAccountV0 account = new BankAccountV0("123456", 10000);
@@ -153,7 +152,6 @@ public class BankAccount {
     }
 }
 
-// テスト用のクラス
 class BankAccountTest {
     public static void main(String[] args) {
         BankAccount account = new BankAccount();
@@ -243,7 +241,6 @@ public class Car extends Vehicle {
 <span class="listing-number">**サンプルコード4-5**　VehicleTest.java</span>
 
 ```java
-// VehicleTest.java
 import com.example.cars.Car;
 
 public class VehicleTest {
@@ -458,7 +455,6 @@ public class BankAccountV1 {
 <span class="listing-number">**サンプルコード4-10**　BankAccountV1Test.java</span>
 
 ```java
-// BankAccountV1Test.java
 public class BankAccountV1Test {
     public static void main(String[] args) {
         BankAccountV1 account = new BankAccountV1("123456", 10000);
@@ -544,7 +540,6 @@ public class BankAccountV2 {
 <span class="listing-number">**サンプルコード4-12**　BankAccountV2Test.java</span>
 
 ```java
-// BankAccountV2Test.java
 public class BankAccountV2Test {
     public static void main(String[] args) {
         try {
@@ -600,7 +595,7 @@ public class BankAccountV2Test {
 取引履歴の保存には、第9章「コレクションフレームワーク」で学ぶ`List`と`ArrayList`を使います。
 `List<String>`は、文字列を必要なだけ追加できる、配列に似た入れ物と考えてください。
 
-<span class="listing-number">**サンプルコード4-13**　BankAccountV3.java（3〜8、16〜44、54〜58行目）</span>
+<span class="listing-number">**サンプルコード4-13**　BankAccountV3.java（3〜8、17〜44、54〜58行目）</span>
 
 ```java
 public class BankAccountV3 {
@@ -610,7 +605,6 @@ public class BankAccountV3 {
     
     public BankAccountV3(String accountNumber, double initialBalance) {
         // ...
-        
         this.accountNumber = accountNumber;
         this.balance = initialBalance;
         this.transactionHistory = new ArrayList<>();
@@ -652,7 +646,6 @@ public class BankAccountV3 {
 <span class="listing-number">**サンプルコード4-14**　BankAccountV3Test.java</span>
 
 ```java
-// BankAccountV3Test.java
 public class BankAccountV3Test {
     public static void main(String[] args) {
         BankAccountV3 account = new BankAccountV3("123456", 10000);
@@ -660,7 +653,6 @@ public class BankAccountV3Test {
         IO.println("口座番号: " + account.getAccountNumber());
         IO.println("初期残高: " + account.getBalance());
         
-        // 入金
         account.deposit(5000);
         IO.println("\n5000円入金後の残高: " + account.getBalance());
         
@@ -674,7 +666,6 @@ public class BankAccountV3Test {
             IO.println("20000円出金失敗（残高不足）");
         }
         
-        // 取引履歴の表示
         IO.println("\n取引履歴:");
         for (String transaction : account.getTransactionHistory()) {
             IO.println("  " + transaction);
@@ -937,7 +928,6 @@ public class User {
 <span class="listing-number">**サンプルコード4-22**　UserTest.java</span>
 
 ```java
-// UserTest.java
 public class UserTest {
     public static void main(String[] args) {
         try {
@@ -1065,7 +1055,7 @@ Email email = new EmailBuilder()
 
 実践的なクラス設計では、バリデーションロジックを1つのコンストラクターに集約し、他のコンストラクターはそれを呼び出します。
 
-<span class="listing-number">**サンプルコード4-25**　DatabaseConfig.java（1〜4、9〜21、26〜28、33〜46行目）</span>
+<span class="listing-number">**サンプルコード4-25**　DatabaseConfig.java（1〜4、10〜21、27〜28、33〜46行目）</span>
 
 ```java
 public class DatabaseConfig {
@@ -1073,7 +1063,6 @@ public class DatabaseConfig {
     private final int port;
     private final String database;
     // ...
-    
     // マスターコンストラクター（すべての検証をここに集約）
     public DatabaseConfig(String host, int port, String database, 
                          String username, String password, 
@@ -1087,7 +1076,6 @@ public class DatabaseConfig {
                     "ポート番号は1-65535の範囲で指定してください");
         }
         // ...
-        
         this.host = host.trim();
         this.port = port;
         // ...

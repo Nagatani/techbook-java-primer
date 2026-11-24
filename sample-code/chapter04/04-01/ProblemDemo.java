@@ -1,4 +1,3 @@
-// 使用例
 public class ProblemDemo {
     public static void main(String[] args) {
         BankAccountV0 account = new BankAccountV0("123456", 10000);

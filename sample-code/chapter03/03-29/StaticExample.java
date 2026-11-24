@@ -1,4 +1,3 @@
-// 使用例
 public class StaticExample {
     public static void main(String[] args) {
         // newを使わずに直接呼び出し

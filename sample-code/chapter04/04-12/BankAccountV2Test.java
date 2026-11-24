@@ -1,4 +1,3 @@
-// BankAccountV2Test.java
 public class BankAccountV2Test {
     public static void main(String[] args) {
         try {

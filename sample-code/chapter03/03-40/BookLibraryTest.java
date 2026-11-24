@@ -1,4 +1,3 @@
-// BookLibraryTest.java
 public class BookLibraryTest {
     public static void main(String[] args) {
         Book book = new Book("Java入門", "田中太郎", 300, 2800.0);

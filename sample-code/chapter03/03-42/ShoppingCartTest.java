@@ -1,4 +1,3 @@
-// ShoppingCartTest.java
 public class ShoppingCartTest {
     public static void main(String[] args) {
         ShoppingCart cart = new ShoppingCart(0.10); // 消費税10%

@@ -1,4 +1,3 @@
-// StaticMemberExample.java
 class Tool {
     // インスタンスメンバー（各Toolインスタンスが個別に持つ）
     String name;
@@ -6,7 +5,6 @@ class Tool {
     // クラスメンバー（Toolクラス全体で共有される）
     static int toolCount = 0;
 
-    // コンストラクター
     public Tool(String name) {
         this.name = name;
         toolCount++; // インスタンスが作られるたびに、共有カウンターを増やす

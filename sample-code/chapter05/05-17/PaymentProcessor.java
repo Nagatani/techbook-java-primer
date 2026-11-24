@@ -57,7 +57,6 @@ public class PaymentProcessor {
     // 子クラスでオーバーライドされることを想定したメソッド（デフォルト実装を提供）
     protected boolean validatePaymentSpecific() {
         // デフォルトでは追加の検証なし
-        // 子クラスでオーバーライド可能
         return true;
     }
     

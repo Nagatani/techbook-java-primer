@@ -1,4 +1,3 @@
-// switch文の基本的な使い方
 public class SwitchExample {
     public static void main(String[] args) {
         int grade = 85;

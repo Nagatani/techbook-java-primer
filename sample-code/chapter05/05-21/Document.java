@@ -25,7 +25,6 @@ public class Document {
         IO.println(filename + " を閉じました");
     }
     
-    // ゲッターとセッター
     public String getFilename() { return filename; }
     public long getFileSize() { return fileSize; }
 }

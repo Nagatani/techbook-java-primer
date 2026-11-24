@@ -377,7 +377,6 @@ public class BankAccount {
 <span class="listing-number">**サンプルコード3-5**　BankAccountTest.java</span>
 
 ```java
-// BankAccountTest.java
 public class BankAccountTest {
     public static void main(String[] args) {
         BankAccount account = new BankAccount();
@@ -458,7 +457,6 @@ public class Book extends Product {  // ③
 <span class="listing-number">**サンプルコード3-7**　InheritanceTest.java</span>
 
 ```java
-// InheritanceTest.java
 public class InheritanceTest {
     public static void main(String[] args) {
         Book book = new Book();
@@ -526,7 +524,6 @@ public class BankTransferPayment implements PaymentMethod {  // ②
 <span class="listing-number">**サンプルコード3-9**　PolymorphismTest.java</span>
 
 ```java
-// PolymorphismTest.java
 public class PolymorphismTest {
     public static void main(String[] args) {
         PaymentMethod[] payments = {
@@ -704,7 +701,6 @@ public class Rectangle {
         return width * height;
     }
     
-    // 戻り値があるメソッド
     public double calculatePerimeter() {
         return 2 * (width + height);
     }
@@ -727,10 +723,8 @@ public class Rectangle {
     }
 }
 
-// 使用例
 public class RectangleExample {
     public static void main(String[] args) {
-        // オブジェクトの作成
         Rectangle rect = new Rectangle(10.0, 5.0);
         
         // メソッドの呼び出し
@@ -809,7 +803,6 @@ public class Person {
 <span class="listing-number">**サンプルコード3-16**　PersonTest.java</span>
 
 ```java
-// PersonTest.java
 public class PersonTest {
     public static void main(String[] args) {
         Person person = new Person();
@@ -885,7 +878,6 @@ public class Book {
 <span class="listing-number">**サンプルコード3-18**　BookTest.java</span>
 
 ```java
-// BookTest.java
 public class BookTest {
     public static void main(String[] args) {
         // 引数ありコンストラクターで作成
@@ -942,7 +934,6 @@ public class PrintHelper {
     }
 }
 
-// 使用例
 public class OverloadExample {
     public static void main(String[] args) {
         PrintHelper helper = new PrintHelper();
@@ -1270,7 +1261,6 @@ public class Student {
 <span class="listing-number">**サンプルコード3-27**　StudentAccessTest.java</span>
 
 ```java
-// StudentAccessTest.java
 public class StudentAccessTest {
     public static void main(String[] args) {
         Student student = new Student("山田太郎", 22, 3.8);
@@ -1358,7 +1348,6 @@ public class MathHelper {
     }
 }
 
-// 使用例
 public class StaticExample {
     public static void main(String[] args) {
         // newを使わずに直接呼び出し
@@ -1389,7 +1378,6 @@ public class StaticExample {
 <span class="listing-number">**サンプルコード3-30**　StaticMemberExample.java</span>
 
 ```java
-// StaticMemberExample.java
 class Tool {
     // インスタンスメンバー（各Toolインスタンスが個別に持つ）
     String name;
@@ -1397,7 +1385,6 @@ class Tool {
     // クラスメンバー（Toolクラス全体で共有される）
     static int toolCount = 0;
 
-    // コンストラクター
     public Tool(String name) {
         this.name = name;
         toolCount++; // インスタンスが作られるたびに、共有カウンターを増やす
@@ -1764,7 +1751,6 @@ public class Book {
 <span class="listing-number">**サンプルコード3-40**　BookLibraryTest.java</span>
 
 ```java
-// BookLibraryTest.java
 public class BookLibraryTest {
     public static void main(String[] args) {
         Book book = new Book("Java入門", "田中太郎", 300, 2800.0);
@@ -1880,7 +1866,6 @@ public class CartItem {
 <span class="listing-number">**サンプルコード3-42**　ShoppingCartTest.java</span>
 
 ```java
-// ShoppingCartTest.java
 public class ShoppingCartTest {
     public static void main(String[] args) {
         ShoppingCart cart = new ShoppingCart(0.10); // 消費税10%

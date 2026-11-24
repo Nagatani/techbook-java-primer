@@ -1,4 +1,3 @@
-// BankAccountV3Test.java
 public class BankAccountV3Test {
     public static void main(String[] args) {
         BankAccountV3 account = new BankAccountV3("123456", 10000);
@@ -6,7 +5,6 @@ public class BankAccountV3Test {
         IO.println("口座番号: " + account.getAccountNumber());
         IO.println("初期残高: " + account.getBalance());
         
-        // 入金
         account.deposit(5000);
         IO.println("\n5000円入金後の残高: " + account.getBalance());
         
@@ -20,7 +18,6 @@ public class BankAccountV3Test {
             IO.println("20000円出金失敗（残高不足）");
         }
         
-        // 取引履歴の表示
         IO.println("\n取引履歴:");
         for (String transaction : account.getTransactionHistory()) {
             IO.println("  " + transaction);

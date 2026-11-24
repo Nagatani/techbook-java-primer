@@ -41,7 +41,6 @@ class ShapeData {
     }
 }
 
-// 使用例
 public class DrawingAppBefore {
     public static void main(String[] args) {
         ShapeData[] shapes = new ShapeData[3];

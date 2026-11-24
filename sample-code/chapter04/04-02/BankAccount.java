@@ -19,7 +19,6 @@ public class BankAccount {
     }
 }
 
-// テスト用のクラス
 class BankAccountTest {
     public static void main(String[] args) {
         BankAccount account = new BankAccount();

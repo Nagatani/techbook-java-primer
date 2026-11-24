@@ -1,4 +1,3 @@
-// UserTest.java
 public class UserTest {
     public static void main(String[] args) {
         try {

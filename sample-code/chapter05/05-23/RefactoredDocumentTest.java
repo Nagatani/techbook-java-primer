@@ -1,6 +1,5 @@
 public class RefactoredDocumentTest {
     public static void main(String[] args) {
-        // リファクタリング後の使用例
         WordDocument word = new WordDocument("report.docx",
                 "これはWordドキュメントの内容です");
         word.open();

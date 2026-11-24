@@ -4,14 +4,14 @@
     "main": "ProblemDemo",
     "excerpt": [
       { "file": "BankAccountV0.java", "from": 1, "to": 10 },
-      { "file": "ProblemDemo.java", "from": 1, "to": 15 }
+      { "file": "ProblemDemo.java", "from": 1, "to": 14 }
     ]
   },
   "4-2": {
     "dir": "04-02",
     "main": "BankAccountTest",
     "excerpt": [
-      { "file": "BankAccount.java", "from": 1, "to": 37 }
+      { "file": "BankAccount.java", "from": 1, "to": 36 }
     ]
   },
   "4-3": {
@@ -33,7 +33,7 @@
     "dir": "04-05",
     "main": "VehicleTest",
     "excerpt": [
-      { "file": "VehicleTest.java", "from": 1, "to": 12 }
+      { "file": "VehicleTest.java", "from": 1, "to": 11 }
     ],
     "uses": [
       "4-4"
@@ -71,7 +71,7 @@
     "dir": "04-10",
     "main": "BankAccountV1Test",
     "excerpt": [
-      { "file": "BankAccountV1Test.java", "from": 1, "to": 18 }
+      { "file": "BankAccountV1Test.java", "from": 1, "to": 17 }
     ],
     "uses": [
       "4-9"
@@ -88,7 +88,7 @@
     "dir": "04-12",
     "main": "BankAccountV2Test",
     "excerpt": [
-      { "file": "BankAccountV2Test.java", "from": 1, "to": 28 }
+      { "file": "BankAccountV2Test.java", "from": 1, "to": 27 }
     ],
     "uses": [
       "4-11"
@@ -99,7 +99,7 @@
     "main": null,
     "excerpt": [
       { "file": "BankAccountV3.java", "from": 3, "to": 8 },
-      { "file": "BankAccountV3.java", "from": 16, "to": 44 },
+      { "file": "BankAccountV3.java", "from": 17, "to": 44 },
       { "file": "BankAccountV3.java", "from": 54, "to": 58 }
     ]
   },
@@ -107,7 +107,7 @@
     "dir": "04-14",
     "main": "BankAccountV3Test",
     "excerpt": [
-      { "file": "BankAccountV3Test.java", "from": 1, "to": 29 }
+      { "file": "BankAccountV3Test.java", "from": 1, "to": 26 }
     ],
     "uses": [
       "4-13"
@@ -131,7 +131,7 @@
     "dir": "04-22",
     "main": "UserTest",
     "excerpt": [
-      { "file": "UserTest.java", "from": 1, "to": 22 }
+      { "file": "UserTest.java", "from": 1, "to": 21 }
     ],
     "uses": [
       "4-21"
@@ -149,8 +149,8 @@
     "main": null,
     "excerpt": [
       { "file": "DatabaseConfig.java", "from": 1, "to": 4 },
-      { "file": "DatabaseConfig.java", "from": 9, "to": 21 },
-      { "file": "DatabaseConfig.java", "from": 26, "to": 28 },
+      { "file": "DatabaseConfig.java", "from": 10, "to": 21 },
+      { "file": "DatabaseConfig.java", "from": 27, "to": 28 },
       { "file": "DatabaseConfig.java", "from": 33, "to": 46 }
     ]
   },

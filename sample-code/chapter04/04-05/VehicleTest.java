@@ -1,4 +1,3 @@
-// VehicleTest.java
 import com.example.cars.Car;
 
 public class VehicleTest {

@@ -1,7 +1,5 @@
-// 使用例
 public class RectangleExample {
     public static void main(String[] args) {
-        // オブジェクトの作成
         Rectangle rect = new Rectangle(10.0, 5.0);
         
         // メソッドの呼び出し

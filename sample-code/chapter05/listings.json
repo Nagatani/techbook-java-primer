@@ -12,7 +12,7 @@
     "dir": "05-02",
     "main": "EmployeeTest",
     "excerpt": [
-      { "file": "EmployeeTest.java", "from": 1, "to": 20 }
+      { "file": "EmployeeTest.java", "from": 1, "to": 18 }
     ],
     "uses": [
       "5-1"
@@ -36,9 +36,9 @@
       { "file": "Wizard.java", "from": 1, "to": 15 },
       { "file": "Wizard.java", "from": 20, "to": 20 },
       { "file": "Knight.java", "from": 1, "to": 13 },
-      { "file": "CharacterOverrideTest.java", "from": 1, "to": 3 },
-      { "file": "CharacterOverrideTest.java", "from": 10, "to": 13 },
-      { "file": "CharacterOverrideTest.java", "from": 25, "to": 30 }
+      { "file": "CharacterOverrideTest.java", "from": 1, "to": 2 },
+      { "file": "CharacterOverrideTest.java", "from": 9, "to": 11 },
+      { "file": "CharacterOverrideTest.java", "from": 23, "to": 28 }
     ]
   },
   "5-5": {
@@ -82,18 +82,18 @@
     "dir": "05-10",
     "main": "DrawingAppBefore",
     "excerpt": [
-      { "file": "DrawingAppBefore.java", "from": 1, "to": 28 },
-      { "file": "DrawingAppBefore.java", "from": 42, "to": 53 },
-      { "file": "DrawingAppBefore.java", "from": 65, "to": 72 }
+      { "file": "DrawingAppBefore.java", "from": 1, "to": 27 },
+      { "file": "DrawingAppBefore.java", "from": 42, "to": 51 },
+      { "file": "DrawingAppBefore.java", "from": 65, "to": 71 }
     ]
   },
   "5-11": {
     "dir": "05-11",
     "main": "DrawingAppAfter",
     "excerpt": [
-      { "file": "DrawingAppAfter.java", "from": 1, "to": 31 },
-      { "file": "DrawingAppAfter.java", "from": 75, "to": 89 },
-      { "file": "DrawingAppAfter.java", "from": 98, "to": 119 }
+      { "file": "DrawingAppAfter.java", "from": 1, "to": 30 },
+      { "file": "DrawingAppAfter.java", "from": 74, "to": 86 },
+      { "file": "DrawingAppAfter.java", "from": 96, "to": 117 }
     ]
   },
   "5-13": {
@@ -129,25 +129,25 @@
     "excerpt": [
       { "file": "PaymentProcessor.java", "from": 3, "to": 4 },
       { "file": "PaymentProcessor.java", "from": 17, "to": 42 },
-      { "file": "PaymentProcessor.java", "from": 57, "to": 75 },
-      { "file": "PaymentProcessor.java", "from": 85, "to": 85 }
+      { "file": "PaymentProcessor.java", "from": 57, "to": 74 },
+      { "file": "PaymentProcessor.java", "from": 84, "to": 84 }
     ]
   },
   "5-18": {
     "dir": "05-18",
     "main": null,
     "excerpt": [
-      { "file": "CreditCardPayment.java", "from": 3, "to": 44 },
+      { "file": "CreditCardPayment.java", "from": 3, "to": 43 },
       { "file": "PayPalPayment.java", "from": 3, "to": 4 },
-      { "file": "PayPalPayment.java", "from": 43, "to": 50 }
+      { "file": "PayPalPayment.java", "from": 44, "to": 50 }
     ]
   },
   "5-19": {
     "dir": "05-19",
     "main": "PaymentExample",
     "excerpt": [
-      { "file": "PaymentExample.java", "from": 1, "to": 30 },
-      { "file": "PaymentExample.java", "from": 36, "to": 37 }
+      { "file": "PaymentExample.java", "from": 1, "to": 22 },
+      { "file": "PaymentExample.java", "from": 28, "to": 29 }
     ]
   },
   "5-20": {
@@ -156,14 +156,14 @@
     "excerpt": [
       { "file": "WordDocument.java", "from": 1, "to": 24 },
       { "file": "PDFDocument.java", "from": 1, "to": 5 },
-      { "file": "PDFDocument.java", "from": 26, "to": 30 }
+      { "file": "PDFDocument.java", "from": 27, "to": 30 }
     ]
   },
   "5-21": {
     "dir": "05-21",
     "main": null,
     "excerpt": [
-      { "file": "Document.java", "from": 1, "to": 31 }
+      { "file": "Document.java", "from": 1, "to": 30 }
     ]
   },
   "5-22": {
@@ -171,8 +171,8 @@
     "main": null,
     "excerpt": [
       { "file": "WordDocument.java", "from": 1, "to": 12 },
-      { "file": "PDFDocument.java", "from": 1, "to": 16 },
-      { "file": "PDFDocument.java", "from": 24, "to": 24 },
+      { "file": "PDFDocument.java", "from": 1, "to": 14 },
+      { "file": "PDFDocument.java", "from": 23, "to": 23 },
       { "file": "ExcelDocument.java", "from": 1, "to": 16 }
     ]
   },
@@ -180,7 +180,7 @@
     "dir": "05-23",
     "main": "RefactoredDocumentTest",
     "excerpt": [
-      { "file": "RefactoredDocumentTest.java", "from": 1, "to": 29 }
+      { "file": "RefactoredDocumentTest.java", "from": 1, "to": 28 }
     ],
     "uses": [
       "5-22",
@@ -211,9 +211,9 @@
     "main": null,
     "excerpt": [
       { "file": "Employee.java", "from": 1, "to": 2 },
-      { "file": "Employee.java", "from": 10, "to": 14 },
+      { "file": "Employee.java", "from": 11, "to": 14 },
       { "file": "RegularEmployee.java", "from": 1, "to": 1 },
-      { "file": "RegularEmployee.java", "from": 5, "to": 11 },
+      { "file": "RegularEmployee.java", "from": 6, "to": 11 },
       { "file": "EmployeeManagementSystem.java", "from": 1, "to": 8 }
     ]
   },

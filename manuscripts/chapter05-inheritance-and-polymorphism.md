@@ -106,7 +106,6 @@ public class Developer extends Employee {  // ③
 ```java
 public class EmployeeTest {
     public static void main(String[] args) {
-        // Managerの使用例
         Manager manager = new Manager();
         manager.employeeId = "M001";
         manager.name = "山田部長";
@@ -115,7 +114,6 @@ public class EmployeeTest {
         
         IO.println();
         
-        // Developerの使用例
         Developer developer = new Developer();
         developer.employeeId = "D001";
         developer.name = "鈴木開発者";
@@ -252,7 +250,7 @@ public class Main {
 
 #### 実践例：`attack`メソッドのオーバーライド
 
-<span class="listing-number">**サンプルコード5-4**　Character.java、Wizard.java（1〜15、20行目）、Knight.java、CharacterOverrideTest.java（1〜3、10〜13、25〜30行目）</span>
+<span class="listing-number">**サンプルコード5-4**　Character.java、Wizard.java（1〜15、20行目）、Knight.java、CharacterOverrideTest.java（1〜2、9〜11、23〜28行目）</span>
 
 ```java
 // 親クラス
@@ -302,11 +300,9 @@ public class Knight extends Character {
     }
 }
 
-// 使用例
 public class CharacterOverrideTest {
     public static void main(String[] args) {
         // ...
-        // 魔法使い
         Wizard wizard = new Wizard("魔法使い", 70, 10);
         wizard.attack();  // オーバーライドされたメソッド
         wizard.castSpell();
@@ -634,7 +630,7 @@ Afterでは、型ごとのメソッドがなくなり、`User`型の配列を1�
 次のサンプルの`enum ShapeType`は、図形の種類を表す定数をまとめたもので、C言語の列挙型と同じように使えます。
 Javaの列挙型は第8章「Javaの特殊なクラス形式」で詳しく学びます。
 
-<span class="listing-number">**サンプルコード5-10**　DrawingAppBefore.java（1〜28、42〜53、65〜72行目）</span>
+<span class="listing-number">**サンプルコード5-10**　DrawingAppBefore.java（1〜27、42〜51、65〜71行目）</span>
 
 ```java
 // 図形の種類を列挙型で管理
@@ -664,11 +660,9 @@ class ShapeData {
                 return 0;
         }
     }
-    
     // ...
 }
 
-// 使用例
 public class DrawingAppBefore {
     public static void main(String[] args) {
         ShapeData[] shapes = new ShapeData[3];
@@ -677,9 +671,7 @@ public class DrawingAppBefore {
         shapes[0] = new ShapeData();
         shapes[0].type = ShapeType.CIRCLE;
         shapes[0].radius = 5.0;
-        
         // ...
-        
         // すべての図形を描画
         for (ShapeData shape : shapes) {
             shape.draw();
@@ -702,7 +694,7 @@ public class DrawingAppBefore {
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-11**　DrawingAppAfter.java（1〜31、75〜89、98〜119行目）</span>
+<span class="listing-number">**サンプルコード5-11**　DrawingAppAfter.java（1〜30、74〜86、96〜117行目）</span>
 
 ```java
 // 基底クラス
@@ -713,7 +705,6 @@ class Shape {
     }
     
     void draw() {
-        // デフォルトの実装
         IO.println("基本的な図形を描画");
     }
 }
@@ -737,7 +728,6 @@ class Circle extends Shape {
     }
 }
 // ...
-// 使用例
 public class DrawingAppAfter {
     public static void main(String[] args) {
         Shape[] shapes = {
@@ -751,7 +741,6 @@ public class DrawingAppAfter {
             shape.draw();
             IO.println("面積: " + shape.calculateArea());
         }
-        
         // ...
     }
 }
@@ -1079,7 +1068,7 @@ s1.equals(s3): false
 
 </div>
 
-<span class="listing-number">**サンプルコード5-17**　PaymentProcessor.java（3〜4、17〜42、57〜75、85行目）</span>
+<span class="listing-number">**サンプルコード5-17**　PaymentProcessor.java（3〜4、17〜42、57〜74、84行目）</span>
 
 ```java
 // 決済処理の基底クラス：テンプレートメソッドパターンの実装
@@ -1115,7 +1104,6 @@ public class PaymentProcessor {
     // 子クラスでオーバーライドされることを想定したメソッド（デフォルト実装を提供）
     protected boolean validatePaymentSpecific() {
         // デフォルトでは追加の検証なし
-        // 子クラスでオーバーライド可能
         return true;
     }
     
@@ -1157,7 +1145,7 @@ public class PaymentProcessor {
 `BigDecimal`は10進数の小数を誤差なく扱うクラスで、使い方は第6章で学びます。
 ここでは、`new BigDecimal("5000")`のように数を文字列で渡して作ることだけ押さえておけば読めます。
 
-<span class="listing-number">**サンプルコード5-18**　CreditCardPayment.java（3〜44行目）、PayPalPayment.java（3〜4、43〜50行目）</span>
+<span class="listing-number">**サンプルコード5-18**　CreditCardPayment.java（3〜43行目）、PayPalPayment.java（3〜4、44〜50行目）</span>
 
 ```java
 // クレジットカード決済の実装
@@ -1165,9 +1153,8 @@ public class CreditCardPayment extends PaymentProcessor {
     private String cardNumber;
     private String cvv;
     
-    public CreditCardPayment(String transactionId, BigDecimal amount, 
-                           String currency, String cardNumber,
-                           String cvv) {
+    public CreditCardPayment(String transactionId, BigDecimal amount,
+            String currency, String cardNumber, String cvv) {
         super(transactionId, amount, currency);
         this.cardNumber = cardNumber;
         this.cvv = cvv;
@@ -1206,7 +1193,6 @@ public class CreditCardPayment extends PaymentProcessor {
 // PayPal決済の実装
 public class PayPalPayment extends PaymentProcessor {
     // ...
-    
     @Override
     protected void logTransaction(String authCode) {
         // PayPalでは詳細なログを記録
@@ -1225,7 +1211,7 @@ public class PayPalPayment extends PaymentProcessor {
 
 #### 決済処理の使用例
 
-<span class="listing-number">**サンプルコード5-19**　PaymentExample.java（1〜30、36〜37行目）</span>
+<span class="listing-number">**サンプルコード5-19**　PaymentExample.java（1〜22、28〜29行目）</span>
 
 ```java
 import java.math.BigDecimal;
@@ -1233,13 +1219,9 @@ import java.math.BigDecimal;
 public class PaymentExample {
     public static void main(String[] args) {
         // クレジットカード決済の例
-        CreditCardPayment ccPayment = new CreditCardPayment(
-            "TXN001", 
-            new BigDecimal("5000"), 
-            "JPY",
-            "1234567890123456",
-            "123"
-        );
+        CreditCardPayment ccPayment = new CreditCardPayment("TXN001",
+                new BigDecimal("5000"), "JPY",
+                "1234567890123456", "123");
         
         PaymentResult ccResult = ccPayment.processPayment();
         if (ccResult.isSuccess()) {
@@ -1248,14 +1230,10 @@ public class PaymentExample {
             IO.println("決済失敗: " + ccResult.getMessage());
         }
         
-        // PayPal決済の例（エラーケース）
-        PayPalPayment ppPayment = new PayPalPayment(
-            "TXN002",
-            new BigDecimal("10000"),
-            "JPY",
-            "invalid-email",  // 無効なメールアドレス
-            "pass123"
-        );
+        // PayPal決済の例（メールアドレスが無効でエラーになる）
+        PayPalPayment ppPayment = new PayPalPayment("TXN002",
+                new BigDecimal("10000"), "JPY",
+                "invalid-email", "pass123");
         
         PaymentResult ppResult = ppPayment.processPayment();
         // ...
@@ -1296,7 +1274,7 @@ public class PaymentExample {
 次の`WordDocument`と`PDFDocument`は、別々に作られたクラスです。
 `PDFDocument`は、ページ数（`pageCount`）と`generatePDF()`を除くと、`WordDocument`とまったく同じフィールドとメソッドを持っています（`// ...`で省いた`open()`・`save()`・`close()`も1行も違いません）。
 
-<span class="listing-number">**サンプルコード5-20**　WordDocument.java、PDFDocument.java（1〜5、26〜30行目）</span>
+<span class="listing-number">**サンプルコード5-20**　WordDocument.java、PDFDocument.java（1〜5、27〜30行目）</span>
 
 ```java
 public class WordDocument {
@@ -1330,7 +1308,6 @@ public class PDFDocument {
     private long fileSize;       // ①と重複
     private int pageCount;       // ⑤
     // ...
-    
     public void generatePDF() {  // ⑥
         IO.println("PDF形式で " + pageCount + " ページを生成");
     }
@@ -1381,7 +1358,6 @@ public class Document {
         IO.println(filename + " を閉じました");
     }
     
-    // ゲッターとセッター
     public String getFilename() { return filename; }
     public long getFileSize() { return fileSize; }
 }
@@ -1392,7 +1368,7 @@ public class Document {
 子クラスは`Document`を継承し、自分に固有の部分だけを書きます。
 コンストラクターでは`super(...)`で親クラスの初期化を呼び、保存の方法が違う`PDFDocument`と`ExcelDocument`は`save()`をオーバーライドします。
 
-<span class="listing-number">**サンプルコード5-22**　WordDocument.java、PDFDocument.java（1〜16、24行目）、ExcelDocument.java</span>
+<span class="listing-number">**サンプルコード5-22**　WordDocument.java、PDFDocument.java（1〜14、23行目）、ExcelDocument.java</span>
 
 ```java
 // リファクタリング後：重複が除去された
@@ -1419,11 +1395,9 @@ public class PDFDocument extends Document {
     // saveメソッドをオーバーライド（PDFは圧縮効率が高い）
     @Override
     public void save() {
-        // PDFは圧縮される
         fileSize = (content != null ? content.length() : 0) / 2;
         IO.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
     }
-    
     // ...
 }
 
@@ -1463,7 +1437,6 @@ public class ExcelDocument extends Document {
 ```java
 public class RefactoredDocumentTest {
     public static void main(String[] args) {
-        // リファクタリング後の使用例
         WordDocument word = new WordDocument("report.docx",
                 "これはWordドキュメントの内容です");
         word.open();
@@ -1618,13 +1591,12 @@ public class MyStack {
 この設計はリスコフ置換原則<span class="footnote">計算機科学者のバーバラ・リスコフが1987年の講演で示した考え方にちなむ名前で、英語ではLiskov Substitution Principle（LSP）といいます。リスコフは2008年にチューリング賞を受賞しています。</span>に違反します。
 リスコフ置換原則とは、親クラスの型で扱っている箇所に子クラスのインスタンスを渡しても、プログラムが正しく動き続けなければならないという原則です。
 
-<span class="listing-number">**サンプルコード5-26**　Employee.java（1〜2、10〜14行目）、RegularEmployee.java（1、5〜11行目）、EmployeeManagementSystem.java</span>
+<span class="listing-number">**サンプルコード5-26**　Employee.java（1〜2、11〜14行目）、RegularEmployee.java（1、6〜11行目）、EmployeeManagementSystem.java</span>
 
 ```java
 // 悪い例：すべての従業員がシステム管理権限を持つという誤った前提
 public class Employee {
     // ...
-    
     public void modifySystemSettings() {
         IO.println(name + " がシステム設定を変更しました");
     }
@@ -1632,7 +1604,6 @@ public class Employee {
 
 public class RegularEmployee extends Employee {
     // ...
-    
     @Override
     public void modifySystemSettings() {
         // 一般従業員にはシステム管理権限がない！

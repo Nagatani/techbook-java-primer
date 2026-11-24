@@ -1,6 +1,5 @@
 public class EmployeeTest {
     public static void main(String[] args) {
-        // Managerの使用例
         Manager manager = new Manager();
         manager.employeeId = "M001";
         manager.name = "山田部長";
@@ -9,7 +8,6 @@ public class EmployeeTest {
         
         IO.println();
         
-        // Developerの使用例
         Developer developer = new Developer();
         developer.employeeId = "D001";
         developer.name = "鈴木開発者";

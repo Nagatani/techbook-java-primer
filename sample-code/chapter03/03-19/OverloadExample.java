@@ -1,4 +1,3 @@
-// 使用例
 public class OverloadExample {
     public static void main(String[] args) {
         PrintHelper helper = new PrintHelper();

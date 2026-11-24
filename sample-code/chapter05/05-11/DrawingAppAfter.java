@@ -6,7 +6,6 @@ class Shape {
     }
     
     void draw() {
-        // デフォルトの実装
         IO.println("基本的な図形を描画");
     }
 }
@@ -72,7 +71,6 @@ class Triangle extends Shape {
     }
 }
 
-// 使用例
 public class DrawingAppAfter {
     public static void main(String[] args) {
         Shape[] shapes = {

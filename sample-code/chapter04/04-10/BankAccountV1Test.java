@@ -1,4 +1,3 @@
-// BankAccountV1Test.java
 public class BankAccountV1Test {
     public static void main(String[] args) {
         BankAccountV1 account = new BankAccountV1("123456", 10000);

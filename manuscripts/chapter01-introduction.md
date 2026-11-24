@@ -214,7 +214,7 @@ Javaを通じて身につけた知識と経験は、Python、JavaScript、Go、R
 紙面には、全文のうち説明に必要な部分だけを抜き出して載せることがあります。
 
 全文を公開しているサンプルコードには、キャプションに全文のファイル名と、掲載した行の範囲を示しています。
-たとえば「サンプルコード5-18　CreditCardPayment.java（3〜44行目）」は、`sample-code/chapter05/05-18/CreditCardPayment.java`の3行目から44行目までを載せたものです。
+たとえば「サンプルコード5-18　CreditCardPayment.java（3〜43行目）」は、`sample-code/chapter05/05-18/CreditCardPayment.java`の3行目から43行目までを載せたものです。
 ファイル名だけのときは、そのファイル全体を載せています。
 抜き出した範囲のあいだを省いたところには、`// ...`という行を入れています。
 
@@ -297,7 +297,6 @@ C言語では商品情報と処理を別々に管理していましたが、Java
 <span class="listing-number">**サンプルコード1-2**　Product.java</span>
 
 ```java
-// Product.java
 public class Product {
     private String name;  // ①
     private int price;    // ②
@@ -320,7 +319,6 @@ public class Product {
 <span class="listing-number">**サンプルコード1-3**　Main.java</span>
 
 ```java
-// Main.java
 public class Main {
     public static void main(String[] args) {
         Product pencil = new Product("鉛筆", 100); // ⑥
@@ -806,10 +804,8 @@ public class InputExample {
     public static void main(String[] args) {
         // メッセージを表示して、1行分の文字列を入力してもらう
         String input = IO.readln("整数値を入力: ");
-
         // 文字列を整数に変換
         int number = Integer.parseInt(input);
-
         // 変換した値を使った処理の例
         IO.println("入力された値: " + number);
         IO.println("2倍の値: " + (number * 2));
