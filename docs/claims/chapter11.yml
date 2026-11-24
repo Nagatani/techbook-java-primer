@@ -30,7 +30,6 @@ claims:
     claim: ラムダ式はJava 8で導入された
     text:
       - でラムダ式が導入される前、その場限りのインターフェイス実装を提供するためには匿名クラス
-      - 本章では、Java 8で導入されたラムダ式と関数型インターフェイスについて学びました
     verify:
       kind: since
       probe: Lambda.java

@@ -237,7 +237,6 @@ claims:
     claim: count++は、フィールドを読む（getfield）・1を足す（iadd）・書き戻す（putfield）の別々の命令になる
     text:
       - ①のcount++は1行で書けますが、CPUが実行するときには次の3つの操作に分かれます。
-      - count++も3つの操作に分かれる
     simplified: true
     note: 3つに分かれるのはバイトコードの段階。JITコンパイラーはx64でadd命令1つにまとめることもあるが、lockの接頭辞のない読み・足し・書きはほかのコアから割り込まれうるので、原子的でないことは変わらない（JLS 25 17.4の並べ替えの規則と、B.14の観察を参照）
     verify:
@@ -305,7 +304,6 @@ claims:
     text:
       - いちばん手軽なのは循環待機を崩す方法で、どのスレッドもロックを同じ順序で取得するように決めておきます。
       - こうすると、lock1を取れなかったスレッドはlock2も持っていないので、待ちが輪になりません。
-      - ロックを取得する順序をそろえて循環待機を防ぐ
     verify:
       kind: run
       probe: Deadlock.java
@@ -328,7 +326,6 @@ claims:
     text:
       - いちばん大きな要因はロックの競合で、ロックを待つスレッドが増えるほど、単位時間に処理できる量（スループット）が下がります。
       - こうした理由から、コア数を増やしても性能が比例して伸びるわけではありません。
-      - ロックの競合は性能を下げるので、ロックの範囲は必要な部分だけにする
     note: この環境（8コア）では、4スレッドで4倍の仕事にかかる時間が1スレッドの約20倍だった。比例して伸びるなら1倍に近くなる。1.5倍以上であることを照合する
     verify:
       kind: run
@@ -342,7 +339,6 @@ claims:
     text:
       - volatileキーワードは、あるスレッドが変数に書き込んだ値を、そのあとでその変数を読むほかのスレッドが必ず見られることを保証します（メモリの可視性）
       - 主な用途は、スレッド間でのフラグの共有です。
-      - volatileでメモリ可視性を保証する
     sources:
       - title: JLS 25 17.4.5 Happens-before Order
         url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
@@ -384,7 +380,6 @@ claims:
     text:
       - アトミックになるのは単純な読み書きだけで、読み取り→計算→書き込みのような複合操作は保証しません。
       - カウンターのインクリメント（count++）のような複合操作にはvolatileを使えません。
-      - volatileは複合操作をアトミックにしない
     sources:
       - title: JLS 25 17.7 Non-Atomic Treatment of double and long
         url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html
@@ -416,7 +411,6 @@ claims:
     text:
       - java.util.concurrent.atomicパッケージは、ロックを使わずにアトミックな操作を実現するクラス群を提供します。
       - Atomicクラスはロックを使わないため、ロックが空くのを待ってスレッドが止まることがありません。
-      - 単純なカウンターなどはAtomicクラスでロックを使わずに更新できる
     sources:
       - title: java.util.concurrent.atomic（Java SE 25 API）
         url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/atomic/package-summary.html
@@ -908,7 +902,6 @@ claims:
       - ところが、スレッドは通知を受けていないのにwait()から復帰することがあります。
       - これを偽の起床（Spurious Wakeup）と呼びます
       - wait()は必ずこの形のループで囲んで呼び出します。
-      - wait()はwhileのループで囲んで呼ぶ
     note: 偽の起床は仕様が許していることで、意図して起こす方法はないので観察しない
     sources:
       - title: java.lang.Object（Java SE 25 API）wait

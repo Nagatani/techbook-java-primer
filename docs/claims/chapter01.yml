@@ -124,7 +124,6 @@ claims:
       - そこでJava 25では、小さなプログラムを短く書くための機能が正式に加わりました（JEP 512「Compact Source Files and Instance Main Methods」）
       - 従来の書き方とJava 25で加わった書き方を比べると
       - 項目 | 従来の書き方 | Java 25で加わった書き方
-      - Java 25では、クラスの宣言を省いたコンパクトソースファイルやvoid main()も書けるが
     sources:
       - title: "JEP 512: Compact Source Files and Instance Main Methods"
         url: https://openjdk.org/jeps/512

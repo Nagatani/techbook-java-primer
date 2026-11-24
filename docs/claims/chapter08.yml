@@ -111,7 +111,6 @@ claims:
     claim: ラムダ式はJava 8から使える
     text:
       - Java 8以降では、匿名内部クラスの多くをラムダ式で置き換えて短く書けます
-      - Java 8以降のラムダ式による代替
     sources:
       - title: "JEP 126: Lambda Expressions & Virtual Extension Methods"
         url: https://openjdk.org/jeps/126
