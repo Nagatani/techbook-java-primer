@@ -4,7 +4,6 @@ claims:
   - id: default-static-8
     claim: インターフェイスのdefaultメソッドとstaticメソッドはJava 8から書ける
     text:
-      - Java 8以降の機能
       - defaultメソッドとstaticメソッド（Java 8以降）
       - Java 8から追加されたdefaultメソッドとstaticメソッド
       - Java 8以降、インターフェイスは大きく進化し
