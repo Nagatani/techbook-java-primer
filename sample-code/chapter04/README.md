@@ -31,13 +31,7 @@ javac -d out *.java
 | [4-13](./04-13/) | BankAccountV3.java | （mainメソッドなし） |
 | [4-14](./04-14/) | BankAccountV3.java<br>BankAccountV3Test.java | `java -cp out BankAccountV3Test` |
 | [4-20](./04-20/) | Example.java | （mainメソッドなし） |
-| [4-21](./04-21/) | User.java | （mainメソッドなし） |
-| [4-22](./04-22/) | User.java<br>UserTest.java | `java -cp out UserTest` |
-| [4-23](./04-23/) | Book.java | （mainメソッドなし） |
-| [4-25](./04-25/) | DatabaseConfig.java | （mainメソッドなし） |
-| [4-26](./04-26/) | EventProcessor.java | （mainメソッドなし） |
-| [4-27](./04-27/) | HttpClient.java | （mainメソッドなし） |
-| [4-28](./04-28/) | Logger.java | （mainメソッドなし） |
-| [4-29](./04-29/) | UserManager.java | （mainメソッドなし） |
-| [4-30](./04-30/) | AuthenticationService.java<br>EmailService.java<br>User.java<br>UserRepository.java | （mainメソッドなし） |
-| [4-32](./04-32/) | BankAccount.java | （mainメソッドなし） |
+| [4-21](./04-21/) | Book.java | （mainメソッドなし） |
+| [4-22](./04-22/) | UserManager.java | （mainメソッドなし） |
+| [4-23](./04-23/) | AuthenticationService.java<br>EmailService.java<br>User.java<br>UserRepository.java | （mainメソッドなし） |
+| [4-25](./04-25/) | BankAccount.java | （mainメソッドなし） |

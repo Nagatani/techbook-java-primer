@@ -25,11 +25,9 @@ javac -d out *.java
 | [12-11](./12-11/) | OptionalStreamExample.java | `java -cp out OptionalStreamExample` |
 | [12-12](./12-12/) | OptionalPracticalExample.java | `java -cp out OptionalPracticalExample` |
 | [12-13](./12-13/) | OptionalAntiPatternsExample.java | `java -cp out OptionalAntiPatternsExample` |
-| [12-15](./12-15/) | ParallelStreamExample.java | `java -cp out ParallelStreamExample` |
-| [12-17](./12-17/) | FlatMapExample.java | `java -cp out FlatMapExample` |
-| [12-18](./12-18/) | ReduceExample.java<br>Student.java | `java -cp out ReduceExample` |
-| [12-19](./12-19/) | CollectorsExample.java<br>Student.java | `java -cp out CollectorsExample` |
-| [12-20](./12-20/) | NullSafeProcessingExample.java | `java -cp out NullSafeProcessingExample` |
-| [12-21](./12-21/) | ShortCircuitExample.java | `java -cp out ShortCircuitExample` |
-| [12-22](./12-22/) | ToArrayExample.java | `java -cp out ToArrayExample` |
-| [12-23](./12-23/) | ComplexProcessingExample.java<br>Student.java | `java -cp out ComplexProcessingExample` |
+| [12-16](./12-16/) | FlatMapExample.java | `java -cp out FlatMapExample` |
+| [12-17](./12-17/) | ReduceExample.java<br>Student.java | `java -cp out ReduceExample` |
+| [12-18](./12-18/) | CollectorsExample.java<br>Student.java | `java -cp out CollectorsExample` |
+| [12-19](./12-19/) | NullSafeProcessingExample.java | `java -cp out NullSafeProcessingExample` |
+| [12-20](./12-20/) | ShortCircuitExample.java | `java -cp out ShortCircuitExample` |
+| [12-21](./12-21/) | ToArrayExample.java | `java -cp out ToArrayExample` |

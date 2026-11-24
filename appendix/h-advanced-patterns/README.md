@@ -116,7 +116,7 @@ public class CircuitBreaker {
 `RecursiveTask`を継承したクラスの`compute`メソッドは、範囲が小さければ直接計算し、大きければ2つに分けます。
 分けた片方を`fork`で別のスレッドに任せ、もう片方を自分で計算してから、`join`で結果を待って足し合わせます。
 第12章「Stream APIと高度なコレクション操作」で学んだ並列ストリームも、内部ではこのFork/Joinのしくみで処理を分けています。
-並列ストリームの使い方と、逐次処理との時間の比べ方は第12章の「並列ストリームによるパフォーマンス向上」を参照してください。
+並列ストリームの使い方は第12章の「並列ストリームによるパフォーマンス向上」を、逐次処理との時間の比べ方は付録Iの「並列ストリームの内部動作」を参照してください。
 
 コードの抜粋（コンパイルできる全文：[code/ParallelPerformanceExample/](code/ParallelPerformanceExample/)のParallelPerformanceExample.java）
 
@@ -411,6 +411,94 @@ public class ResiliencePatterns {
 時間が過ぎるとHALF_OPENにして1回だけ試し、成功すればCLOSEDに戻します。
 ただし、状態の確認と変更は1つのアトミックな操作になっていないので、HALF_OPENのときに複数のスレッドが同時に試すことがあります。
 これを防ぐには、`compareAndSet`で状態を変えられたスレッドだけが試すようにします。
+
+## 非同期HTTPクライアント（第16章）
+
+第16章では、`HttpURLConnection`でHTTPのGETリクエストを送り、レスポンスを受け取るまで待つ書き方を学びました。
+Java 11で標準になったHTTPクライアントAPI（`java.net.http`パッケージ）の`HttpClient`は、この待つ書き方（`send`）に加えて、レスポンスを待たずに戻る非同期の送信（`sendAsync`）に対応しています。
+このAPIはJava 9とJava 10で試験的なモジュール（incubator）として提供され、Java 11で正式な標準APIになりました。
+HTTP/2にも対応しています。
+
+`sendAsync`は、第15章「マルチスレッドプログラミング」で学んだ`CompletableFuture`を返します。
+レスポンスが届いたあとの処理やエラーのときの処理は、`thenApply`・`thenAccept`・`exceptionally`で順につなげて書きます。
+以下のコードは、テスト用の公開API（JSONPlaceholder）に非同期でGETリクエストを送り、ステータスコードと本文を表示する例です。
+
+コードの抜粋（コンパイルできる全文：[code/AsyncHttpClientExample/](code/AsyncHttpClientExample/)のAsyncHttpClientExample.java）
+
+```java
+public class AsyncHttpClientExample {
+    public static void main(String[] args) throws Exception {
+        // HTTPクライアントの作成
+        HttpClient client = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
+
+        // HTTPリクエストの作成
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(
+                    "https://jsonplaceholder.typicode.com/posts/1"))
+            .timeout(Duration.ofMinutes(1))
+            .header("Accept", "application/json")
+            .GET()
+            .build();
+
+        // 非同期でリクエストを送信
+        CompletableFuture<HttpResponse<String>> future = 
+            client.sendAsync(request,
+            HttpResponse.BodyHandlers.ofString());
+
+        // 非同期処理の連鎖
+        CompletableFuture<Void> done = future
+            .thenApply(response -> {
+                IO.println("Status: " + response.statusCode());
+                return response.body();
+            })
+            .thenAccept(body -> IO.println("Response Body: " + body))
+            .exceptionally(e -> {
+                System.err.println("Error: " + e.getMessage());
+                return null;
+            });
+
+        // 他の処理を並行して実行可能
+        IO.println("他の処理を継続中...");
+
+        // 連鎖させた処理がすべて終わるまで待つ（mainが先に終わるとプログラムが
+        // 終了するため）
+        done.join();
+    }
+}
+```
+
+`HttpClient.newBuilder()`でクライアントを、`HttpRequest.newBuilder()`でリクエストを組み立てます。
+`connectTimeout`は接続のタイムアウト、`timeout`はレスポンスを待つタイムアウトです。
+どちらも指定しないと、相手が応答しない限りいつまでも待ち続けます（第16章のコラム「タイムアウトを設定しない通信は、いつか障害になる」）。
+`BodyHandlers.ofString()`は、レスポンスの本文を文字列として受け取る指定です。
+
+次は実行結果の一例です。
+
+```
+他の処理を継続中...
+Status: 200
+Response Body: {
+  "userId": 1,
+  "id": 1,
+  "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+  "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+}
+```
+
+実行結果の1行目が「他の処理を継続中...」になっているのは、`sendAsync`がレスポンスを待たずに戻るためです。
+このように非同期のHTTPクライアントでは、レスポンスを待つ間もほかの処理を続けられ、複数のリクエストを並行して送ることもできます。
+受け取ったあとの処理やエラー処理は、`CompletableFuture`のメソッドで順につなげて書けます。
+最後の`done.join()`を省くと、レスポンスが届く前に`main`メソッドが終わり、ステータスコードと本文を表示しないままプログラムが終了することがあります。
+
+また、`HttpClient`はHTTP/2に対応しているため、サーバーも対応していれば、1つの接続で複数のリクエストを多重化して、通信の遅延を減らせます。
+サーバーがHTTP/2に対応していないときは、自動でHTTP/1.1で通信します。
+
+待つ書き方の`send`は、`HttpResponse`をそのまま返します。
+第16章の節「JSON APIクライアントの実装」では、この`send`を使ってレスポンスを受け取り、ステータスコードを確かめてからGsonでオブジェクトに変換しています。
+1つのリクエストの結果を受け取ってから次へ進むなら`send`、複数のリクエストを同時に送る場合や、待つあいだに画面の操作を受け付けたい場合は`sendAsync`を使います。
 
 ## NIOによるノンブロッキングI/O（第16章）
 

@@ -54,6 +54,7 @@
 - [付録F　Swingの発展的な機能](appendix-f-swing-advanced.md)
 - [付録G　外部ライブラリの使用例](appendix-g-library-examples.md)
 - [付録H　並行処理とネットワークの発展的なパターン](appendix-h-advanced-patterns.md)
+- [付録I　オブジェクト指向と言語機能の発展的な内容](appendix-i-language-advanced.md)
 
 ## 索引・資料
 - [章と付録の相互参照ガイド](cross-reference-guide.md)

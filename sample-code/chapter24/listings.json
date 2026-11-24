@@ -74,18 +74,6 @@
   },
   "24-11": {
     "dir": "24-11",
-    "main": "PoolExample",
-    "excerpt": [
-      { "file": "PoolExample.java", "from": 13, "to": 44 }
-    ],
-    "libs": [
-      "com.h2database:h2:2.5.252",
-      "com.zaxxer:HikariCP:7.1.0",
-      "org.slf4j:slf4j-api:2.0.17"
-    ]
-  },
-  "24-12": {
-    "dir": "24-12",
     "main": "BatchExample",
     "excerpt": [
       { "file": "BatchExample.java", "from": 18, "to": 39 }

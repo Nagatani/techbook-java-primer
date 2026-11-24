@@ -13,6 +13,7 @@
 - イベント処理の最適化（デバウンスとスロットル、第19章）
 - JTreeの動的な操作（第20章）
 - JTableのカスタムセルエディター（第20章）
+- 統合型データ管理アプリケーション（第20章）
 
 ## PropertyChangeSupportによるイベントの通知
 
@@ -399,3 +400,127 @@ public class CustomEditorExample {
     // ...
 }
 ```
+
+## 統合型データ管理アプリケーション
+
+第20章で学んだJTable・JTree・JListを1つの画面に組み合わせた、プロジェクト管理アプリケーションの例です。
+第20章の基礎課題「ファイルの一覧」（JTreeとJTableを`JSplitPane`で左右に並べ、ツリーで選んだフォルダーの中身を表に出す）も、この例と同じ組み合わせで作ります。
+
+画面は、第17章「GUIプログラミングの基礎」で学んだ`JSplitPane`で分割します。
+左側のツリーでプロジェクトを選択すると、右上のテーブルにそのプロジェクトのタスクが、右下のリストにメンバーが表示されます。
+タスクの表は表示専用で、プロジェクトのタスクを`DefaultTableModel`に1行ずつ入れ直して表示します。
+メニューバーには、アプリケーションを終了する「ファイル」メニューと、画面下のステータスバーの表示・非表示を切り替える「表示」メニューがあります。
+ステータスバーには、選択中のプロジェクト名が表示されます。
+
+データは、プロジェクトを表す`Project`クラスと、タスクを表す`Task`クラスで持ちます。
+`Project`は名前とタスクのリスト、メンバーの名前のリストを持ちます。
+`Task`は、第20章のカスタムレンダラーを使ったJListの例で使ったものと同じクラスで、題名・説明・期限・完了したかどうかを持ちます。
+プロジェクトは名前をキーにした`LinkedHashMap`に入れ、登録した順にツリーへ並べます。
+
+コードの抜粋（コンパイルできる全文：[code/IntegratedDataManagementApp/](code/IntegratedDataManagementApp/)のIntegratedDataManagementApp.java。`Task`クラスは同じディレクトリのTask.java）
+
+```java
+public class IntegratedDataManagementApp {
+    private final JFrame frame = new JFrame("プロジェクト管理システム");
+    // ...
+    private void createProjectTree() {
+        // ...
+        projectTree = new JTree(root);
+        projectTree.addTreeSelectionListener(
+                new TreeSelectionListener() {
+            @Override
+            public void valueChanged(TreeSelectionEvent e) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+                    projectTree.getLastSelectedPathComponent();
+                if (node == null) return;
+                
+                // プロジェクトノードが選択された場合
+                if (node.getLevel() == 1) {
+                    String projectName = node.getUserObject().toString();
+                    currentProject = projects.get(projectName);
+                    updateTaskTable();
+                    updateMemberList();
+                    statusLabel.setText("選択中: " + projectName);
+                }
+            }
+        });
+    }
+    // ...
+    private void updateTaskTable() {
+        DefaultTableModel model =
+                (DefaultTableModel) taskTable.getModel();
+        model.setRowCount(0);
+        
+        if (currentProject != null) {
+            for (Task task : currentProject.getTasks()) {
+                model.addRow(new Object[]{
+                    task.getTitle(),
+                    task.getDescription(),
+                    task.getDueDate().format(DateTimeFormatter
+                            .ofPattern("yyyy/MM/dd")),
+                    task.isCompleted()
+                });
+            }
+        }
+    }
+    // ...
+    private void setupLayout() {
+        // ...
+        // 分割ペインの設定
+        rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+            topRightPanel, bottomRightPanel);
+        rightSplitPane.setDividerLocation(400);
+        
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+            leftPanel, rightSplitPane);
+        mainSplitPane.setDividerLocation(300);
+        
+        frame.add(mainSplitPane, BorderLayout.CENTER);
+        // ...
+    }
+    // ...
+}
+```
+
+### ツリーで選んだプロジェクトを受け取る
+
+`createProjectTree`では、ルートの「プロジェクト一覧」の下にプロジェクトのノードを置き、その下に「タスク」と「メンバー」のノードを置きます。
+ツリーは表示する前に組み立て終えるので、`DefaultMutableTreeNode`の`add`で直接ノードを足しています（表示したあとにノードを足すときは、この付録の「JTreeの動的な操作」のように`DefaultTreeModel`を通します）。
+
+ツリーで選んだノードが変わると、`addTreeSelectionListener`で登録した`TreeSelectionListener`の`valueChanged`が呼ばれます。
+選ばれたノードは`getLastSelectedPathComponent()`で受け取ります。
+選択が外れたときは`null`が返るので、先に確かめています。
+`getLevel()`はルートからの深さで、ルートが0、プロジェクトのノードが1です。
+深さが1のノード、つまりプロジェクトが選ばれたときだけ、ノードの名前（`getUserObject()`）でプロジェクトを探し、表とリストとステータスバーを更新します。
+「タスク」「メンバー」やその下のノードを選んだときは、何もしません。
+
+### 表とリストの中身を入れ直す
+
+`updateTaskTable`は、`setRowCount(0)`で表の行をすべて消してから、選んだプロジェクトのタスクを`addRow`で1行ずつ足します。
+`DefaultTableModel`の`setRowCount`や`addRow`は、変更を表に知らせる処理を内部で行うので、`fireTableRowsInserted()`などを自分で呼ぶ必要はありません。
+期限の列には、`LocalDateTime`を`DateTimeFormatter`で「2026/11/24」の形の文字列にして入れています。
+
+全文の`createTaskTable`では、`DefaultTableModel`を匿名クラスで継承し、2つのメソッドをオーバーライドしています。
+`getColumnClass`で状態の列を`Boolean.class`と知らせると、その列は文字列の「true」ではなくチェックボックスで表示されます。
+`isCellEditable`で常に`false`を返し、表を表示専用にしています。
+表のセルを編集できるようにしても、`DefaultTableModel`のなかの値が変わるだけで、元の`Task`オブジェクトには反映されないためです。
+表の編集を元のデータに反映させたいときは、第20章で学んだ`AbstractTableModel`を継承したモデルに`Task`のリストを持たせ、`setValueAt`で`Task`を書き換えます。
+
+メンバーの一覧の`updateMemberList`も同じ形で、`DefaultListModel`の`clear()`で空にしてから`addElement()`でメンバーを足します。
+`DefaultListModel`も、変更をリストに知らせる処理を内部で行います。
+
+### 画面を分割する
+
+`setupLayout`では、ツリー・表・リストをそれぞれ`JScrollPane`に入れ、題名付きの枠（`createTitledBorder`）を付けたパネルに置きます。
+`JSplitPane`は、2つの部品を境目で分けて並べる部品です。
+`VERTICAL_SPLIT`を指定すると上下に、`HORIZONTAL_SPLIT`を指定すると左右に並べます。
+この例では、右側の表とリストを上下に分けた`rightSplitPane`を作り、それを左側のツリーと左右に分けた`mainSplitPane`に入れて、3つの領域に分けています。
+`setDividerLocation`は境目の位置（ピクセル）で、利用者は境目をドラッグして大きさを変えられます。
+
+フレームの中央（`BorderLayout.CENTER`）に分割ペインを、下端（`BorderLayout.SOUTH`）にステータスバーのパネルを置きます。
+「表示」メニューの`JCheckBoxMenuItem`はチェックの付いたメニュー項目で、チェックを外すとステータスバーのパネルを`setVisible(false)`で隠します。
+
+実行すると、左にプロジェクトのツリー、右上にタスクの表、右下にメンバーのリストを並べたウィンドウが開きます。
+ツリーで「Webアプリケーション開発」を選ぶと、表に「要件定義」と「DB設計」の2つのタスクが、リストに「田中太郎」と「鈴木花子」が表示され、ステータスバーが「選択中: Webアプリケーション開発」に変わります。
+「モバイルアプリ開発」を選ぶと、表とリストの中身がそのプロジェクトのものに入れ替わります。
+タスクの期限は、実行した日からの日数で決めているので、実行した日によって変わります。

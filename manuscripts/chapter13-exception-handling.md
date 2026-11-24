@@ -721,50 +721,9 @@ public class ExceptionLogging {
 
 ### 例外情報の構造化記録 {.advanced}
 
-本番環境では、例外情報を構造化して記録することで、ログ分析が容易になります。
-
-<span class="listing-number">**サンプルコード13-13**　StructuredExceptionLogger.java（5〜33、44〜46、65行目）</span>
-
-```java
-public class StructuredExceptionLogger {
-    private static final Logger logger = 
-        Logger.getLogger(StructuredExceptionLogger.class.getName());
-    
-    public static void logException(String operation,
-            Exception exception, Map<String, Object> context) {
-        // 構造化されたログエントリを作成
-        LogRecord record = new LogRecord(Level.SEVERE, 
-            createStructuredMessage(operation, exception, context));
-        
-        record.setThrown(exception);
-        record.setSourceClassName(getCallerClassName());
-        record.setSourceMethodName(getCallerMethodName());
-        
-        logger.log(record);
-    }
-    
-    private static String createStructuredMessage(String operation,
-            Exception exception, Map<String, Object> context) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("\"timestamp\":\"").append(Instant.now())
-                .append("\",");
-        sb.append("\"operation\":\"").append(operation).append("\",");
-        sb.append("\"error_type\":\"")
-                .append(exception.getClass().getName()).append("\",");
-        sb.append("\"error_message\":\"").append(
-                escapeJson(exception.getMessage())).append("\",");
-        sb.append("\"context\":{");
-        // ...
-        sb.append("}}");
-        return sb.toString();
-    }
-    // ...
-}
-```
-
-`createStructuredMessage`は、操作名・例外の型・メッセージ・状況（`context`）を、JSON形式（第7章で紹介しました）の1行の文字列にまとめます。
-項目の名前が決まっているので、ログを集めて検索したり集計したりしやすくなります。
+多数のサーバーのログを集めて検索・集計する本番環境では、例外のログを文章ではなく、操作名・例外の型・メッセージ・状況を項目に分けたJSON形式の1行として記録すると、例外の件数を機械で数えられます。
+`java.util.logging`では、`LogRecord`にこのメッセージと例外を入れて`Logger`の`log`メソッドに渡します。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「例外情報の構造化記録」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ## 業務アプリケーションでの例外設計
 
@@ -779,7 +738,7 @@ public class StructuredExceptionLogger {
 同じI/Oの異常でも、その場で回復できる場所があるかどうかで、検査例外にするか非検査例外にするかを選びます（第25章でも、この方針で例外を設計します）。
 サンプルコード13-6の`InsufficientBalanceException`は、ここでは`BusinessException`を継承する形に定義し直しています。
 
-<span class="listing-number">**サンプルコード13-14**　BusinessException.java（4〜13、22、28〜31行目）、InsufficientBalanceException.java（3〜12行目）、SystemException.java（4〜13、28行目）</span>
+<span class="listing-number">**サンプルコード13-13**　BusinessException.java（4〜13、22、28〜31行目）、InsufficientBalanceException.java（3〜12行目）、SystemException.java（4〜13、28行目）</span>
 
 ```java
 // ビジネス例外の基底クラス
@@ -829,7 +788,7 @@ public abstract class SystemException extends RuntimeException {
 
 エラーコードとメッセージを一元管理することで、国際化<span class="footnote">国際化（internationalization）は、最初のiと最後のnのあいだに18文字あることから「i18n」とも書きます。</span>やメンテナンスが容易になります。
 
-<span class="listing-number">**サンプルコード13-15**　ErrorCode.java（1〜5、15〜23、37行目）、BusinessException.java（4〜5、15〜18、38行目）、InsufficientBalanceException.java（3〜12行目）、ErrorResponse.java（4〜18、28〜29行目）</span>
+<span class="listing-number">**サンプルコード13-14**　ErrorCode.java（1〜5、15〜23、37行目）、BusinessException.java（4〜5、15〜18、38行目）、InsufficientBalanceException.java（3〜12行目）、ErrorResponse.java（4〜18、28〜29行目）</span>
 
 ```java
 public enum ErrorCode {
@@ -891,75 +850,14 @@ public class ErrorResponse {
 }
 ```
 
-`BusinessException`に`ErrorCode`を受け取るコンストラクターを足すと、サンプルコード13-14で`"ACC-001"`と文字列で書いていた部分を`ErrorCode.ACC_001`に置き換えられます。
+`BusinessException`に`ErrorCode`を受け取るコンストラクターを足すと、サンプルコード13-13で`"ACC-001"`と文字列で書いていた部分を`ErrorCode.ACC_001`に置き換えられます。
 コードとメッセージがenumの1か所にまとまるので、メッセージを変えるときもenumだけを直せば済みます。
 
 ### 例外処理戦略の実装例 {.advanced}
 
-実際のアプリケーションでの例外処理戦略の実装例として、口座間の送金処理を示します。
-入力の誤りや残高不足などのビジネス例外はそのまま呼び出し元に伝え、それ以外の予期しない例外は原因を保ったまま非検査例外に包んで投げ直します。
-`Account`や`AccountRepository`などの補助の型と、送金を試す`main`メソッド（`TransferDemo.java`）は、全文にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter13/13-16/`</span>。
-
-<span class="listing-number">**サンプルコード13-16**　TransferService.java（5〜7、17〜19、23〜48、58〜71、118行目）</span>
-
-```java
-public class TransferService {
-    private static final Logger logger =
-        Logger.getLogger(TransferService.class.getName());
-        // ...
-    public TransferResult transfer(String fromAccountId,
-            String toAccountId, BigDecimal amount)
-            throws BusinessException {
-            // ...
-        try {
-            // 入力検証
-            validateTransferRequest(fromAccountId, toAccountId, amount);
-            
-            // アカウント取得
-            Account fromAccount =
-                    accountRepository.findById(fromAccountId)
-                .orElseThrow(() ->
-                        new AccountNotFoundException(fromAccountId));
-            
-            Account toAccount = accountRepository.findById(toAccountId)
-                .orElseThrow(() ->
-                        new AccountNotFoundException(toAccountId));
-            
-            // ビジネスルールチェック
-            checkBusinessRules(fromAccount, amount);
-            
-            // 送金実行
-            fromAccount.withdraw(amount);
-            toAccount.deposit(amount);
-            
-            // トランザクション記録
-            Transaction transaction = new Transaction(
-                fromAccountId, toAccountId, amount,
-                TransactionType.TRANSFER);
-            transactionRepository.save(transaction);
-            // ...
-        } catch (BusinessException e) {
-            // ビジネス例外は記録してから呼び出し元に伝える
-            logger.log(Level.WARNING, "送金処理でビジネスエラー: "
-                    + e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            // 予期せぬエラー（DataAccessExceptionなども含む）
-            logger.log(Level.SEVERE,
-                    "送金処理中に予期せぬエラーが発生しました", e);
-            // 非検査例外に包み、原因の例外を渡して投げ直す
-            throw new RuntimeException(
-                    "送金処理中に予期せぬエラーが発生しました", e);
-        }
-    }
-    // ...
-}
-```
-
-予期しない例外は、原因を保ったまま非検査例外に包んで投げ直しています。
-この例では短くするため`RuntimeException`で包んでいますが、実際のアプリケーションでは、サンプルコード13-14の`SystemException`を継承したクラスで包むと、エラーIDや発生時刻もあわせて記録できます。
-
-これらの実践的なパターンを理解し、場面に応じて適用することで、エラーに強く、保守性の高いシステムを構築できます。
+口座間の送金処理のような業務の処理では、入力の誤りや残高不足などのビジネス例外はログに記録してそのまま呼び出し元に伝え、それ以外の予期しない例外は原因を保ったまま非検査例外に包んで投げ直します。
+包む先を`SystemException`を継承したクラスにすると、エラーIDや発生時刻もあわせて記録できます。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「例外処理戦略の実装例」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ## 例外処理のベストプラクティス
 

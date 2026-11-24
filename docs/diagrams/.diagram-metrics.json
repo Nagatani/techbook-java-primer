@@ -191,12 +191,6 @@
     "overflows": [],
     "collisions": []
   },
-  "chapter12-parallel-stream": {
-    "minFont": 16,
-    "overlaps": [],
-    "overflows": [],
-    "collisions": []
-  },
   "chapter12-stream-api-pipeline": {
     "minFont": 16,
     "overlaps": [],
@@ -234,12 +228,6 @@
     "collisions": []
   },
   "chapter14-char-stream-hierarchy": {
-    "minFont": 16,
-    "overlaps": [],
-    "overflows": [],
-    "collisions": []
-  },
-  "chapter14-stream-layers": {
     "minFont": 16,
     "overlaps": [],
     "overflows": [],

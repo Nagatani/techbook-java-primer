@@ -487,80 +487,11 @@ Response Code: 200
 Response: {"login":"github","id":9919,"node_id":"MDEyOk9yZ2FuaXphdGlvbjk5MTk=","avatar_url":"https://avatars.githubusercontent.com/u/9919?v=4",...}
 ```
 
-### 非同期HTTPクライアント（Java 11+） {.advanced}
-
-Java 11で標準になったHTTPクライアントAPI（`java.net.http`パッケージ）<span class="footnote">このAPIはJava 9とJava 10で試験的なモジュール（incubator）として提供され、Java 11で正式な標準APIになりました。</span>は、非同期処理をサポートし、HTTP/2にも対応しています。CompletableFutureを使用することで、ノンブロッキングなHTTP通信が可能になります。
-
-<span class="listing-number">**サンプルコード16-6**　AsyncHttpClientExample.java（8〜49行目）</span>
-
-```java
-public class AsyncHttpClientExample {
-    public static void main(String[] args) throws Exception {
-        // HTTPクライアントの作成
-        HttpClient client = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_2)
-            .connectTimeout(Duration.ofSeconds(10))
-            .build();
-
-        // HTTPリクエストの作成
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(
-                    "https://jsonplaceholder.typicode.com/posts/1"))
-            .timeout(Duration.ofMinutes(1))
-            .header("Accept", "application/json")
-            .GET()
-            .build();
-
-        // 非同期でリクエストを送信
-        CompletableFuture<HttpResponse<String>> future = 
-            client.sendAsync(request,
-            HttpResponse.BodyHandlers.ofString());
-
-        // 非同期処理の連鎖
-        CompletableFuture<Void> done = future
-            .thenApply(response -> {
-                IO.println("Status: " + response.statusCode());
-                return response.body();
-            })
-            .thenAccept(body -> IO.println("Response Body: " + body))
-            .exceptionally(e -> {
-                System.err.println("Error: " + e.getMessage());
-                return null;
-            });
-
-        // 他の処理を並行して実行可能
-        IO.println("他の処理を継続中...");
-
-        // 連鎖させた処理がすべて終わるまで待つ（mainが先に終わるとプログラムが
-        // 終了するため）
-        done.join();
-    }
-}
-```
-
-次は実行結果の一例です。
-
-```
-他の処理を継続中...
-Status: 200
-Response Body: {
-  "userId": 1,
-  "id": 1,
-  "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-  "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-}
-```
-
-実行結果の1行目が「他の処理を継続中...」になっているのは、`sendAsync`がレスポンスを待たずに戻るためです。
-このように非同期のHTTPクライアントでは、レスポンスを待つ間もほかの処理を続けられ、複数のリクエストを並行して送ることもできます。
-受け取ったあとの処理やエラー処理は、CompletableFutureのメソッドで順につなげて書けます。
-また、`HttpClient`はHTTP/2に対応しているため、サーバーも対応していれば、1つの接続で複数のリクエストを多重化して、通信の遅延を減らせます。
-
 > **コラム：タイムアウトを設定しない通信は、いつか障害になる**{.column-section}
 >
-> この節のサンプルコードは、どれも`connectTimeout`や`timeout`でタイムアウトを設定しています。
+> サンプルコード16-5は、`setConnectTimeout`と`setReadTimeout`でタイムアウトを設定しています。
 > 設定しないとどうなるかというと、相手が応答しない限り、いつまでも待ち続けます。
-> `HttpClient`は、接続のタイムアウトを指定しなければ既定の値を持たず、`HttpRequest`のタイムアウトを指定しないことは、APIドキュメントによれば無限の時間を指定したのと同じです。
+> 本章の後半で使う`HttpClient`は、接続のタイムアウトを指定しなければ既定の値を持たず、`HttpRequest`のタイムアウトを指定しないことは、APIドキュメントによれば無限の時間を指定したのと同じです。
 > `HttpURLConnection`のタイムアウトも、既定は0（無限）です。
 >
 > 接続だけ受け付けて何も返さないサーバーを手元に作って試すと、タイムアウトのない要求は3秒たっても終わりません。
@@ -575,6 +506,13 @@ Response Body: {
 > タイムアウトしたときに、もう一度送るのか、エラーとして利用者に伝えるのかも、あらかじめ決めておきます。
 > ネットワークの向こうの相手は、いつか必ず遅れたり止まったりする、という前提で作るのがエンジニアの考え方です。
 
+### 非同期HTTPクライアント（Java 11+） {.advanced}
+
+Java 11で標準になったHTTPクライアントAPI（`java.net.http`パッケージ）の`HttpClient`は、レスポンスを待つ`send`に加えて、待たずにすぐ戻る非同期の`sendAsync`も備えています。
+`sendAsync`は第15章で学んだ`CompletableFuture`を返すので、レスポンスを受け取ったあとの処理をつなげて書け、複数のリクエストを並行して送れます。
+本章の節「JSON APIクライアントの実装」では、待つほうの`send`を使います。
+詳しい説明とコード例は付録H「並行処理とネットワークの発展的なパターン」の「非同期HTTPクライアント」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/h-advanced-patterns/`</span>。
+
 ## UDP通信の実装
 
 「TCPとUDP」で見たように、UDPは接続を確立せず、届いたことの確認も再送もしないプロトコルです。
@@ -584,7 +522,7 @@ Response Body: {
 
 以下のコードは、UDPサーバーの実装例です。DatagramSocketを使用してUDPパケットを受信し、クライアントにエコーレスポンスを送信します。UDPはコネクションレスのため、各パケットにはデータだけでなく送信元のアドレスとポート情報も含まれています。
 
-<span class="listing-number">**サンプルコード16-7**　UDPServer.java</span>
+<span class="listing-number">**サンプルコード16-6**　UDPServer.java</span>
 
 ```java
 import java.net.*;
@@ -637,7 +575,7 @@ UDPサーバーがポート 9999 で起動しました
 
 以下のコードは、UDPクライアントの実装例です。このクライアントは、サーバーにメッセージを送信し、エコーレスポンスを受信します。UDP通信では、送信と受信の両方でDatagramPacketを使用し、パケット単位でデータをやり取りします。
 
-<span class="listing-number">**サンプルコード16-8**　UDPClient.java</span>
+<span class="listing-number">**サンプルコード16-7**　UDPClient.java</span>
 
 ```java
 import java.net.*;
@@ -695,7 +633,7 @@ UDPでは、送ったパケットや応答のパケットが途中で失われ�
 各クライアントは、送信に使う`PrintWriter`を用意してから集合に加えます。
 先に加えると、準備の済んでいないクライアントへほかのスレッドがメッセージを送ろうとして、`NullPointerException`が発生することがあります。
 
-<span class="listing-number">**サンプルコード16-9**　ChatServer.java（6〜37、44、54〜77、92〜99行目）</span>
+<span class="listing-number">**サンプルコード16-8**　ChatServer.java（6〜37、44、54〜77、92〜99行目）</span>
 
 ```java
 public class ChatServer {
@@ -772,7 +710,7 @@ public class ChatServer {
 
 以下のコードは、チャットクライアントの実装例です。このクライアントは、サーバーに接続し、別スレッドでメッセージの受信を処理しながら、メインスレッドでキーボードからの入力を受け付けます。この設計により、メッセージの送受信を同時に行えます。
 
-<span class="listing-number">**サンプルコード16-10**　ChatClient.java（4、8〜45行目）</span>
+<span class="listing-number">**サンプルコード16-9**　ChatClient.java（4、8〜45行目）</span>
 
 ```java
 public class ChatClient {
@@ -839,14 +777,14 @@ JSONは、第7章の脚注で触れたとおり、`{"name": "田中", "age": 20}
 JavaでJSON APIを扱う方法を学びます。
 
 以下のコードは、汎用的なJSON APIクライアントの実装例です。Gsonライブラリを使用してJSONのシリアライズ/デシリアライズを行い、Java 11のHttpClientでHTTPリクエストを送信します。このクライアントはGETとPOSTメソッドをサポートし、受け取る型を指定してJSONデータを扱えます。
-POSTのメソッドは紙面では省いており、GitHubの全文に載せています<span class="footnote">全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter16/16-11/`にあります。</span>。
+POSTのメソッドは紙面では省いており、GitHubの全文に載せています<span class="footnote">全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter16/16-10/`にあります。</span>。
 
 GsonはJavaの標準APIではなく、外部ライブラリです。
 このサンプルを動かすには、Gsonをプロジェクトに追加します。
 外部ライブラリの追加方法とGsonの使い方は、第22章「ドキュメントと外部ライブラリ」で学びます。
 ここでは、`Gson`の`fromJson`メソッドがJSONの文字列を指定した型のオブジェクトに変換する、とだけ押さえてコードを読んでください。
 
-<span class="listing-number">**サンプルコード16-11**　JsonApiClient.java（7〜30、49〜58、80行目）</span>
+<span class="listing-number">**サンプルコード16-10**　JsonApiClient.java（7〜30、49〜58、80行目）</span>
 
 ```java
 public class JsonApiClient {
@@ -912,7 +850,7 @@ POSTでデータを作ったときは、200ではなく201（Created）が返る
 4. 暗号化と相手の確認
     + TLSで通信を暗号化し、接続先が本物のサーバーかを証明書とホスト名で確かめる（次の16-12）
 
-### セキュアな通信の実装 {.advanced}
+### セキュアな通信の実装
 
 SSL/TLS（Secure Sockets Layer/Transport Layer Security）は、ネットワーク通信を暗号化し、安全性を確保するプロトコルです<span class="footnote">SSLは1990年代半ばにNetscape社が開発したプロトコルで、後継のTLSに置き換わりました。SSLはどの版も使うべきでないとされていますが、名前は`SSLSocket`などのクラス名に残っています。</span>。
 JavaではSSLSocketを使用してセキュアな通信を実装できます。
@@ -927,7 +865,7 @@ JDK 25の既定も同じですが、実行する環境の設定で古い版が�
 そこで、`SSLParameters`の`setEndpointIdentificationAlgorithm("HTTPS")`でホスト名の検証を有効にしています。
 `HttpClient`や`HttpURLConnection`でHTTPSを使うときは、ホスト名の検証は自動で行われます。
 
-<span class="listing-number">**サンプルコード16-12**　SSLClient.java</span>
+<span class="listing-number">**サンプルコード16-11**　SSLClient.java</span>
 
 ```java
 import javax.net.ssl.*;

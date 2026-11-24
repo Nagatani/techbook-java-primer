@@ -22,47 +22,5 @@
     "libs": [
       "com.google.code.gson:gson:2.15.0"
     ]
-  },
-  "22-6": {
-    "dir": "22-06",
-    "main": "JacksonExample",
-    "excerpt": [
-      { "file": "JacksonExample.java", "from": 7, "to": 19 },
-      { "file": "JacksonExample.java", "from": 34, "to": 34 },
-      { "file": "JacksonExample.java", "from": 36, "to": 47 },
-      { "file": "JacksonExample.java", "from": 62, "to": 63 },
-      { "file": "JacksonExample.java", "from": 71, "to": 79 }
-    ],
-    "libs": [
-      "com.fasterxml.jackson.core:jackson-databind:2.23.0",
-      "com.fasterxml.jackson.core:jackson-core:2.23.0",
-      "com.fasterxml.jackson.core:jackson-annotations:2.23"
-    ]
-  },
-  "22-8": {
-    "dir": "22-08",
-    "main": "CommonsLangExample",
-    "excerpt": [
-      { "file": "CommonsLangExample.java", "from": 11, "to": 12 },
-      { "file": "CommonsLangExample.java", "from": 21, "to": 25 },
-      { "file": "CommonsLangExample.java", "from": 36, "to": 36 },
-      { "file": "CommonsLangExample.java", "from": 38, "to": 58 },
-      { "file": "CommonsLangExample.java", "from": 77, "to": 78 }
-    ],
-    "libs": [
-      "org.apache.commons:commons-lang3:3.22.0"
-    ]
-  },
-  "22-10": {
-    "dir": "22-10",
-    "main": "CommonsIOExample",
-    "excerpt": [
-      { "file": "CommonsIOExample.java", "from": 9, "to": 30 },
-      { "file": "CommonsIOExample.java", "from": 46, "to": 51 },
-      { "file": "CommonsIOExample.java", "from": 67, "to": 68 }
-    ],
-    "libs": [
-      "commons-io:commons-io:2.22.0"
-    ]
   }
 }

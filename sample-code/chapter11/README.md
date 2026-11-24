@@ -27,8 +27,3 @@ javac -d out *.java
 | [11-11](./11-11/) | RunnableLambdaExample.java | `java -cp out RunnableLambdaExample` |
 | [11-12](./11-12/) | ExecutorLambdaExample.java | `java -cp out ExecutorLambdaExample` |
 | [11-13](./11-13/) | User.java<br>ValidationFramework.java | `java -cp out ValidationFramework` |
-| [11-14](./11-14/) | HigherOrderFunctionExample.java<br>TradingTypes.java | `java -cp out HigherOrderFunctionExample` |
-| [11-15](./11-15/) | OrderPipeline.java | `java -cp out OrderPipeline` |
-| [11-16](./11-16/) | NestedLambdaExample.java | `java -cp out NestedLambdaExample` |
-| [11-17](./11-17/) | SideEffectExample.java | `java -cp out SideEffectExample` |
-| [11-18](./11-18/) | LambdaCapture.java | `java -cp out LambdaCapture` |

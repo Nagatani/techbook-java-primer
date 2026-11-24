@@ -68,12 +68,3 @@ claims:
       probe: CollectionDefaults.java
       version: 8
     note: src.zipで、4つのメソッドがdefaultで宣言され@since 1.8であることを確かめた。--release 7は指定できないので、機械ではJava 8で通ることだけを確かめる
-
-  - id: deprecated-since-forremoval-9
-    claim: "@Deprecatedのsinceとforremovalの指定はJava 9から使える"
-    text: sinceとforRemovalの指定は、Java 9から使えます
-    verify:
-      kind: since
-      probe: DeprecatedSince.java
-      version: 9
-      expect: ['symbol:\s+method since\(\)']

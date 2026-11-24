@@ -1,30 +1,23 @@
-public class PDFDocument {
-    private String filename;     // ①と重複
-    private String content;      // ①と重複
-    private long fileSize;       // ①と重複
-    private int pageCount;       // ⑤
+public class PDFDocument extends Document {
+    private int pageCount;
     
-    public PDFDocument(String filename, String content, int pageCount) {  // ①の初期化も重複
-        this.filename = filename;
-        this.content = content;
+    public PDFDocument(String filename, String content, int pageCount) {
+        super(filename, content);
         this.pageCount = pageCount;
     }
     
-    public void open() {         // ②と完全重複
-        IO.println(filename + " を開いています");
+    // saveメソッドをオーバーライド（PDFは圧縮効率が高い）
+    @Override
+    public void save() {
+        fileSize = (content != null ? content.length() : 0) / 2; // PDFは圧縮される
+        IO.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
     }
     
-    public void save() {         // ③と完全重複
-        fileSize = content.length();
-        IO.println(filename + " を保存しました: " + fileSize + "バイト");
-    }
-    
-    public void close() {        // ④と完全重複
-        content = null;
-        IO.println(filename + " を閉じました");
-    }
-    
-    public void generatePDF() {  // ⑥
-        IO.println("PDF形式で " + pageCount + " ページを生成");
+    public void generatePDF() {
+        if (pageCount > 0) {
+            IO.println("PDF形式で " + pageCount + " ページを生成");
+        } else {
+            IO.println("ページ数が指定されていません");
+        }
     }
 }

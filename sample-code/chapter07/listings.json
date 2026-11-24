@@ -91,43 +91,6 @@
   },
   "7-12": {
     "dir": "07-12",
-    "main": "MixinDemo",
-    "excerpt": [
-      { "file": "Timestamped.java", "from": 3, "to": 24 },
-      { "file": "Timestamped.java", "from": 38, "to": 39 },
-      { "file": "Timestamped.java", "from": 61, "to": 70 }
-    ]
-  },
-  "7-13": {
-    "dir": "07-13",
-    "main": null,
-    "excerpt": [
-      { "file": "Measurable.java", "from": 1, "to": 12 },
-      { "file": "Measurable.java", "from": 18, "to": 43 }
-    ]
-  },
-  "7-14": {
-    "dir": "07-14",
-    "main": null,
-    "excerpt": [
-      { "file": "BadUserService.java", "from": 3, "to": 28 },
-      { "file": "BadUserService.java", "from": 33, "to": 33 },
-      { "file": "BadUserService.java", "from": 35, "to": 36 },
-      { "file": "BadUserService.java", "from": 47, "to": 47 },
-      { "file": "BadUserService.java", "from": 49, "to": 58 },
-      { "file": "BadUserService.java", "from": 79, "to": 79 }
-    ]
-  },
-  "7-15": {
-    "dir": "07-15",
-    "main": null,
-    "excerpt": [
-      { "file": "ServiceV1.java", "from": 1, "to": 45 },
-      { "file": "ServiceV1.java", "from": 53, "to": 53 }
-    ]
-  },
-  "7-16": {
-    "dir": "07-16",
     "main": "FactoryDemo",
     "excerpt": [
       { "file": "FigureFactory.java", "from": 3, "to": 10 },
@@ -138,8 +101,8 @@
       { "file": "FactoryDemo.java", "from": 1, "to": 19 }
     ]
   },
-  "7-17": {
-    "dir": "07-17",
+  "7-13": {
+    "dir": "07-13",
     "main": null,
     "excerpt": [
       { "file": "DocumentFactory.java", "from": 1, "to": 20 },

@@ -36,6 +36,7 @@ com.example.utils/
 ライブラリをMavenまたはGradleプロジェクトとして構成してください。
 ソースは`src/main/java`、テストは`src/test/java`に置きます（第22章のMavenのディレクトリ規約）。
 Javaの版は25、Gradleを使う場合はGradle 9で動く設定にします。
+Gradleの`build.gradle`の書き方とGradle Wrapperは、付録D「高度なビルドとデプロイメント技術」（`appendix/d-build-and-deploy/`）の「Gradleの基本」で説明しています。
 
 **Maven (pom.xml)の例:**
 ```xml

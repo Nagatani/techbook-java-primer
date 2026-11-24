@@ -28,15 +28,12 @@ javac -d out *.java
 | [5-13](./05-13/) | User.java<br>UserAccessControl.java<br>Users.java | `java -cp out UserAccessControl` |
 | [5-15](./05-15/) | Student.java | （mainメソッドなし） |
 | [5-16](./05-16/) | ObjectMethodsDemo.java<br>Student.java | `java -cp out ObjectMethodsDemo` |
-| [5-17](./05-17/) | PaymentProcessor.java<br>PaymentResult.java | （mainメソッドなし） |
-| [5-18](./05-18/) | CreditCardPayment.java<br>PayPalPayment.java<br>PaymentProcessor.java<br>PaymentResult.java | （mainメソッドなし） |
-| [5-19](./05-19/) | CreditCardPayment.java<br>PayPalPayment.java<br>PaymentExample.java<br>PaymentProcessor.java<br>PaymentResult.java | `java -cp out PaymentExample` |
-| [5-20](./05-20/) | PDFDocument.java<br>WordDocument.java | （mainメソッドなし） |
-| [5-21](./05-21/) | Document.java | （mainメソッドなし） |
-| [5-22](./05-22/) | Document.java<br>ExcelDocument.java<br>PDFDocument.java<br>WordDocument.java | （mainメソッドなし） |
-| [5-23](./05-23/) | Document.java<br>ExcelDocument.java<br>PDFDocument.java<br>RefactoredDocumentTest.java<br>WordDocument.java | `java -cp out RefactoredDocumentTest` |
-| [5-24](./05-24/) | MyStack.java<br>StackProblem.java | `java -cp out StackProblem` |
-| [5-25](./05-25/) | MyStack.java | （mainメソッドなし） |
-| [5-26](./05-26/) | Employee.java<br>EmployeeManagementSystem.java<br>RegularEmployee.java<br>SystemAdministrator.java | （mainメソッドなし） |
-| [5-27](./05-27/) | Rectangle.java<br>RectangleSquareTest.java<br>Square.java | `java -cp out RectangleSquareTest` |
-| [5-28](./05-28/) | Shape.java | （mainメソッドなし） |
+| [5-17](./05-17/) | PDFDocument.java<br>WordDocument.java | （mainメソッドなし） |
+| [5-18](./05-18/) | Document.java | （mainメソッドなし） |
+| [5-19](./05-19/) | Document.java<br>ExcelDocument.java<br>PDFDocument.java<br>WordDocument.java | （mainメソッドなし） |
+| [5-20](./05-20/) | Document.java<br>ExcelDocument.java<br>PDFDocument.java<br>RefactoredDocumentTest.java<br>WordDocument.java | `java -cp out RefactoredDocumentTest` |
+| [5-21](./05-21/) | MyStack.java<br>StackProblem.java | `java -cp out StackProblem` |
+| [5-22](./05-22/) | MyStack.java | （mainメソッドなし） |
+| [5-23](./05-23/) | Employee.java<br>EmployeeManagementSystem.java<br>RegularEmployee.java<br>SystemAdministrator.java | （mainメソッドなし） |
+| [5-24](./05-24/) | Rectangle.java<br>RectangleSquareTest.java<br>Square.java | `java -cp out RectangleSquareTest` |
+| [5-25](./05-25/) | Shape.java | （mainメソッドなし） |

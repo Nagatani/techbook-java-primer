@@ -12,6 +12,11 @@ public abstract class BusinessException extends Exception {
         this.details = new HashMap<>();
     }
     
+    // ErrorCodeからコードと既定のメッセージを受け取る
+    protected BusinessException(ErrorCode errorCode) {
+        this(errorCode.getCode(), errorCode.getMessage());
+    }
+    
     protected BusinessException(String errorCode, String message, 
                               Map<String, Object> details) {
         super(message);
@@ -19,7 +24,9 @@ public abstract class BusinessException extends Exception {
         this.details = new HashMap<>(details);
     }
     
-    public String getErrorCode() { return errorCode; }
+    public String getErrorCode() {
+        return errorCode;
+    }
     
     public Map<String, Object> getDetails() {
         return Collections.unmodifiableMap(details);

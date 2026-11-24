@@ -68,32 +68,3 @@ claims:
       kind: run
       probe: CountFunctional.java
       expect: ['^interfaces=43$']
-
-  - id: flow-9
-    claim: リアクティブストリームの共通のインターフェイスjava.util.concurrent.FlowはJava 9で標準ライブラリに入った
-    text: Java 9で、リアクティブストリームの共通のインターフェイスがjava.util.concurrent.Flowとして標準ライブラリに入りました
-    verify:
-      kind: since
-      probe: FlowApi.java
-      version: 9
-      expect: ['cannot find symbol']
-
-  - id: invokedynamic-7
-    claim: invokedynamic命令はJava 7で追加された
-    text: invokedynamic命令（Java 7で追加）
-    sources:
-      - title: Java Virtual Machine Support for Non-Java Languages（Java SE 7、Oracle）
-        url: https://docs.oracle.com/javase/7/docs/technotes/guides/vm/multiple-language-support.html
-        anchor: Java SE 7 introduces the invokedynamic instruction
-    verify:
-      kind: manual
-      checked: 2026-11-19
-
-  - id: lambda-private-method
-    claim: ラムダ式の本体は同じクラスのprivateメソッドになり、invokedynamicでオブジェクトを作る
-    text: ラムダ式の本体は同じクラスのprivateメソッドになり
-    verify:
-      kind: javap
-      probe: LambdaBody.java
-      class: LambdaBody
-      expect: ['invokedynamic', 'private static void lambda\$make\$0\(\)']

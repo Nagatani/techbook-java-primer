@@ -14,7 +14,7 @@
     - 値が見つからないことのある戻り値を`Optional`で表し、`map`や`orElse`で値を決められる
     - `Optional`を戻り値に使い、フィールドや引数には使わない理由を説明できる
 4. 並列ストリーム
-    - 並列ストリームが速くなりやすい条件を挙げ、効果を時間を測って確かめられる
+    - 並列ストリームが速くなりやすい条件を挙げられる（内部のしくみと、時間を測って効果を確かめる例は付録Iで学べる）
 
 ### この章を始める前に
 
@@ -785,7 +785,7 @@ Optionalをメソッドの戻り値やチェイン操作で使うと、NullPoint
 ### 並列ストリームの使い方
 
 並列ストリームの使用は非常に簡単で、`.stream()`の代わりに`.parallelStream()`を使うだけです。
-作成済みのストリームに`parallel()`を呼んでも、並列ストリームにできます（サンプルコード12-15）。
+作成済みのストリームに`parallel()`を呼んでも、並列ストリームにできます（`IntStream.range(0, 1000).parallel()`など）。
 
 <span class="listing-number">**サンプルコード12-14**</span>
 
@@ -816,62 +816,10 @@ IO.println("並列処理の結果: " + sumParallel);
 
 ### 並列ストリームの内部動作 {.advanced}
 
-並列ストリームは、JavaのFork/Joinフレームワーク<span class="footnote">Fork/JoinフレームワークはJava 7で加わったしくみです。第15章でしくみを紹介し、コード例は付録Hにあります。並列ストリームは共通のスレッドプール（`ForkJoinPool.commonPool()`）を使います。そのスレッド数は既定でCPUのコア数より1少なく、並列ストリームを呼び出したスレッドも処理に加わります。</span>を使用して実装されています。処理の流れは以下のようになります。
-
-1. 分割（Split）
-    + データを複数の小さなチャンクに分割
-2. 処理（Process）
-    + 各チャンクを異なるスレッドで並列に処理
-3. 統合（Combine）
-    + 各スレッドの結果を統合して最終結果を生成
-
-<div class="figure">
-
-![並列ストリームの分割・処理・統合](images/diagrams/chapter12-parallel-stream.svg)
-
-</div>
-
-<span class="listing-number">**サンプルコード12-15**　ParallelStreamExample.java</span>
-
-```java
-import java.util.stream.IntStream;
-
-public class ParallelStreamExample {
-    public static void main(String[] args) {
-        int size = 100_000_000;
-
-        // シーケンシャル処理の計測（経過時間はナノ秒で測る）
-        long start = System.nanoTime();
-        double sumSeq = IntStream.range(0, size)
-            .mapToDouble(Math::sqrt)
-            .sum();
-        long seqTime = (System.nanoTime() - start) / 1_000_000;
-
-        // 並列処理の計測
-        start = System.nanoTime();
-        double sumPar = IntStream.range(0, size)
-            .parallel()
-            .mapToDouble(Math::sqrt)
-            .sum();
-        long parTime = (System.nanoTime() - start) / 1_000_000;
-
-        IO.println("シーケンシャル: " + seqTime + "ms");
-        IO.println("並列: " + parTime + "ms");
-        IO.println("高速化率: %.1f倍".formatted(
-            (double) seqTime / parTime));
-    }
-}
-```
-
-実行結果：
-
-```
-シーケンシャル: 304ms
-並列: 62ms
-高速化率: 4.9倍
-```
-
-計測した時間と高速化率は、CPUのコア数や実行のたびに変わります<span class="footnote">先に測る直列の処理には、JITコンパイラーがコードを最適化する前の遅い時間も含まれるため、高速化率が大きめに出ることがあります。正確に比べるには、同じ処理を何度か実行してから測ります。</span>。
+並列ストリームの内部では、Fork/Joinフレームワークが動いています。
+Fork/JoinフレームワークはJava 7で加わったしくみで、データを小さなチャンクに分割し、各チャンクを共通のスレッドプール（`ForkJoinPool.commonPool()`）のスレッドで処理して、最後に結果を統合します。
+並列にして速くなったかどうかは、処理の前後で`System.nanoTime()`の値を取り、直列のストリームとかかった時間を比べて確かめます。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「並列ストリームの内部動作」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ### 並列ストリームの注意点
 
@@ -885,7 +833,7 @@ public class ParallelStreamExample {
 
 並列処理では、複数のスレッドが同じデータにアクセスする可能性があるため、スレッドセーフでない操作は避ける必要があります。
 
-<span class="listing-number">**サンプルコード12-16**</span>
+<span class="listing-number">**サンプルコード12-15**</span>
 
 ```java
 // スレッドセーフでない例（避けるとよい）
@@ -903,7 +851,7 @@ List<Integer> safeResults = numbers.parallelStream()
 
 並列ストリームでは、`forEach`で要素を処理する順序や`findAny`が返す要素は、実行のたびに変わることがあります。
 一方、`forEachOrdered`や、リストに集める`toList()`は、並列ストリームでも元の要素の順序を保ちます。
-サンプルコード12-16の`safeResults`も、元のリストと同じ順に並びます。
+サンプルコード12-15の`safeResults`も、元のリストと同じ順に並びます。
 
 ### 並列ストリームを使うとよい場合
 
@@ -930,7 +878,7 @@ List<Integer> safeResults = numbers.parallelStream()
 
 </div>
 
-<span class="listing-number">**サンプルコード12-17**　FlatMapExample.java（4〜35行目）</span>
+<span class="listing-number">**サンプルコード12-16**　FlatMapExample.java（4〜35行目）</span>
 
 ```java
 public class FlatMapExample {
@@ -980,7 +928,7 @@ public class FlatMapExample {
 
 `reduce`操作<span class="footnote">mapとreduceは、Lispなどの関数型言語で古くから使われてきた名前です。Googleが2004年に発表した大規模データ処理のしくみMapReduceも、この2つの関数から名前を取っています。</span>は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
 
-<span class="listing-number">**サンプルコード12-18**　ReduceExample.java（5〜27、41〜42行目）</span>
+<span class="listing-number">**サンプルコード12-17**　ReduceExample.java（5〜27、41〜42行目）</span>
 
 ```java
 public class ReduceExample {
@@ -1026,7 +974,7 @@ Java is awesome
 
 `Collectors`クラスは、ストリームの要素をさまざまな形で収集するための豊富なメソッドを提供します。単純なリスト作成から、複雑なグループ化や統計処理まで対応できます。
 
-<span class="listing-number">**サンプルコード12-19**　CollectorsExample.java（6〜36行目）</span>
+<span class="listing-number">**サンプルコード12-18**　CollectorsExample.java（6〜36行目）</span>
 
 ```java
 public class CollectorsExample {
@@ -1081,7 +1029,7 @@ public class CollectorsExample {
 `Objects::nonNull`は、`name -> name != null`と同じ判定をするメソッド参照です。
 値が1つだけで、それが存在しない場合もあるときは、本章の「Optional型による安全なnull処理」で学んだ`Optional`を使います。
 
-<span class="listing-number">**サンプルコード12-20**　NullSafeProcessingExample.java（5〜21行目）</span>
+<span class="listing-number">**サンプルコード12-19**　NullSafeProcessingExample.java（5〜21行目）</span>
 
 ```java
 public class NullSafeProcessingExample {
@@ -1114,7 +1062,7 @@ public class NullSafeProcessingExample {
 Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを高速に処理する際に重要です。
 次のサンプルの`peek`は、要素をそのまま次へ渡しながら途中の値を確かめる処理をはさむ中間操作で、主にデバッグに使います。
 
-<span class="listing-number">**サンプルコード12-21**　ShortCircuitExample.java（4〜27行目）</span>
+<span class="listing-number">**サンプルコード12-20**　ShortCircuitExample.java（4〜27行目）</span>
 
 ```java
 public class ShortCircuitExample {
@@ -1159,7 +1107,7 @@ public class ShortCircuitExample {
 ストリーム処理の結果を配列として取得したい場合、`toArray()`メソッドを使用します。引数なしの`toArray()`は`Object[]`を返します。
 `String[]`のように要素の型に合った配列を受け取るには、`String[]::new`のような配列のコンストラクター参照を渡します。
 
-<span class="listing-number">**サンプルコード12-22**　ToArrayExample.java</span>
+<span class="listing-number">**サンプルコード12-21**　ToArrayExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1197,56 +1145,9 @@ public class ToArrayExample {
 
 ### 複雑な処理パイプラインの実装 {.advanced}
 
-実際のアプリケーションでは、複数のStream操作を組み合わせた複雑な処理パイプラインを構築することがよくあります。以下の例では、実用的なデータ処理シナリオを示します。
-
-<span class="listing-number">**サンプルコード12-23**　ComplexProcessingExample.java（6〜8、16〜36、48〜49行目）</span>
-
-```java
-public class ComplexProcessingExample {
-    public static void main(String[] args) {
-        List<Student> students = Arrays.asList(
-        // ...
-        );
-        
-        // 複雑な処理：高得点者（85点以上）を身長でグループ化し、
-        // 各グループで最高得点者の名前を取得
-        Map<String, String> heightGroupTopScorers = students.stream()
-            // 高得点者のみ
-            .filter(s -> s.getScore() >= 85)
-            // 身長でグループ化
-            .collect(Collectors.groupingBy(
-                s -> s.getHeight() >= 170 ? "高身長" : "標準身長",
-                // グループ内での最高得点者を取得
-                Collectors.collectingAndThen(
-                    Collectors.maxBy((s1, s2) -> Integer.compare(
-                            s1.getScore(), s2.getScore())),
-                    opt -> opt.map(Student::getName).orElse("該当者なし")
-                )
-            ));
-        
-        IO.println("身長グループ別最高得点者:");
-        heightGroupTopScorers.forEach((group, name) -> 
-            IO.println(group + ": " + name));
-            // ...
-    }
-}
-```
-
-実行結果：
-
-```
-身長グループ別最高得点者:
-標準身長: Grace
-高身長: Bob
-
-身長グループ別平均点:
-標準身長: 89.3点
-高身長: 86.0点
-```
-
-このサンプルでも、グループの表示順は保証されません（サンプルコード12-19の後の説明を参照）。
-
-このような複雑な処理も、Stream APIを使用することで、従来のネストしたループや一時的な変数を使った処理よりもはるかに読みやすく、保守しやすいコードとして実装できます。
+実際のアプリケーションでは、`filter`で絞り込んだ要素を`Collectors.groupingBy`でグループに分け、`collectingAndThen`と`maxBy`でグループごとの最高得点者の名前を求める、といった処理を1つのパイプラインに組み立てます。
+forループで書くとグループごとの途中の結果を覚えておく`Map`が要る処理も、段階を上から順に並べた式として読めます。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「複雑な処理パイプラインの実装」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ## よくあるエラーと対処法
 

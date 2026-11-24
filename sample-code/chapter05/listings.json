@@ -127,47 +127,20 @@
     "dir": "05-17",
     "main": null,
     "excerpt": [
-      { "file": "PaymentProcessor.java", "from": 3, "to": 4 },
-      { "file": "PaymentProcessor.java", "from": 17, "to": 42 },
-      { "file": "PaymentProcessor.java", "from": 57, "to": 74 },
-      { "file": "PaymentProcessor.java", "from": 84, "to": 84 }
+      { "file": "WordDocument.java", "from": 1, "to": 24 },
+      { "file": "PDFDocument.java", "from": 1, "to": 5 },
+      { "file": "PDFDocument.java", "from": 27, "to": 30 }
     ]
   },
   "5-18": {
     "dir": "05-18",
     "main": null,
     "excerpt": [
-      { "file": "CreditCardPayment.java", "from": 3, "to": 43 },
-      { "file": "PayPalPayment.java", "from": 3, "to": 4 },
-      { "file": "PayPalPayment.java", "from": 44, "to": 50 }
+      { "file": "Document.java", "from": 1, "to": 30 }
     ]
   },
   "5-19": {
     "dir": "05-19",
-    "main": "PaymentExample",
-    "excerpt": [
-      { "file": "PaymentExample.java", "from": 1, "to": 22 },
-      { "file": "PaymentExample.java", "from": 28, "to": 29 }
-    ]
-  },
-  "5-20": {
-    "dir": "05-20",
-    "main": null,
-    "excerpt": [
-      { "file": "WordDocument.java", "from": 1, "to": 24 },
-      { "file": "PDFDocument.java", "from": 1, "to": 5 },
-      { "file": "PDFDocument.java", "from": 27, "to": 30 }
-    ]
-  },
-  "5-21": {
-    "dir": "05-21",
-    "main": null,
-    "excerpt": [
-      { "file": "Document.java", "from": 1, "to": 30 }
-    ]
-  },
-  "5-22": {
-    "dir": "05-22",
     "main": null,
     "excerpt": [
       { "file": "WordDocument.java", "from": 1, "to": 12 },
@@ -176,19 +149,19 @@
       { "file": "ExcelDocument.java", "from": 1, "to": 16 }
     ]
   },
-  "5-23": {
-    "dir": "05-23",
+  "5-20": {
+    "dir": "05-20",
     "main": "RefactoredDocumentTest",
     "excerpt": [
       { "file": "RefactoredDocumentTest.java", "from": 1, "to": 28 }
     ],
     "uses": [
-      "5-22",
-      "5-21"
+      "5-19",
+      "5-18"
     ]
   },
-  "5-24": {
-    "dir": "05-24",
+  "5-21": {
+    "dir": "05-21",
     "main": "StackProblem",
     "excerpt": [
       { "file": "MyStack.java", "from": 1, "to": 1 },
@@ -197,8 +170,8 @@
       { "file": "StackProblem.java", "from": 1, "to": 16 }
     ]
   },
-  "5-25": {
-    "dir": "05-25",
+  "5-22": {
+    "dir": "05-22",
     "main": null,
     "excerpt": [
       { "file": "MyStack.java", "from": 1, "to": 1 },
@@ -206,8 +179,8 @@
       { "file": "MyStack.java", "from": 27, "to": 35 }
     ]
   },
-  "5-26": {
-    "dir": "05-26",
+  "5-23": {
+    "dir": "05-23",
     "main": null,
     "excerpt": [
       { "file": "Employee.java", "from": 1, "to": 2 },
@@ -217,8 +190,8 @@
       { "file": "EmployeeManagementSystem.java", "from": 1, "to": 8 }
     ]
   },
-  "5-27": {
-    "dir": "05-27",
+  "5-24": {
+    "dir": "05-24",
     "main": "RectangleSquareTest",
     "excerpt": [
       { "file": "Rectangle.java", "from": 1, "to": 5 },
@@ -229,8 +202,8 @@
       { "file": "RectangleSquareTest.java", "from": 21, "to": 32 }
     ]
   },
-  "5-28": {
-    "dir": "05-28",
+  "5-25": {
+    "dir": "05-25",
     "main": null,
     "excerpt": [
       { "file": "Shape.java", "from": 1, "to": 8 },

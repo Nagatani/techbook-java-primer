@@ -17,9 +17,9 @@ javac -d out *.java
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
 | [2-9](./02-09/) | Sample.java | `java -cp out Sample` |
-| [2-13](./02-13/) | TypeConversionExample.java | `java -cp out TypeConversionExample` |
-| [2-18](./02-18/) | SwitchExample.java | `java -cp out SwitchExample` |
-| [2-27](./02-27/) | Calculator.java | `java -cp out Calculator` |
-| [2-38](./02-38/) | IOExample.java | `java -cp out IOExample` |
-| [2-40](./02-40/) | SafeInputExample.java | `java -cp out SafeInputExample` |
-| [2-42](./02-42/) | ImportExample.java | `java -cp out ImportExample` |
+| [2-12](./02-12/) | TypeConversionExample.java | `java -cp out TypeConversionExample` |
+| [2-17](./02-17/) | SwitchExample.java | `java -cp out SwitchExample` |
+| [2-26](./02-26/) | Calculator.java | `java -cp out Calculator` |
+| [2-37](./02-37/) | IOExample.java | `java -cp out IOExample` |
+| [2-39](./02-39/) | SafeInputExample.java | `java -cp out SafeInputExample` |
+| [2-41](./02-41/) | ImportExample.java | `java -cp out ImportExample` |

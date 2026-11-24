@@ -24,15 +24,6 @@ claims:
       checked: 2026-11-19
       note: JEP 400に、Windowsでは既定の文字コードがwindows-1252やwindows-31jのようなコードページによる文字コードになるとあることを確かめた。MS932はwindows-31jの別名（JDK 25でCharset.forName("MS932").name()はwindows-31j）
 
-  - id: object-input-filter-9
-    claim: 直列化フィルターObjectInputFilterはJava 9で加わった
-    text: Java 9では、読み込むクラスを制限する直列化フィルター（ObjectInputFilter）が加わりました
-    verify:
-      kind: since
-      probe: InputFilter.java
-      version: 9
-      expect: ['cannot find symbol']
-
   - id: nio2-7
     claim: java.nio.fileパッケージ（NIO.2）はJava 7で導入された
     text:
@@ -164,10 +155,8 @@ claims:
       expect: ['^append: \[a, b\]$']
 
   - id: data-stream-big-endian
-    claim: DataOutputStreamとDataInputStreamは数値をビッグエンディアンで読み書きし、writeUTFは65535バイトまで
-    text:
-      - DataOutputStreamとDataInputStreamは、常にビッグエンディアン（ネットワークバイトオーダー）で数値を読み書きします
-      - さらに、writeUTF()で書き込める文字列は、最大65535バイトまでです
+    claim: DataOutputStreamとDataInputStreamは数値をビッグエンディアンで読み書きする
+    text: 常にビッグエンディアン（上位のバイトから順に並べる順序）で数値を読み書きします
     sources:
       - title: DataOutputStream（Java SE 25 API）
         url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/DataOutputStream.html

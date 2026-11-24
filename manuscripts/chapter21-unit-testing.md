@@ -632,7 +632,7 @@ public class PaymentServiceTest {
 }
 ```
 
-## 継続的インテグレーション（CI）との統合 {.advanced}
+## 継続的インテグレーション（CI）との統合
 
 ### 自動テストの重要性
 

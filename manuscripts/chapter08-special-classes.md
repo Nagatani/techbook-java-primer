@@ -245,45 +245,15 @@ x = 6.0, y = 2.0
 
 ### enumを使ったデザインパターン {.advanced}
 
-#### Singletonパターン
-
-Singletonパターンは、あるクラスのインスタンスをプログラム全体で1つだけに限る設計です。
-設定や接続のように、プログラムのなかに1つだけあればよく、複数あると食い違いが起きるものに使います。
-enumの列挙子は、プログラムのなかで1つずつしか作られません。
-この性質をそのまま使うと、`enum`で簡潔なシングルトンを実装できます<span class="footnote">enumによるシングルトンは、ジョシュア・ブロックの『Effective Java』（第2版、2008年）で勧められたことで広く知られるようになりました。</span>。
-次のサンプルの`Connection`は、データベースとの接続を表す`java.sql`パッケージのインターフェイスです。
-ここでは接続の処理そのものは扱わず、列挙子`INSTANCE`がただ1つのインスタンスとして接続を持ち続ける形に注目してください。
-
-<span class="listing-number">**サンプルコード8-7**　DatabaseConnection.java</span>
-
-```java
-import java.sql.Connection;
-
-public enum DatabaseConnection {
-    INSTANCE;
-    
-    private Connection connection;
-    
-    DatabaseConnection() {
-        this.connection = initializeConnection();
-    }
-    
-    public Connection getConnection() {
-        return connection;
-    }
-    
-    private Connection initializeConnection() {
-        // 接続の初期化ロジック
-        return null; // 実際の実装では適切な接続を返す
-    }
-}
-```
+enumの列挙子はプログラムのなかで1つずつしか作られないので、列挙子を1つだけ持つenumを書くと、インスタンスをプログラム全体で1つに限るSingletonパターンを簡潔に実装できます。
+クラスで書くときに必要な、コンストラクターを隠す工夫や複数のスレッドへの配慮を、enumのしくみが代わりに引き受けます。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「enumを使ったデザインパターン」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ### インターフェイスの実装
 
 `enum`はインターフェイスを実装することもできます。
 
-<span class="listing-number">**サンプルコード8-8**　Printable.java、DocumentType.java（1〜7、14〜20行目）</span>
+<span class="listing-number">**サンプルコード8-7**　Printable.java、DocumentType.java（1〜7、14〜20行目）</span>
 
 ```java
 public interface Printable {
@@ -314,7 +284,7 @@ Java標準ライブラリには、`enum`専用の高速なコレクションク�
 ここでは、`EnumSet`は列挙子の集まり、`EnumMap`は列挙子ごとに値を対応づける表、と読んでください。
 `EnumSet<Permission>`の`<Permission>`は、入れる要素の型を表します。
 
-<span class="listing-number">**サンプルコード8-9**　EnumCollectionExample.java</span>
+<span class="listing-number">**サンプルコード8-8**　EnumCollectionExample.java</span>
 
 ```java
 import java.util.EnumSet;
@@ -401,7 +371,7 @@ Recordは、これらを手で書く代わりにコンパイラーに任せる�
 
 以下のコードは、Recordの最も簡潔な定義例です。recordキーワードを使って、名前と年齢を持つPersonクラスを1行で定義しています。この短い定義から、コンパイラーは自動的にコンストラクター、アクセサーメソッド、equals()、hashCode()、toString()などの必要なメソッドをすべて生成します。
 
-<span class="listing-number">**サンプルコード8-10**　Person.java</span>
+<span class="listing-number">**サンプルコード8-9**　Person.java</span>
 
 ```java
 public record Person(String name, int age) {}
@@ -410,7 +380,7 @@ public record Person(String name, int age) {}
 Recordの名前の後ろの括弧に書いた`name`と`age`を、Recordの成分（record component）と呼びます。
 これだけで、コンパイラーが次のクラスを定義したのとほぼ同じ意味になります（メソッドの中身は省略しています）。
 
-<span class="listing-number">**サンプルコード8-11**　Person.java（3〜17、21〜25、27〜31、33〜34行目）</span>
+<span class="listing-number">**サンプルコード8-10**　Person.java（3〜17、21〜25、27〜31、33〜34行目）</span>
 
 ```java
 public final class Person {
@@ -476,7 +446,7 @@ Recordの本体には、成分のほかにインスタンスフィールドを�
 
 ### Recordの使い方
 
-<span class="listing-number">**サンプルコード8-12**　RecordExample.java</span>
+<span class="listing-number">**サンプルコード8-11**　RecordExample.java</span>
 
 ```java
 public class RecordExample {
@@ -520,7 +490,7 @@ Recordでは、コンパクトコンストラクターを使用してバリデ�
 引数はRecordの宣言に書いた成分と同じ名前で、本体でそのまま使えます。
 本体の処理が終わると、各引数の値が同じ名前のフィールドへ自動的に代入されるので、`this.balance = balance;`のような代入は書きません。
 
-<span class="listing-number">**サンプルコード8-13**　BankAccount.java</span>
+<span class="listing-number">**サンプルコード8-12**　BankAccount.java</span>
 
 ```java
 public record BankAccount(String accountNumber, double balance) {
@@ -545,7 +515,7 @@ public record BankAccount(String accountNumber, double balance) {
 追加のコンストラクターは、本体で`this(...)`を使って、最終的に正準コンストラクターを呼び出さなければなりません。
 次の`Tile`は、幅と高さを持つ長方形のタイルを表すRecordで、1辺の長さだけを渡して正方形のタイルを作るコンストラクターを足しています。
 
-<span class="listing-number">**サンプルコード8-14**　Tile.java</span>
+<span class="listing-number">**サンプルコード8-13**　Tile.java</span>
 
 ```java
 public record Tile(double width, double height) {
@@ -571,7 +541,7 @@ public record Tile(double width, double height) {
 第3章で学んだファクトリメソッド（`new`の代わりにオブジェクトを作って返す`static`メソッド）は、Recordにも定義できます。
 コンストラクターと違ってメソッドに名前を付けられるので、`ofCelsius`のように、どの単位の値から作るのかを名前で表せます。
 
-<span class="listing-number">**サンプルコード8-15**　Temperature.java（1〜5、15〜25行目）</span>
+<span class="listing-number">**サンプルコード8-14**　Temperature.java（1〜5、15〜25行目）</span>
 
 ```java
 public record Temperature(double value, String unit) {
@@ -598,7 +568,7 @@ public record Temperature(double value, String unit) {
 Recordの値は書き換えられないので、一部の成分だけを変えたいときは、その成分だけを差し替えた新しいRecordを作って返すメソッドを用意します。
 このようなメソッドを`withHost`のように「with＋成分名」と名付けることが多く、withメソッドパターンと呼びます。
 
-<span class="listing-number">**サンプルコード8-16**　Configuration.java（1〜8、18〜21行目）</span>
+<span class="listing-number">**サンプルコード8-15**　Configuration.java（1〜8、18〜21行目）</span>
 
 ```java
 import java.time.Duration;
@@ -620,7 +590,7 @@ public record Configuration(String host, int port, boolean useSsl,
 
 Java 21以降では、Recordとパターンマッチングを組み合わせて使用できます<span class="footnote">Recordを分解するパターン（レコードパターン）と、switchで型を判定するパターンは、プレビュー機能の期間を経てJava 21で正式な機能になりました。</span>。
 
-<span class="listing-number">**サンプルコード8-17**　Point.java、PatternMatchingExample.java</span>
+<span class="listing-number">**サンプルコード8-16**　Point.java、PatternMatchingExample.java</span>
 
 ```java
 public record Point(int x, int y) {}
@@ -682,7 +652,7 @@ switchは上のcaseから順に調べるので、ガードの付いたcaseは、
 次のサンプルでは、配列から求めた件数・平均・最大・最小を、メソッド内で宣言したRecordにまとめています。
 メソッドのなかで型を宣言する書き方は、本章の後半で学ぶローカル内部クラスと同じで、宣言したメソッドのなかだけで使えます。
 
-<span class="listing-number">**サンプルコード8-18**　LocalRecordExample.java（1〜4、23〜29行目）</span>
+<span class="listing-number">**サンプルコード8-17**　LocalRecordExample.java（1〜4、23〜29行目）</span>
 
 ```java
 public class LocalRecordExample {
@@ -701,25 +671,9 @@ public class LocalRecordExample {
 
 ### ネストされたRecord {.advanced}
 
-Recordは他のRecordを含むことができ、複雑なデータ構造を表現できます。
-
-<span class="listing-number">**サンプルコード8-19**　Address.java、Company.java、Employee.java</span>
-
-```java
-public record Address(String street, String city, String country) {}
-
-public record Company(String name, Address headquarters) {}
-
-public record Employee(String name, String id, Company company) {
-    // 従業員の勤務先と、その所在地を返す
-    public String getFullAddress() {
-        return String.format("%sの勤務先は%s（所在地: %s %s %s）",
-                name, company.name(), company.headquarters().country(),
-                company.headquarters().city(),
-                company.headquarters().street());
-    }
-}
-```
+Recordのコンポーネントには別のRecordも使えるので、住所を持つ会社、その会社を持つ従業員のように、入れ子のデータ構造を表せます。
+内側の値は`company.headquarters().city()`のようにアクセサーをつないで取り出し、自動で作られる`toString()`や`equals()`も内側のRecordまで含めて働きます。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「ネストされたRecord」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ### Recordの実践的な使用例
 
@@ -728,7 +682,7 @@ public record Employee(String name, String id, Company company) {
 DTO（Data Transfer Object）は、処理の間やシステムの間でデータをまとめて受け渡すためのオブジェクトです。
 次の`ApiResponse`は、処理が成功したかどうか、結果のデータ、メッセージ、作った時刻をまとめて返します。
 
-<span class="listing-number">**サンプルコード8-20**　ApiResponse.java</span>
+<span class="listing-number">**サンプルコード8-18**　ApiResponse.java</span>
 
 ```java
 // APIレスポンス用のDTO
@@ -756,7 +710,7 @@ Value Objectは、金額や日付のように、値そのものを表す小さ�
 次の`Money`は、金額を第6章で学んだ`BigDecimal`で持ち、コンパクトコンストラクターで引数`amount`に丸めた値を代入し直しています。
 フィールドへの代入は本体の最後に行われるため、丸めたあとの値がフィールドに入ります。
 
-<span class="listing-number">**サンプルコード8-21**　Money.java（1〜5、12〜27行目）</span>
+<span class="listing-number">**サンプルコード8-19**　Money.java（1〜5、12〜27行目）</span>
 
 ```java
 import java.math.BigDecimal;
@@ -789,11 +743,11 @@ sealedインターフェイスは、インターフェイスを実装できる�
 
 <div class="figure">
 
-![sealedインターフェイスとRecordの組み合わせ（サンプルコード8-22）](images/diagrams/chapter08-sealed-record.svg)
+![sealedインターフェイスとRecordの組み合わせ（サンプルコード8-20）](images/diagrams/chapter08-sealed-record.svg)
 
 </div>
 
-<span class="listing-number">**サンプルコード8-22**　Shape.java、Circle.java、Rectangle.java、Triangle.java、ShapeCalculator.java</span>
+<span class="listing-number">**サンプルコード8-20**　Shape.java、Circle.java、Rectangle.java、Triangle.java、ShapeCalculator.java</span>
 
 ```java
 // 図形を表すsealed interface（実装できる型をpermitsの3つに限る）
@@ -832,7 +786,7 @@ Recordは暗黙的に`final`なので、何も付けずにこの条件を満た�
 コンパイラーは`Shape`の実装が3つしかないことを知っているので、3つのcaseですべての場合を尽くしていると判断できます。
 あとで`Shape`の実装を増やしてcaseを書き足し忘れると、このswitchがコンパイルエラーになり、直すべき場所を教えてくれます。
 
-### データ指向プログラミング（DOP） {.advanced}
+### データ指向プログラミング（DOP）
 
 データ指向プログラミングは、データ構造とビジネスロジックを明確に分離する設計パラダイムです<span class="footnote">Javaの言語設計者であるブライアン・ゲッツが、2022年の記事「Data Oriented Programming in Java」で、Record・sealed・パターンマッチングを組み合わせた書き方として紹介しました。</span>。
 
@@ -842,13 +796,13 @@ Recordは暗黙的に`final`なので、何も付けずにこの条件を満た�
 データの種類が決まっていて、そのデータに対する処理（集計・表示・保存など）があとから増えていく場面では、データをRecordで定義し、処理を別のクラスやswitchに分けます。
 こうすると、データの定義を変えずに処理を足せます。
 一方、データの値を正しく保つための規則（残高を負にしない、など）は、第3章のようにデータと同じクラスに置きます。
-あとで見るサンプルコード8-24の`updateStatus`がRecordのなかにあるのは、「最終状態の注文は変えない」という規則を守るためです。
+あとで見るサンプルコード8-22の`updateStatus`がRecordのなかにあるのは、「最終状態の注文は変えない」という規則を守るためです。
 
 次のサンプルの`List<OrderItem>`は、`OrderItem`を順に並べて持つリストです（第9章で学びます）。
 `OrderProcessor`では、拡張for文でリストの要素を1つずつ取り出して計算や判定を行います。
-本文では、各ファイルの先頭にあるimport文を省いています<span class="footnote">省いたimport文は`java.math.BigDecimal`、`java.time.LocalDateTime`、`java.util.List`です。全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter08/08-23/`にあります。</span>。
+本文では、各ファイルの先頭にあるimport文を省いています<span class="footnote">省いたimport文は`java.math.BigDecimal`、`java.time.LocalDateTime`、`java.util.List`です。全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter08/08-21/`にあります。</span>。
 
-<span class="listing-number">**サンプルコード8-23**　Order.java（4〜6行目）、Customer.java、OrderItem.java（3〜4行目）、OrderProcessor.java（3〜22行目）</span>
+<span class="listing-number">**サンプルコード8-21**　Order.java（4〜6行目）、Customer.java、OrderItem.java（3〜4行目）、OrderProcessor.java（3〜22行目）</span>
 
 ```java
 // データの定義（Records）
@@ -899,10 +853,10 @@ public class OrderProcessor {
 ### EnumとRecordの組み合わせ
 
 次のサンプルは、注文の状態を表すEnumの`OrderStatus`と、その状態を持つRecordの`Order`を組み合わせたものです。
-この`Order`は、サンプルコード8-23の`Order`とは別に、状態の移り変わりを表すために定義し直したものです。
+この`Order`は、サンプルコード8-21の`Order`とは別に、状態の移り変わりを表すために定義し直したものです。
 `updateStatus`は自分を書き換えず、新しい状態を持つ`Order`を作って返します。
 
-<span class="listing-number">**サンプルコード8-24**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜6、17〜24行目）</span>
+<span class="listing-number">**サンプルコード8-22**　OrderStatus.java（1〜6、20〜23行目）、Order.java（4〜6、17〜24行目）</span>
 
 ```java
 public enum OrderStatus {
@@ -936,7 +890,7 @@ public record Order(String orderId, String customerId,
 次のサンプルは、ゲームのキャラクターを、職業を表すEnumの`CharacterClass`と、能力値を表すRecordの`CharacterStats`で組み立てたものです。
 職業ごとの初期値はEnumの列挙子に持たせ、レベルアップでは能力値を書き換えずに新しいRecordを作って返します。
 
-<span class="listing-number">**サンプルコード8-25**　CharacterClass.java（1〜5、24行目）、CharacterStats.java、GameCharacter.java（1〜2、17〜21行目）</span>
+<span class="listing-number">**サンプルコード8-23**　CharacterClass.java（1〜5、24行目）、CharacterStats.java、GameCharacter.java（1〜2、17〜21行目）</span>
 
 ```java
 // キャラクターの職業
@@ -983,7 +937,7 @@ public record GameCharacter(String playerName,
 
 外部クラスのインスタンスに関連付けられた内部クラスです。
 
-<span class="listing-number">**サンプルコード8-26**　OuterClass.java</span>
+<span class="listing-number">**サンプルコード8-24**　OuterClass.java</span>
 
 ```java
 public class OuterClass {
@@ -1016,7 +970,7 @@ public class OuterClass {
 
 外部クラスのインスタンスに依存しない内部クラスです。
 
-<span class="listing-number">**サンプルコード8-27**　MathOperations.java</span>
+<span class="listing-number">**サンプルコード8-25**　MathOperations.java</span>
 
 ```java
 public class MathOperations {
@@ -1055,7 +1009,7 @@ public class MathOperations {
 
 メソッド内で定義される内部クラスです。
 
-<span class="listing-number">**サンプルコード8-28**　LocalClassExample.java</span>
+<span class="listing-number">**サンプルコード8-26**　LocalClassExample.java</span>
 
 ```java
 public class LocalClassExample {
@@ -1091,7 +1045,7 @@ public class LocalClassExample {
 `compare()`は、1つめの引数を先に並べるなら負の数、後に並べるなら正の数を返します。
 ここでは`s2.compareTo(s1)`を返すことで、辞書順の逆に並べています。
 
-<span class="listing-number">**サンプルコード8-29**　AnonymousClassExample.java</span>
+<span class="listing-number">**サンプルコード8-27**　AnonymousClassExample.java</span>
 
 ```java
 import java.util.Arrays;
@@ -1126,74 +1080,10 @@ public class AnonymousClassExample {
 
 ### 実践的な使用例：イテレーターパターン {.advanced}
 
-イテレーターは、入れ物にある要素を1つずつ順に取り出すためのオブジェクトです。
-次のサンプルでは、文字列を持つ独自のリスト`StringList`が、匿名内部クラスでイテレーターを作って返します。
-匿名内部クラスが、外側のクラスのフィールド（`elements`と`size`）を直接参照している点が、ここでの要点です。
-
-<span class="listing-number">**サンプルコード8-30**　StringList.java</span>
-
-```java
-// 要素を1つずつ順に取り出すためのインターフェイス
-interface StringIterator {
-    boolean hasNext();
-    String next();
-}
-
-public class StringList {
-    private final String[] elements;
-    private int size = 0;
-    
-    public StringList(int capacity) {
-        elements = new String[capacity];
-    }
-    
-    public void add(String element) {
-        if (size < elements.length) {
-            elements[size++] = element;
-        }
-    }
-    
-    public StringIterator iterator() {
-        // 匿名内部クラスでStringIteratorを実装
-        return new StringIterator() {
-            private int index = 0;
-            
-            @Override
-            public boolean hasNext() {
-                return index < size;  // 外側のクラスのフィールドを直接参照
-            }
-            
-            @Override
-            public String next() {
-                return elements[index++];
-            }
-        };
-    }
-    
-    public static void main(String[] args) {
-        StringList list = new StringList(5);
-        list.add("りんご");
-        list.add("みかん");
-        list.add("ぶどう");
-        
-        StringIterator it = list.iterator();
-        while (it.hasNext()) {
-            IO.println(it.next());
-        }
-    }
-}
-```
-
-実行結果：
-
-```
-りんご
-みかん
-ぶどう
-```
-
-Javaの標準ライブラリにも、同じ考え方の`Iterator`インターフェイスがあります。
-第9章で学ぶコレクションは、`Iterator`を返すことで、拡張for文で要素を順に取り出せるようにしています。
+匿名内部クラスは、外側のクラスのフィールドを直接参照できます。
+この性質を使うと、独自のリストが自分の配列から要素を1つずつ順に取り出すオブジェクト（イテレーター）を、匿名内部クラスで作って返せます。
+標準ライブラリの`Iterator`インターフェイスも同じ考え方で、第9章で学ぶコレクションはこれを返すことで拡張for文に対応しています。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「実践的な使用例：イテレーターパターン」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ### 内部クラスのベストプラクティス
 

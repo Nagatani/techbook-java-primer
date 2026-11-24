@@ -1055,212 +1055,12 @@ s1.equals(s3): false
 
 ### 継承設計の実践例：決済システム {.advanced}
 
-実際のビジネスシステムでよく見られる決済処理を例に、継承を使った設計を見ていきましょう。ここでは、抽象クラス（第7章で学びます）を使わずに、具象クラスの継承とメソッドのオーバーライドによってテンプレートメソッドパターンを実現する方法を示します。
+親クラスの`final`のメソッドで処理の流れ（検証、外部サービスの呼び出し、記録）を決め、流れのなかで呼ぶメソッドだけを子クラスにオーバーライドさせる設計を、テンプレートメソッドパターンといいます。
+決済手段ごとの違いは子クラスに閉じ込められ、新しい決済手段を加えても処理の順序は崩れません。
+第7章で学ぶ抽象クラスを使わなくても、親クラスがデフォルトの実装を持つ具象クラスなら、この形を作れます。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「継承設計の実践例：決済システム」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
-<div class="figure">
-
-![決済システムの継承階層](images/diagrams/chapter05-inheritance-hierarchy.svg)
-
-</div>
-
-<span class="listing-number">**サンプルコード5-17**　PaymentProcessor.java（3〜4、17〜42、57〜74、84行目）</span>
-
-```java
-// 決済処理の基底クラス：テンプレートメソッドパターンの実装
-public class PaymentProcessor {
-    // ...
-    // テンプレートメソッド：決済処理の共通フロー
-    public final PaymentResult processPayment() {
-        // 1. 事前検証（共通処理）
-        if (!validateCommonParameters()) {
-            logError();
-            return new PaymentResult(false, null, errorMessage);
-        }
-        
-        // 2. 決済手段固有の検証（子クラスでオーバーライド可能）
-        if (!validatePaymentSpecific()) {
-            logError();
-            return new PaymentResult(false, null, errorMessage);
-        }
-        
-        // 3. 外部API呼び出し（子クラスでオーバーライド可能）
-        String authorizationCode = callExternalAPI();
-        if (authorizationCode == null) {
-            logError();
-            return new PaymentResult(false, null, errorMessage);
-        }
-        
-        // 4. 処理結果の記録（共通処理）
-        logTransaction(authorizationCode);
-        
-        return new PaymentResult(true, authorizationCode, "決済完了");
-    }
-    // ...
-    // 子クラスでオーバーライドされることを想定したメソッド（デフォルト実装を提供）
-    protected boolean validatePaymentSpecific() {
-        // デフォルトでは追加の検証なし
-        return true;
-    }
-    
-    protected String callExternalAPI() {
-        // デフォルトでは基本的な決済処理を実行
-        // 実際の実装では外部決済サービスのAPIを呼び出す
-        // エラーの場合はnullを返し、errorMessageを設定
-        return "DEFAULT-" + System.currentTimeMillis();
-    }
-    
-    // フックメソッド：子クラスでオーバーライドして処理を足せるメソッド
-    protected void logTransaction(String authCode) {
-        IO.println("取引ID: " + transactionId + " 承認コード: "
-                + authCode);
-    }
-    // ...
-}
-```
-
-これは決済処理の基底クラスで、テンプレートメソッドパターンを実装しています。`processPayment()`メソッドが決済処理の共通フローを定義し、子クラスで特定の処理をオーバーライドできるようになっています。
-
-#### テンプレートメソッドパターンの重要なポイント
-
-このパターンでは、まず`processPayment()`メソッドが決済処理の標準的な流れを決めます。
-検証、外部APIの呼び出し、結果の記録という順序は、すべての決済手段で共通です。
-そのうえで、`validatePaymentSpecific()`や`callExternalAPI()`のように、子クラスがオーバーライドしてよいメソッドを用意します。
-これらのメソッドが、決済手段ごとに処理を変えられる場所（拡張ポイント）になります。
-
-一方、`processPayment()`には`final`を付けています。
-`final`を付けたメソッドは子クラスでオーバーライドできないため、処理の流れそのものを子クラスが書き換えることはありません。
-`final`の使い方は、第6章「不変性とfinalキーワード」で詳しく学びます。
-
-また、拡張ポイントのメソッドには親クラスが基本的な動作（デフォルト実装）を用意しています。
-子クラスは、カードの検証やAPIの認証など、決済手段に特有の処理が必要な場合だけオーバーライドすれば済みます。
-
-#### 具体的な決済処理の実装例
-
-金額は、`double`ではなく`java.math.BigDecimal`型で表しています。
-`BigDecimal`は10進数の小数を誤差なく扱うクラスで、使い方は第6章で学びます。
-ここでは、`new BigDecimal("5000")`のように数を文字列で渡して作ることだけ押さえておけば読めます。
-
-<span class="listing-number">**サンプルコード5-18**　CreditCardPayment.java（3〜43行目）、PayPalPayment.java（3〜4、44〜50行目）</span>
-
-```java
-// クレジットカード決済の実装
-public class CreditCardPayment extends PaymentProcessor {
-    private String cardNumber;
-    private String cvv;
-    
-    public CreditCardPayment(String transactionId, BigDecimal amount,
-            String currency, String cardNumber, String cvv) {
-        super(transactionId, amount, currency);
-        this.cardNumber = cardNumber;
-        this.cvv = cvv;
-    }
-    
-    @Override
-    protected boolean validatePaymentSpecific() {
-        // クレジットカード固有の検証
-        if (cardNumber == null || cardNumber.length() != 16) {
-            setErrorMessage("無効なカード番号です");
-            return false;
-        }
-        if (cvv == null || cvv.length() != 3) {
-            setErrorMessage("無効なCVVです");
-            return false;
-        }
-        return true;
-    }
-    
-    @Override
-    protected String callExternalAPI() {
-        // クレジットカード決済API呼び出しのシミュレーション
-        IO.println("クレジットカード決済APIを呼び出し中...");
-        
-        // 実際の実装では外部APIを呼び出す
-        // ここではシミュレーションとして、まれにエラーが発生する例を示す
-        if (Math.random() < 0.1) {  // 10%の確率でエラー
-            setErrorMessage("クレジットカード決済が拒否されました");
-            return null;
-        }
-        
-        return "CC-" + System.currentTimeMillis();
-    }
-}
-
-// PayPal決済の実装
-public class PayPalPayment extends PaymentProcessor {
-    // ...
-    @Override
-    protected void logTransaction(String authCode) {
-        // PayPalでは詳細なログを記録
-        super.logTransaction(authCode);
-        IO.println("PayPalアカウント: " + email);
-    }
-}
-```
-
-これらは決済処理の基底クラスを継承した具体的な実装例です。
-`CreditCardPayment`は、カード番号とCVVの検証と、決済APIの呼び出し（のシミュレーション）をオーバーライドしています。
-`PayPalPayment`の抜粋は`logTransaction()`をオーバーライドした部分で、`super.logTransaction()`で親クラスの記録処理を呼んでから、アカウントを追加で表示します。
-省いた部分では、メールアドレスとパスワードの検証と、APIの呼び出しもオーバーライドしています。
-
-このアプローチでは、`PaymentProcessor`は抽象クラスではなく具象クラスとして実装されており、すべてのメソッドにデフォルト実装が提供されています。子クラスは各決済手段に固有の検証ロジック（クレジットカードの番号検証、PayPalのアカウント認証、銀行口座の残高確認など）が必要な場合に、これらのメソッドをオーバーライドして独自の振る舞いを実装できます。
-
-#### 決済処理の使用例
-
-<span class="listing-number">**サンプルコード5-19**　PaymentExample.java（1〜22、28〜29行目）</span>
-
-```java
-import java.math.BigDecimal;
-
-public class PaymentExample {
-    public static void main(String[] args) {
-        // クレジットカード決済の例
-        CreditCardPayment ccPayment = new CreditCardPayment("TXN001",
-                new BigDecimal("5000"), "JPY",
-                "1234567890123456", "123");
-        
-        PaymentResult ccResult = ccPayment.processPayment();
-        if (ccResult.isSuccess()) {
-            IO.println("決済成功: " + ccResult.getAuthorizationCode());
-        } else {
-            IO.println("決済失敗: " + ccResult.getMessage());
-        }
-        
-        // PayPal決済の例（メールアドレスが無効でエラーになる）
-        PayPalPayment ppPayment = new PayPalPayment("TXN002",
-                new BigDecimal("10000"), "JPY",
-                "invalid-email", "pass123");
-        
-        PaymentResult ppResult = ppPayment.processPayment();
-        // ...
-    }
-}
-```
-
-次は実行結果の一例です。クレジットカード決済は10%の確率で拒否されるため、実行するたびに結果が変わることがあります。
-4行目の「決済エラー」は、サンプルコード5-17で省いた`logError()`メソッドが標準エラー出力（`System.err`）に表示したものです。
-
-```
-クレジットカード決済APIを呼び出し中...
-取引ID: TXN001 承認コード: CC-1707123456789
-決済成功: CC-1707123456789
-決済エラー[TXN002]: 無効なメールアドレスです
-決済失敗: 無効なメールアドレスです
-```
-
-#### エラー処理の設計ポイント
-
-この決済処理では、例外を使わずにエラーを扱っています。
-検証メソッドは、成功したか失敗したかを`boolean`の戻り値で返します。
-失敗したときは、その理由を`errorMessage`フィールドに入れておきます。
-外部APIの呼び出しは、失敗すると`null`を返すので、呼び出し側は結果が`null`かどうかを調べてエラーと判断します。
-最後に、成功か失敗か、承認コード、メッセージをまとめて`PaymentResult`クラスのオブジェクトに入れて返します。
-
-第4章では、不正な値を`throw`で知らせる書き方を使いました。
-`throw`を使うと、エラーが起きた時点で処理を中断し、呼び出し側の`catch`へ移ります。
-決済のように「失敗」も業務の結果の1つで、成功と同じように承認コードやメッセージを持たせて返したい処理では、この例のように結果をオブジェクトにまとめて返す設計も使えます。
-例外のしくみは、第13章「例外処理」で詳しく学びます。
-
-### 段階的リファクタリング：重複コードから継承へ {.advanced}
+### 段階的リファクタリング：重複コードから継承へ
 
 実際の開発では、最初から理想的な継承構造を設計することは難しく、重複コードを発見してから継承を導入することがよくあります。その過程を段階的に見てみましょう。
 
@@ -1269,7 +1069,7 @@ public class PaymentExample {
 次の`WordDocument`と`PDFDocument`は、別々に作られたクラスです。
 `PDFDocument`は、ページ数（`pageCount`）と`generatePDF()`を除くと、`WordDocument`とまったく同じフィールドとメソッドを持っています（`// ...`で省いた`open()`・`save()`・`close()`も1行も違いません）。
 
-<span class="listing-number">**サンプルコード5-20**　WordDocument.java、PDFDocument.java（1〜5、27〜30行目）</span>
+<span class="listing-number">**サンプルコード5-17**　WordDocument.java、PDFDocument.java（1〜5、27〜30行目）</span>
 
 ```java
 public class WordDocument {
@@ -1323,7 +1123,7 @@ public class PDFDocument {
 共通のフィールドとメソッドを、親クラス`Document`に移します。
 子クラスからも使えるよう、フィールドは`protected`にします。
 
-<span class="listing-number">**サンプルコード5-21**　Document.java</span>
+<span class="listing-number">**サンプルコード5-18**　Document.java</span>
 
 ```java
 // 共通部分を親クラスとして抽出
@@ -1363,7 +1163,7 @@ public class Document {
 子クラスは`Document`を継承し、自分に固有の部分だけを書きます。
 コンストラクターでは`super(...)`で親クラスの初期化を呼び、保存の方法が違う`PDFDocument`と`ExcelDocument`は`save()`をオーバーライドします。
 
-<span class="listing-number">**サンプルコード5-22**　WordDocument.java、PDFDocument.java（1〜14、23行目）、ExcelDocument.java</span>
+<span class="listing-number">**サンプルコード5-19**　WordDocument.java、PDFDocument.java（1〜14、23行目）、ExcelDocument.java</span>
 
 ```java
 // リファクタリング後：重複が除去された
@@ -1427,7 +1227,7 @@ public class ExcelDocument extends Document {
 
 リファクタリング後の使用例：
 
-<span class="listing-number">**サンプルコード5-23**　RefactoredDocumentTest.java</span>
+<span class="listing-number">**サンプルコード5-20**　RefactoredDocumentTest.java</span>
 
 ```java
 public class RefactoredDocumentTest {
@@ -1506,7 +1306,7 @@ data.xlsx を閉じました
 `ArrayList<String>`は、第4章でも使った、文字列を必要なだけ追加できる入れ物です（第9章「コレクションフレームワーク」で学びます）。
 `pop`と`peek`の`throw new EmptyStackException()`は、第4章でも使った`throw`で、スタックが空のときに処理を中断してエラーを知らせます。
 
-<span class="listing-number">**サンプルコード5-24**　MyStack.java（1、5〜16、23行目）、StackProblem.java</span>
+<span class="listing-number">**サンプルコード5-21**　MyStack.java（1、5〜16、23行目）、StackProblem.java</span>
 
 ```java
 // 悪い例：実装の詳細を継承してしまう
@@ -1546,7 +1346,7 @@ public class StackProblem {
 
 #### 解決策：コンポジションを使用
 
-<span class="listing-number">**サンプルコード5-25**　MyStack.java（1、5〜18、27〜35行目）</span>
+<span class="listing-number">**サンプルコード5-22**　MyStack.java（1、5〜18、27〜35行目）</span>
 
 ```java
 // 良い例：内部実装を隠蔽
@@ -1586,7 +1386,7 @@ public class MyStack {
 この設計はリスコフ置換原則<span class="footnote">計算機科学者のバーバラ・リスコフが1987年の講演で示した考え方にちなむ名前で、英語ではLiskov Substitution Principle（LSP）といいます。リスコフは2008年にチューリング賞を受賞しています。</span>に違反します。
 リスコフ置換原則とは、親クラスの型で扱っている箇所に子クラスのインスタンスを渡しても、プログラムが正しく動き続けなければならないという原則です。
 
-<span class="listing-number">**サンプルコード5-26**　Employee.java（1〜2、11〜14行目）、RegularEmployee.java（1、6〜11行目）、EmployeeManagementSystem.java</span>
+<span class="listing-number">**サンプルコード5-23**　Employee.java（1〜2、11〜14行目）、RegularEmployee.java（1、6〜11行目）、EmployeeManagementSystem.java</span>
 
 ```java
 // 悪い例：すべての従業員がシステム管理権限を持つという誤った前提
@@ -1624,7 +1424,7 @@ public class EmployeeManagementSystem {
 
 有名な例として「正方形と長方形」の問題も見てみましょう。これはリスコフ置換原則（LSP）違反の典型例です。
 
-<span class="listing-number">**サンプルコード5-27**　Rectangle.java（1〜5、11〜17、22行目）、Square.java、RectangleSquareTest.java（1〜11、21〜32行目）</span>
+<span class="listing-number">**サンプルコード5-24**　Rectangle.java（1〜5、11〜17、22行目）、Square.java、RectangleSquareTest.java（1〜11、21〜32行目）</span>
 
 ```java
 // 問題のあるコード：数学的には正方形は長方形の一種だが...
@@ -1718,7 +1518,7 @@ public class RectangleSquareTest {
 `interface Shape`は「`getArea()`メソッドを持つ」という約束だけを決めた型で、`implements Shape`と書いたクラスはその約束どおりに`getArea()`を実装します。
 ここでは、`Rectangle`と`Square`が継承の関係を持たず、それぞれが独立に`getArea()`を実装している点だけを読み取ってください。
 
-<span class="listing-number">**サンプルコード5-28**　Shape.java（1〜8、15〜26、32〜39行目）</span>
+<span class="listing-number">**サンプルコード5-25**　Shape.java（1〜8、15〜26、32〜39行目）</span>
 
 ```java
 // 解決策の例：インターフェイスを使用

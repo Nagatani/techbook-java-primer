@@ -11,8 +11,7 @@
     - CSVファイルを1行ずつ読み、壊れた行を読み飛ばして集計し、結果を書き出せる
     - 文字コードを指定して読み書きし、文字化けが起きるしくみを説明できる
 3. バイナリファイルと直列化
-    - `DataOutputStream`と`DataInputStream`で、数値や文字列をバイナリ形式で保存し、読み戻せる
-    - 直列化でオブジェクトを保存し、`transient`で保存しないフィールドを指定できる
+    - 数値をバイナリのまま保存する`DataOutputStream`と、オブジェクトを保存する直列化が、どんなときに要るかを説明できる（コード例と`transient`の使い方は付録Iで学べる）
 4. ファイルとフォルダーの操作
     - `Path.of`と`Files`で、フォルダーの作成やファイルのコピー・削除を書ける
 5. Text Blocks
@@ -308,140 +307,17 @@ public class CharacterEncodingExample {
 
 ## バイナリファイルの高度な処理 {.advanced}
 
-### DataInputStream/DataOutputStreamによるプリミティブ型の読み書き
-
-`DataInputStream`と`DataOutputStream`は、Javaのプリミティブデータ型（`int`, `double`, `boolean`など）や文字列を、プラットフォームに依存しないバイナリ形式で読み書きするために使用します。
-数値を文字列に変換せずに保存するため、テキスト形式と比べてファイルサイズが小さくなり、変換処理も不要になります。
-
-<span class="listing-number">**サンプルコード14-5**　DataStreamExample.java</span>
-
-```java
-import java.io.*;
-
-public class DataStreamExample {
-    public static void main(String[] args) throws IOException {
-        String filename = "data.bin";
-        
-        // データの書き込み
-        // DataOutputStreamは、プリミティブ型の値をバイナリ形式のまま保存する。
-        // 型の情報は保存しないので、読むときに型と順序を合わせる
-        try (DataOutputStream dos = new DataOutputStream(
-                new BufferedOutputStream(
-                new FileOutputStream(filename)))) {
-            dos.writeInt(12345);
-            dos.writeLong(9876543210L);
-            dos.writeDouble(3.14159);
-            dos.writeBoolean(true);
-            dos.writeUTF("こんにちは、世界！");  // 修正UTF-8形式
-            
-            IO.println("データを書き込みました。");
-        }
-        
-        // データの読み込み（書き込んだ順序と同じ順序で読む）
-        try (DataInputStream dis = new DataInputStream(
-                new BufferedInputStream(
-                new FileInputStream(filename)))) {
-            int intValue = dis.readInt();
-            long longValue = dis.readLong();
-            double doubleValue = dis.readDouble();
-            boolean boolValue = dis.readBoolean();
-            String strValue = dis.readUTF();
-            
-            IO.println("読み込んだデータ: %d, %d, %.5f, %b, %s".formatted(
-                    intValue, longValue, doubleValue, 
-                    boolValue, strValue));
-        }
-    }
-}
-```
-
-実行結果：
-
-```
-データを書き込みました。
-読み込んだデータ: 12345, 9876543210, 3.14159, true, こんにちは、世界！
-```
-
-これらのクラスを使うときは、いくつか注意する点があります。
-まず、データは書き込んだときと同じ順序で読み込みます。
-順序がずれると、正しい値を読み出せません。
-また、`DataOutputStream`と`DataInputStream`は、常にビッグエンディアン（ネットワークバイトオーダー）で数値を読み書きします<span class="footnote">ビッグエンディアンとリトルエンディアンという呼び名は、『ガリバー旅行記』で卵を太い端と細い端のどちらから割るかで争う人々の話に由来します。C言語で`int`をそのまま`fwrite`すると、CPUに合わせた順序（多くのPCではリトルエンディアン）で書き込まれます。</span>。
-さらに、`writeUTF()`で書き込める文字列は、最大65535バイトまでです。
-
-### BufferedInputStream/BufferedOutputStreamの活用
-
-これらのクラスは、内部バッファーを持つことで、`FileInputStream`や`FileOutputStream`のパフォーマンスを向上させます。データをバッファーにまとめてから読み書きするため、OSへの読み書きの要求の回数を減らせます。とくに大量のデータを少しずつ読み書きする場合に有効です。
-
-サンプルコード14-5では、`new DataInputStream(new BufferedInputStream(new FileInputStream(filename)))`のようにストリームを重ねています。外側のストリームが内側のストリームを包み、それぞれが1つの機能を受け持ちます。
-
-<div class="figure">
-
-![ストリームを重ねて機能を組み合わせる（サンプルコード14-5）](images/diagrams/chapter14-stream-layers.svg)
-
-</div>
+`int`や`double`などのプリミティブ型の値や文字列を、文字列に変換せずバイナリのまま保存するには、`DataOutputStream`で書き、`DataInputStream`で書いたときと同じ順序・同じ型で読み戻します。
+この2つのクラスは、常にビッグエンディアン（上位のバイトから順に並べる順序）で数値を読み書きします。
+`FileInputStream`や`FileOutputStream`に`BufferedInputStream`・`BufferedOutputStream`を重ねると、データをバッファーにまとめてから読み書きするため、OSへの読み書きの要求の回数を減らせます。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「バイナリファイルの高度な処理」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ## オブジェクトの直列化（シリアライズ） {.advanced}
 
-Javaオブジェクトの状態をそのままバイト列に変換して保存するしくみを直列化（シリアライズ）、バイト列からオブジェクトを復元することを非直列化（デシリアライズ）と呼びます。オブジェクトの構造を保ったまま、簡単に保存・復元できる強力な機能です<span class="footnote">信頼できない相手から受け取ったデータを非直列化すると、攻撃者の意図したコードを実行される脆弱性につながることがあります。Java 9では、読み込むクラスを制限する直列化フィルター（`ObjectInputFilter`）が加わりました。</span>。
-
-直列化したいクラスには、`java.io.Serializable`インターフェイス<span class="footnote">`Serializable`はメソッドを1つも持たず、直列化してよいクラスであることを示す印の役割だけを持ちます。サンプルコード14-6の`serialVersionUID`はクラスの版を表す番号で、書かないとクラスの内容から自動で計算されるため、フィールドを足すと以前に保存したデータを読めなくなります。</span>を実装します。
-そのクラスのオブジェクトを`ObjectOutputStream`で直列化し、`ObjectInputStream`で非直列化します。
-パスワードのように保存したくないフィールドには`transient`修飾子を付けると、そのフィールドを直列化の対象から外せます。
-
-<span class="listing-number">**サンプルコード14-6**　SerializationExample.java（4〜44行目）</span>
-
-```java
-// Serializableを実装したクラス
-class UserProfile implements Serializable {
-    // クラスのバージョン管理用
-    private static final long serialVersionUID = 1L;
-    String name;
-    transient String password; // 直列化されない
-    LocalDateTime registrationDate;
-    public UserProfile(String name, String pw) { 
-        this.name = name; 
-        this.password = pw; 
-        this.registrationDate = LocalDateTime.now(); 
-    }
-    public String toString() { 
-        return "User[name=" + name + ", pw=" + password + 
-               ", date=" + registrationDate + "]"; 
-    }
-}
-
-public class SerializationExample {
-    public static void main(String[] args) {
-        UserProfile user = new UserProfile("testuser", "secret123");
-        String filename = "user.ser";
-
-        // 1. 直列化してファイルに保存
-        try (ObjectOutputStream oos = new ObjectOutputStream(
-                new FileOutputStream(filename))) {
-            oos.writeObject(user);
-            IO.println("保存されたオブジェクト: " + user);
-        } catch (IOException e) { e.printStackTrace(); }
-
-        // 2. ファイルから非直列化して復元
-        try (ObjectInputStream ois = new ObjectInputStream(
-                new FileInputStream(filename))) {
-            UserProfile loadedUser = (UserProfile) ois.readObject();
-            IO.println("復元されたオブジェクト: " + loadedUser); 
-            // passwordはnullになる
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-}
-```
-
-実行結果：
-
-```
-保存されたオブジェクト: User[name=testuser, pw=secret123, date=2025-08-01T20:58:13.831566]
-復元されたオブジェクト: User[name=testuser, pw=null, date=2025-08-01T20:58:13.831566]
-```
-
-`date`の値は、プログラムを実行した日時になります。
+オブジェクトの状態をそのままバイト列にして保存するしくみを直列化、バイト列からオブジェクトを復元することを非直列化と呼びます。
+`Serializable`インターフェイスを実装したクラスのオブジェクトを`ObjectOutputStream`で書き、`ObjectInputStream`で読み戻します。
+パスワードのように保存したくないフィールドには`transient`を付けます。
+詳しい説明とコード例（信頼できないデータを非直列化する危険も含む）は付録I「オブジェクト指向と言語機能の発展的な内容」の「オブジェクトの直列化（シリアライズ）」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ## ファイルシステムの操作（NIO.2）
 
@@ -456,7 +332,7 @@ Java 7で導入された`java.nio.file`パッケージ（NIO.2）<span class="fo
 古いコードでは、`Path`を`Paths.get`で作っていることがあります<span class="footnote">`Path.of`はJava 11で加わりました。`Paths`クラスのAPIドキュメントは、`Path.of`を使うよう勧めており、`Paths`は将来非推奨になる可能性があると書いています。</span>。
 本書では`Path.of`を使います。
 
-<span class="listing-number">**サンプルコード14-7**　FileSystemExample.java（5〜45行目）</span>
+<span class="listing-number">**サンプルコード14-5**　FileSystemExample.java（5〜45行目）</span>
 
 ```java
 public class FileSystemExample {
@@ -524,7 +400,7 @@ CSV（Comma-Separated Values）形式は、表計算データやデータベー�
 基本的なCSV処理は標準ライブラリだけで実装できますが、値にカンマや改行を含むデータを扱う場合は、Apache Commons CSVなどの専用ライブラリを使用します。
 次は、基本的なCSVの読み込みと書き込みの実装例です。
 
-<span class="listing-number">**サンプルコード14-8**　CSVProcessingExample.java（6〜54、67行目）</span>
+<span class="listing-number">**サンプルコード14-6**　CSVProcessingExample.java（6〜54、67行目）</span>
 
 ```java
 public class CSVProcessingExample {
@@ -605,7 +481,7 @@ Swingを使ったGUIプログラミングは第17章「GUIプログラミング�
 次のプログラムを実行するとダイアログが開き、選んだファイルのパスが表示されます。
 GUIのアプリケーションに組み込むときは、第17章で学ぶ起動の手順（`SwingUtilities.invokeLater`）に従い、ウィンドウのなかから`JFileChooser`を開きます。
 
-<span class="listing-number">**サンプルコード14-9**　FileChooserExample.java</span>
+<span class="listing-number">**サンプルコード14-7**　FileChooserExample.java</span>
 
 ```java
 import javax.swing.*;
@@ -660,7 +536,7 @@ Text Blocksが導入される前は、複数行の文字列を作るために、
 
 Text Blocksは三重引用符（`"""`）を使用して複数行文字列を定義します。
 
-<span class="listing-number">**サンプルコード14-10**　TextBlockBasics.java</span>
+<span class="listing-number">**サンプルコード14-8**　TextBlockBasics.java</span>
 
 ```java
 public class TextBlockBasics {
@@ -714,7 +590,7 @@ public class TextBlockBasics {
 
 Text Blocksのもっとも重要な特徴の1つは、共通インデントの自動除去です<span class="footnote">基準となるインデントを決めるときは、閉じる`"""`だけの行も数に入ります。閉じる`"""`を本文の行より左に置くと、その差の分だけ各行の先頭に空白が残ります。</span>。
 
-<span class="listing-number">**サンプルコード14-11**　TextBlockIndentation.java（1〜15、27〜35、46〜47行目）</span>
+<span class="listing-number">**サンプルコード14-9**　TextBlockIndentation.java（1〜15、27〜35、46〜47行目）</span>
 
 ```java
 public class TextBlockIndentation {
@@ -790,7 +666,7 @@ Text Blocksでは、`"`をそのまま書けるので、引用符のエスケー
 ただし、すべてのエスケープが要らなくなるわけではありません。
 `\`は通常の文字列と同じく`\\`と書き、`"""`を文字として含めるときは`\"""`と書きます。
 
-<span class="listing-number">**サンプルコード14-12**　TextBlockEscaping.java</span>
+<span class="listing-number">**サンプルコード14-10**　TextBlockEscaping.java</span>
 
 ```java
 public class TextBlockEscaping {
@@ -868,83 +744,8 @@ Text Blocksは行末の空白を取り除くので、空白を残したい行の
 
 ### 実践例：構造化データの生成と保存 {.advanced}
 
-Text BlocksはJSON、XML、SQL、HTMLなどの構造化データを文字列として作り、ファイルに保存するときにとくに役立ちます。
-
-<span class="listing-number">**サンプルコード14-13**　TextBlockStructuredData.java（8〜41、175〜176行目）</span>
-
-```java
-public class TextBlockStructuredData {
-    public static void main(String[] args) throws IOException {
-        // 1. JSON データの生成
-        String userName = "田中太郎";
-        int userAge = 30;
-        String timestamp = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern(
-                        "yyyy-MM-dd'T'HH:mm:ss"));
-        
-        String jsonData = """
-                {
-                  "user": {
-                    "name": "%s",
-                    "age": %d,
-                    "timestamp": "%s",
-                    "preferences": {
-                      "language": "Japanese",
-                      "theme": "dark",
-                      "notifications": true
-                    }
-                  },
-                  "metadata": {
-                    "version": "1.0",
-                    "created": "%s"
-                  }
-                }
-                """.formatted(userName, userAge, timestamp, timestamp);
-        
-        // JSONファイルとして保存
-        Path jsonFile = Path.of("user_data.json");
-        Files.writeString(jsonFile, jsonData);
-        IO.println("=== JSON データを保存しました ===");
-        IO.println(jsonData);
-        
-        // ...
-    }
-}
-```
-
-次は実行結果の抜粋です。
-
-```
-=== JSON データを保存しました ===
-{
-  "user": {
-    "name": "田中太郎",
-    "age": 30,
-    "timestamp": "2025-08-01T21:02:54",
-    "preferences": {
-      "language": "Japanese",
-      "theme": "dark",
-      "notifications": true
-    }
-  },
-  "metadata": {
-    "version": "1.0",
-    "created": "2025-08-01T21:02:54"
-  }
-}
-
-...（SQL・HTML・XMLの出力は省略）
-
-=== 生成されたファイル一覧 ===
-app_config.xml       (706 bytes)
-user_data.json       (291 bytes)
-user_profile.html    (1170 bytes)
-user_query.sql       (449 bytes)
-```
-
-全文では、JSONと同じようにSQL・HTML・XMLのテキストもText Blocksで作り、ファイルに保存しています。
-JSONの日時は、プログラムを実行した日時になります。
-ファイル一覧は、OSによって順序が変わらないように名前順に並べ替えて表示しています。
+Text BlocksでJSONやXML、SQL、HTMLのひな形を書き、`formatted()`で値を埋め込んで`Files.writeString`で保存すると、構造化データのファイルを作れます。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「構造化データの生成と保存」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ### Text Blocksのベストプラクティス
 

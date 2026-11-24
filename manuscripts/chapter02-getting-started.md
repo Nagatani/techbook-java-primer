@@ -353,57 +353,10 @@ int bitXor = m ^ n;  // ⑧ 0110 = 6
 
 ### 演算子の優先順位 {.advanced}
 
-Javaの演算子には優先順位があり、式の評価順序を決定します。
-以下は主要な演算子の優先順位表です（上位ほど優先順位が高い）。
-
-| 演算子 | 説明 | 結合性 |
-|--------|------|-------------|
-| `()` `[]` `.` | 括弧、配列アクセス、メンバーアクセス | 左→右 |
-| `++` `--`（後置） | 後置インクリメント/デクリメント | 左→右 |
-| `++` `--`（前置） `+` `-` `!` `~` | 単項演算子 | 右→左 |
-| `*` `/` `%` | 乗算、除算、剰余 | 左→右 |
-| `+` `-` | 加算、減算 | 左→右 |
-| `<<` `>>` `>>>` | シフト演算 | 左→右 |
-| `<` `<=` `>` `>=` `instanceof` | 比較演算 | 左→右 |
-| `==` `!=` | 等価演算 | 左→右 |
-| `&` | ビットAND | 左→右 |
-| `^` | ビットXOR | 左→右 |
-| <code>\|</code> | ビットOR | 左→右 |
-| `&&` | 論理AND | 左→右 |
-| <code>\|\|</code> | 論理OR | 左→右 |
-| `?:` | 条件（三項）演算子 | 右→左 |
-| `=` `+=` `-=` など | 代入演算子 | 右→左 |
-
-#### 優先順位の実例
-
-<span class="listing-number">**サンプルコード2-11**</span>
-
-```java
-// 優先順位により結果が変わる例
-int a = 2 + 3 * 4;     // 14 (3*4が先、その後+2)
-int b = (2 + 3) * 4;   // 20 (括弧内が優先)
-
-// 論理演算の優先順位
-boolean result = true || false && false;  // true (&&が||より優先)
-// 上記は true || (false && false) と解釈される
-
-// 代入と比較の優先順位
-int x = 5;
-boolean check = x = 3 > 0;  // コンパイルエラー
-boolean check2 = (x = 3) > 0;  // OK: x=3の後、3>0を評価
-```
-
-`x = 3 > 0`は、代入演算子の優先順位がもっとも低いため`x = (3 > 0)`と解釈されます。
-`int`型の`x`に`boolean`型の値は代入できないので、コンパイルエラーになります。
-C言語では比較の結果が整数の1になるため、同じ式でもコンパイルが通ります。
-
-複雑な式では括弧を使用して意図を明確にすることを推奨します。
-括弧は式の解釈を決めるだけなので、括弧を増やしても実行速度は変わりません。
-
-表のうち、C言語にない演算子が2つあります。
-`>>>`は符号なし右シフトで、右にずらして空いた上位のビットを、符号にかかわらず0で埋めます（`>>`は符号のビットで埋めます）。
-Javaには符号なしの整数型がないので、この演算子が用意されています。
-`instanceof`は、オブジェクトの型を調べる演算子で、第5章で学びます。
+1つの式に複数の演算子を並べると、優先順位の高い演算子から結び付き、同じ優先順位なら結合性（左から右か、右から左か）で順序が決まります。
+たとえば`&&`は`||`より先に結び付き、代入の演算子はもっとも後になるので、`x = 3 > 0`は`x = (3 > 0)`と解釈されてコンパイルエラーになります。
+迷う式は括弧を付けて意図を示してください。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「演算子の優先順位」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ## 型変換
 
@@ -447,7 +400,7 @@ Javaでは、`int`より小さい整数型の値を計算すると、結果は`i
 
 #### C言語との違い
 
-<span class="listing-number">**サンプルコード2-12**</span>
+<span class="listing-number">**サンプルコード2-11**</span>
 
 ```c
 // C言語では暗黙的な変換が多い
@@ -457,7 +410,7 @@ int truncated = pi;  // コンパイルは通る（警告が出ないことも�
 
 C言語では、上記のような小数部を失う変換もコンパイルが通りますが<span class="footnote">コンパイラーの設定によっては、警告も出ません。たとえばgccの既定の設定では警告が出ず、`-Wconversion`などのオプションを付けたときに警告が出ます。</span>、Javaではコンパイルエラーになります。
 
-<span class="listing-number">**サンプルコード2-13**　TypeConversionExample.java</span>
+<span class="listing-number">**サンプルコード2-12**　TypeConversionExample.java</span>
 
 ```java
 public class TypeConversionExample {
@@ -510,7 +463,7 @@ byte変換後: -126
 
 #### 精度を考慮した計算
 
-<span class="listing-number">**サンプルコード2-14**</span>
+<span class="listing-number">**サンプルコード2-13**</span>
 
 ```java
 // 整数同士の除算での落とし穴
@@ -524,7 +477,7 @@ double result2 = (double)a / b; // 2.5（浮動小数点除算）
 大量の値を配列に入れるときは、要素の型によって使うメモリの量が変わります。
 `byte`は1要素あたり1バイト、`int`は4バイトなので、同じ要素数でもメモリ使用量は4倍違います。
 
-<span class="listing-number">**サンプルコード2-15**</span>
+<span class="listing-number">**サンプルコード2-14**</span>
 
 ```java
 // 大量のデータを扱う場合の型選択
@@ -534,7 +487,7 @@ int[] inefficient = new int[1024 * 1024];   // 4MBの整数配列（非効率）
 
 #### APIとの整合性
 
-<span class="listing-number">**サンプルコード2-16**</span>
+<span class="listing-number">**サンプルコード2-15**</span>
 
 ```java
 // 多くのJava APIは特定の型を要求
@@ -565,7 +518,7 @@ Javaの制御構造は、C言語の優れた設計を継承しつつ、より安
 条件分岐は、プログラムが状況に応じて異なる処理を選択するしくみです。
 成績判定、ユーザー入力の検証、システム状態の確認など、実用的なプログラムには不可欠な機能です。
 
-<span class="listing-number">**サンプルコード2-17**</span>
+<span class="listing-number">**サンプルコード2-16**</span>
 
 ```java
 // if文（C言語と同じ）
@@ -594,7 +547,7 @@ C言語のように整数を条件に使うと、コンパイルエラーにな�
 switch文は、変数の値によって処理を分岐させる制御構造です。
 多数のif-else文を使用するよりも読みやすくなります。
 
-<span class="listing-number">**サンプルコード2-18**　SwitchExample.java</span>
+<span class="listing-number">**サンプルコード2-17**　SwitchExample.java</span>
 
 ```java
 public class SwitchExample {
@@ -639,9 +592,9 @@ public class SwitchExample {
 #### switch式（Java 14以降）
 
 Java 14からは、switchを値を返す「式」として書けるようになりました<span class="footnote">switch式はJava 12と13でプレビュー機能（試験的に使える機能）として提供され、Java 14で正式な機能になりました（JEP 361）。</span>。
-サンプルコード2-18と同じ判定を、`->`（アロー）を使ったswitch式で書くと次のようになります。
+サンプルコード2-17と同じ判定を、`->`（アロー）を使ったswitch式で書くと次のようになります。
 
-<span class="listing-number">**サンプルコード2-19**</span>
+<span class="listing-number">**サンプルコード2-18**</span>
 
 ```java
 String evaluation = switch (grade / 10) {
@@ -663,7 +616,7 @@ switch式では`break`文を書きません。
 配列の全要素を処理する、計算を指定回数繰り返す、条件が満たされるまで処理を続けるなど、プログラミングの基本的なパターンを実現します。
 Javaでは、用途に応じて3つの主要なループ構文を提供しています。
 
-<span class="listing-number">**サンプルコード2-20**</span>
+<span class="listing-number">**サンプルコード2-19**</span>
 
 ```java
 // for文
@@ -717,7 +670,7 @@ while文は、条件が複雑な場合や、ループの回数が事前に決ま
 学生の成績管理、商品の在庫管理、数値計算など、プログラミングの多くの場面で配列が活用されます。
 Javaの配列は、C言語の配列の利便性を継承しつつ、境界チェックや自動初期化により安全性を向上させています。
 
-<span class="listing-number">**サンプルコード2-21**</span>
+<span class="listing-number">**サンプルコード2-20**</span>
 
 ```java
 // 配列の宣言と初期化
@@ -747,11 +700,11 @@ Javaの配列はオブジェクトなので、`length`で要素数を取得で�
 そのため、C言語のように初期化していない値を読んで予期しない動作になることはありません。
 
 2次元配列は「配列の配列」として作られます。
-サンプルコード2-21の`matrix`のように、行列や表の形のデータをそのまま表現できます。
+サンプルコード2-20の`matrix`のように、行列や表の形のデータをそのまま表現できます。
 
 ### 全要素の処理
 
-<span class="listing-number">**サンプルコード2-22**</span>
+<span class="listing-number">**サンプルコード2-21**</span>
 
 ```java
 // 配列の全要素を処理する安全な方法
@@ -784,7 +737,7 @@ Javaでは、範囲外へのアクセスを実行時に検査し、`ArrayIndexOu
 
 ### 配列操作の応用例
 
-<span class="listing-number">**サンプルコード2-23**</span>
+<span class="listing-number">**サンプルコード2-22**</span>
 
 ```java
 // 配列の要素を検索する
@@ -810,7 +763,7 @@ public static int sumArray(int[] array) {
 配列をコピーするには、`System.arraycopy`か、`java.util.Arrays`クラスの`copyOf`を使います。
 `Arrays`のように`java.lang`以外のパッケージにあるクラスは、ファイルの先頭に`import java.util.Arrays;`と書いてから使います（本章の「import文の使い方」で説明します）。
 
-<span class="listing-number">**サンプルコード2-24**</span>
+<span class="listing-number">**サンプルコード2-23**</span>
 
 ```java
 // 配列をコピーする
@@ -834,7 +787,7 @@ int[] copy2 = Arrays.copyOf(original, original.length);
 配列は参照型なので、配列変数を代入すると、配列の中身ではなく参照がコピーされます。
 次のコードでは、`a`と`b`が同じ配列を指すため、`b`を通じて変更した値は`a`からも見えます。
 
-<span class="listing-number">**サンプルコード2-25**</span>
+<span class="listing-number">**サンプルコード2-24**</span>
 
 ```java
 int[] a = {1, 2, 3};
@@ -846,7 +799,7 @@ b[0] = 100;   // a[0]も100になる
 
 Javaの多次元配列は、各行の長さが異なってもかまいません。
 
-<span class="listing-number">**サンプルコード2-26**</span>
+<span class="listing-number">**サンプルコード2-25**</span>
 
 ```java
 int[][] jaggedArray = {
@@ -866,7 +819,7 @@ C言語の関数に相当しますが、Javaではすべてのメソッドはク
 
 この章では、mainメソッドから直接呼び出せる「staticメソッド」の基本的な使い方を学習します。
 
-<span class="listing-number">**サンプルコード2-27**　Calculator.java</span>
+<span class="listing-number">**サンプルコード2-26**　Calculator.java</span>
 
 ```java
 public class Calculator {
@@ -902,7 +855,7 @@ public class Calculator {
 
 ### staticメソッドの基本構文
 
-<span class="listing-number">**サンプルコード2-28**</span>
+<span class="listing-number">**サンプルコード2-27**</span>
 
 ```java
 public static 戻り値の型 メソッド名(引数リスト) {
@@ -939,7 +892,7 @@ C言語の関数と同じく、`int`などの引数をメソッドのなかで�
 コピーされた参照も同じ配列を指すので、メソッドのなかで要素を書き換えると、呼び出し元の配列の要素も変わります。
 C言語で配列を関数に渡すと先頭のアドレスが渡り、関数のなかで要素を変えられるのと似ています。
 
-<span class="listing-number">**サンプルコード2-29**　ArgumentPassing.java</span>
+<span class="listing-number">**サンプルコード2-28**　ArgumentPassing.java</span>
 
 ```java
 public class ArgumentPassing {
@@ -1000,7 +953,7 @@ Javaでは、文字列を`String`クラスのオブジェクトとして扱い�
 
 #### C言語の文字列処理の課題
 
-<span class="listing-number">**サンプルコード2-30**</span>
+<span class="listing-number">**サンプルコード2-29**</span>
 
 ```c
 // #include <string.h> が必要
@@ -1016,7 +969,7 @@ strcpy(copy, str);
 
 #### Javaの文字列処理の利点
 
-<span class="listing-number">**サンプルコード2-31**</span>
+<span class="listing-number">**サンプルコード2-30**</span>
 
 ```java
 // Javaでの文字列処理
@@ -1040,7 +993,7 @@ String copy = str;  // 参照のコピー（安全）
 文字列オブジェクトの作成と基本操作は、Javaプログラミングにおいてもっとも頻繁に使用される機能の1つです。
 以下のコード例では、文字列の作成、連結、長さの取得、個別文字へのアクセスという基本的な操作を示します。
 
-<span class="listing-number">**サンプルコード2-32**</span>
+<span class="listing-number">**サンプルコード2-31**</span>
 
 ```java
 // 文字列の作成
@@ -1071,7 +1024,7 @@ char firstChar = message.charAt(0);  // 'H'
 C言語では`strcmp()`関数で比較しますが、Javaではオブジェクトの比較という観点から、より慎重なアプローチが必要です。
 以下のコード例で、参照の比較と内容の比較の重要な違いを示します。
 
-<span class="listing-number">**サンプルコード2-33**</span>
+<span class="listing-number">**サンプルコード2-32**</span>
 
 ```java
 String s1 = "Java";
@@ -1103,7 +1056,7 @@ Javaの`String`クラスは、テキスト処理に必要な豊富なメソッ�
 これらのメソッドは、Web開発でのユーザー入力の処理、データベースから取得した文字列の整形、ファイルの読み書きなど、実際の開発で頻繁に使用されます。
 以下のコード例で、もっとも重要な文字列操作メソッドを実践的に学習します。
 
-<span class="listing-number">**サンプルコード2-34**</span>
+<span class="listing-number">**サンプルコード2-33**</span>
 
 ```java
 String text = "  Java Programming  ";
@@ -1146,7 +1099,7 @@ Javaの文字列設計におけるもっとも重要な特徴の1つが不変性
 複数の処理を同時に動かすマルチスレッド（第15章）でも、文字列を安全に共有できます。
 以下のコード例で、この重要な概念を実際に確認してみましょう。
 
-<span class="listing-number">**サンプルコード2-35**</span>
+<span class="listing-number">**サンプルコード2-34**</span>
 
 ```java
 String str = "Hello";
@@ -1177,7 +1130,7 @@ Javaでは、文字列操作メソッドはつねに新しい文字列オブジ�
 この問題を解決するために、Javaは`StringBuilder`クラス<span class="footnote">`StringBuilder`はJava 5で加わりました。それ以前からある`StringBuffer`も同じ働きをしますが、複数のスレッドから使うための同期処理が入っている分、処理に時間がかかります。</span>を提供しています。
 `StringBuilder`は内部に可変長の文字配列を持ち、メモリの再割り当てを最小限に抑えながら文字列操作を行います。
 
-<span class="listing-number">**サンプルコード2-36**</span>
+<span class="listing-number">**サンプルコード2-35**</span>
 
 ```java
 StringBuilder sb = new StringBuilder();
@@ -1228,7 +1181,7 @@ Javaの入力処理は型安全性を重視しています。
 
 #### C言語との違い
 
-<span class="listing-number">**サンプルコード2-37**</span>
+<span class="listing-number">**サンプルコード2-36**</span>
 
 ```c
 // #include <stdio.h> が必要
@@ -1238,7 +1191,7 @@ printf("Hello, %s!\n", name);
 scanf("%d", &age);  // 読み取れたかは戻り値で確かめる
 ```
 
-<span class="listing-number">**サンプルコード2-38**　IOExample.java</span>
+<span class="listing-number">**サンプルコード2-37**　IOExample.java</span>
 
 ```java
 public class IOExample {
@@ -1291,7 +1244,7 @@ Javaでは、`IO.readln`で1行を文字列として読み、`Integer.parseInt`�
 `IO.readln`の戻り値はつねにString型です。
 数値や真偽値として使うときは、型ごとの変換メソッドで変換します。
 
-<span class="listing-number">**サンプルコード2-39**</span>
+<span class="listing-number">**サンプルコード2-38**</span>
 
 ```java
 // 各種データ型の入力（IO.readlnの戻り値はつねにString型）
@@ -1312,7 +1265,7 @@ String line = IO.readln();                              // 行全体
 次の例では、整数に変換できるまで入力を繰り返します。
 `strip()`<span class="footnote">`strip()`はJava 11で加わったメソッドで、全角の空白などUnicodeの空白文字も取り除きます。以前からある`trim()`が取り除くのは、文字コードがU+0020（半角の空白）以下の文字だけです。</span>で前後の空白を取り除いてから変換するので、「 42 」のような入力も受け付けます。
 
-<span class="listing-number">**サンプルコード2-40**　SafeInputExample.java</span>
+<span class="listing-number">**サンプルコード2-39**　SafeInputExample.java</span>
 
 ```java
 public class SafeInputExample {
@@ -1353,7 +1306,7 @@ public class SafeInputExample {
 `IO.readln`は、入力がもう残っていないとき（ファイルを標準入力にリダイレクトして最後まで読んだときや、キーボードでCtrl+Dを押したとき。WindowsではCtrl+Zを押してからEnterキーを押す）に`null`を返します。
 行数が決まっていない入力は、`null`が返るまで読み続けます。
 
-<span class="listing-number">**サンプルコード2-41**</span>
+<span class="listing-number">**サンプルコード2-40**</span>
 
 ```java
 String line;
@@ -1378,7 +1331,7 @@ IO.println(count + "行読みました");
 Javaの標準ライブラリのクラスは、パッケージという単位に分けて置かれています。
 `java.lang`以外のパッケージにあるクラス（配列の節で使った`java.util.Arrays`など）を使うときは、ファイルの先頭に`import`文を書きます。
 
-<span class="listing-number">**サンプルコード2-42**　ImportExample.java</span>
+<span class="listing-number">**サンプルコード2-41**　ImportExample.java</span>
 
 ```java
 import java.util.Arrays;  // Arraysクラスを使用するための宣言

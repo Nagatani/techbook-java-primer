@@ -124,67 +124,18 @@
     "dir": "04-21",
     "main": null,
     "excerpt": [
-      { "file": "User.java", "from": 1, "to": 29 }
+      { "file": "Book.java", "from": 1, "to": 24 }
     ]
   },
   "4-22": {
     "dir": "04-22",
-    "main": "UserTest",
-    "excerpt": [
-      { "file": "UserTest.java", "from": 1, "to": 21 }
-    ],
-    "uses": [
-      "4-21"
-    ]
-  },
-  "4-23": {
-    "dir": "04-23",
-    "main": null,
-    "excerpt": [
-      { "file": "Book.java", "from": 1, "to": 24 }
-    ]
-  },
-  "4-25": {
-    "dir": "04-25",
-    "main": null,
-    "excerpt": [
-      { "file": "DatabaseConfig.java", "from": 1, "to": 4 },
-      { "file": "DatabaseConfig.java", "from": 10, "to": 21 },
-      { "file": "DatabaseConfig.java", "from": 27, "to": 28 },
-      { "file": "DatabaseConfig.java", "from": 33, "to": 46 }
-    ]
-  },
-  "4-26": {
-    "dir": "04-26",
-    "main": null,
-    "excerpt": [
-      { "file": "EventProcessor.java", "from": 1, "to": 34 }
-    ]
-  },
-  "4-27": {
-    "dir": "04-27",
-    "main": null,
-    "excerpt": [
-      { "file": "HttpClient.java", "from": 1, "to": 21 }
-    ]
-  },
-  "4-28": {
-    "dir": "04-28",
-    "main": null,
-    "excerpt": [
-      { "file": "Logger.java", "from": 1, "to": 22 },
-      { "file": "Logger.java", "from": 29, "to": 29 }
-    ]
-  },
-  "4-29": {
-    "dir": "04-29",
     "main": null,
     "excerpt": [
       { "file": "UserManager.java", "from": 1, "to": 24 }
     ]
   },
-  "4-30": {
-    "dir": "04-30",
+  "4-23": {
+    "dir": "04-23",
     "main": null,
     "excerpt": [
       { "file": "User.java", "from": 1, "to": 18 },
@@ -193,8 +144,8 @@
       { "file": "AuthenticationService.java", "from": 1, "to": 8 }
     ]
   },
-  "4-32": {
-    "dir": "04-32",
+  "4-25": {
+    "dir": "04-25",
     "main": null,
     "excerpt": [
       { "file": "BankAccount.java", "from": 1, "to": 2 },

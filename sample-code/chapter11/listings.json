@@ -78,43 +78,5 @@
       { "file": "ValidationFramework.java", "from": 6, "to": 26 },
       { "file": "ValidationFramework.java", "from": 40, "to": 79 }
     ]
-  },
-  "11-14": {
-    "dir": "11-14",
-    "main": "HigherOrderFunctionExample",
-    "excerpt": [
-      { "file": "HigherOrderFunctionExample.java", "from": 4, "to": 41 },
-      { "file": "HigherOrderFunctionExample.java", "from": 48, "to": 48 }
-    ]
-  },
-  "11-15": {
-    "dir": "11-15",
-    "main": "OrderPipeline",
-    "excerpt": [
-      { "file": "OrderPipeline.java", "from": 3, "to": 14 },
-      { "file": "OrderPipeline.java", "from": 41, "to": 48 },
-      { "file": "OrderPipeline.java", "from": 57, "to": 58 }
-    ]
-  },
-  "11-16": {
-    "dir": "11-16",
-    "main": "NestedLambdaExample",
-    "excerpt": [
-      { "file": "NestedLambdaExample.java", "from": 4, "to": 46 }
-    ]
-  },
-  "11-17": {
-    "dir": "11-17",
-    "main": "SideEffectExample",
-    "excerpt": [
-      { "file": "SideEffectExample.java", "from": 4, "to": 26 }
-    ]
-  },
-  "11-18": {
-    "dir": "11-18",
-    "main": "LambdaCapture",
-    "excerpt": [
-      { "file": "LambdaCapture.java", "from": 5, "to": 25 }
-    ]
   }
 }

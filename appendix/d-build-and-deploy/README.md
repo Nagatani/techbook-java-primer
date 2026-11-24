@@ -1,11 +1,13 @@
 # 付録D: 高度なビルドとデプロイメント技術<small>Maven・Gradle・jpackageの応用</small>
 
 この付録では、第23章で学んだ基本的なビルドとデプロイメントの知識を発展させ、実務で必要となる高度な技術を解説します。
+第22章「ドキュメントと外部ライブラリ」から移したGradleの基本（`build.gradle`の書き方とGradle Wrapper）も、「ビルドツールによる自動化」の節で説明します。
 
 ## 目次
 
 1. [ビルドツールによる自動化](#ビルドツールによる自動化)
    - Maven設定
+   - Gradleの基本（build.gradleの書き方とGradle Wrapper。第22章から移した内容）
    - Gradle設定
    - Fat JARの作成
 2. [jpackageの高度な活用](#jpackageの高度な活用)
@@ -45,6 +47,73 @@ mvn clean package
 # 実行可能JARの実行
 java -jar target/todo-app-1.0.0.jar
 ```
+
+### Gradleの基本（第22章）
+
+第22章ではMavenを使って依存関係を管理しました。
+Gradleも、Mavenと同じく依存関係の管理とビルドを行うツールです（Androidアプリの開発では、標準のビルドツールとして使われています）。
+Mavenは`pom.xml`にXMLで設定を書きますが、Gradleは`build.gradle`（Groovy DSL）または`build.gradle.kts`（Kotlin DSL）に設定を書きます。
+DSL（ドメイン固有言語）は、ビルドの設定のような特定の目的のために作られた言語のことです。
+ライブラリはMavenと同じ座標（`groupId`、`artifactId`、`version`）で指定し、Maven Centralから取得できます。
+
+#### build.gradleでの依存関係の記述
+
+第22章で`pom.xml`に書いたGsonの依存関係を`build.gradle`に書くと、次のようになります。
+
+```gradle
+// build.gradle
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.15.0'
+}
+```
+
+`plugins`の`java`は、Javaのプログラムをコンパイル・テストしてJARファイルにまとめる機能を有効にします。
+`repositories`はライブラリの取得先で、`mavenCentral()`はMaven Central Repositoryを表します。
+`dependencies`の`implementation`は、コンパイルと実行に使う依存関係の指定で、Mavenの`compile`スコープに当たります。
+テストだけで使うライブラリは`testImplementation`で指定します（Mavenの`test`スコープに当たります）。
+
+Mavenの`<dependency>`要素と並べると、対応は次のとおりです。
+Gradleでは、`groupId:artifactId:version`の3つを`:`で区切った1つの文字列で書きます。
+
+| Maven（pom.xml） | Gradle（build.gradle） |
+|---|---|
+| `<dependency>`（スコープの指定なし、`compile`） | `implementation 'com.google.code.gson:gson:2.15.0'` |
+| `<dependency>`に`<scope>test</scope>` | `testImplementation 'org.junit.jupiter:junit-jupiter:6.1.3'` |
+| `<repositories>`（Maven Centralは既定で使う） | `repositories { mavenCentral() }`（明示する） |
+
+Maven Centralの検索サイトでは、ライブラリのページでMaven用とGradle用の両方の書き方を確かめられます。
+
+#### Gradle Wrapper
+
+Gradleのプロジェクトには、Gradle Wrapperを入れておくのが一般的です。
+Gradle Wrapperは、プロジェクトで使うGradleの版を記録した設定ファイル（`gradle/wrapper/gradle-wrapper.properties`）と、`gradlew`（Windowsでは`gradlew.bat`）というスクリプトからなります。
+`./gradlew`を通して実行すると、記録した版のGradleが自動でダウンロードされて使われます。
+各自のパソコンにGradleをインストールしなくても、チームの全員やCIが同じ版のGradleでビルドできます。
+Wrapperのファイルは、Gradleをインストールした環境で`gradle wrapper`を実行すると作られます。
+この付録の[sample-projects/gradle-project](./sample-projects/gradle-project/)にも、Wrapperを入れてあります。
+
+```bash
+# コンパイル、テストの実行、JARファイルの作成
+./gradlew build
+
+# テストだけを実行
+./gradlew test
+
+# 依存関係の木を表示（mvn dependency:treeに当たる）
+./gradlew dependencies
+```
+
+`./gradlew dependencies`は、第22章で学んだ`mvn dependency:tree`と同じく、推移的な依存も含めて、実際に使われる版を木の形で表示します。
+本書の本文では、ビルドツールの例としてMavenを使います。
+次の「Gradleでの実行可能JAR作成」では、Gradleで実行可能JARと依存ライブラリをまとめたFat JARを作ります（Wrapperのあるプロジェクトでは、`gradle`の代わりに`./gradlew`で実行します）。
 
 ### Gradleでの実行可能JAR作成
 

@@ -41,27 +41,20 @@
   },
   "16-6": {
     "dir": "16-06",
-    "main": "AsyncHttpClientExample",
-    "excerpt": [
-      { "file": "AsyncHttpClientExample.java", "from": 8, "to": 49 }
-    ]
-  },
-  "16-7": {
-    "dir": "16-07",
     "main": "UDPServer",
     "excerpt": [
       { "file": "UDPServer.java", "from": 1, "to": 37 }
     ]
   },
-  "16-8": {
-    "dir": "16-08",
+  "16-7": {
+    "dir": "16-07",
     "main": "UDPClient",
     "excerpt": [
       { "file": "UDPClient.java", "from": 1, "to": 32 }
     ]
   },
-  "16-9": {
-    "dir": "16-09",
+  "16-8": {
+    "dir": "16-08",
     "main": "ChatServer",
     "excerpt": [
       { "file": "ChatServer.java", "from": 6, "to": 37 },
@@ -70,16 +63,16 @@
       { "file": "ChatServer.java", "from": 92, "to": 99 }
     ]
   },
-  "16-10": {
-    "dir": "16-10",
+  "16-9": {
+    "dir": "16-09",
     "main": "ChatClient",
     "excerpt": [
       { "file": "ChatClient.java", "from": 4, "to": 4 },
       { "file": "ChatClient.java", "from": 8, "to": 45 }
     ]
   },
-  "16-11": {
-    "dir": "16-11",
+  "16-10": {
+    "dir": "16-10",
     "main": "JsonApiClient",
     "excerpt": [
       { "file": "JsonApiClient.java", "from": 7, "to": 30 },
@@ -90,8 +83,8 @@
       "com.google.code.gson:gson:2.15.0"
     ]
   },
-  "16-12": {
-    "dir": "16-12",
+  "16-11": {
+    "dir": "16-11",
     "main": "SSLClient",
     "excerpt": [
       { "file": "SSLClient.java", "from": 1, "to": 49 }

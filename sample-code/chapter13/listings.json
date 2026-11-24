@@ -83,15 +83,6 @@
     "dir": "13-13",
     "main": null,
     "excerpt": [
-      { "file": "StructuredExceptionLogger.java", "from": 5, "to": 33 },
-      { "file": "StructuredExceptionLogger.java", "from": 44, "to": 46 },
-      { "file": "StructuredExceptionLogger.java", "from": 65, "to": 65 }
-    ]
-  },
-  "13-14": {
-    "dir": "13-14",
-    "main": null,
-    "excerpt": [
       { "file": "BusinessException.java", "from": 4, "to": 13 },
       { "file": "BusinessException.java", "from": 22, "to": 22 },
       { "file": "BusinessException.java", "from": 28, "to": 31 },
@@ -100,8 +91,8 @@
       { "file": "SystemException.java", "from": 28, "to": 28 }
     ]
   },
-  "13-15": {
-    "dir": "13-15",
+  "13-14": {
+    "dir": "13-14",
     "main": null,
     "excerpt": [
       { "file": "ErrorCode.java", "from": 1, "to": 5 },
@@ -113,17 +104,6 @@
       { "file": "InsufficientBalanceException.java", "from": 3, "to": 12 },
       { "file": "ErrorResponse.java", "from": 4, "to": 18 },
       { "file": "ErrorResponse.java", "from": 28, "to": 29 }
-    ]
-  },
-  "13-16": {
-    "dir": "13-16",
-    "main": "TransferDemo",
-    "excerpt": [
-      { "file": "TransferService.java", "from": 5, "to": 7 },
-      { "file": "TransferService.java", "from": 17, "to": 19 },
-      { "file": "TransferService.java", "from": 23, "to": 48 },
-      { "file": "TransferService.java", "from": 58, "to": 71 },
-      { "file": "TransferService.java", "from": 118, "to": 118 }
     ]
   }
 }

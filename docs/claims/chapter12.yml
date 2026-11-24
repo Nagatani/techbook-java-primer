@@ -61,14 +61,6 @@ claims:
       probe: ForkJoin.java
       version: 8
 
-  - id: common-pool-parallelism
-    claim: 共通のスレッドプールのスレッド数は既定でCPUのコア数より1少ない
-    text: そのスレッド数は既定でCPUのコア数より1少なく
-    verify:
-      kind: run
-      probe: CommonPoolSize.java
-      expect: ['same=true']
-
   # ---- コラム「Optionalはどこまで使うか――現場の線引き」（2026-11-19）
   - id: column-optional-return-type
     claim: OptionalのAPIドキュメントの注記は、Optionalを主にメソッドの戻り値として、「結果がない」ことを表す必要がありnullが誤りを招きやすい場面のためのものだとしている

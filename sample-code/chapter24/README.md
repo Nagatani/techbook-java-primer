@@ -23,5 +23,4 @@ javac -d out *.java
 | [24-8](./24-08/) | DaoExample.java<br>JdbcUserDao.java<br>User.java<br>UserDao.java | `java -cp out DaoExample`<br>外部ライブラリ: com.h2database:h2:2.5.252 |
 | [24-9](./24-09/) | DateRangeExample.java | `java -cp out DateRangeExample`<br>外部ライブラリ: com.h2database:h2:2.5.252 |
 | [24-10](./24-10/) | TransferExample.java | `java -cp out TransferExample`<br>外部ライブラリ: com.h2database:h2:2.5.252 |
-| [24-11](./24-11/) | PoolExample.java | `java -cp out PoolExample`<br>外部ライブラリ: com.h2database:h2:2.5.252, com.zaxxer:HikariCP:7.1.0, org.slf4j:slf4j-api:2.0.17 |
-| [24-12](./24-12/) | BatchExample.java | `java -cp out BatchExample`<br>外部ライブラリ: com.h2database:h2:2.5.252 |
+| [24-11](./24-11/) | BatchExample.java | `java -cp out BatchExample`<br>外部ライブラリ: com.h2database:h2:2.5.252 |

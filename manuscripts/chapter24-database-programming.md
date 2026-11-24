@@ -625,71 +625,17 @@ JDBCの接続は、最初は自動コミットの状態で、SQL文を1つ実行
 
 ### コネクションプール {.advanced}
 
-データベースへの接続を作る処理には、時間がかかります。
-とくにサーバー型のデータベースでは、ネットワークでの通信や認証が伴います。
-処理のたびに接続を作り直さず、作っておいた接続を使い回すしくみを、コネクションプールと呼びます。
-
-Javaでよく使われるコネクションプールのライブラリに、HikariCPがあります（Mavenの座標は`com.zaxxer:HikariCP:7.1.0`、2026年11月時点の最新版）。
-HikariCPはログの出力にSLF4J（`org.slf4j:slf4j-api`）を使うので、JARを手で集める場合はそれもクラスパスに加えます。
-SLF4Jはログを出す窓口だけを決めるライブラリで、実際にどこへ出力するかは別のJARで選びます（第26章で扱います）。
-
-<span class="listing-number">**サンプルコード24-11**　PoolExample.java（13〜44行目）</span>
-
-```java
-        HikariConfig config = new HikariConfig();
-        // DB_CLOSE_DELAY=-1: 接続がすべてプールに戻っても、メモリ上の
-        // データベースを消さない
-        config.setJdbcUrl("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
-        config.setUsername("sa");
-        config.setPassword("");
-        config.setMaximumPoolSize(5); // 用意しておく接続の数
-
-        // HikariDataSourceはAutoCloseable。閉じるとプールの接続をすべて切る
-        try (HikariDataSource pool = new HikariDataSource(config)) {
-            // プールから借りる
-            try (Connection conn = pool.getConnection();
-                 Statement stmt = conn.createStatement()) {
-                stmt.execute("CREATE TABLE visits (page VARCHAR(50))");
-                // ブロックを出るときのcloseは、切断ではなくプールへ返す
-            }
-            for (String page : new String[] {"top", "news", "top"}) {
-                try (Connection conn = pool.getConnection();
-                     PreparedStatement ps = conn.prepareStatement(
-                             "INSERT INTO visits VALUES (?)")) {
-                    ps.setString(1, page);
-                    ps.executeUpdate();
-                }
-            }
-            try (Connection conn = pool.getConnection();
-                 Statement stmt = conn.createStatement();
-                 ResultSet rs = stmt.executeQuery(
-                         "SELECT COUNT(*) FROM visits")) {
-                rs.next();
-                IO.println("記録した訪問: " + rs.getInt(1) + "件");
-            }
-        }
-```
-
-実行結果：
-
-```
-SLF4J(W): No SLF4J providers were found.
-SLF4J(W): Defaulting to no-operation (NOP) logger implementation
-SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
-記録した訪問: 3件
-```
-
-プールから借りた接続の`close`は、接続を切らずにプールへ返す動作になります。
-そのため、使う側のコードは、これまでと同じようにtry-with-resourcesで接続を閉じればよいのです。
-最初の3行は、SLF4Jのログの出力先（`slf4j-simple`など）をクラスパスに加えていないときに、標準エラー出力へ出る警告です。
-ログを出さないだけで、プールの動作には影響しません。
+サーバー型のデータベースへの接続を作る処理には、ネットワークでの通信や認証が伴うため、時間がかかります。
+処理のたびに接続を作り直さず、作っておいた接続を使い回すしくみをコネクションプールと呼び、JavaではライブラリのHikariCPがよく使われます。
+プールから借りた接続の`close`は接続を切らずにプールへ返す動作になるので、使う側のコードはこれまでと同じtry-with-resourcesのままで済みます。
+詳しい説明とコード例は付録G「外部ライブラリの使用例」の「HikariCP - コネクションプール」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/g-library-examples/`</span>。
 
 ### バッチ処理
 
 大量の行を追加するときは、`addBatch`でSQLをためておき、`executeBatch`でまとめてデータベースへ送ります。
 1件ずつ送るよりも、データベースとの通信の往復が減ります。
 
-<span class="listing-number">**サンプルコード24-12**　BatchExample.java（18〜39行目）</span>
+<span class="listing-number">**サンプルコード24-11**　BatchExample.java（18〜39行目）</span>
 
 ```java
             LocalDate first = LocalDate.of(2025, 1, 1);

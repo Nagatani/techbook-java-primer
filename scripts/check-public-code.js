@@ -51,6 +51,10 @@ const LIBS = [
   'org.projectlombok:lombok:1.18.48',
   'com.google.guava:guava:33.8.0-jre',
   'com.google.guava:failureaccess:1.0.3',
+  'com.fasterxml.jackson.core:jackson-databind:2.23.0', // 付録Gの使用例（第22章から移した）
+  'com.fasterxml.jackson.core:jackson-core:2.23.0',
+  'com.fasterxml.jackson.core:jackson-annotations:2.23',
+  'com.zaxxer:HikariCP:7.1.0', // 付録Gの使用例（第24章から移した）
   'org.openjdk.jol:jol-core:0.17', // 付録Bの観察用プログラム（オブジェクトの配置）
 ];
 

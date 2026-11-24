@@ -2,7 +2,7 @@
 
 書籍『Java入門』第24章「データベースプログラミング」の演習課題です。
 第24章で学んだJDBCの使い方（接続、CRUD、PreparedStatement、DAOパターン、java.time、トランザクション、バッチ処理）を、身近な題材で確かめます。
-コネクションプール（HikariCP）は使いません。
+コネクションプール（HikariCP）は使いません（HikariCPの使い方は付録G「外部ライブラリの使用例」（`appendix/g-library-examples/`）の「HikariCP - コネクションプール」にあります）。
 
 ## 準備
 

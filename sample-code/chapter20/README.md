@@ -20,4 +20,3 @@ javac -d out *.java
 | [20-2](./20-02/) | Person.java<br>PersonTableModel.java<br>SortableTableExample.java | `java -cp out SortableTableExample` |
 | [20-3](./20-03/) | BasicTreeExample.java | `java -cp out BasicTreeExample` |
 | [20-4](./20-04/) | AdvancedListExample.java | `java -cp out AdvancedListExample` |
-| [20-5](./20-05/) | IntegratedDataManagementApp.java<br>Task.java | `java -cp out IntegratedDataManagementApp` |

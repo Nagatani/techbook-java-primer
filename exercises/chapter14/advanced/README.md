@@ -1,5 +1,7 @@
 # 第14章 発展課題
 
+参考：課題1で使う`DataOutputStream`・`DataInputStream`と`BufferedInputStream`・`BufferedOutputStream`は、本文では要点だけを説明しています。詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「バイナリファイルの高度な処理（第14章）」（`appendix/i-language-advanced/`）にあります。
+
 ## 学習目標
 - `DataOutputStream`・`DataInputStream`で、数値や文字列をバイナリ形式で読み書きする
 - 書き込んだときと同じ順序・同じ型で読む必要があることを、ファイルの中身（バイト列）で確かめる

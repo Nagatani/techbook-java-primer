@@ -125,19 +125,36 @@
       { "file": "OverloadExample.java", "from": 1, "to": 10 }
     ]
   },
-  "3-24": {
-    "dir": "03-24",
+  "3-22": {
+    "dir": "03-22",
     "main": null,
     "excerpt": [
       { "file": "Book.java", "from": 1, "to": 13 },
       { "file": "Book.java", "from": 23, "to": 49 }
     ]
   },
-  "3-25": {
-    "dir": "03-25",
+  "3-23": {
+    "dir": "03-23",
     "main": "BookTest",
     "excerpt": [
       { "file": "BookTest.java", "from": 1, "to": 17 }
+    ],
+    "uses": [
+      "3-22"
+    ]
+  },
+  "3-24": {
+    "dir": "03-24",
+    "main": null,
+    "excerpt": [
+      { "file": "Student.java", "from": 1, "to": 32 }
+    ]
+  },
+  "3-25": {
+    "dir": "03-25",
+    "main": "StudentAccessTest",
+    "excerpt": [
+      { "file": "StudentAccessTest.java", "from": 1, "to": 15 }
     ],
     "uses": [
       "3-24"
@@ -145,105 +162,106 @@
   },
   "3-26": {
     "dir": "03-26",
-    "main": null,
-    "excerpt": [
-      { "file": "Student.java", "from": 1, "to": 32 }
-    ]
-  },
-  "3-27": {
-    "dir": "03-27",
-    "main": "StudentAccessTest",
-    "excerpt": [
-      { "file": "StudentAccessTest.java", "from": 1, "to": 15 }
-    ],
-    "uses": [
-      "3-26"
-    ]
-  },
-  "3-28": {
-    "dir": "03-28",
     "main": "BadExample",
     "excerpt": [
       { "file": "Product.java", "from": 1, "to": 5 },
       { "file": "BadExample.java", "from": 1, "to": 15 }
     ]
   },
-  "3-29": {
-    "dir": "03-29",
+  "3-27": {
+    "dir": "03-27",
     "main": "StaticExample",
     "excerpt": [
       { "file": "MathHelper.java", "from": 1, "to": 10 },
       { "file": "StaticExample.java", "from": 1, "to": 10 }
     ]
   },
-  "3-30": {
-    "dir": "03-30",
+  "3-28": {
+    "dir": "03-28",
     "main": "StaticMemberExample",
     "excerpt": [
       { "file": "StaticMemberExample.java", "from": 1, "to": 46 }
+    ]
+  },
+  "3-29": {
+    "dir": "03-29",
+    "main": null,
+    "excerpt": [
+      { "file": "MathUtils.java", "from": 1, "to": 6 }
+    ]
+  },
+  "3-30": {
+    "dir": "03-30",
+    "main": null,
+    "excerpt": [
+      { "file": "Student.java", "from": 1, "to": 16 }
     ]
   },
   "3-31": {
     "dir": "03-31",
     "main": null,
     "excerpt": [
-      { "file": "MathUtils.java", "from": 1, "to": 6 }
-    ]
-  },
-  "3-32": {
-    "dir": "03-32",
-    "main": null,
-    "excerpt": [
-      { "file": "Student.java", "from": 1, "to": 16 }
+      { "file": "Constants.java", "from": 1, "to": 4 }
     ]
   },
   "3-33": {
     "dir": "03-33",
-    "main": null,
-    "excerpt": [
-      { "file": "Constants.java", "from": 1, "to": 4 }
-    ]
-  },
-  "3-35": {
-    "dir": "03-35",
     "main": "StudentArrayExample",
     "excerpt": [
       { "file": "StudentArrayExample.java", "from": 1, "to": 25 }
     ],
     "uses": [
-      "3-36"
+      "3-34"
     ]
   },
-  "3-36": {
-    "dir": "03-36",
+  "3-34": {
+    "dir": "03-34",
     "main": null,
     "excerpt": [
       { "file": "Student.java", "from": 1, "to": 19 }
     ]
   },
-  "3-37": {
-    "dir": "03-37",
+  "3-35": {
+    "dir": "03-35",
     "main": "NullCheckExample",
     "excerpt": [
       { "file": "NullCheckExample.java", "from": 1, "to": 15 }
     ],
     "uses": [
-      "3-36"
+      "3-34"
     ]
   },
-  "3-39": {
-    "dir": "03-39",
+  "3-37": {
+    "dir": "03-37",
     "main": null,
     "excerpt": [
       { "file": "Book.java", "from": 1, "to": 6 },
       { "file": "Book.java", "from": 47, "to": 66 }
     ]
   },
-  "3-40": {
-    "dir": "03-40",
+  "3-38": {
+    "dir": "03-38",
     "main": "BookLibraryTest",
     "excerpt": [
       { "file": "BookLibraryTest.java", "from": 1, "to": 23 }
+    ],
+    "uses": [
+      "3-37"
+    ]
+  },
+  "3-39": {
+    "dir": "03-39",
+    "main": null,
+    "excerpt": [
+      { "file": "ShoppingCart.java", "from": 1, "to": 38 },
+      { "file": "CartItem.java", "from": 1, "to": 14 }
+    ]
+  },
+  "3-40": {
+    "dir": "03-40",
+    "main": "ShoppingCartTest",
+    "excerpt": [
+      { "file": "ShoppingCartTest.java", "from": 1, "to": 11 }
     ],
     "uses": [
       "3-39"
@@ -251,24 +269,6 @@
   },
   "3-41": {
     "dir": "03-41",
-    "main": null,
-    "excerpt": [
-      { "file": "ShoppingCart.java", "from": 1, "to": 38 },
-      { "file": "CartItem.java", "from": 1, "to": 14 }
-    ]
-  },
-  "3-42": {
-    "dir": "03-42",
-    "main": "ShoppingCartTest",
-    "excerpt": [
-      { "file": "ShoppingCartTest.java", "from": 1, "to": 11 }
-    ],
-    "uses": [
-      "3-41"
-    ]
-  },
-  "3-43": {
-    "dir": "03-43",
     "main": "StringComparison",
     "excerpt": [
       { "file": "StringComparison.java", "from": 1, "to": 15 }

@@ -21,10 +21,9 @@ javac -d out *.java
 | [16-3](./16-03/) | MultiThreadedServer.java | `java -cp out MultiThreadedServer` |
 | [16-4](./16-04/) | SimpleHTTPClient.java | `java -cp out SimpleHTTPClient` |
 | [16-5](./16-05/) | HttpURLConnectionExample.java | `java -cp out HttpURLConnectionExample` |
-| [16-6](./16-06/) | AsyncHttpClientExample.java | `java -cp out AsyncHttpClientExample` |
-| [16-7](./16-07/) | UDPServer.java | `java -cp out UDPServer` |
-| [16-8](./16-08/) | UDPClient.java | `java -cp out UDPClient` |
-| [16-9](./16-09/) | ChatServer.java | `java -cp out ChatServer` |
-| [16-10](./16-10/) | ChatClient.java | `java -cp out ChatClient` |
-| [16-11](./16-11/) | JsonApiClient.java | `java -cp out JsonApiClient`<br>外部ライブラリ: com.google.code.gson:gson:2.15.0 |
-| [16-12](./16-12/) | SSLClient.java | `java -cp out SSLClient` |
+| [16-6](./16-06/) | UDPServer.java | `java -cp out UDPServer` |
+| [16-7](./16-07/) | UDPClient.java | `java -cp out UDPClient` |
+| [16-8](./16-08/) | ChatServer.java | `java -cp out ChatServer` |
+| [16-9](./16-09/) | ChatClient.java | `java -cp out ChatClient` |
+| [16-10](./16-10/) | JsonApiClient.java | `java -cp out JsonApiClient`<br>外部ライブラリ: com.google.code.gson:gson:2.15.0 |
+| [16-11](./16-11/) | SSLClient.java | `java -cp out SSLClient` |

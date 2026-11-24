@@ -13,8 +13,6 @@
 3. ライブラリの選び方と使い方
     - 目的・保守の状況・ライセンス・推移的な依存・脆弱性を確かめて、ライブラリを選べる
     - Gsonで、オブジェクトとJSONを相互に変換できる
-4. Gradle
-    - `build.gradle`に書かれた依存関係を、Mavenの座標と対応づけて読める
 
 ### この章を始める前に
 
@@ -386,243 +384,17 @@ Loaded Task: プログラミング
 
 ### Jackson - 多機能なJSONライブラリ {.advanced}
 
-Jacksonは、Gsonと並んで人気の高いJSONライブラリで、Spring Frameworkなどの業務アプリケーションで広く使われています。大きなJSONを少しずつ読むストリーミングAPIと、アノテーションでJSONの名前とフィールドの対応を細かく決められる点が特徴です<span class="footnote">2025年10月に公開されたJackson 3では、groupIdが`tools.jackson.core`に、パッケージ名が`tools.jackson`に変わりました。本書のコードは、いまも更新が続いているJackson 2の系列（`com.fasterxml.jackson.core`）で書いています。</span>。
+Jacksonは、Gsonと並んで広く使われているJSONライブラリで、Spring Frameworkなどを使う業務アプリケーションでよく出会います。
 本書の第16章と演習では、依存が1つで設定なしに使えるGsonを使います。
-Jacksonは、Springなどを使う開発で出会うことが多いので、ここではGsonとの書き方の違いだけを見ておきます。
-
-#### Mavenの依存関係
-
-<span class="listing-number">**サンプルコード22-5**</span>
-
-```xml
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.23.0</version>
-</dependency>
-```
-
-#### Jacksonの使用例
-
-以下の例では、`@JsonProperty`によるフィールド名のマッピング、`@JsonIgnore`による特定フィールドの除外、`TypeReference`を使ったジェネリック型のデシリアライズなど、実践的な機能を紹介します。
-
-<span class="listing-number">**サンプルコード22-6**　JacksonExample.java（7〜19、34、36〜47、62〜63、71〜79行目）</span>
-
-```java
-public class JacksonExample {
-    // データモデルクラス
-    static class Product {
-        @JsonProperty("product_id")
-        private int id;
-        
-        private String name;
-        private double price;
-        
-        @JsonIgnore  // JSONに含めない
-        private String internalCode;
-        
-        private Map<String, String> attributes;
-        // ...
-    }
-    // ...
-    public static void main(String[] args) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        
-        // 1. オブジェクトからJSONへ
-        Product product = new Product(1, "ノートPC", 98000.0);
-        String json = mapper.writeValueAsString(product);
-        IO.println("JSON: " + json);
-        
-        // 2. 整形されたJSON出力
-        String prettyJson = mapper.writerWithDefaultPrettyPrinter()
-            .writeValueAsString(product);
-        IO.println("\nPretty JSON:\n" + prettyJson);
-        // ...
-        Product loaded = mapper.readValue(jsonInput, Product.class);
-        IO.println("\nLoaded: " + loaded.getName());
-        // ...
-        String productsJson = mapper.writeValueAsString(products);
-        
-        // TypeReferenceを使った複雑な型のデシリアライズ
-        List<Product> loadedProducts = mapper.readValue(productsJson, 
-            new TypeReference<List<Product>>() {});
-        
-        IO.println("\nLoaded products count: " + loadedProducts.size());
-    }
-}
-```
-
-実行結果：
-
-```
-JSON: {"name":"ノートPC","price":98000.0,"attributes":{},"product_id":1}
-
-Pretty JSON:
-{
-  "name" : "ノートPC",
-  "price" : 98000.0,
-  "attributes" : { },
-  "product_id" : 1
-}
-
-Loaded: マウス
-
-Loaded products count: 2
-```
+Jacksonでは`ObjectMapper`の`writeValueAsString`と`readValue`で変換し、JSONの名前を`@JsonProperty`で、除くフィールドを`@JsonIgnore`で指定するなど、Gsonと書き方が異なります。
+Gsonとの書き方の違いについて、詳しい説明とコード例は付録G「外部ライブラリの使用例」の「Jackson - 多機能なJSONライブラリ」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/g-library-examples/`</span>。
 
 ### Apache Commons - ユーティリティライブラリ集 {.advanced}
 
-Apache Commonsは、Javaプログラミングでよく使われる機能を提供するライブラリ群です。
-
-#### Commons Langの例
-
-<span class="listing-number">**サンプルコード22-7**</span>
-
-```xml
-<dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-lang3</artifactId>
-    <version>3.22.0</version>
-</dependency>
-```
-
-Apache Commons LangはJava標準APIを補完する便利なユーティリティメソッドを提供します。以下の例では、文字列操作、null安全な処理、配列操作、ランダムな文字列の生成、日付の書式化、`toString`の自動生成など、日常的に必要になる機能を示します。
-
-<span class="listing-number">**サンプルコード22-8**　CommonsLangExample.java（11〜12、21〜25、36、38〜58、77〜78行目）</span>
-
-```java
-public class CommonsLangExample {
-    static class Person {
-        // ...
-        @Override
-        public String toString() {
-            return ToStringBuilder.reflectionToString(this,
-                    ToStringStyle.SHORT_PREFIX_STYLE);
-        }
-        // ...
-    }
-    // ...
-    public static void main(String[] args) {
-        // 1. StringUtils - 文字列操作
-        String text = "  Hello World  ";
-        IO.println("Original: '" + text + "'");
-        IO.println("Trimmed: '" + StringUtils.trim(text) + "'");
-        IO.println("Is blank?: " + StringUtils.isBlank("   "));
-        IO.println("Reverse: " + StringUtils.reverse("Hello"));
-        IO.println("Capitalize: " + StringUtils.capitalize("java"));
-        
-        // nullや空文字列の安全な処理
-        String nullStr = null;
-        IO.println("Default: "
-                + StringUtils.defaultIfEmpty(nullStr, "デフォルト値"));
-        
-        // 2. ArrayUtils - 配列操作
-        int[] numbers = {1, 2, 3, 4, 5};
-        IO.println("\nArray contains 3?: "
-                + ArrayUtils.contains(numbers, 3));
-        int[] reversed = ArrayUtils.clone(numbers);
-        ArrayUtils.reverse(reversed);
-        IO.println("Reversed: " + ArrayUtils.toString(reversed));
-        // ...
-    }
-}
-```
-
-次は実行結果の一例です。ランダムな文字列と日時は実行するたびに変わります。
-
-```
-Original: '  Hello World  '
-Trimmed: 'Hello World'
-Is blank?: true
-Reverse: olleH
-Capitalize: Java
-Default: デフォルト値
-
-Array contains 3?: true
-Reversed: {5,4,3,2,1}
-
-Random alphabetic: KJqMGBribR
-Random numeric: 654594
-Random alphanumeric: qUPX37y9
-
-Date formats:
-ISO: 2026-11-08T19:58:50
-Custom: 2026年11月08日 19:58:50
-
-Person: CommonsLangExample.Person[age=30,name=田中太郎]
-```
-
-#### Commons I/Oの例
-
-<span class="listing-number">**サンプルコード22-9**</span>
-
-```xml
-<dependency>
-    <groupId>commons-io</groupId>
-    <artifactId>commons-io</artifactId>
-    <version>2.22.0</version>
-</dependency>
-```
-
-Apache Commons I/Oは、ファイルやストリームの操作を簡潔なメソッドで実現するライブラリです。
-ファイル全体の読み書きなら、第14章「ファイルI/O」で学んだ`Files`クラスの`readAllLines`や`writeString`でも1行で書けます。
-Commons I/Oは、ディレクトリのサイズの計算、ファイル名からの拡張子の取り出し、ストリームのコピーなど、標準APIでは何行も必要な処理も1行で書ける点が便利です。
-以下の例では、ファイルの読み書き、コピー、ディレクトリ操作、パス操作など、実務で頻繁に使用される機能を紹介します。
-
-<span class="listing-number">**サンプルコード22-10**　CommonsIOExample.java（9〜30、46〜51、67〜68行目）</span>
-
-```java
-public class CommonsIOExample {
-    public static void main(String[] args) throws IOException {
-        // 1. FileUtils - ファイル操作の簡略化
-        File file = new File("example.txt");
-        
-        // ファイルへの書き込み（1行で完了）
-        FileUtils.writeStringToFile(file, "Hello, Commons IO!\n", 
-            StandardCharsets.UTF_8);
-        
-        // ファイルへの追記
-        FileUtils.writeStringToFile(file, "追加のテキスト\n", 
-            StandardCharsets.UTF_8, true);
-        
-        // ファイルの読み込み（1行で完了）
-        String content = FileUtils.readFileToString(file,
-                StandardCharsets.UTF_8);
-        IO.println("File content:\n" + content);
-        
-        // 行単位での読み込み
-        List<String> lines =
-                FileUtils.readLines(file, StandardCharsets.UTF_8);
-        IO.println("Lines count: " + lines.size());
-        // ...
-        // 4. FilenameUtils - パス操作
-        String filePath = "/home/user/documents/report.pdf";
-        IO.println("\nFile path analysis:");
-        IO.println("Base name: " + FilenameUtils.getBaseName(filePath));
-        IO.println("Extension: " + FilenameUtils.getExtension(filePath));
-        IO.println("Full path: " + FilenameUtils.getFullPath(filePath));
-        // ...
-    }
-}
-```
-
-実行結果：
-
-```
-File content:
-Hello, Commons IO!
-追加のテキスト
-
-Lines count: 2
-temp_dir size: 41 bytes
-
-File path analysis:
-Base name: report
-Extension: pdf
-Full path: /home/user/documents/
-
-Stream copy result: Stream processing example
-```
+Apache Commonsは、Javaの標準APIを補うユーティリティのライブラリ群で、文字列の操作のCommons Lang、ファイルとストリームの操作のCommons I/Oなど、目的ごとに分かれています。
+`null`を渡しても例外をスローしない`StringUtils`や、ディレクトリの大きさを1行で求める`FileUtils`など、標準APIでは何行も要る処理を短く書けます。
+ただし、ファイル全体の読み書きのように第14章の`Files`クラスで足りる処理なら、標準APIで書きます。
+詳しい説明とコード例は付録G「外部ライブラリの使用例」の「Apache Commons - ユーティリティライブラリ集」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/g-library-examples/`</span>。
 
 ### そのほかのよく使われるライブラリ
 
@@ -635,7 +407,7 @@ Gson・Jackson・Apache Commonsのほかにも、Javaでよく使われるライ
 | Lombok | `@Getter`などのアノテーションで、getterやコンストラクターをコンパイル時に生成する | データを運ぶだけのクラスは第8章のRecordで簡潔に書ける |
 | Guava | 標準にないコレクション（`Multimap`・`BiMap`など）、キャッシュ、文字列の分割と結合 | 不変コレクションや文字列の結合などは、標準の`List.of`や`String.join`でもできる |
 
-これらのライブラリの依存関係の書き方と使用例は、付録Gで紹介しています。
+これらのライブラリの依存関係の書き方と使用例も、JacksonやApache Commonsと同じく付録Gで紹介しています。
 
 ### 外部ライブラリ選定の指針
 
@@ -666,7 +438,7 @@ Gson・Jackson・Apache Commonsのほかにも、Javaでよく使われるライ
 
 ライブラリのライセンスは、そのライブラリのpom.xmlの`<licenses>`要素で確かめられます。
 
-<span class="listing-number">**サンプルコード22-11**</span>
+<span class="listing-number">**サンプルコード22-5**</span>
 
 ```xml
 <!-- ライブラリのpom.xmlに書かれたライセンスの情報 -->
@@ -691,7 +463,7 @@ LGPLはこの義務を緩めたもので、ライブラリをリンクして使�
 第21章で使ったJUnitやMockitoのように、テストのときだけ使うライブラリは、`<scope>test</scope>`を指定して依存関係に加えます。
 次の例では、ライブラリのバージョンを`<properties>`にまとめて管理しています。
 
-<span class="listing-number">**サンプルコード22-12**</span>
+<span class="listing-number">**サンプルコード22-6**</span>
 
 ```xml
 <!-- バージョン管理のベストプラクティス -->
@@ -725,7 +497,7 @@ LGPLはこの義務を緩めたもので、ライブラリをリンクして使�
 OWASP Dependency-Checkは、プロジェクトの依存ライブラリを、公開されている脆弱性のデータベースと照らし合わせて調べるツールです。
 次のように`pom.xml`の`<build>`の`<plugins>`に加えると、`mvn verify`を実行したときに検査が行われ、結果のレポートが`target`ディレクトリに作られます<span class="footnote">脆弱性のデータベースは初回の実行時にダウンロードするため、時間がかかります。米国のNVD（National Vulnerability Database）のAPIキーを取得して設定すると、ダウンロードが速くなります。</span>。
 
-<span class="listing-number">**サンプルコード22-13**</span>
+<span class="listing-number">**サンプルコード22-7**</span>
 
 ```xml
 <!-- 依存関係の脆弱性チェックプラグイン -->
@@ -814,57 +586,6 @@ Mavenのビルドは、`compile`（コンパイル）→`test`（テストの実
 第21章のJaCoCoや、本章のOWASP Dependency-Checkは、この書き方で組み込んでいます。
 `mvn dependency:tree`のように「プラグイン名:ゴール名」と書くと、フェーズとは関係なくゴールを1つだけ実行します。
 
-### もう1つのビルドツール：Gradle {.advanced}
-
-Gradleも、Mavenと同じく依存関係の管理とビルドを行うツールです<span class="footnote">Gradleは、Androidアプリの開発で標準のビルドツールとして使われています。</span>。
-Mavenは`pom.xml`にXMLで設定を書きますが、Gradleは`build.gradle`（Groovy DSL）または`build.gradle.kts`（Kotlin DSL）に設定を書きます。
-DSL（ドメイン固有言語）は、ビルドの設定のような特定の目的のために作られた言語のことです。
-ライブラリはMavenと同じ座標（`groupId`、`artifactId`、`version`）で指定し、Maven Centralから取得できます。
-サンプルコード22-3と同じGsonの依存関係を`build.gradle`に書くと、次のようになります。
-
-<span class="listing-number">**サンプルコード22-14**</span>
-
-```gradle
-// build.gradle
-plugins {
-    id 'java'
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'com.google.code.gson:gson:2.15.0'
-}
-```
-
-`plugins`の`java`は、Javaのプログラムをコンパイル・テストしてJARファイルにまとめる機能を有効にします。
-`repositories`はライブラリの取得先で、`mavenCentral()`はMaven Central Repositoryを表します。
-`dependencies`の`implementation`は、コンパイルと実行に使う依存関係の指定で、Mavenの`compile`スコープに当たります。
-テストだけで使うライブラリは`testImplementation`で指定します（Mavenの`test`スコープに当たります）。
-
-Gradleのプロジェクトには、Gradle Wrapperを入れておくのが一般的です。
-Gradle Wrapperは、プロジェクトで使うGradleの版を記録した設定ファイルと、`gradlew`（Windowsでは`gradlew.bat`）というスクリプトからなります。
-`./gradlew`を通して実行すると、記録した版のGradleが自動でダウンロードされて使われます。
-各自のパソコンにGradleをインストールしなくても、チームの全員やCIが同じ版のGradleでビルドできます。
-Wrapperのファイルは、Gradleをインストールした環境で`gradle wrapper`を実行すると作られます。
-
-```bash
-# コンパイル、テストの実行、JARファイルの作成
-./gradlew build
-
-# テストだけを実行
-./gradlew test
-
-# 依存関係の木を表示（mvn dependency:treeに当たる）
-./gradlew dependencies
-```
-
-本書では、ビルドツールの例としてMavenを使います。
-Gradleでビルドを自動化する設定やプロジェクトの例は、付録D「高度なビルドとデプロイメント技術」のGitHubリポジトリで提供しています。<br>
-`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/d-build-and-deploy/`
-
 > **コラム：Log4Shell――ライブラリ1つで世界中が慌てた日**{.column-section}
 >
 > 2021年12月10日、Javaのログ出力ライブラリApache Log4j 2の脆弱性（CVE-2021-44228、通称Log4Shell）が、米国の脆弱性データベースNVDに登録されました。
@@ -882,6 +603,13 @@ Gradleでビルドを自動化する設定やプロジェクトの例は、付�
 > ライブラリを使うと、他人の書いた大量のコードを自分のシステムに取り込むことになります。
 > 何に依存しているかを把握しておくこと、更新をためずに版を上げ続けることは、便利さと引き換えに引き受ける、エンジニアの日々の仕事です。
 
+### もう1つのビルドツール：Gradle {.advanced}
+
+Gradleも、Mavenと同じく依存関係の管理とビルドを行うツールで、Androidアプリの開発では標準のビルドツールとして使われています。
+設定は`pom.xml`のXMLではなく`build.gradle`に書きますが、ライブラリはMavenと同じ座標で指定し、Maven Centralから取得します。
+本書では、ビルドツールの例としてMavenを使います。
+`build.gradle`の書き方とGradle Wrapperについて、詳しい説明とコード例は付録D「高度なビルドとデプロイメント技術」の「Gradleの基本」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/d-build-and-deploy/`</span>。
+
 ## よくあるエラーと対処法
 
 ドキュメントの生成や外部ライブラリの利用では、コードそのものではなく、コメントの書き方や依存関係、クラスパスの設定が原因でエラーが起こります。本章の内容に関連して出会いやすいエラーは次のとおりです。
@@ -893,7 +621,7 @@ Gradleでビルドを自動化する設定やプロジェクトの例は、付�
     + `mvn dependency:tree`でどの版が選ばれたかを確かめ、使う版を`pom.xml`に直接書くか、`<exclusions>`で推移的な依存を除く
 - ライブラリのバージョン管理の問題
     + 脆弱性のある古いバージョンを使い続けたり、バージョン範囲の指定で予期しない版が選ばれたりする
-    + バージョンの一元管理（サンプルコード22-12）と脆弱性のチェック（サンプルコード22-13）で防ぐ
+    + バージョンの一元管理（サンプルコード22-6）と脆弱性のチェック（サンプルコード22-7）で防ぐ
 - APIの非互換性
     + 新しい版で加わったメソッドを使ったコードを古い版で実行すると`NoSuchMethodError`が発生する。廃止予定のAPIは将来の版で削除される
 - クラスパスの問題

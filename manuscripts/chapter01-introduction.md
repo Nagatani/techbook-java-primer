@@ -217,7 +217,7 @@ Javaを通じて身につけた知識と経験は、Python、JavaScript、Go、R
 紙面には、全文のうち説明に必要な部分だけを抜き出して載せることがあります。
 
 全文を公開しているサンプルコードには、キャプションに全文のファイル名と、掲載した行の範囲を示しています。
-たとえば「サンプルコード5-18　CreditCardPayment.java（3〜43行目）」は、`sample-code/chapter05/05-18/CreditCardPayment.java`の3行目から43行目までを載せたものです。
+たとえば「サンプルコード6-7　ImmutableExample.java（5〜26行目）」は、`sample-code/chapter06/06-07/ImmutableExample.java`の5行目から26行目までを載せたものです。
 ファイル名だけのときは、そのファイル全体を載せています。
 抜き出した範囲のあいだを省いたところには、`// ...`という行を入れています。
 

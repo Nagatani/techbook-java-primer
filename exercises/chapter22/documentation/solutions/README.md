@@ -88,6 +88,7 @@ java -cp out:gson-2.10.1.jar chapter22.documentation.solutions.StudentManager
 - `StringUtils`の便利メソッドを活用
 - null安全な文字列処理
 - 追加の便利機能も実装（パディング、逆順、ケース変換など）
+- Commons Langの使用例は、付録G「外部ライブラリの使用例」（`appendix/g-library-examples/`）の「Apache Commons - ユーティリティライブラリ集」にある
 
 ### テストの実行
 ```bash

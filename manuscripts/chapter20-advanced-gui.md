@@ -288,7 +288,7 @@ public class BasicTreeExample {
 知らせを受けたリストは、その範囲を描き直します。
 これらを呼ばずにデータだけを変えると、画面のリストは古いままです。
 文字列などを並べるだけなら、標準の`DefaultListModel`を使えます。
-`DefaultListModel`の`addElement()`や`remove()`は、内部でこの知らせを送るので、自分で`fire〜`メソッドを呼ぶ必要はありません（サンプルコード20-5で使います）。
+`DefaultListModel`の`addElement()`や`remove()`は、内部でこの知らせを送るので、自分で`fire〜`メソッドを呼ぶ必要はありません（使い方は節「統合型データ管理アプリケーション」で紹介します）。
 
 レンダラーの`TaskListCellRenderer`は、`JPanel`にラベルとチェックボックスを並べた部品です。
 `JPanel`は既定で自分の背景を塗るため、中のパネルを`setOpaque(false)`で透明にし、外側のパネルに設定した選択色が見えるようにしています。
@@ -386,78 +386,10 @@ public class AdvancedListExample {
 
 ### 統合型データ管理アプリケーション {.advanced}
 
-JTable、JTree、JListを組み合わせた総合的なアプリケーションの例です。
-
-以下のコードは、JTable、JTree、JListを組み合わせたプロジェクト管理システムの実装例です。
-`JSplitPane`で画面を分割し、左側のツリーでプロジェクトを選択すると、右側のテーブルとリストにタスクとメンバー情報が表示されます。
-タスクの表は表示専用で、プロジェクトのタスクを`DefaultTableModel`に1行ずつ入れ直して表示します。
-メニューバーには、アプリケーションを終了する「ファイル」メニューと、画面下のステータスバーの表示・非表示を切り替える「表示」メニューがあります。
-ステータスバーには、選択中のプロジェクト名が表示されます。
-
-<span class="listing-number">**サンプルコード20-5**　IntegratedDataManagementApp.java（33〜34、89、112〜131、158〜174、187、203〜212、220、261行目）</span>
-
-```java
-public class IntegratedDataManagementApp {
-    private final JFrame frame = new JFrame("プロジェクト管理システム");
-    // ...
-    private void createProjectTree() {
-        // ...
-        projectTree = new JTree(root);
-        projectTree.addTreeSelectionListener(
-                new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-                    projectTree.getLastSelectedPathComponent();
-                if (node == null) return;
-                
-                // プロジェクトノードが選択された場合
-                if (node.getLevel() == 1) {
-                    String projectName = node.getUserObject().toString();
-                    currentProject = projects.get(projectName);
-                    updateTaskTable();
-                    updateMemberList();
-                    statusLabel.setText("選択中: " + projectName);
-                }
-            }
-        });
-    }
-    // ...
-    private void updateTaskTable() {
-        DefaultTableModel model =
-                (DefaultTableModel) taskTable.getModel();
-        model.setRowCount(0);
-        
-        if (currentProject != null) {
-            for (Task task : currentProject.getTasks()) {
-                model.addRow(new Object[]{
-                    task.getTitle(),
-                    task.getDescription(),
-                    task.getDueDate().format(DateTimeFormatter
-                            .ofPattern("yyyy/MM/dd")),
-                    task.isCompleted()
-                });
-            }
-        }
-    }
-    // ...
-    private void setupLayout() {
-        // ...
-        // 分割ペインの設定
-        rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-            topRightPanel, bottomRightPanel);
-        rightSplitPane.setDividerLocation(400);
-        
-        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-            leftPanel, rightSplitPane);
-        mainSplitPane.setDividerLocation(300);
-        
-        frame.add(mainSplitPane, BorderLayout.CENTER);
-        // ...
-    }
-    // ...
-}
-```
+表・リスト・ツリーは、第17章で学んだ`JSplitPane`で画面を分けて並べると、左のツリーで選んだ項目の中身を右の表やリストに出す画面になります。
+選ばれたノードは、`addTreeSelectionListener`で登録したリスナーのなかで`getLastSelectedPathComponent()`を呼んで受け取ります。
+そのノードに対応するデータで、`DefaultTableModel`なら`setRowCount(0)`で空にしてから`addRow`で、`DefaultListModel`なら`clear()`のあと`addElement()`で中身を入れ直します。
+プロジェクトを選ぶとタスクの表とメンバーの一覧が切り替わる例を使った詳しい説明とコード例は、付録F「Swingの発展的な機能」の「統合型データ管理アプリケーション」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/f-swing-advanced/`</span>。
 
 ## よくあるエラーと対処法
 

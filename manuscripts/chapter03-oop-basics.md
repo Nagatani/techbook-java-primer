@@ -987,74 +987,9 @@ public int add(int a, int b, int c) { return a + b + c; }
 
 ##### オーバーロードの解決規則 {.advanced}
 
-Javaコンパイラーはメソッド選択の際に特定のルールに従います。
-以下の優先順位でメソッドを選択します。
-
-1. 完全一致（型変換なし）
-2. プリミティブ型の拡大変換（`int` → `long`、`float` → `double`など）
-3. オートボクシング（`int` → `Integer`など）
-4. 可変長引数
-
-オートボクシングは、基本型の値を、対応するクラス（ラッパークラス）のオブジェクトに自動で変換するしくみです。
-第9章「コレクションフレームワーク」で学びます。
-
-可変長引数は、`int... x`のように型の後ろに`...`を付けた引数で、同じ型の値をいくつでも（0個でも）受け取れます。
-呼び出す側は`test(1, 2, 3)`のように値を並べて書き、メソッドのなかでは`x`を`int[]`の配列として扱います。
-可変長引数は引数の並びの最後に1つだけ置けます。
-
-<span class="listing-number">**サンプルコード3-22**</span>
-
-```java
-import java.util.Arrays;
-
-public class OverloadResolution {
-    public static void test(int x) {
-        IO.println("int: " + x);
-    }
-    
-    public static void test(long x) {
-        IO.println("long: " + x);
-    }
-    
-    public static void test(Integer x) {
-        IO.println("Integer: " + x);
-    }
-    
-    public static void test(int... x) {
-        IO.println("可変長引数: " + Arrays.toString(x));
-    }
-    
-    public static void main(String[] args) {
-        byte b = 10;
-        test(b);      // int版が呼ばれる（自動拡大変換）
-        test(10);     // int版が呼ばれる（完全一致）
-        test(10L);    // long版が呼ばれる（完全一致）
-        test(Integer.valueOf(10)); // Integer版が呼ばれる
-        test(1, 2, 3); // 可変長引数版が呼ばれる
-    }
-}
-```
-
-実行結果：
-
-```
-int: 10
-int: 10
-long: 10
-Integer: 10
-可変長引数: [1, 2, 3]
-```
-
-> 戻り値の型だけが異なるメソッドはオーバーロードできません。
-> 次のコードはコンパイルエラーになります。
->
-> <span class="listing-number">**サンプルコード3-23**</span>
->
-> ```java
-> public int calculate() { return 1; }
-> // エラー：戻り値の型だけでは区別できない
-> public double calculate() { return 1.0; }
-> ```
+引数の型にぴったり合うメソッドがないとき、コンパイラーは完全一致、プリミティブ型の拡大変換、オートボクシング、可変長引数の順に候補を探して、呼び出すメソッドを1つに決めます。
+なお、戻り値の型だけが異なるメソッドはオーバーロードできません。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「オーバーロードの解決規則」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ##### コンストラクターのオーバーロード
 
@@ -1069,9 +1004,9 @@ Integer: 10
 クラス設計では、そのオブジェクトが「何を知っているか（属性）」と「何ができるか（操作）」を決めます。
 ここでは、サンプルコード3-17の`Book`クラスを育てながら、クラスの定義とオブジェクトの使い方を確かめます。
 まず、本の属性に価格を加え、タイトル・著者・価格を読み取るgetterと、価格を変えるsetterを用意します。
-引数のないコンストラクターは、価格を0にする行を足しただけなので省略しています<span class="footnote">省略した部分を含む全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter03/03-24/`にあります。</span>。
+引数のないコンストラクターは、価格を0にする行を足しただけなので省略しています<span class="footnote">省略した部分を含む全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter03/03-22/`にあります。</span>。
 
-<span class="listing-number">**サンプルコード3-24**　Book.java（1〜13、23〜49行目）</span>
+<span class="listing-number">**サンプルコード3-22**　Book.java（1〜13、23〜49行目）</span>
 
 ```java
 public class Book {
@@ -1132,9 +1067,9 @@ public class Book {
 クラスを定義しただけでは、まだ実際にデータを保存したり処理を実行したりできません。
 クラスは「設計図」であり、実際に動作するプログラムを作るには、その設計図からオブジェクト（インスタンス）を作成します。
 
-次のプログラムは、サンプルコード3-24の`Book`クラスから2つのオブジェクトを作成し、それぞれを操作します。
+次のプログラムは、サンプルコード3-22の`Book`クラスから2つのオブジェクトを作成し、それぞれを操作します。
 
-<span class="listing-number">**サンプルコード3-25**　BookTest.java</span>
+<span class="listing-number">**サンプルコード3-23**　BookTest.java</span>
 
 ```java
 public class BookTest {
@@ -1210,7 +1145,7 @@ public class BookTest {
     - 外部から直接アクセスできない
     - 主にフィールドで使用（データを保護）
 
-<span class="listing-number">**サンプルコード3-26**　Student.java</span>
+<span class="listing-number">**サンプルコード3-24**　Student.java</span>
 
 ```java
 public class Student {
@@ -1249,7 +1184,7 @@ public class Student {
 
 次のプログラムで、`Student`を使ってみます。
 
-<span class="listing-number">**サンプルコード3-27**　StudentAccessTest.java</span>
+<span class="listing-number">**サンプルコード3-25**　StudentAccessTest.java</span>
 
 ```java
 public class StudentAccessTest {
@@ -1280,7 +1215,7 @@ public class StudentAccessTest {
 
 フィールドをprivateにする理由を具体例で見てみましょう。
 
-<span class="listing-number">**サンプルコード3-28**　Product.java、BadExample.java</span>
+<span class="listing-number">**サンプルコード3-26**　Product.java、BadExample.java</span>
 
 ```java
 public class Product {
@@ -1325,7 +1260,7 @@ static修飾子は、フィールドやメソッドが「クラスに属する�
 
 ### staticメソッドの例
 
-<span class="listing-number">**サンプルコード3-29**　MathHelper.java、StaticExample.java</span>
+<span class="listing-number">**サンプルコード3-27**　MathHelper.java、StaticExample.java</span>
 
 ```java
 public class MathHelper {
@@ -1366,7 +1301,7 @@ public class StaticExample {
 
 ### staticフィールド（クラス共有変数）
 
-<span class="listing-number">**サンプルコード3-30**　StaticMemberExample.java</span>
+<span class="listing-number">**サンプルコード3-28**　StaticMemberExample.java</span>
 
 ```java
 class Tool {
@@ -1466,7 +1401,7 @@ staticフィールドを「クラス変数」、staticメソッドを「クラ�
 ユーティリティメソッドは、特定のオブジェクトの状態に依存せず、引数だけをもとに処理するメソッドです。
 Javaの標準ライブラリの`Math.max()`、`Math.sqrt()`、`Integer.parseInt()`が典型的な例で、オブジェクトを作らずに呼び出せるようにstaticメソッドとして作られています。
 
-<span class="listing-number">**サンプルコード3-31**　MathUtils.java</span>
+<span class="listing-number">**サンプルコード3-29**　MathUtils.java</span>
 
 ```java
 public class MathUtils {
@@ -1479,7 +1414,7 @@ public class MathUtils {
 
 #### ファクトリメソッド
 
-<span class="listing-number">**サンプルコード3-32**　Student.java</span>
+<span class="listing-number">**サンプルコード3-30**　Student.java</span>
 
 ```java
 public class Student {
@@ -1507,7 +1442,7 @@ public class Student {
 
 #### 定数の定義
 
-<span class="listing-number">**サンプルコード3-33**　Constants.java</span>
+<span class="listing-number">**サンプルコード3-31**　Constants.java</span>
 
 ```java
 public class Constants {
@@ -1545,7 +1480,7 @@ staticフィールドは慎重に使い、とくに値を書き換えられるst
 
 ### オブジェクト配列の宣言と初期化
 
-<span class="listing-number">**サンプルコード3-34**</span>
+<span class="listing-number">**サンプルコード3-32**</span>
 
 ```java
 // オブジェクト配列の宣言
@@ -1567,7 +1502,7 @@ students[1] = new Student("佐藤花子", 21, 3.8);
 
 ### オブジェクト配列の操作
 
-<span class="listing-number">**サンプルコード3-35**　StudentArrayExample.java</span>
+<span class="listing-number">**サンプルコード3-33**　StudentArrayExample.java</span>
 
 ```java
 public class StudentArrayExample {
@@ -1601,7 +1536,7 @@ public class StudentArrayExample {
 
 実行に必要なStudentクラスを以下に示します。
 
-<span class="listing-number">**サンプルコード3-36**　Student.java</span>
+<span class="listing-number">**サンプルコード3-34**　Student.java</span>
 
 ```java
 class Student {
@@ -1644,7 +1579,7 @@ class Student {
 `null`の要素のメソッドを呼ぶと、`NullPointerException`という例外が起きてプログラムが止まります（例外は第13章で学びます）。
 すべての要素にオブジェクトが入っているとは限らないので、要素を順に処理するときは、要素が`null`でないことを確かめてから使いましょう<span class="footnote">null参照は、1965年にトニー・ホーアがALGOL Wという言語に導入したものです。ホーアは後に、これを「10億ドルの過ち」と呼んでいます。</span>。
 
-<span class="listing-number">**サンプルコード3-37**　NullCheckExample.java</span>
+<span class="listing-number">**サンプルコード3-35**　NullCheckExample.java</span>
 
 ```java
 public class NullCheckExample {
@@ -1675,7 +1610,7 @@ public class NullCheckExample {
 
 プリミティブ型の配列の要素には、`null`ではなく型ごとの初期値（`int`なら`0`）が入ります。
 
-<span class="listing-number">**サンプルコード3-38**</span>
+<span class="listing-number">**サンプルコード3-36**</span>
 
 ```java
 // プリミティブ型の配列
@@ -1701,11 +1636,11 @@ IO.println(students[0]);     // nullが表示される
 
 ### 例1：図書管理システム
 
-節「クラスからオブジェクトを作る」で育てた`Book`クラス（サンプルコード3-24）を、図書館の蔵書として使えるようにします。
+節「クラスからオブジェクトを作る」で育てた`Book`クラス（サンプルコード3-22）を、図書館の蔵書として使えるようにします。
 貸出状況を表すフィールドと、貸出・返却のメソッドを加えます。
-ここでは加えた部分だけを示し、変えていない部分は省略しています<span class="footnote">省略した部分を含む全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter03/03-39/`にあります。</span>。
+ここでは加えた部分だけを示し、変えていない部分は省略しています<span class="footnote">省略した部分を含む全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter03/03-37/`にあります。</span>。
 
-<span class="listing-number">**サンプルコード3-39**　Book.java（1〜6、47〜66行目）</span>
+<span class="listing-number">**サンプルコード3-37**　Book.java（1〜6、47〜66行目）</span>
 
 ```java
 public class Book {
@@ -1739,7 +1674,7 @@ public class Book {
 
 次のプログラムで、`Book`を使ってみます。
 
-<span class="listing-number">**サンプルコード3-40**　BookLibraryTest.java</span>
+<span class="listing-number">**サンプルコード3-38**　BookLibraryTest.java</span>
 
 ```java
 public class BookLibraryTest {
@@ -1790,11 +1725,11 @@ ECサイトのショッピングカート機能を実装したクラスです。
 
 カートに入れた商品は、`CartItem`クラスのオブジェクトにして、前の節で学んだオブジェクトの配列に入れます。
 配列の大きさは作るときに決まるので、実際に入っている商品の数を`itemCount`で数えています。
-配列の大きさに使う`MAX_ITEMS`は、サンプルコード3-33と同じ`static final`の定数です。
+配列の大きさに使う`MAX_ITEMS`は、サンプルコード3-31と同じ`static final`の定数です。
 
-`CartItem`の抜粋では、表示の文字列を作る`getDescription`メソッドを省いています<span class="footnote">`getDescription`を含む全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter03/03-41/`にあります。</span>。
+`CartItem`の抜粋では、表示の文字列を作る`getDescription`メソッドを省いています<span class="footnote">`getDescription`を含む全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter03/03-39/`にあります。</span>。
 
-<span class="listing-number">**サンプルコード3-41**　ShoppingCart.java、CartItem.java（1〜14行目）</span>
+<span class="listing-number">**サンプルコード3-39**　ShoppingCart.java、CartItem.java（1〜14行目）</span>
 
 ```java
 public class ShoppingCart {
@@ -1854,7 +1789,7 @@ public class CartItem {
 
 次のプログラムで、`ShoppingCart`を使ってみます。
 
-<span class="listing-number">**サンプルコード3-42**　ShoppingCartTest.java</span>
+<span class="listing-number">**サンプルコード3-40**　ShoppingCartTest.java</span>
 
 ```java
 public class ShoppingCartTest {
@@ -1891,7 +1826,7 @@ public class ShoppingCartTest {
 `==`演算子は、2つの変数が同じオブジェクトを指しているか（参照が同じか）を比べます。
 `equals`メソッドは、2つのオブジェクトの中身が等しいかを比べます。
 
-<span class="listing-number">**サンプルコード3-43**　StringComparison.java</span>
+<span class="listing-number">**サンプルコード3-41**　StringComparison.java</span>
 
 ```java
 public class StringComparison {

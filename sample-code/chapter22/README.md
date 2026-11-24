@@ -18,6 +18,3 @@ javac -d out *.java
 |---|---|---|
 | [22-2](./22-02/) | Task.java | （mainメソッドなし） |
 | [22-4](./22-04/) | GsonAdvancedExample.java<br>TodoItem.java | `java -cp out GsonAdvancedExample`<br>外部ライブラリ: com.google.code.gson:gson:2.15.0 |
-| [22-6](./22-06/) | JacksonExample.java | `java -cp out JacksonExample`<br>外部ライブラリ: com.fasterxml.jackson.core:jackson-databind:2.23.0, com.fasterxml.jackson.core:jackson-core:2.23.0, com.fasterxml.jackson.core:jackson-annotations:2.23 |
-| [22-8](./22-08/) | CommonsLangExample.java | `java -cp out CommonsLangExample`<br>外部ライブラリ: org.apache.commons:commons-lang3:3.22.0 |
-| [22-10](./22-10/) | CommonsIOExample.java | `java -cp out CommonsIOExample`<br>外部ライブラリ: commons-io:commons-io:2.22.0 |

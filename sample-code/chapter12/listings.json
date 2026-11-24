@@ -78,22 +78,15 @@
       { "file": "OptionalAntiPatternsExample.java", "from": 67, "to": 68 }
     ]
   },
-  "12-15": {
-    "dir": "12-15",
-    "main": "ParallelStreamExample",
-    "excerpt": [
-      { "file": "ParallelStreamExample.java", "from": 1, "to": 27 }
-    ]
-  },
-  "12-17": {
-    "dir": "12-17",
+  "12-16": {
+    "dir": "12-16",
     "main": "FlatMapExample",
     "excerpt": [
       { "file": "FlatMapExample.java", "from": 4, "to": 35 }
     ]
   },
-  "12-18": {
-    "dir": "12-18",
+  "12-17": {
+    "dir": "12-17",
     "main": "ReduceExample",
     "excerpt": [
       { "file": "ReduceExample.java", "from": 5, "to": 27 },
@@ -103,8 +96,8 @@
       "12-5"
     ]
   },
-  "12-19": {
-    "dir": "12-19",
+  "12-18": {
+    "dir": "12-18",
     "main": "CollectorsExample",
     "excerpt": [
       { "file": "CollectorsExample.java", "from": 6, "to": 36 }
@@ -113,37 +106,25 @@
       "12-5"
     ]
   },
-  "12-20": {
-    "dir": "12-20",
+  "12-19": {
+    "dir": "12-19",
     "main": "NullSafeProcessingExample",
     "excerpt": [
       { "file": "NullSafeProcessingExample.java", "from": 5, "to": 21 }
     ]
   },
-  "12-21": {
-    "dir": "12-21",
+  "12-20": {
+    "dir": "12-20",
     "main": "ShortCircuitExample",
     "excerpt": [
       { "file": "ShortCircuitExample.java", "from": 4, "to": 27 }
     ]
   },
-  "12-22": {
-    "dir": "12-22",
+  "12-21": {
+    "dir": "12-21",
     "main": "ToArrayExample",
     "excerpt": [
       { "file": "ToArrayExample.java", "from": 1, "to": 24 }
-    ]
-  },
-  "12-23": {
-    "dir": "12-23",
-    "main": "ComplexProcessingExample",
-    "excerpt": [
-      { "file": "ComplexProcessingExample.java", "from": 6, "to": 8 },
-      { "file": "ComplexProcessingExample.java", "from": 16, "to": 36 },
-      { "file": "ComplexProcessingExample.java", "from": 48, "to": 49 }
-    ],
-    "uses": [
-      "12-5"
     ]
   }
 }

@@ -355,7 +355,8 @@ public interface DataProcessor {
 このパターンにより、データ処理の共通フローを1か所で定義し、具体的な処理内容は実装クラスに委ねられます。フックメソッド（`onSuccess`、`onError`）は独自の後処理が必要な場合にオーバーライドできるため、柔軟性と再利用性を両立できます。
 
 ただし、defaultメソッドには`final`を付けられません。
-第5章の決済処理では`processPayment()`に`final`を付けて流れを守りましたが、インターフェイス版の`process()`は、実装クラスがオーバーライドして流れを書き換えられます。
+第5章で紹介したクラスの継承によるテンプレートメソッドパターンでは、処理の流れを決めるメソッドに`final`を付けて守りました。
+一方、インターフェイス版の`process()`は、実装クラスがオーバーライドして流れを書き換えられます。
 処理の順序を必ず守らせたいときは、第5章のようにクラスで書き、テンプレートメソッドに`final`を付けます。
 
 ### 多重継承問題の解決
@@ -581,259 +582,10 @@ getFirstItemOrDefault(): Item 1
 
 ## 高度な設計パターン {.advanced}
 
-インターフェイスの進化により、より洗練された設計パターンを実装できるようになりました。ここでは実践的な設計パターンとその実装例を紹介します。
-
-defaultメソッドは、ラムダ式で使う関数型インターフェイスに機能を足すときにも使われます。
-その例は、第11章「ラムダ式と関数型インターフェイス」で関数型インターフェイスを学んでから見ていきます。
-
-### Mixinパターン
-
-Mixinは、クラスに機能を「混ぜ込む」設計パターンです<span class="footnote">名前は、アイスクリームにナッツやチョコレートなどを混ぜ込む「ミックスイン」に由来するといわれます。1980年代に、Lispのオブジェクト指向拡張であるFlavorsで使われた用語です。</span>。Java 8のdefaultメソッドにより、複数の機能を組み合わせた柔軟な設計が可能になりました。
-
-<span class="listing-number">**サンプルコード7-12**　Timestamped.java（3〜24、38〜39、61〜70行目）</span>
-
-```java
-// 複数の機能を提供するMixin
-interface Timestamped {
-    long getTimestamp();
-    
-    default boolean isExpired(long expirationTime) {
-        return System.currentTimeMillis()
-                - getTimestamp() > expirationTime;
-    }
-    
-    default Duration getAge() {
-        return Duration.ofMillis(System.currentTimeMillis()
-                - getTimestamp());
-    }
-}
-
-interface Identifiable {
-    String getId();
-    
-    default String getFullIdentifier() {
-        return getClass().getSimpleName() + "#" + getId();
-    }
-}
-// ...
-// 複数のMixinを組み合わせ
-class Memo implements Timestamped, Identifiable, Versioned {
-    // ...
-    public void update(String newContent) {
-        this.content = newContent;
-        this.version++;
-        
-        // defaultメソッドを活用
-        if (isExpired(3600000)) {  // 1時間
-            IO.println("Memo " + getFullIdentifier() + " has expired");
-        }
-    }
-}
-```
-
-`getAge()`が返す`Duration`は、時間の長さを表す標準ライブラリのクラスです<span class="footnote">`Duration`をはじめとする日付と時刻のAPIは、第6章の節「日付と時刻（java.time）」で学びました。</span>。
-全文の`main`メソッド<span class="footnote">サンプルコード7-12の全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter07/07-12/`にあります。</span>で各機能を使うと、次のように表示されます。
-経過時間は実行するたびに変わるので、`main`メソッドでは1秒未満かどうかだけを表示しています。
-
-実行結果：
-
-```
-=== Identifiableの機能 ===
-memo1: Memo#M001
-memo2: Memo#M002
-
-=== Timestampedの機能 ===
-memo1の経過時間は1秒未満？: true
-memo1は期限切れ？: false
-
-=== Versionedの機能 ===
-memo1のバージョン: 2
-memo2のバージョン: 1
-memo1はmemo2より新しい？: true
-```
-
-### トレイトパターン
-
-トレイトは、状態を持たない振る舞いの集合です。インターフェイスとdefaultメソッドの組み合わせにより、Javaでもトレイトパターンを実現できます。
-
-Javaのインターフェイスはフィールドを持てないので、MixinもトレイトもJavaでは同じ形、つまり抽象メソッドで最小限の値を求め、defaultメソッドで機能を足す形で書きます。
-違いは重点の置き方です。
-Mixinは、サンプルコード7-12の`Memo`のように、小さな機能をいくつも組み合わせてクラスに足すことに重点を置きます。
-トレイトは、「大小を比べられる」のような1つの能力を、最小限のメソッドから組み立てることに重点を置きます。
-
-次の`Measurable`は、比べる基準の値を返す`measure()`だけを実装クラスに求め、大小を比べるメソッドをdefaultメソッドとして提供します。
-Javaの標準ライブラリにも、大小を比べる`compareTo()`を実装クラスに求める`Comparable`インターフェイスがあります。
-`Comparable`は、第10章「ジェネリクス」で学ぶ型パラメーターを使って比べる相手の型を決めるため、ここでは`double`の値で比べる形にしました。
-
-<span class="listing-number">**サンプルコード7-13**　Measurable.java（1〜12、18〜43行目）</span>
-
-```java
-// 大きさを比べられるオブジェクトのトレイト（状態を持たず、振る舞いだけを提供する）
-interface Measurable {
-    // 比べる基準になる値（実装クラスが決める）
-    double measure();
-
-    default boolean isLessThan(Measurable other) {
-        return measure() < other.measure();
-    }
-
-    default boolean isGreaterThan(Measurable other) {
-        return measure() > other.measure();
-    }
-    // ...
-    default boolean isBetween(Measurable lower, Measurable upper) {
-        return isGreaterThan(lower) && isLessThan(upper);
-    }
-}
-
-class Temperature implements Measurable {
-    private final double celsius;
-
-    public Temperature(double celsius) {
-        this.celsius = celsius;
-    }
-
-    @Override
-    public double measure() {
-        return celsius;
-    }
-
-    public void checkRange() {
-        Temperature freezing = new Temperature(0);
-        Temperature boiling = new Temperature(100);
-
-        if (this.isBetween(freezing, boiling)) {
-            IO.println("水は液体状態です");
-        }
-    }
-}
-```
-
-### インターフェイス分離原則（ISP）の実践
-
-インターフェイス分離原則<span class="footnote">英語ではInterface Segregation Principleで、ISPはその頭文字です。第4章で触れたSOLID原則の「I」にあたります。</span>は、クライアントが使用しないメソッドへの依存を強制してはならないという原則です。
-
-この例の`User`は、サンプルコード7-10の`User`とは別に、IDを持つクラスとして全文に定義しています。
-
-<span class="listing-number">**サンプルコード7-14**　BadUserService.java（3〜28、33、35〜36、47、49〜58、79行目）</span>
-
-```java
-// 悪い例：肥大化したインターフェイス
-interface BadUserService {
-    void createUser(User user);
-    void deleteUser(String id);
-    void updateUser(User user);
-    User findUser(String id);
-    List<User> findAllUsers();
-    void sendEmail(String userId, String message);
-    void generateReport(String userId);
-    void backupUserData(String userId);
-}
-
-// 良い例：責務ごとに分離されたインターフェイス
-interface UserRepository {
-    void save(User user);
-    void delete(String id);
-    User findById(String id);
-    List<User> findAll();
-}
-
-interface UserNotificationService {
-    void sendEmail(String userId, String message);
-    
-    default void sendWelcomeEmail(String userId) {
-        sendEmail(userId, "ようこそ！サービスへの登録ありがとうございます。");
-    }
-    // ...
-}
-// ...
-interface UserReportService {
-    void generateReport(String userId);
-    // ...
-}
-// ...
-// 必要な機能だけを実装
-class BasicUserService implements UserRepository,
-        UserNotificationService {
-    private Map<String, User> users = new HashMap<>();
-    
-    @Override
-    public void save(User user) {
-        users.put(user.getId(), user);
-        sendWelcomeEmail(user.getId());  // defaultメソッドを活用
-    }
-    // ...
-}
-```
-
-`BadUserService`を実装するクラスは、メールを送らないものでも`sendEmail()`を、レポートを作らないものでも`generateReport()`を、空の中身で書くことになります。
-使う側も、利用者を探したいだけなのに8つのメソッドを持つ型に依存するので、レポートのメソッドが変わっただけで影響を受けることがあります。
-
-役割ごとに`UserRepository`・`UserNotificationService`・`UserReportService`へ分けると、実装するクラスは必要な役割だけを選んで`implements`に並べられます。
-`BasicUserService`は保存と通知だけを実装し、レポートの役割は持ちません。
-使う側も、利用者を探すだけなら`UserRepository`型だけに依存すれば済みます。
-
-### バージョニング戦略
-
-インターフェイスを継承して版を重ね、新しいメソッドをdefaultメソッドで追加していくと、古い版に合わせて書いた実装クラスを壊さずにAPIを広げられます。
-次の例の`ServiceConfig`は、タイムアウトなどの設定値を持つクラスです（全文に含めています）<span class="footnote">サンプルコード7-15の全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter07/07-15/`にあります。</span>。
-
-<span class="listing-number">**サンプルコード7-15**　ServiceV1.java（1〜45、53行目）</span>
-
-```java
-// API進化の管理
-interface ServiceV1 {
-    String process(String input);
-
-    // 最初の版で用意した、以前の処理方法のメソッド
-    default String oldProcess(String input) {
-        return process(input);
-    }
-}
-
-interface ServiceV2 extends ServiceV1 {
-    // 新機能をdefaultメソッドで追加（後方互換性維持）
-    default String processWithConfig(String input,
-            ServiceConfig config) {
-        // デフォルトでは設定を無視して従来の処理
-        return process(input);
-    }
-}
-
-interface ServiceV3 extends ServiceV2 {
-    // さらなる拡張：まとめて処理する（バッチ処理）
-    default String[] processBatch(String[] inputs) {
-        String[] results = new String[inputs.length];
-        for (int i = 0; i < inputs.length; i++) {
-            results[i] = process(inputs[i]);
-        }
-        return results;
-    }
-    
-    // 最初の版からあるメソッドを、この版で非推奨にする
-    @Deprecated(since = "3.0", forRemoval = true)
-    @Override
-    default String oldProcess(String input) {
-        System.err.println("警告: "
-                + "oldProcessは非推奨です。processを使用してください。");
-        return process(input);
-    }
-}
-
-// 実装クラスは最小限の変更で新バージョンに対応
-class ServiceImpl implements ServiceV3 {
-    @Override
-    public String process(String input) {
-        return "Processed: " + input.toUpperCase();
-    }
-    // ...
-}
-```
-
-`ServiceImpl`が実装しなければならないのは、最初の版からある`process()`だけです。
-`processBatch()`のように後の版で追加したメソッドは、defaultメソッドの実装がそのまま使われます。
-最初の版からある`oldProcess()`のように、使ってほしくなくなったメソッドには`@Deprecated`を付けて、非推奨であることを利用者に知らせます。
-`forRemoval = true`を書き添えると、将来削除する予定であることも伝えられます<span class="footnote">`since`と`forRemoval`の指定は、Java 9から使えます。`since`には非推奨になった版を書きます。</span>。
+Java 8のdefaultメソッドにより、インターフェイスを使った設計の幅が広がりました。
+小さな機能を持つインターフェイスをいくつも実装してクラスに機能を足すMixinパターンや、標準ライブラリの`Comparable`インターフェイスのように1つの能力を最小限の抽象メソッドから組み立てるトレイトパターンがその例です。
+使わないメソッドに依存させないようにインターフェイスを役割ごとに分けるインターフェイス分離原則（ISP）や、既存の実装クラスを壊さずにメソッドを足すバージョニングにも使えます。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「高度な設計パターン」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ## Factoryパターン：オブジェクト生成の抽象化
 
@@ -853,7 +605,7 @@ Factoryパターンは、オブジェクトの生成を専門に行うクラス�
 
 </div>
 
-<span class="listing-number">**サンプルコード7-16**　FigureFactory.java（3〜10、17〜20、26、68〜77、91〜96行目）、FactoryDemo.java</span>
+<span class="listing-number">**サンプルコード7-12**　FigureFactory.java（3〜10、17〜20、26、68〜77、91〜96行目）、FactoryDemo.java</span>
 
 ```java
 // 共通のインターフェイス
@@ -922,7 +674,7 @@ public class FactoryDemo {
 
 </div>
 
-<span class="listing-number">**サンプルコード7-17**　DocumentFactory.java（1〜20、30〜41、52行目）</span>
+<span class="listing-number">**サンプルコード7-13**　DocumentFactory.java（1〜20、30〜41、52行目）</span>
 
 ```java
 // ファクトリの抽象クラス

@@ -877,91 +877,14 @@ com.example.myapp/
 
 ## コンストラクターとthisキーワード
 
-### 高度なコンストラクター設計 {.advanced}
-
-第3章ではコンストラクターの基本的な書き方を学びました。本章では、実践的なアプリケーション開発で必要となる、より高度なコンストラクター設計パターンを学習します。
-
-#### コンストラクターでのバリデーション
-
-実務では、コンストラクターでの入力検証が重要です。不正な状態のオブジェクトが作られることを防ぎます。
-
-<span class="listing-number">**サンプルコード4-21**　User.java</span>
-
-```java
-public class User {
-    private final String email;
-    private final String username;
-    private final int age;
-    
-    public User(String email, String username, int age) {
-        // メールアドレスの検証
-        if (email == null || !email.contains("@")) {
-            throw new IllegalArgumentException(
-                    "有効なメールアドレスが必要です");
-        }
-        
-        // ユーザー名の検証
-        if (username == null || username.trim().length() < 3) {
-            throw new IllegalArgumentException(
-                    "ユーザー名は3文字以上である必要があります");
-        }
-        
-        // 年齢の検証
-        if (age < 0 || age > 150) {
-            throw new IllegalArgumentException(
-                    "年齢は0歳以上150歳以下である必要があります");
-        }
-        
-        this.email = email;
-        this.username = username.trim();
-        this.age = age;
-    }
-}
-```
-
-使用例と実行結果：
-
-<span class="listing-number">**サンプルコード4-22**　UserTest.java</span>
-
-```java
-public class UserTest {
-    public static void main(String[] args) {
-        try {
-            // 正常なユーザー作成
-            User user1 = new User("user@example.com", "john_doe", 25);
-            IO.println("ユーザー作成成功");
-            
-            // 不正なメールアドレス
-            User user2 = new User("invalid-email", "jane_doe", 30);
-        } catch (IllegalArgumentException e) {
-            IO.println("エラー: " + e.getMessage());
-        }
-        
-        try {
-            // 短すぎるユーザー名
-            User user3 = new User("test@example.com", "ab", 20);
-        } catch (IllegalArgumentException e) {
-            IO.println("エラー: " + e.getMessage());
-        }
-    }
-}
-```
-
-実行結果：
-
-```
-ユーザー作成成功
-エラー: 有効なメールアドレスが必要です
-エラー: ユーザー名は3文字以上である必要があります
-```
-
-#### コンストラクターから別のコンストラクターを呼び出す
+### コンストラクターから別のコンストラクターを呼び出す
 
 第3章で学んだように、クラスには複数のコンストラクターを定義できます（コンストラクターのオーバーロード）。
 コンストラクターで`this(...)`と書くと、同じクラスの別のコンストラクターを呼び出せます。
+`this(...)`は、コンストラクターの本体の最初の文に書きます。
 次の例では、引数の少ないコンストラクターが、足りない値を補ってすべての引数を受け取るコンストラクターを呼び出しています。
 
-<span class="listing-number">**サンプルコード4-23**　Book.java</span>
+<span class="listing-number">**サンプルコード4-21**　Book.java</span>
 
 ```java
 public class Book {
@@ -992,236 +915,24 @@ public class Book {
 
 コンストラクター2と3は、`this(...)`でコンストラクター1に処理を任せているので、フィールドへ代入する処理は1か所にまとまります。
 
+### 高度なコンストラクター設計 {.advanced}
+
+コンストラクターで引数を検証し、条件を満たさない値なら`IllegalArgumentException`を投げると、不正な状態のオブジェクトは作られません。
+検証を、前の節のように`this(...)`で呼ばれる引数のもっとも多いコンストラクターに集めると、どのコンストラクターで作っても同じ検証を通ります。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「高度なコンストラクター設計」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
+
 ### thisキーワードの高度な活用 {.advanced}
 
-第3章では`this`の基本的な使い方を学びました。ここでは、より実践的で高度な`this`の活用パターンを学習します。
-
-#### ビルダーパターンでの活用
-
-複雑なオブジェクト構築で、`this`を返すことで流暢なインターフェイス<span class="footnote">英語ではfluent interfaceと呼びます。2005年ごろにマーチン・ファウラーとエリック・エヴァンスが名付けた呼び名で、ここでの「インターフェイス」は第7章で学ぶ`interface`ではなく、クラスの使い方（API）を指します。</span>を実現できます。
-
-<span class="listing-number">**サンプルコード4-24**</span>
-
-```java
-public class EmailBuilder {
-    private String to;
-    private String subject;
-    private String body;
-    private boolean isHtml = false;
-    
-    public EmailBuilder to(String to) {
-        this.to = to;
-        return this;  // メソッドチェーンを可能にする
-    }
-    
-    public EmailBuilder subject(String subject) {
-        this.subject = subject;
-        return this;
-    }
-    
-    public EmailBuilder body(String body) {
-        this.body = body;
-        return this;
-    }
-    
-    public EmailBuilder asHtml() {
-        this.isHtml = true;
-        return this;
-    }
-    
-    public Email build() {
-        return new Email(to, subject, body, isHtml);
-    }
-}
-
-// 使用例：流暢なインターフェイス
-Email email = new EmailBuilder()
-    .to("user@example.com")
-    .subject("重要なお知らせ")
-    .body("<h1>こんにちは</h1>")
-    .asHtml()
-    .build();
-```
-
-これはビルダーパターンを使った流暢なインターフェイスの例です。
-ここでは、メソッドが`this`を返すと呼び出しをつなげて書ける点に注目してください。
-ビルダーパターンそのものは、第6章「不変性とfinalキーワード」で不変オブジェクトを組み立てる方法として学びます。
-
-#### 高度なコンストラクターチェーン
-
-実践的なクラス設計では、バリデーションロジックを1つのコンストラクターに集約し、他のコンストラクターはそれを呼び出します。
-
-<span class="listing-number">**サンプルコード4-25**　DatabaseConfig.java（1〜4、10〜21、27〜28、33〜46行目）</span>
-
-```java
-public class DatabaseConfig {
-    private final String host;
-    private final int port;
-    private final String database;
-    // ...
-    // マスターコンストラクター（すべての検証をここに集約）
-    public DatabaseConfig(String host, int port, String database, 
-                         String username, String password, 
-                         int maxConnections, int timeoutSeconds) {
-        // 詳細な検証ロジック
-        if (host == null || host.trim().isEmpty()) {
-            throw new IllegalArgumentException("ホスト名は必須です");
-        }
-        if (port < 1 || port > 65535) {
-            throw new IllegalArgumentException(
-                    "ポート番号は1-65535の範囲で指定してください");
-        }
-        // ...
-        this.host = host.trim();
-        this.port = port;
-        // ...
-        this.timeoutSeconds = timeoutSeconds;
-    }
-    
-    // 開発環境用のコンストラクター
-    public DatabaseConfig(String host, String database) {
-        this(host, 5432, database, "dev_user", "dev_password", 10, 30);
-    }
-    
-    // 本番環境用のコンストラクター
-    public DatabaseConfig(String host, int port, String database, 
-                         String username, String password) {
-        this(host, port, database, username, password, 100, 60);
-    }
-}
-```
-
-検証は引数がもっとも多いコンストラクターだけに書き、ほかのコンストラクターは`this(...)`でそれを呼び出します。
-そのため、どのコンストラクターでオブジェクトを作っても、同じ検証を通ります。
-
-#### コールバックでのthis渡し
-
-イベント処理やコールバックでは、`this`を使って現在のオブジェクトを別のオブジェクトへ渡します<span class="footnote">C言語では、関数ポインターを渡して呼び戻してもらう形でコールバックを書きます。Javaではオブジェクトを渡し、受け取った側がそのメソッドを呼び出します。第11章「ラムダ式と関数型インターフェイス」で学ぶラムダ式を使うと、より短く書けます。</span>。
-
-<span class="listing-number">**サンプルコード4-26**　EventProcessor.java</span>
-
-```java
-public class EventProcessor {
-    private String name;
-    
-    public EventProcessor(String name) {
-        this.name = name;
-    }
-    
-    public void startProcessing() {
-        // 自分自身をイベントハンドラーに登録
-        EventManager.register(this);
-        IO.println(name + " が処理を開始しました");
-    }
-    
-    public void handleEvent(String event) {
-        IO.println(name + " がイベントを処理: " + event);
-    }
-}
-class EventManager {
-    private static EventProcessor[] processors = new EventProcessor[10];
-    private static int count = 0;  // 登録済みの数
-    
-    public static void register(EventProcessor processor) {
-        if (count < processors.length) {
-            processors[count] = processor;
-            count++;
-        }
-    }
-    
-    public static void fireEvent(String event) {
-        for (int i = 0; i < count; i++) {
-            processors[i].handleEvent(event);
-        }
-    }
-}
-```
-
-`startProcessing`は、`EventManager.register(this)`を呼び出して、自分自身を`EventManager`に登録します。
-あとで`EventManager.fireEvent`を呼ぶと、登録されたオブジェクトの`handleEvent`が呼び戻されます。
+`this`はメソッドを呼び出されたオブジェクト自身を指すので、値として返したり、ほかのオブジェクトへ渡したりできます。
+メソッドが`this`を返すと、`builder.to(...).subject(...)`のように呼び出しをつなげて書けます（流暢なインターフェイス）。
+`EventManager.register(this)`のように自分自身を渡すと、あとで呼び戻してもらうコールバックを作れます。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「thisキーワードの高度な活用」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ### 高度なメソッドオーバーロード設計 {.advanced}
 
-第3章でメソッドオーバーロードの基本を学びました。ここでは、実用的なAPIデザインにおけるオーバーロードの活用パターンを学習します。
-
-#### デフォルト値を提供するオーバーロード
-
-オーバーロード<span class="footnote">C言語には関数のオーバーロードがありません。そのため標準ライブラリでも、絶対値を求める関数を`int`用の`abs`、`long`用の`labs`、`double`用の`fabs`のように別の名前で用意しています。</span>を使って、使いやすいAPIを設計できます。
-
-次のサンプルの`Map<String, String>`は、キーと値を組にして保存する入れ物で、第9章「コレクションフレームワーク」で学びます。
-ここでは、HTTP<span class="footnote">HyperText Transfer Protocolの略で、WebブラウザーとWebサーバーがやり取りするときの約束事です。ヘッダーは、送るデータの前に付ける付加情報で、「名前: 値」の組を並べたものです。</span>のヘッダー名と値の組をまとめて渡すための引数と考えてください。
-
-<span class="listing-number">**サンプルコード4-27**　HttpClient.java</span>
-
-```java
-import java.util.Map;
-import java.util.HashMap;
-
-public class HttpClient {
-    // フルスペックのメソッド
-    public String get(String url, Map<String, String> headers,
-            int timeoutMs) {
-        // HTTP GET実装
-        return "Response from " + url;
-    }
-    
-    // ヘッダーのデフォルト値を提供
-    public String get(String url, int timeoutMs) {
-        return get(url, new HashMap<>(), timeoutMs);
-    }
-    
-    // タイムアウトのデフォルト値も提供
-    public String get(String url) {
-        return get(url, 5000);  // 5秒のデフォルトタイムアウト
-    }
-}
-```
-
-#### 型ごとのオーバーロードと、引数の型が重なるときの注意
-
-受け取る値の型ごとにメソッドを分けると、呼び出す側は型に合ったメソッドを意識せずに使えます。
-ただし、引数の型が重なると、意図しないメソッドが選ばれることがあります。
-
-<span class="listing-number">**サンプルコード4-28**　Logger.java（1〜22、29行目）</span>
-
-```java
-public class Logger {
-    // 文字列メッセージ
-    public void log(String message) {
-        IO.println("[INFO] " + message);
-    }
-    
-    // 例外情報
-    public void log(String message, Exception e) {
-        IO.println("[ERROR] " + message + ": " + e.getMessage());
-    }
-    
-    // レベル付きログ
-    public void log(String level, String message) {
-        IO.println("[" + level + "] " + message);
-    }
-    
-    // フォーマット付きメッセージ
-    // log(String, Object...)にすると、log("Hello %s", "World")が
-    // レベル付きログのlog(String, String)に解決されるため、名前を分ける
-    public void logf(String format, Object... args) {
-        IO.println("[INFO] " + String.format(format, args));
-    }
-    // ...
-}
-```
-
-`Object... args`は、第3章で学んだ可変長引数で、どんな型の値もいくつでも受け取れます。
-フォーマット付きメッセージを`log(String format, Object... args)`というオーバーロードにすると、`log("Hello %s", "World")`は引数の型がぴったり合う`log(String level, String message)`のほうが呼び出されます。
-このように引数の型が重なるオーバーロードは、意図と違うメソッドが選ばれる原因になります。
-そこで、フォーマット付きメッセージのメソッドは`logf`という別の名前にしています。
-
-オーバーロードを設計するときの目安は次のとおりです。
-
-- もっとも多機能なメソッドを1つ定義し、他はそれを呼び出す
-- デフォルト値は意味のある値を選ぶ
-- 引数の順序を統一する（URL → オプション → タイムアウトなど）
-- null安全性を考慮する
+引数の少ないメソッドが省いた引数にデフォルト値を補って引数の多いメソッドを呼ぶようにすると、利用者は必要な引数だけを渡せ、実際の処理は1か所にまとまります。
+ただし、`log(String, String)`と`log(String, Object...)`のように引数の型が重なるオーバーロードは、意図と違うメソッドが選ばれる原因になるので、名前を分けます。
+詳しい説明とコード例は付録I「オブジェクト指向と言語機能の発展的な内容」の「高度なメソッドオーバーロード設計」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/i-language-advanced/`</span>。
 
 ## 設計上やってしまいやすい問題とその解決方法
 
@@ -1235,7 +946,7 @@ public class Logger {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-29**　UserManager.java</span>
+<span class="listing-number">**サンプルコード4-22**　UserManager.java</span>
 
 ```java
 // 一つのクラスに責任を詰め込みすぎた例
@@ -1273,7 +984,7 @@ public class UserManager {
 さらに、複数の開発者が同じクラスを修正することになり、変更が競合しやすくなります。
 
 #### 解決方法：責任の分離
-<span class="listing-number">**サンプルコード4-30**　User.java、UserRepository.java、EmailService.java、AuthenticationService.java</span>
+<span class="listing-number">**サンプルコード4-23**　User.java、UserRepository.java、EmailService.java、AuthenticationService.java</span>
 
 ```java
 // 責任を分離したクラス設計
@@ -1342,7 +1053,7 @@ public class AuthenticationService {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-31**</span>
+<span class="listing-number">**サンプルコード4-24**</span>
 
 ```java
 public class BankAccount {
@@ -1368,7 +1079,7 @@ account.setBalance(currentBalance - 100.0);  // 直接残高操作
 さらに、複数のスレッド<span class="footnote">スレッドは、1つのプログラムで並行して進む処理の流れです。第15章「マルチスレッドプログラミング」で学びます。</span>から同時に使うと、`getBalance`で読んでから`setBalance`で書き戻すまでの間に別のスレッドが残高を変え、その変更が失われることがあります。
 
 #### 解決方法：意味のあるメソッドの提供
-<span class="listing-number">**サンプルコード4-32**　BankAccount.java（1〜2、12〜35行目）</span>
+<span class="listing-number">**サンプルコード4-25**　BankAccount.java（1〜2、12〜35行目）</span>
 
 ```java
 public class BankAccount {
@@ -1437,7 +1148,7 @@ public class BankAccount {
 
 #### 問題のあるコード例
 
-<span class="listing-number">**サンプルコード4-33**</span>
+<span class="listing-number">**サンプルコード4-26**</span>
 
 ```java
 import java.util.ArrayList;
