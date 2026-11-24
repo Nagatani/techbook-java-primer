@@ -5,15 +5,9 @@ public class TrafficLight {
     
     public void handleSignal(Color color) {
         switch (color) {
-            case RED:
-                IO.println("停止してください");
-                break;
-            case YELLOW:
-                IO.println("注意して進んでください");
-                break;
-            case GREEN:
-                IO.println("進んでください");
-                break;
+            case RED -> IO.println("停止してください");
+            case YELLOW -> IO.println("注意して進んでください");
+            case GREEN -> IO.println("進んでください");
         }
     }
 }

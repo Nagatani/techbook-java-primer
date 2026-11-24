@@ -610,7 +610,7 @@ public class MultiResourceExample {
 ```java
 public class ResourcePool implements AutoCloseable {
     private final Queue<Resource> availableResources =
-            new LinkedList<>();
+            new ArrayDeque<>();
     private final Set<Resource> usedResources = new HashSet<>();
     private boolean closed = false;
     // ...
@@ -682,7 +682,7 @@ tryブロックを抜けました
 
 ログ記録は例外処理の重要な要素です<span class="footnote">サンプルコード13-12の`Logger`と`Level`は、Java 1.4で標準ライブラリに加わった`java.util.logging`パッケージのクラスです。実務では、SLF4JやLog4j 2などのライブラリもよく使われます。</span>。目的に応じたログレベルを選ぶと、問題の深刻度を正確に伝えられます。
 
-<span class="listing-number">**サンプルコード13-12**　ExceptionLogging.java（5〜38、59行目）</span>
+<span class="listing-number">**サンプルコード13-12**　ExceptionLogging.java（5〜37、58行目）</span>
 
 ```java
 public class ExceptionLogging {
@@ -709,22 +709,24 @@ public class ExceptionLogging {
             notifyAdministrator(e);
         } catch (Exception e) {
             // 予期せぬ例外：重大エラー
-            logger.log(Level.SEVERE, "予期せぬエラーが発生しました", e);
-            
-            // エラーIDを生成してユーザーに提示
+            // ここで受け止めて終えるので、ログに書くのはこの1回だけ
             String errorId = generateErrorId();
-            logger.severe("エラーID: " + errorId);
-            
-            throw new RuntimeException(
-                "システムエラーが発生しました。エラーID: " + errorId, e);
+            logger.log(Level.SEVERE,
+                    "予期せぬエラーが発生しました。エラーID: " + errorId, e);
+
+            // 利用者にはエラーIDだけを伝える
+            IO.println("システムエラーが発生しました。エラーID: " + errorId);
         }
     }
     // ...
 }
 ```
 
-最後の`catch`では、ログに記録したうえで例外を投げ直しています。
-呼び出し元でも同じ例外をログに書くと二重に記録されるので、どの層でログに書くかを決めておきます。
+同じ例外を途中の層と呼び出し元の両方でログに書くと、二重に記録されます。
+本書では、例外を最後に受け止める画面に近い層で1回だけログに書きます。
+途中の層はログに書かず、原因を付けて投げ直すだけにします。
+`processUserRequest`はそうした最後の層なので、最後の`catch`はログに書いたあと、投げ直さずに利用者へエラーIDを伝えています。
+利用者への表示は`IO.println`、原因を調べるための記録は`java.util.logging`と分けます。
 
 ### 例外情報の構造化記録 {.advanced}
 
@@ -908,6 +910,7 @@ public class ErrorResponse {
 対処できる具体的な例外だけを`catch`し、対処できないものは`throws`で呼び出し元に伝えます。
 自分で例外のクラスを作るときは、利用者に伝えて対処できる誤りなら検査例外、コードを直すべき誤りなら非検査例外にします。
 別の例外に包み直すときは、元の例外を原因として渡します。
+ログは、例外を最後に受け止める画面に近い層で1回だけ書きます。
 ファイルのように閉じる必要があるものは、`finally`で閉じずに`try-with-resources`で閉じます。
 
 この章でいちばん持ち帰ってほしいのは、例外を握りつぶさず、失敗した事実と原因を呼び出し元に届けるということです。

@@ -26,14 +26,13 @@ public class ExceptionLogging {
             notifyAdministrator(e);
         } catch (Exception e) {
             // 予期せぬ例外：重大エラー
-            logger.log(Level.SEVERE, "予期せぬエラーが発生しました", e);
-            
-            // エラーIDを生成してユーザーに提示
+            // ここで受け止めて終えるので、ログに書くのはこの1回だけ
             String errorId = generateErrorId();
-            logger.severe("エラーID: " + errorId);
-            
-            throw new RuntimeException(
-                "システムエラーが発生しました。エラーID: " + errorId, e);
+            logger.log(Level.SEVERE,
+                    "予期せぬエラーが発生しました。エラーID: " + errorId, e);
+
+            // 利用者にはエラーIDだけを伝える
+            IO.println("システムエラーが発生しました。エラーID: " + errorId);
         }
     }
     

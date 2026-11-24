@@ -2,7 +2,7 @@ import java.util.*;
 
 public class ResourcePool implements AutoCloseable {
     private final Queue<Resource> availableResources =
-            new LinkedList<>();
+            new ArrayDeque<>();
     private final Set<Resource> usedResources = new HashSet<>();
     private boolean closed = false;
     

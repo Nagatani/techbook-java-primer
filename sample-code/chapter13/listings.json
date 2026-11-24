@@ -75,8 +75,8 @@
     "dir": "13-12",
     "main": null,
     "excerpt": [
-      { "file": "ExceptionLogging.java", "from": 5, "to": 38 },
-      { "file": "ExceptionLogging.java", "from": 59, "to": 59 }
+      { "file": "ExceptionLogging.java", "from": 5, "to": 37 },
+      { "file": "ExceptionLogging.java", "from": 58, "to": 58 }
     ]
   },
   "13-13": {

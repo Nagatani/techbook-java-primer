@@ -5,7 +5,7 @@ sections:
   - key: "本章の学習目標"
     hash: d6ccf40b
   - key: "データベースを使う準備"
-    hash: fc04011b
+    hash: c9f16953
   - key: "SQLの基本"
     hash: 7cd5821b
   - key: "JDBCのしくみ"
@@ -13,9 +13,9 @@ sections:
   - key: "行を操作する"
     hash: 0086179c
   - key: "DAOパターン"
-    hash: 71539d56
+    hash: c5ff02eb
   - key: "日付と時刻の列とjava.time"
-    hash: 4adcf547
+    hash: e1ed8fb4
   - key: "トランザクション"
     hash: e0fbc3c2
   - key: "コネクションプールとバッチ処理"
@@ -82,3 +82,4 @@ sections:
 - 2026-11-24: 「コネクションプール」を付録Gへ移した。サンプルコードの番号を振り直した
 - 2026-11-24: SQLインジェクションのコラムに、生成AIや記事のコードも`?`と`PreparedStatement`になっているかを確かめる旨を足した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
+- 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）

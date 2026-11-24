@@ -234,6 +234,7 @@ Collection
 │   ├── TreeSet
 │   └── LinkedHashSet
 └── Queue
+    ├── ArrayDeque（Queueを継承したDequeを実装）
     ├── LinkedList（Listと両方を実装）
     └── PriorityQueue
 
@@ -332,10 +333,10 @@ linkedList.add(0, "先頭に挿入");  // 先頭への挿入がO(1)時間
 | メモリ使用量 | 比較的少ない | やや多い（前後の要素への参照を持つため） |
 
 #### 使い分けの指針
-- ArrayList
-    + ランダムアクセスが多い場合（get/set操作）
-- LinkedList
-    + 先頭での追加・削除が多い場合（末尾での追加だけなら`ArrayList`でも速い）
+
+Listはまず`ArrayList`を使います。
+`LinkedList`は、内部の構造の違いを知る例として知っておけば十分です。
+届いた順に処理する待ち行列には、`List`ではなく`Queue`として`ArrayDeque`を使います（節「使用場面の例」）。
 
 <div class="figure">
 
@@ -588,6 +589,8 @@ Alice: 95点
 `Map<String, Integer>`の値の型に`int`ではなく`Integer`と書くのは、本章の「ラッパークラスとオートボクシング」で学んだとおり、基本型を型の指定に使えないからです。
 オートボクシングとアンボクシングにより、`scores.put("Alice", 85)`のように`int`の値をそのまま渡せ、`int bobScore = scores.get("Bob")`のように`int`の変数で受け取れます。
 ただし、存在しないキーを`get()`すると`null`が返り、それを`int`に変換しようとして`NullPointerException`が発生します。
+これを避けるには、`getOrDefault`でキーがないときの値を指定して取り出します。
+単語の数を数えるときなら、`counts.put(word, counts.getOrDefault(word, 0) + 1)`のように書けば、初めて出てきた単語も0から数えられます。
 
 `HashMap`も、キーが同じかどうかを`HashSet`と同じく`hashCode()`と`equals()`で判定します。
 自作のクラスをキーに使うときは、この2つのメソッドを一貫した形でオーバーライドしておく必要があります（第5章で学んだ書き方を使います）。
@@ -675,8 +678,8 @@ for (Map.Entry<String, String> entry : map.entrySet()) {
 #### 重要なポイント
 
 `get()`は存在しないキーに対して`null`を返します。
-`getOrDefault()`を使えば、キーがないときに返す値を指定できるので、戻り値の`null`チェックを書かずに済みます。
-また、`containsKey()`で事前にキーの有無を確かめておけば、返ってきた`null`をそのまま使ってしまう誤りを防げます。
+本書では、キーがないときの値を`getOrDefault()`で指定して取り出す書き方を基本にします。
+戻り値の`null`チェックを書かずに済み、1行で読めるからです。
 
 すべての要素を走査するときは、`keySet()`より`entrySet()`を使うほうが速くなります。
 `keySet()`ではキーごとに`get()`で値を検索し直しますが、`entrySet()`ならキーと値の組をまとめて受け取れるからです。
@@ -747,7 +750,8 @@ for (String element : list) {
 インデックスを自分で扱わないので、インデックスの範囲外エラーも起きません。
 「すべての要素を順に処理する」という意図がそのまま読み取れるため、保守もしやすくなります。
 ただし、拡張for文で走査しているコレクションから、その途中で要素を削除できません<span class="footnote">削除すると、多くの場合、次の要素を取り出すときに`ConcurrentModificationException`が発生します。最後から2番目の要素を削除したときのように、例外が起きずに残りの要素が飛ばされることもあります。コレクションの変更を検出してすぐに例外を投げるこの性質を、フェイルファスト（fail-fast）と呼びます。</span>。
-削除が必要なときは、イテレーターを使います。
+走査しながら消すしくみを知るため、本書の演習ではイテレーターの`remove`で書きます。
+条件に合う要素をまとめて消すだけなら、ふだんはラムダ式（第11章）で条件を渡す`removeIf`メソッドのほうが短く書けます。
 
 #### 使い分けの指針
 - 拡張for文
@@ -780,14 +784,15 @@ HashSetとHashMapのO(1)は平均の値です。
 | 実装 | 使いどころ | 実例 |
 |------|-----------|------|
 | ArrayList | インデックスで取り出すことが多い | 学生名簿、一覧画面に表示するデータ |
-| LinkedList | 先頭や末尾での追加・削除が多い | 届いた順に処理する印刷ジョブ（Queueとして使う） |
+| ArrayDeque | 届いた順に取り出したい（Queueとして使う） | 届いた順に処理する印刷ジョブ |
 | HashSet | 順序は要らず、重複をなくしたい | 処理済みのIDの記録、重複したメールアドレスの検出 |
 | TreeSet | つねに並べた状態で持ちたい | ゲームのハイスコア、五十音順の単語帳 |
 | HashMap | キーで値をすばやく引きたい | 設定値、セッションの管理 |
 | TreeMap | キーの順に並べたい、範囲で探したい | 時刻ごとのログ、価格帯での商品検索 |
 
-`LinkedList`を待ち行列（Queue）として使うときは、`offer`で末尾に入れ、`poll`で先頭から取り出します。
+`ArrayDeque`を待ち行列として使うときは、`Queue<String> jobs = new ArrayDeque<>();`のように変数の型を`Queue`にし、`offer`で末尾に入れ、`poll`で先頭から取り出します。
 `poll`は、要素がないときに例外ではなく`null`を返します。
+`LinkedList`も`Queue`として使えますが、本書では待ち行列に`ArrayDeque`を使います<span class="footnote">`ArrayDeque`のAPIの説明には、待ち行列として使うと`LinkedList`より速いだろうと書かれています。`ArrayDeque`には`null`を入れられません。</span>。
 
 本章の高度な内容については、付録B.06「コレクションの内部実装」を参照してください<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/b06-collection-internals/`</span>。
 
@@ -875,7 +880,7 @@ Java 21では、要素の並び順が決まっているコレクションに共�
 - `IndexOutOfBoundsException`
     + 存在しない位置の要素を取り出そうとすると発生する
 - Mapで存在しないキーへのアクセス
-    + `get()`は`null`を返すため、`getOrDefault()`や`containsKey()`で確かめる
+    + `get()`は`null`を返すため、`getOrDefault()`でキーがないときの値を指定する
 - `equals()`と`hashCode()`の不整合
     + 独自クラスを`HashSet`の要素や`HashMap`のキーに使うときは、両方を一貫した形でオーバーライドする（第5章）
 
@@ -887,7 +892,7 @@ Java 21では、要素の並び順が決まっているコレクションに共�
 コレクションに迷ったら、まずデータの使い方でインターフェイスを決めます。
 順番に並べてインデックスで扱うならList、重複をなくしたいならSet、キーで値を引きたいならMapです。
 次に実装を選びます。
-Listはふだん`ArrayList`を使い、先頭での追加や削除が多いときだけ`LinkedList`を考えます。
+Listはふだん`ArrayList`を使い、届いた順に処理する待ち行列には`Queue`として`ArrayDeque`を使います。
 SetとMapは、順序が要らなければ`HashSet`・`HashMap`、つねに並べておきたいなら`TreeSet`・`TreeMap`、追加した順を保ちたいなら`LinkedHashSet`・`LinkedHashMap`にします。
 
 この章でいちばん持ち帰ってほしいのは、変数の型を`List`・`Set`・`Map`のインターフェイスで書いておけば、実装クラスを右辺の1か所で替えられるということです。

@@ -7,23 +7,23 @@ sections:
   - key: "なぜコレクションフレームワークが必要か"
     hash: df9cfb48
   - key: "コレクションフレームワークの全体像"
-    hash: 04e09f8f
+    hash: 0588df93
   - key: "List インターフェイス"
-    hash: 6d25aee4
+    hash: 1a7d9a36
   - key: "Set インターフェイス"
     hash: 2bf8b993
   - key: "Map インターフェイス"
-    hash: 8a7655ca
+    hash: 37de5ba2
   - key: "イテレーターとfor-each文"
-    hash: bfac6f3e
+    hash: c34e16a2
   - key: "コレクションの選択指針"
-    hash: e7064989
+    hash: c74eddb9
   - key: "今後の学習へ向けて"
     hash: 9faeafb8
   - key: "よくあるエラーと対処法"
-    hash: f72d8029
+    hash: dd0d37c6
   - key: "まとめ"
-    hash: 30adc1ce
+    hash: f22a216e
   - key: "章末演習"
     hash: 21714ef0
 ---
@@ -124,3 +124,4 @@ sections:
 - 2026-11-24: 学習目標を「話題＋〜できるの子項目」に、まとめを本文の再掲から「判断の順序・持ち帰ってほしい1つ・次章へのつなぎ」の段落に書き直した（第7章の見本にそろえた）。初めて読むときは飛ばしてよい節に「発展」の印（{.advanced}）を付けた
 - 2026-11-24: 付録Iへ移した節（第5章の決済システム、第8章のイテレーター）を参照していた文を、付録Iへの案内に直した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
+- 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）

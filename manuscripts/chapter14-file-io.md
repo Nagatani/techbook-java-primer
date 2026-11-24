@@ -409,7 +409,8 @@ public class FileSystemExample {
 ### CSVファイルの処理
 
 CSV（Comma-Separated Values）形式は、表計算データやデータベースのエクスポート・インポートでよく使われるテキスト形式です。
-基本的なCSV処理は標準ライブラリだけで実装できますが、値にカンマや改行を含むデータを扱う場合は、Apache Commons CSVなどの専用ライブラリを使用します。
+自分のプログラムが書き出し、値にカンマや改行を含めないと決めたCSVなら、標準ライブラリと`split(",")`で読めます。
+Excelやほかのシステムが作ったCSVは、引用符やBOMが入りうるので、第26章のようにApache Commons CSVなどのライブラリで読みます。
 次は、基本的なCSVの読み込みと書き込みの実装例です。
 
 <span class="listing-number">**サンプルコード14-6**　CSVProcessingExample.java（6〜54、67行目）</span>

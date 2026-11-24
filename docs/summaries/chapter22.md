@@ -7,11 +7,11 @@ sections:
   - key: "Javadocによるドキュメント"
     hash: 74af9f5c
   - key: "外部ライブラリの利用"
-    hash: 81817e86
+    hash: 3840aa1a
   - key: "よくあるエラーと対処法"
     hash: ec81e6ec
   - key: "まとめ"
-    hash: 82b0ece4
+    hash: 379ab443
   - key: "章末演習"
     hash: b5c5207d
 ---
@@ -99,3 +99,4 @@ sections:
 - 2026-11-24: Jackson・Apache Commonsを付録Gへ、Gradleを付録Dへ移した（Log4Shellのコラムは本文に残し、「実践的な開発フロー」の末尾へ移した）。サンプルコードの番号を振り直した
 - 2026-11-24: 著者の答えに合わせ、本文とまとめに判断の基準を書き足した（docs/guides/book-defaults.md）
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
+- 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
