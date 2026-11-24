@@ -9,19 +9,19 @@ sections:
   - key: "ネットワークプログラミングの基礎"
     hash: 4d378036
   - key: "ソケットプログラミングの基礎"
-    hash: 8af8e865
+    hash: 049f3e5e
   - key: "マルチスレッドサーバーの実装"
-    hash: 2956cf90
+    hash: c788e1d6
   - key: "HTTPクライアントの実装"
-    hash: 64e8f788
+    hash: dda2454c
   - key: "UDP通信の実装"
-    hash: 31d03b03
+    hash: a9d0c2d3
   - key: "実践的な例：チャットアプリケーション"
-    hash: 7039c911
+    hash: 98d2a81c
   - key: "JSON APIクライアントの実装"
-    hash: b53650d6
+    hash: 3add835f
   - key: "セキュリティの考慮事項"
-    hash: 5158b284
+    hash: 3c43566d
   - key: "多数の接続を1つのスレッドで扱う"
     hash: 0a72ac19
   - key: "まとめ"

@@ -5,7 +5,7 @@ sections:
   - key: "本章の学習目標"
     hash: 82dc17cb
   - key: "なぜコレクションフレームワークが必要か"
-    hash: 41e2fced
+    hash: df9cfb48
   - key: "コレクションフレームワークの全体像"
     hash: 04e09f8f
   - key: "List インターフェイス"

@@ -5,15 +5,15 @@ sections:
   - key: "本章の学習目標"
     hash: 8cf94eb7
   - key: "なぜカプセル化が重要なのか"
-    hash: 2e12f65e
+    hash: 7d689969
   - key: "カプセル化とアクセス制御"
-    hash: d12aed0a
+    hash: 54be84ec
   - key: "実践的なクラス設計例"
-    hash: 0865798f
+    hash: 0bc25726
   - key: "パッケージシステムとクラスの組織化"
     hash: 95753ce3
   - key: "コンストラクターとthisキーワード"
-    hash: 27f65c52
+    hash: abfec6d2
   - key: "設計上やってしまいやすい問題とその解決方法"
     hash: de65ac68
   - key: "よくあるエラーと対処法"

@@ -11,11 +11,11 @@ sections:
   - key: "演算子"
     hash: 7167a89d
   - key: "型変換"
-    hash: 701cb274
+    hash: 77424152
   - key: "コンソール入出力"
-    hash: 9f5dbd96
+    hash: 95a29ce4
   - key: "制御構造"
-    hash: 7c302410
+    hash: 2a8da6e5
   - key: "配列"
     hash: eb61e212
   - key: "メソッド（staticメソッドの基本）"

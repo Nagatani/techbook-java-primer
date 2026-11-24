@@ -9,9 +9,9 @@ sections:
   - key: "ボタンクリックの実装"
     hash: 6fe01ff7
   - key: "ラムダ式による簡潔な記述"
-    hash: 90bce481
+    hash: 2d2f109d
   - key: "代表的なイベントの種類"
-    hash: 1516b302
+    hash: 90dbf2d8
   - key: "イベント処理のベストプラクティス"
     hash: e213371a
   - key: "よくあるエラーと対処法"
