@@ -1,13 +1,13 @@
 ---
 source: manuscripts/chapter26-integrated-project-technology.md
-summarized: 2026-11-24
+summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
     hash: c478ab35
   - key: "技術を選ぶ前に考えること"
     hash: 5bee7aa6
   - key: "事例1：データをどこに保存するか"
-    hash: f2a6c502
+    hash: 171a2b00
   - key: "事例2：CSVを自分で読むか、ライブラリを使うか"
     hash: 061673fc
   - key: "事例3：画面を何で作るか"
@@ -83,3 +83,4 @@ sections:
 - 2026-11-24: 保存先の表の「JSONファイル（Jacksonなど）」を本書の既定に合わせて「Gsonなど」にした
 - 2026-11-24: 著者の答えに合わせ、本文とまとめに判断の基準を書き足した（docs/guides/book-defaults.md）
 - 2026-11-24: 評価の観点の節に、生成AIやブログが勧めるライブラリもMaven Centralで座標と版を確かめる旨を足した
+- 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）

@@ -61,3 +61,15 @@ claims:
       probe: PlaceholderLimits.java
       libs: ['com.h2database:h2:2.5.252']
       expect: ['^表の名前を\?にする: SQLException$', '^ORDER BY \?に列の名前を渡す: SQLException$', '^許した列名で並べる（price）: \[A, B, C\]$']
+
+  # ---- 節「バッチ処理」の測定（2026-11-24）
+  - id: batch-timing-embedded-vs-tcp
+    claim: H2 2.5.252を組み込みで使うと、3650件の追加で1件ずつ送る形とバッチの差は数ミリ秒にとどまる。同じH2をTCPサーバーとして起動して接続すると、1件ずつ送る形はバッチの10倍以上の時間がかかる（Apple M3・JDK 25で、1件ずつ54〜71ミリ秒、バッチ4〜5ミリ秒）
+    text:
+      - 3650件を追加する時間の差は、1件ずつ送る形とバッチで数ミリ秒でした
+      - 1件ずつ送る形は60ミリ秒前後、バッチは約5ミリ秒で、10倍以上の差が出ました
+    verify:
+      kind: run
+      probe: BatchTiming.java
+      libs: ['com.h2database:h2:2.5.252']
+      expect: ['^組み込み: 差は10ミリ秒未満: true$', '^ネットワーク経由: バッチは1件ずつの3分の1未満: true$']

@@ -1,17 +1,17 @@
 ---
 source: manuscripts/chapter12-advanced-collections.md
-summarized: 2026-11-24
+summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
     hash: e06b2ce6
   - key: "Stream APIによる現代的なコレクション操作"
     hash: c8dc225b
   - key: "Optional型による安全なnull処理"
-    hash: 1125e9af
+    hash: ba6e98bc
   - key: "並列ストリームによるパフォーマンス向上"
     hash: 87c4d4d4
   - key: "高度なStream操作"
-    hash: fde7fc8b
+    hash: 81ace911
   - key: "よくあるエラーと対処法"
     hash: 92c24189
   - key: "まとめ"
@@ -115,3 +115,4 @@ sections:
 - 2026-11-24: 学習目標を「話題＋〜できるの子項目」に、まとめを本文の再掲から「判断の順序・持ち帰ってほしい1つ・次章へのつなぎ」の段落に書き直した（第7章の見本にそろえた）。初めて読むときは飛ばしてよい節に「発展」の印（{.advanced}）を付けた
 - 2026-11-24: 発展の節（並列ストリームの内部動作・複雑な処理パイプラインの実装）を付録Iへ移し、本文には要点と案内の2〜4文を残した。サンプルコードの番号を振り直した
 - 2026-11-24: 著者の答えに合わせ、本文とまとめに判断の基準を書き足した（docs/guides/book-defaults.md）
+- 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）

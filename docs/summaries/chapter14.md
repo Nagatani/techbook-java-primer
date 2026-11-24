@@ -1,29 +1,29 @@
 ---
 source: manuscripts/chapter14-file-io.md
-summarized: 2026-11-24
+summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
     hash: 19d0e887
   - key: "ファイルI/Oの基礎とストリーム"
     hash: 6888c007
   - key: "テキストファイルの読み書き"
-    hash: 6fe4c8df
+    hash: ea9348e5
   - key: "バイナリファイルの高度な処理"
     hash: c60a13be
   - key: "オブジェクトの直列化（シリアライズ）"
     hash: dc35e8ae
   - key: "ファイルシステムの操作（NIO.2）"
-    hash: 7f53e5d8
+    hash: 530f6afe
   - key: "実践的なファイル処理例"
     hash: 16bfce19
   - key: "GUIでのファイル選択：`JFileChooser`"
     hash: 074e92e0
   - key: "Text Blocks：複数行の文字列を読みやすく書く"
-    hash: 39173b57
+    hash: 2ff25f0b
   - key: "まとめ"
     hash: e8b768f3
   - key: "よくあるエラーと対処法"
-    hash: 9238a0ba
+    hash: 8195534d
   - key: "章末演習"
     hash: 44fea0e4
 ---
@@ -118,3 +118,4 @@ sections:
 - 2026-11-24: 学習目標を「話題＋〜できるの子項目」に、まとめを本文の再掲から「判断の順序・持ち帰ってほしい1つ・次章へのつなぎ」の段落に書き直した（第7章の見本にそろえた）。初めて読むときは飛ばしてよい節に「発展」の印（{.advanced}）を付けた
 - 2026-11-24: 発展の節（バイナリファイルの高度な処理・オブジェクトの直列化・実践例：構造化データの生成と保存）を付録Iへ移し、本文には要点と案内の2〜4文を残した。サンプルコードの番号を振り直した
 - 2026-11-24: 著者の答えに合わせ、本文とまとめに判断の基準を書き足した（docs/guides/book-defaults.md）
+- 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）

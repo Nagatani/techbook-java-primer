@@ -462,6 +462,9 @@ MIT Licenseは、著作権表示とライセンスの文を残せば改変や商
 注意が要るのはGPL<span class="footnote">GPLはGNU General Public Licenseの略で、フリーソフトウェア財団（FSF）が定めたライセンスです。LGPLのLはLesser（以前はLibrary）を表します。</span>です。
 GPLのライブラリを組み込んだプログラムを配布するときは、そのプログラムのソースコードも公開する義務があるため、商用の製品に使うときは慎重に判断します。
 LGPLはこの義務を緩めたもので、ライブラリをリンクして使うだけなら、自分のプログラムのソースコードを公開する義務はありません。
+学生にとって身近なのは、課題をGitHubで公開するときや、卒業研究で作ったツールを人に配るときです。
+ライブラリのJARを同梱して配るなら、そのライセンスの文と著作権表示も一緒に付けます。
+GPLのライブラリを組み込んだツールを配るなら、ツールのソースコードもGPLの条件で公開します。
 
 #### 依存関係の管理
 
@@ -613,6 +616,8 @@ Mavenのビルドは、`compile`（コンパイル）→`test`（テストの実
 Gradleも、Mavenと同じく依存関係の管理とビルドを行うツールで、Androidアプリの開発では標準のビルドツールとして使われています。
 設定は`pom.xml`のXMLではなく`build.gradle`に書きますが、ライブラリはMavenと同じ座標で指定し、Maven Centralから取得します。
 本書では、ビルドツールの例としてMavenを使います。
+設定が`pom.xml`のXMLにそのまま書かれていて、何を指定しているかを読み取れるからです。
+Gradleの書き方は、Androidアプリの開発に進んでGradleに出会ったときに覚えれば間に合います。
 `build.gradle`の書き方とGradle Wrapperについて、詳しい説明とコード例は付録D「高度なビルドとデプロイメント技術」の「Gradleの基本」にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/appendix/d-build-and-deploy/`</span>。
 
 ## よくあるエラーと対処法

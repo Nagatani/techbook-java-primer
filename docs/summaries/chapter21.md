@@ -1,13 +1,13 @@
 ---
 source: manuscripts/chapter21-unit-testing.md
-summarized: 2026-11-24
+summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
     hash: 22fb1de6
   - key: "単体テストの基礎"
     hash: bdc3e3dc
   - key: "テストの基本形（AAAパターン）"
-    hash: dfe868ba
+    hash: f28d2c73
   - key: "テストを妨げる「依存関係」"
     hash: fba29a8d
   - key: "疎結合設計（Dependency Injection）"
@@ -17,7 +17,7 @@ sections:
   - key: "テスト駆動開発（TDD）"
     hash: 79bee057
   - key: "JUnitによる効率的なテスト"
-    hash: 88b7da73
+    hash: c3ef68dc
   - key: "テストのベストプラクティス"
     hash: 1c4e7aab
   - key: "継続的インテグレーション（CI）との統合"
@@ -125,3 +125,4 @@ sections:
 - 2026-11-23（流れ・矛盾・過不足の校閲）: 第21〜23章の低の指摘: 第21章はJUnitの節をTDDの節より前へ移して先取りの断りをなくし、テストメソッドのpublicの有無を説明し、前提を第3・4章のクラスにした。第22章はクラスパスの定義（JARをクラスファイルの一種のように書いていた）、スコープのruntime・provided、Mockitoの座標（第21章と同じmockito-junit-jupiter）、22-6の抜粋にTypeReferenceの行を含め、まとめから本文にない話題（Ivy・サプライチェーンなど）を外した。第23章はapp-imageの補足を一覧に統合し、第26章が使う--java-optionsを足し、前提から第14章を外した。第2章の「JavaDoc」を第22章の「Javadoc」にそろえた
 - 2026-11-24: 学習目標を「話題＋〜できるの子項目」に、まとめを本文の再掲から「判断の順序・持ち帰ってほしい1つ・次章へのつなぎ」の段落に書き直した（第7章の見本にそろえた）。初めて読むときは飛ばしてよい節に「発展」の印（{.advanced}）を付けた
 - 2026-11-24: 著者の判断で本文に残した節（第15章「新しい並行処理のしくみ」、第21章「継続的インテグレーション（CI）との統合」）の発展の印を外した
+- 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）

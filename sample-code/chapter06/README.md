@@ -16,7 +16,7 @@ javac -d out *.java
 
 | サンプルコード | ファイル | 実行 |
 |---|---|---|
-| [6-1](./06-01/) | MutablePoint.java<br>ThreadSafetyProblem.java | `java -cp out ThreadSafetyProblem` |
+| [6-2](./06-02/) | MutablePoint.java<br>ThreadSafetyProblem.java | `java -cp out ThreadSafetyProblem` |
 | [6-3](./06-03/) | ImmutablePoint.java | （mainメソッドなし） |
 | [6-4](./06-04/) | ImportJob.java | （mainメソッドなし） |
 | [6-5](./06-05/) | AuthenticationService.java | （mainメソッドなし） |

@@ -1,13 +1,13 @@
 ---
 source: manuscripts/chapter22-documentation-and-libraries.md
-summarized: 2026-11-24
+summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
     hash: 170b386f
   - key: "Javadocによるドキュメント"
     hash: 74af9f5c
   - key: "外部ライブラリの利用"
-    hash: 66e3648a
+    hash: 81817e86
   - key: "よくあるエラーと対処法"
     hash: ec81e6ec
   - key: "まとめ"
@@ -98,3 +98,4 @@ sections:
 - 2026-11-24: 学習目標を「話題＋〜できるの子項目」に、まとめを本文の再掲から「判断の順序・持ち帰ってほしい1つ・次章へのつなぎ」の段落に書き直した（第7章の見本にそろえた）。初めて読むときは飛ばしてよい節に「発展」の印（{.advanced}）を付けた
 - 2026-11-24: Jackson・Apache Commonsを付録Gへ、Gradleを付録Dへ移した（Log4Shellのコラムは本文に残し、「実践的な開発フロー」の末尾へ移した）。サンプルコードの番号を振り直した
 - 2026-11-24: 著者の答えに合わせ、本文とまとめに判断の基準を書き足した（docs/guides/book-defaults.md）
+- 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）

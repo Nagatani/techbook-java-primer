@@ -1,17 +1,17 @@
 ---
 source: manuscripts/chapter08-special-classes.md
-summarized: 2026-11-24
+summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
-    hash: a89dc42a
+    hash: 6f844490
   - key: "列挙型（Enum）"
-    hash: 027dd3d0
+    hash: 8b7cbc6c
   - key: "レコード（Record）"
-    hash: 9b0fd36c
+    hash: 6ac4a35a
   - key: "EnumとRecordの使い分けと組み合わせ"
-    hash: 48b72e01
+    hash: 6cd350b5
   - key: "内部クラス（Inner Classes）"
-    hash: 6dea0333
+    hash: 8ae03d82
   - key: "よくあるエラーと対処法"
     hash: c2e53030
   - key: "まとめ"
@@ -123,3 +123,4 @@ sections:
 - 2026-11-23（流れ・矛盾・過不足の校閲）: 低の指摘: 前提のstatic final定数を第3章に直した。8-6と同じしくみの繰り返しだったStrategyの例（旧8-8）を削り、8-6の後にStrategyパターンの名前を説明して全文の場所を示した（以降の番号を振り直した）。ローカルRecordにローカル内部クラスと同じ扱いだと添え、8-20のApiResponseの静的メソッドsuccessを、アクセサーsuccess()と重ならないokにした
 - 2026-11-24: 学習目標を「話題＋〜できるの子項目」に、まとめを本文の再掲から「判断の順序・持ち帰ってほしい1つ・次章へのつなぎ」の段落に書き直した（第7章の見本にそろえた）。初めて読むときは飛ばしてよい節に「発展」の印（{.advanced}）を付けた
 - 2026-11-24: 発展の節（enumを使ったデザインパターン・ネストされたRecord・実践的な使用例：イテレーターパターン）を付録Iへ移し、本文には要点と案内の2〜4文を残した。サンプルコードの番号を振り直した
+- 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）

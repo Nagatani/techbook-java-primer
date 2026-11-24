@@ -1,19 +1,19 @@
 ---
 source: manuscripts/chapter07-abstract-classes-and-interfaces.md
-summarized: 2026-11-24
+summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
     hash: 2f3abcce
   - key: "抽象化の必要性"
-    hash: 9afbee5a
+    hash: f3afc3a1
   - key: "抽象クラスと抽象メソッド"
-    hash: e4c9c800
+    hash: bd9ab340
   - key: "インターフェイス：振る舞いの契約"
     hash: 827cddb9
   - key: "抽象クラス vs インターフェイス"
-    hash: 5eb3bf81
+    hash: cfe1b11f
   - key: "Java 8以降のインターフェイス進化"
-    hash: aa3b9f8c
+    hash: aa064710
   - key: "高度な設計パターン"
     hash: 14c8ff03
   - key: "Factoryパターン：オブジェクト生成の抽象化"
@@ -140,3 +140,4 @@ sections:
 - 2026-11-24（AIらしさを減らす作業の見本）: 学習目標を「話題＋〜できるの子項目」の形に、まとめを判断の順序（迷ったらインターフェイス、共通の状態なら抽象クラス、順序の固定はfinal）と持ち帰る1つ（型を「何ができるか」で決める）の段落に書き直した。「高度な設計パターン」に発展の印（{.advanced}）を付けた
 - 2026-11-24: 印を付けた節が「高度な設計パターン」の1つだけであることを確かめた（ほかの章と同じ基準）
 - 2026-11-24: 発展の節（高度な設計パターン）を付録Iへ移し、本文には要点と案内の2〜4文を残した。サンプルコードの番号を振り直した
+- 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）

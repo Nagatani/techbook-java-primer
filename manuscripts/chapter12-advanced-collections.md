@@ -318,7 +318,10 @@ public class StreamExample {
 
 ### null参照の問題
 
-JavaプログラミングにおいてNullPointerException（NPE）はもっとも頻繁に遭遇する実行時エラーの1つです。Tony Hoareは自身が発明したnull参照を「10億ドルの過ち」と呼びました。従来のJavaコードでは、nullチェックが至るところに散在し、コードの可読性と保守性を著しく低下させていました。
+`NullPointerException`（NPE）には、これまでの章でも出会ってきました。
+第3章のオブジェクトの配列では、要素に`new`したインスタンスを入れないまま、その要素のメソッドを呼ぶとNPEになりました。
+第9章の`Map`の`get()`は、存在しないキーに対して`null`を返し、それを`int`に変換しようとするとNPEになりました。
+どちらも、`null`が入りうることがコードの型からは読み取れず、確かめる`if`文を書き忘れたときに起きます。
 
 ### Optional型の概念
 
@@ -876,9 +879,13 @@ List<Integer> safeResults = numbers.parallelStream()
 
 ## 高度なStream操作
 
+この節で必ず身につけたいのは、`groupingBy`でグループに分けることと、`reduce`で要素を1つの結果にまとめる考え方です。
+`toArray`、`peek`、早期終了操作の細部は、必要になったときに調べれば足ります。
+
 ### flatMapによる複雑なデータ変換
 
-`flatMap`は、ネストした構造を平坦化するために使用される重要な操作です。各要素をストリームに変換し、それらをすべて結合して1つのストリームにします。これは、リストのリストを単一のリストに変換する場合や、文字列を単語に分割する場合などにとくに有用です。
+`flatMap`は、各要素をストリームに変換し、それらをすべてつないで1つのストリームにします。
+リストのリストを1つのリストにしたり、文のリストを単語のリストにしたりするときに使います。
 
 <div class="figure">
 
@@ -930,7 +937,7 @@ public class FlatMapExample {
 [Hello, world, Java, programming, Stream, API]
 ```
 
-`flatMap`は、一対多の関係を持つデータを処理する際に非常に強力です。各学生が複数の科目を履修している場合など、実世界のデータ構造でよく遭遇するパターンを簡潔に処理できます。
+1人の学生が複数の科目を履修しているときに、全学生の履修科目を1つのリストにまとめる処理のように、1つの要素から複数の値が出てくるデータに`flatMap`を使います。
 
 ### reduceによる集約処理
 
@@ -976,7 +983,7 @@ Java is awesome
 平均点: 85.0
 ```
 
-`reduce`は非常に強力ですが、多くの一般的な集約操作には、数値のストリームの`sum()`・`max()`・`min()`や`collect()`操作が用意されているため、それらを優先して使用することが推奨されます<span class="footnote">`reduce`を並列ストリームで使うときは、渡す演算が結合法則を満たす（`(a + b) + c`と`a + (b + c)`が等しい）ことが条件です。初期値には、足し算なら0のように、結果を変えない値を渡します。</span>。
+`reduce`でどんな集約も書けますが、多くの一般的な集約操作には、数値のストリームの`sum()`・`max()`・`min()`や`collect()`操作が用意されているため、それらを優先して使用することが推奨されます<span class="footnote">`reduce`を並列ストリームで使うときは、渡す演算が結合法則を満たす（`(a + b) + c`と`a + (b + c)`が等しい）ことが条件です。初期値には、足し算なら0のように、結果を変えない値を渡します。</span>。
 
 ### Collectorsによる高度なデータ収集
 
@@ -1027,7 +1034,9 @@ public class CollectorsExample {
 不合格者: 1人
 ```
 
-`Collectors.groupingBy()`は、データを特定の条件でグループ化する際に非常に強力で、データ分析やレポート作成において頻繁に使用されます。データベースのGROUP BY句<span class="footnote">SQL（Structured Query Language）は、データベースを操作するための言語です。`GROUP BY`句は、同じ値を持つ行をまとめて集計します。</span>に相当する処理をJavaのコード内で簡潔に実現できます。
+`Collectors.groupingBy()`は、データベースのGROUP BY句<span class="footnote">SQL（Structured Query Language）は、データベースを操作するための言語です。`GROUP BY`句は、同じ値を持つ行をまとめて集計します。</span>に当たる処理で、要素をキーごとのグループに分けます。
+2番目の引数にグループごとの集め方を渡すと、グループごとに集計できます。
+たとえば、科目名`subject`と点数`point`を成分に持つRecordの`Score`のリストなら、`collect(Collectors.groupingBy(Score::subject, Collectors.averagingInt(Score::point)))`で、科目ごとの平均点を`Map<String, Double>`として求められます。
 `groupingBy`が返す`Map`の種類は仕様で決められておらず（現在の実装は`HashMap`です）、グループの表示順は保証されません。
 順序をそろえたい場合は、`groupingBy`の2番目の引数に`TreeMap::new`を渡します<span class="footnote">`Map`の種類を指定できるのは3つの引数をとる`groupingBy`で、3番目の引数にはグループごとの集め方（`Collectors.toList()`など）を渡します。</span>。
 

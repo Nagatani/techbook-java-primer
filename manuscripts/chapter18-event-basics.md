@@ -650,6 +650,7 @@ EDT上での実行: true
 ```
 
 EDTに処理を頼むメソッドには、`invokeLater()`のほかに`SwingUtilities.invokeAndWait()`があります。
+本書の演習では`invokeAndWait()`を使わないので、この段落は初めて読むときは飛ばしてかまいません。
 `invokeLater()`は処理をイベントキューに入れるとすぐに戻り、呼び出したスレッドはそのまま先へ進みます。
 `invokeAndWait()`は、EDTがその処理を終えるまで呼び出したスレッドを待たせます。
 `invokeAndWait()`をEDT上から呼び出すと`Error`が発生し、ロックを持ったまま呼び出すとデッドロックを起こすことがあります。
