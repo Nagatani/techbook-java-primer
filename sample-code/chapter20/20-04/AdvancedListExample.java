@@ -40,14 +40,10 @@ class TaskListModel extends AbstractListModel<Task> {
     }
     
     @Override
-    public int getSize() {
-        return tasks.size();
-    }
-    
+    public int getSize() { return tasks.size(); }
+
     @Override
-    public Task getElementAt(int index) {
-        return tasks.get(index);
-    }
+    public Task getElementAt(int index) { return tasks.get(index); }
     
     public void addTask(Task task) {
         tasks.add(task);
@@ -108,7 +104,6 @@ class TaskListCellRenderer extends JPanel
             JList<? extends Task> list,
             Task task, int index, boolean isSelected,
             boolean cellHasFocus) {
-        
         titleLabel.setText(task.getTitle());
         descriptionLabel.setText(task.getDescription());
         dueDateLabel.setText("期限: " + task.getDueDate()
@@ -148,7 +143,6 @@ public class AdvancedListExample extends JFrame {
         setTitle("タスク管理リスト");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // モデルとリストの作成
         model = new TaskListModel();
         taskList = new JList<>(model);
         taskList.setCellRenderer(new TaskListCellRenderer());

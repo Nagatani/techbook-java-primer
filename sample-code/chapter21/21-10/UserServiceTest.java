@@ -13,8 +13,7 @@ public class UserServiceTest {
     @Test
     void testGetUserProfile() {
         // モックの振る舞いを定義
-        when(mockRepository.findById("123"))
-            .thenReturn("Test User");
+        when(mockRepository.findById("123")).thenReturn("Test User");
         
         UserService service = new UserService(mockRepository);
         String profile = service.getUserProfile("123");

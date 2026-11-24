@@ -3,7 +3,7 @@
     "dir": "23-01",
     "main": "SimpleApp",
     "excerpt": [
-      { "file": "SimpleApp.java", "from": 1, "to": 15 }
+      { "file": "SimpleApp.java", "from": 1, "to": 14 }
     ]
   },
   "23-3": {
@@ -24,7 +24,7 @@
     "dir": "23-05",
     "main": "ResourceApp",
     "excerpt": [
-      { "file": "ResourceApp.java", "from": 5, "to": 24 }
+      { "file": "ResourceApp.java", "from": 5, "to": 23 }
     ]
   }
 }

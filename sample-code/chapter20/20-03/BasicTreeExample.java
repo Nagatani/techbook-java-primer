@@ -16,7 +16,6 @@ public class BasicTreeExample extends JFrame {
         DefaultMutableTreeNode src = new DefaultMutableTreeNode("src");
         DefaultMutableTreeNode lib = new DefaultMutableTreeNode("lib");
         DefaultMutableTreeNode doc = new DefaultMutableTreeNode("doc");
-        
         root.add(src);
         root.add(lib);
         root.add(doc);

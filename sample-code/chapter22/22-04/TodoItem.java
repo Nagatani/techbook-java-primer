@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Arrays;
 
-// Gsonの高度な使用例
 public class TodoItem {
     @SerializedName("task_title")  // JSONのフィールド名を指定
     private String title;

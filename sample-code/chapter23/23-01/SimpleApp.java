@@ -1,4 +1,3 @@
-// SimpleApp.java
 import javax.swing.*;
 
 public class SimpleApp {

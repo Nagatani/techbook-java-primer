@@ -107,7 +107,6 @@ NG：1.5になるはず
 <span class="listing-number">**サンプルコード21-2**　Calculator.java</span>
 
 ```java
-// Calculator.java
 public class Calculator {
     public int add(int a, int b) {
         return a + b;
@@ -129,7 +128,6 @@ public class Calculator {
 <span class="listing-number">**サンプルコード21-3**　CalculatorManualTest.java</span>
 
 ```java
-// CalculatorManualTest.java
 public class CalculatorManualTest {
     public static void main(String[] args) {
         // Arrange（準備）
@@ -399,9 +397,8 @@ public class CalculatorTest {
     
     @Test
     void testDivideByZero() {
-        assertThrows(ArithmeticException.class, () -> {
-            calculator.divide(10, 0);
-        });
+        assertThrows(ArithmeticException.class,
+                () -> calculator.divide(10, 0));
     }
 }
 ```
@@ -441,8 +438,7 @@ public class UserServiceTest {
     @Test
     void testGetUserProfile() {
         // モックの振る舞いを定義
-        when(mockRepository.findById("123"))
-            .thenReturn("Test User");
+        when(mockRepository.findById("123")).thenReturn("Test User");
         
         UserService service = new UserService(mockRepository);
         String profile = service.getUserProfile("123");
@@ -608,11 +604,10 @@ JUnit Jupiterの`@Nested`アノテーションを使用すると、テストを�
 `@DisplayName`を使用することで、テストレポートに読みやすい説明を表示できます。
 以下の例では、正常系と異常系のテストを明確に分離しています。
 
-<span class="listing-number">**サンプルコード21-16**　PaymentServiceTest.java（5〜26行目）</span>
+<span class="listing-number">**サンプルコード21-16**　PaymentServiceTest.java（5〜25行目）</span>
 
 ```java
 public class PaymentServiceTest {
-    
     @Nested
     @DisplayName("正常系のテスト")
     class SuccessfulPayments {

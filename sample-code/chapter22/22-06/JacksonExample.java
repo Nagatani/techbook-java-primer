@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.*;
 
 public class JacksonExample {
-    
     // データモデルクラス
     static class Product {
         @JsonProperty("product_id")
@@ -18,7 +17,6 @@ public class JacksonExample {
         private String internalCode;
         
         private Map<String, String> attributes;
-        
         // コンストラクター、ゲッター、セッター
         public Product() {}
         

@@ -3,7 +3,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class PaymentServiceTest {
-    
     @Nested
     @DisplayName("正常系のテスト")
     class SuccessfulPayments {

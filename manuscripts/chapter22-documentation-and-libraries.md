@@ -256,7 +256,6 @@ IntelliJ IDEAはMavenを内蔵しているので、IDEのなかで使うだけ�
 ```xml
 <dependencies>
     <!-- 他の依存関係... -->
-
     <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
@@ -287,10 +286,9 @@ Mavenは、依存関係を次の順に解決します。
 
 次の例では、`@SerializedName`アノテーションによるJSONのフィールド名の指定、`transient`<span class="footnote">`transient`は、第14章「ファイルI/O」の直列化で学んだ修飾子です。Gsonも、この修飾子を付けたフィールドをJSONに含めません。</span>によるフィールドの除外、`GsonBuilder`による整形出力の設定を示します。
 
-<span class="listing-number">**サンプルコード22-4**　TodoItem.java（9〜20、33行目）、GsonAdvancedExample.java（8〜18、30〜43行目）</span>
+<span class="listing-number">**サンプルコード22-4**　TodoItem.java（9〜19、32行目）、GsonAdvancedExample.java（8〜18、30〜43行目）</span>
 
 ```java
-// Gsonの高度な使用例
 public class TodoItem {
     @SerializedName("task_title")  // JSONのフィールド名を指定
     private String title;
@@ -403,11 +401,10 @@ Jacksonは、Gsonと並んで人気の高いJSONライブラリで、エンタ�
 
 以下の例では、`@JsonProperty`によるフィールド名のマッピング、`@JsonIgnore`による特定フィールドの除外、`TypeReference`を使ったジェネリック型のデシリアライズなど、実践的な機能を紹介します。
 
-<span class="listing-number">**サンプルコード22-6**　JacksonExample.java（7〜21、36、38〜50、64〜65、73〜81行目）</span>
+<span class="listing-number">**サンプルコード22-6**　JacksonExample.java（7〜19、34、36〜47、62〜63、71〜79行目）</span>
 
 ```java
 public class JacksonExample {
-    
     // データモデルクラス
     static class Product {
         @JsonProperty("product_id")
@@ -420,7 +417,6 @@ public class JacksonExample {
         private String internalCode;
         
         private Map<String, String> attributes;
-        
         // ...
     }
     // ...
@@ -436,7 +432,6 @@ public class JacksonExample {
         String prettyJson = mapper.writerWithDefaultPrettyPrinter()
             .writeValueAsString(product);
         IO.println("\nPretty JSON:\n" + prettyJson);
-        
         // ...
         Product loaded = mapper.readValue(jsonInput, Product.class);
         IO.println("\nLoaded: " + loaded.getName());
@@ -488,11 +483,10 @@ Apache Commonsは、Javaプログラミングでよく使われる機能を提�
 
 Apache Commons LangはJava標準APIを補完する便利なユーティリティメソッドを提供します。以下の例では、文字列操作、null安全な処理、配列操作、ランダムな文字列の生成、日付の書式化、`toString`の自動生成など、日常的に必要になる機能を示します。
 
-<span class="listing-number">**サンプルコード22-8**　CommonsLangExample.java（11〜13、22〜26、37、39〜59、78〜79行目）</span>
+<span class="listing-number">**サンプルコード22-8**　CommonsLangExample.java（11〜12、21〜25、36、38〜58、77〜78行目）</span>
 
 ```java
 public class CommonsLangExample {
-    
     static class Person {
         // ...
         @Override

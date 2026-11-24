@@ -335,17 +335,14 @@ GUI（第17〜20章）とデータベース（第24章）の知識は、第26章
 ```java
 // Enrollment.java
 // 在籍区分。学部生と大学院生で持つ情報が違うので、区分ごとにレコードを分ける
-public sealed interface Enrollment permits Undergraduate, Graduate {
-}
+public sealed interface Enrollment permits Undergraduate, Graduate {}
 
 // Undergraduate.java - 学部生（入学年度を持つ）
-public record Undergraduate(int admissionYear) implements Enrollment {
-}
+public record Undergraduate(int admissionYear) implements Enrollment {}
 
 // Graduate.java - 大学院生（研究分野と指導教員を持つ）
 public record Graduate(String researchField, String advisor)
-        implements Enrollment {
-}
+        implements Enrollment {}
 
 public final class Student {
     private final String id;

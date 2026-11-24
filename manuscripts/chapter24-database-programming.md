@@ -322,13 +322,12 @@ GitHubの全文では、表の作成に`Statement`を使っています<span cla
 次の例は、ログインの判定を2つの方法で書いたものです。
 この例の`users`表は、説明を短くするため、ユーザー名とパスワードのハッシュの列だけを持つ表として別に作っています。
 
-<span class="listing-number">**サンプルコード24-6**　LoginExample.java（22〜47行目）</span>
+<span class="listing-number">**サンプルコード24-6**　LoginExample.java（22〜45行目）</span>
 
 ```java
     // 危険な例。入力をSQL文に直接つないでいる
     static boolean unsafeLogin(Connection conn, String username,
-            String passwordHash)
-            throws SQLException {
+            String passwordHash) throws SQLException {
         String sql = "SELECT * FROM users WHERE username = '" + username
             + "' AND password_hash = '" + passwordHash + "'";
         try (Statement stmt = conn.createStatement();
@@ -339,8 +338,7 @@ GitHubの全文では、表の作成に`Statement`を使っています<span cla
 
     // 安全な例。入力は?の位置に「値」として渡り、SQL文の一部にはならない
     static boolean safeLogin(Connection conn, String username,
-            String passwordHash)
-            throws SQLException {
+            String passwordHash) throws SQLException {
         String sql = "SELECT * FROM users WHERE username = ? AND "
                 + "password_hash = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

@@ -9,7 +9,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.Date;
 
 public class CommonsLangExample {
-    
     static class Person {
         private String name;
         private int age;

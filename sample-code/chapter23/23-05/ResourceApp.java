@@ -10,8 +10,7 @@ public class ResourceApp {
             
             // アイコンの読み込み
             ImageIcon icon = new ImageIcon(
-                ResourceApp.class.getResource("/icon.png")
-            );
+                    ResourceApp.class.getResource("/icon.png"));
             JLabel label =
                     new JLabel("画像リソースの例", icon, JLabel.CENTER);
             

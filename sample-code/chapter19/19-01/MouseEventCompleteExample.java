@@ -33,7 +33,6 @@ public class MouseEventCompleteExample extends JFrame {
         logArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(logArea);
         
-        // マウスリスナーの追加
         MouseAdapter mouseHandler = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

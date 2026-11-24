@@ -12,7 +12,6 @@ public class SortableTableExample extends JFrame {
         setTitle("ソート可能なテーブル");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // モデルとテーブルの作成
         model = new PersonTableModel();
         table = new JTable(model);
         

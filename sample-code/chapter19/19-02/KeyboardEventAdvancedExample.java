@@ -23,7 +23,6 @@ public class KeyboardEventAdvancedExample extends JFrame {
         statusLabel = new JLabel("キーを押してください");
         statusLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         
-        // キーリスナーの追加
         textArea.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -93,8 +92,7 @@ public class KeyboardEventAdvancedExample extends JFrame {
         
         // Ctrl+Dで行削除
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D,
-                InputEvent.CTRL_DOWN_MASK), 
-            "delete-line");
+                InputEvent.CTRL_DOWN_MASK), "delete-line");
         actionMap.put("delete-line", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

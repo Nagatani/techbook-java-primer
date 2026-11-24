@@ -54,29 +54,23 @@ JTableはこれらを組み合わせて表を表示します。
 `JScrollPane`に入れることで、データが多い場合にスクロールできるようになります。
 この方法は簡単ですが、表示したあとに行を追加・削除する用途には向いていません。
 
-<span class="listing-number">**サンプルコード20-1**　BasicTableExample.java（4〜29、36行目）</span>
+<span class="listing-number">**サンプルコード20-1**　BasicTableExample.java（4〜23、30行目）</span>
 
 ```java
 public class BasicTableExample extends JFrame {
     public BasicTableExample() {
         setTitle("基本的なJTableの例");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // 列名の定義
+
         String[] columnNames = {"ID", "名前", "年齢", "メールアドレス"};
-        
-        // データの定義
         Object[][] data = {
             {1, "田中太郎", 25, "tanaka@example.com"},
             {2, "鈴木花子", 30, "suzuki@example.com"},
             {3, "佐藤次郎", 28, "sato@example.com"},
             {4, "山田美咲", 22, "yamada@example.com"}
         };
-        
-        // JTableの作成
+
         JTable table = new JTable(data, columnNames);
-        
-        // スクロールペインに追加
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
         
@@ -109,7 +103,7 @@ JTableは組み込みのソート機能を提供しています<span class="foot
 この例では、`AbstractTableModel`を継承した`PersonTableModel`が、`Person`（第8章で学んだRecord）のリストを持ちます。
 全文はGitHubリポジトリの`sample-code/chapter20/20-02/`にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter20/20-02/`</span>。
 
-<span class="listing-number">**サンプルコード20-2**　PersonTableModel.java（6、15〜16、18〜19、30〜39、50〜59行目）、SortableTableExample.java（6、11、15〜38、58〜64、72、79行目）</span>
+<span class="listing-number">**サンプルコード20-2**　PersonTableModel.java（6、15〜16、18〜19、30〜39、50〜59行目）、SortableTableExample.java（6、11、15〜37、57〜63、71、78行目）</span>
 
 ```java
 public class PersonTableModel extends AbstractTableModel {
@@ -146,7 +140,6 @@ public class SortableTableExample extends JFrame {
     // ...
     public SortableTableExample() {
         // ...
-        // モデルとテーブルの作成
         model = new PersonTableModel();
         table = new JTable(model);
         
@@ -234,7 +227,7 @@ JTreeは階層構造のデータを表示するコンポーネントです。
 子を持つノードには、展開・折りたたみのハンドルが表示されます。
 `setShowsRootHandles(true)`は、いちばん上のルートノードにもハンドルを表示する指定です。
 
-<span class="listing-number">**サンプルコード20-3**　BasicTreeExample.java（6〜7、11〜29、35〜37、45、52行目）</span>
+<span class="listing-number">**サンプルコード20-3**　BasicTreeExample.java（6〜7、11〜27、34〜36、44、51行目）</span>
 
 ```java
 public class BasicTreeExample extends JFrame {
@@ -248,7 +241,6 @@ public class BasicTreeExample extends JFrame {
         DefaultMutableTreeNode src = new DefaultMutableTreeNode("src");
         DefaultMutableTreeNode lib = new DefaultMutableTreeNode("lib");
         DefaultMutableTreeNode doc = new DefaultMutableTreeNode("doc");
-        
         root.add(src);
         root.add(lib);
         root.add(doc);
@@ -258,7 +250,6 @@ public class BasicTreeExample extends JFrame {
         DefaultMutableTreeNode test = new DefaultMutableTreeNode("test");
         src.add(main);
         src.add(test);
-        
         // ...
         // JTreeの作成
         JTree tree = new JTree(root);
@@ -305,20 +296,16 @@ public class BasicTreeExample extends JFrame {
 `DefaultTreeCellRenderer`は`JLabel`を継承しているので、`setText`や`setIcon`をそのまま呼べます。
 作ったレンダラーは、ツリーの`setCellRenderer`で設定します。
 
-<span class="listing-number">**サンプルコード20-4**　AdvancedListExample.java（29、42〜55、67〜71、78、90〜91、99〜100、104〜140、143、147、151〜155、206、213行目）</span>
+<span class="listing-number">**サンプルコード20-4**　AdvancedListExample.java（29、42〜51、63〜67、74、86〜87、95〜96、100〜135、138、142、146〜149、200、207行目）</span>
 
 ```java
 class TaskListModel extends AbstractListModel<Task> {
     // ...
     @Override
-    public int getSize() {
-        return tasks.size();
-    }
-    
+    public int getSize() { return tasks.size(); }
+
     @Override
-    public Task getElementAt(int index) {
-        return tasks.get(index);
-    }
+    public Task getElementAt(int index) { return tasks.get(index); }
     
     public void addTask(Task task) {
         tasks.add(task);
@@ -346,7 +333,6 @@ class TaskListCellRenderer extends JPanel
             JList<? extends Task> list,
             Task task, int index, boolean isSelected,
             boolean cellHasFocus) {
-        
         titleLabel.setText(task.getTitle());
         descriptionLabel.setText(task.getDescription());
         dueDateLabel.setText("期限: " + task.getDueDate()
@@ -381,7 +367,6 @@ public class AdvancedListExample extends JFrame {
     // ...
     public AdvancedListExample() {
         // ...
-        // モデルとリストの作成
         model = new TaskListModel();
         taskList = new JList<>(model);
         taskList.setCellRenderer(new TaskListCellRenderer());

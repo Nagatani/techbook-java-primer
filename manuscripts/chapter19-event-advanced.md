@@ -40,14 +40,13 @@
 右クリックメニューは、リスナーではなく`setComponentPopupMenu()`でパネルに付けます。
 メニューを開く操作がボタンを押したときか離したときかはOSによって違いますが、この方法ならどちらの場合もメニューを表示できます。
 
-<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5、11、36〜65、79〜84、99〜102、119、131行目）</span>
+<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5、11、36〜64、78〜83、98〜101、118、130行目）</span>
 
 ```java
 public class MouseEventCompleteExample extends JFrame {
     // ...
     public MouseEventCompleteExample() {
         // ...
-        // マウスリスナーの追加
         MouseAdapter mouseHandler = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -109,14 +108,13 @@ Ctrl+Shift+Dは、押されているキーの集合で同時押しを調べる�
 ダイアログが開くなどしてフォーカスが移ると、キーを離したイベントがテキストエリアに届かず、集合にキーが残ってしまいます。
 そのため、フォーカスが外れたとき（`focusLost()`）に集合を空にしています。
 
-<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7、12、26〜52、68〜77、87、89〜103、113、168行目）</span>
+<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7、12、26〜51、67〜76、86、88〜101、111、166行目）</span>
 
 ```java
 public class KeyboardEventAdvancedExample extends JFrame {
     // ...
     public KeyboardEventAdvancedExample() {
         // ...
-        // キーリスナーの追加
         textArea.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -164,8 +162,7 @@ public class KeyboardEventAdvancedExample extends JFrame {
         
         // Ctrl+Dで行削除
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D,
-                InputEvent.CTRL_DOWN_MASK), 
-            "delete-line");
+                InputEvent.CTRL_DOWN_MASK), "delete-line");
         actionMap.put("delete-line", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -198,12 +195,11 @@ public class KeyboardEventAdvancedExample extends JFrame {
 この例では、どの変更でも同じ検証を行うので、3つのメソッドから同じ`validateForm()`を呼んでいます。
 以下のコードは、入力のたびにメールアドレスの形式、パスワードの長さと強度、確認用パスワードの一致を検証する例です。
 
-<span class="listing-number">**サンプルコード19-3**　DocumentListenerExample.java（7、66〜116、153〜155、184行目）</span>
+<span class="listing-number">**サンプルコード19-3**　DocumentListenerExample.java（7、67〜116、153〜155、184行目）</span>
 
 ```java
 public class DocumentListenerExample extends JFrame {
     // ...
-    
     private void setupDocumentListeners() {
         // Emailフィールドのリスナー
         emailField.getDocument()
@@ -285,7 +281,7 @@ Swingの部品が用意するイベントだけでなく、独自のイベント
 
 </div>
 
-<span class="listing-number">**サンプルコード19-4**　CustomEventExample.java（6〜36、46〜61、64、70、100〜109、135〜136、163、170行目）</span>
+<span class="listing-number">**サンプルコード19-4**　CustomEventExample.java（6〜36、46〜61、64、70、100〜108、134〜135、162、169行目）</span>
 
 ```java
 // カスタムイベントクラス
@@ -349,7 +345,6 @@ public class CustomEventExample extends JFrame {
                 double newTemp = e.getNewTemperature();
                 double oldTemp = e.getOldTemperature();
                 
-                // 表示を更新
                 temperatureLabel.setText("%.1f°C".formatted(newTemp));
                 // ...
             }

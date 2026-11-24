@@ -23,7 +23,7 @@
     "dir": "24-06",
     "main": "LoginExample",
     "excerpt": [
-      { "file": "LoginExample.java", "from": 22, "to": 47 }
+      { "file": "LoginExample.java", "from": 22, "to": 45 }
     ],
     "libs": [
       "com.h2database:h2:2.5.252"

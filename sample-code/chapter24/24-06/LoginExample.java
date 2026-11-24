@@ -21,8 +21,7 @@ public class LoginExample {
 
     // 危険な例。入力をSQL文に直接つないでいる
     static boolean unsafeLogin(Connection conn, String username,
-            String passwordHash)
-            throws SQLException {
+            String passwordHash) throws SQLException {
         String sql = "SELECT * FROM users WHERE username = '" + username
             + "' AND password_hash = '" + passwordHash + "'";
         try (Statement stmt = conn.createStatement();
@@ -33,8 +32,7 @@ public class LoginExample {
 
     // 安全な例。入力は?の位置に「値」として渡り、SQL文の一部にはならない
     static boolean safeLogin(Connection conn, String username,
-            String passwordHash)
-            throws SQLException {
+            String passwordHash) throws SQLException {
         String sql = "SELECT * FROM users WHERE username = ? AND "
                 + "password_hash = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

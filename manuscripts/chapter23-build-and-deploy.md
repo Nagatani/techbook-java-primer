@@ -63,7 +63,6 @@ JAR（Java Archive）は、複数のJavaクラスファイルや画像・設定�
 <span class="listing-number">**サンプルコード23-1**　SimpleApp.java</span>
 
 ```java
-// SimpleApp.java
 import javax.swing.*;
 
 public class SimpleApp {
@@ -288,7 +287,7 @@ Gradleでは、`build.gradle`の`jar`ブロックで、`manifest`の`attributes`
 
 アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります。
 
-<span class="listing-number">**サンプルコード23-5**　ResourceApp.java（5〜24行目）</span>
+<span class="listing-number">**サンプルコード23-5**　ResourceApp.java（5〜23行目）</span>
 
 ```java
 public class ResourceApp {
@@ -299,8 +298,7 @@ public class ResourceApp {
             
             // アイコンの読み込み
             ImageIcon icon = new ImageIcon(
-                ResourceApp.class.getResource("/icon.png")
-            );
+                    ResourceApp.class.getResource("/icon.png"));
             JLabel label =
                     new JLabel("画像リソースの例", icon, JLabel.CENTER);
             

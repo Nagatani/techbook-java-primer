@@ -1,4 +1,3 @@
-// CalculatorManualTest.java
 public class CalculatorManualTest {
     public static void main(String[] args) {
         // Arrange（準備）

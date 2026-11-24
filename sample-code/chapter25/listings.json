@@ -3,9 +3,9 @@
     "dir": "25-01",
     "main": "DesignDemo",
     "excerpt": [
-      { "file": "Enrollment.java", "from": 1, "to": 4 },
-      { "file": "Undergraduate.java", "from": 1, "to": 3 },
-      { "file": "Graduate.java", "from": 1, "to": 4 },
+      { "file": "Enrollment.java", "from": 1, "to": 3 },
+      { "file": "Undergraduate.java", "from": 1, "to": 2 },
+      { "file": "Graduate.java", "from": 1, "to": 3 },
       { "file": "Student.java", "from": 5, "to": 10 },
       { "file": "Student.java", "from": 31, "to": 48 }
     ]

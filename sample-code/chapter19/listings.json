@@ -5,11 +5,11 @@
     "excerpt": [
       { "file": "MouseEventCompleteExample.java", "from": 5, "to": 5 },
       { "file": "MouseEventCompleteExample.java", "from": 11, "to": 11 },
-      { "file": "MouseEventCompleteExample.java", "from": 36, "to": 65 },
-      { "file": "MouseEventCompleteExample.java", "from": 79, "to": 84 },
-      { "file": "MouseEventCompleteExample.java", "from": 99, "to": 102 },
-      { "file": "MouseEventCompleteExample.java", "from": 119, "to": 119 },
-      { "file": "MouseEventCompleteExample.java", "from": 131, "to": 131 }
+      { "file": "MouseEventCompleteExample.java", "from": 36, "to": 64 },
+      { "file": "MouseEventCompleteExample.java", "from": 78, "to": 83 },
+      { "file": "MouseEventCompleteExample.java", "from": 98, "to": 101 },
+      { "file": "MouseEventCompleteExample.java", "from": 118, "to": 118 },
+      { "file": "MouseEventCompleteExample.java", "from": 130, "to": 130 }
     ]
   },
   "19-2": {
@@ -18,12 +18,12 @@
     "excerpt": [
       { "file": "KeyboardEventAdvancedExample.java", "from": 7, "to": 7 },
       { "file": "KeyboardEventAdvancedExample.java", "from": 12, "to": 12 },
-      { "file": "KeyboardEventAdvancedExample.java", "from": 26, "to": 52 },
-      { "file": "KeyboardEventAdvancedExample.java", "from": 68, "to": 77 },
-      { "file": "KeyboardEventAdvancedExample.java", "from": 87, "to": 87 },
-      { "file": "KeyboardEventAdvancedExample.java", "from": 89, "to": 103 },
-      { "file": "KeyboardEventAdvancedExample.java", "from": 113, "to": 113 },
-      { "file": "KeyboardEventAdvancedExample.java", "from": 168, "to": 168 }
+      { "file": "KeyboardEventAdvancedExample.java", "from": 26, "to": 51 },
+      { "file": "KeyboardEventAdvancedExample.java", "from": 67, "to": 76 },
+      { "file": "KeyboardEventAdvancedExample.java", "from": 86, "to": 86 },
+      { "file": "KeyboardEventAdvancedExample.java", "from": 88, "to": 101 },
+      { "file": "KeyboardEventAdvancedExample.java", "from": 111, "to": 111 },
+      { "file": "KeyboardEventAdvancedExample.java", "from": 166, "to": 166 }
     ]
   },
   "19-3": {
@@ -31,7 +31,7 @@
     "main": "DocumentListenerExample",
     "excerpt": [
       { "file": "DocumentListenerExample.java", "from": 7, "to": 7 },
-      { "file": "DocumentListenerExample.java", "from": 66, "to": 116 },
+      { "file": "DocumentListenerExample.java", "from": 67, "to": 116 },
       { "file": "DocumentListenerExample.java", "from": 153, "to": 155 },
       { "file": "DocumentListenerExample.java", "from": 184, "to": 184 }
     ]
@@ -44,10 +44,10 @@
       { "file": "CustomEventExample.java", "from": 46, "to": 61 },
       { "file": "CustomEventExample.java", "from": 64, "to": 64 },
       { "file": "CustomEventExample.java", "from": 70, "to": 70 },
-      { "file": "CustomEventExample.java", "from": 100, "to": 109 },
-      { "file": "CustomEventExample.java", "from": 135, "to": 136 },
-      { "file": "CustomEventExample.java", "from": 163, "to": 163 },
-      { "file": "CustomEventExample.java", "from": 170, "to": 170 }
+      { "file": "CustomEventExample.java", "from": 100, "to": 108 },
+      { "file": "CustomEventExample.java", "from": 134, "to": 135 },
+      { "file": "CustomEventExample.java", "from": 162, "to": 162 },
+      { "file": "CustomEventExample.java", "from": 169, "to": 169 }
     ]
   },
   "19-5": {
