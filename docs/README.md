@@ -45,6 +45,7 @@
 | `summaries/README.md` | 章ごとの要約と、章全体を読まずに作業する方法 |
 | `analysis/issues-tracking.md` | 開いている課題と、継続して見直す点 |
 | `analysis/author-voice-points.md` | 著者の判断・経験を書き足してほしい箇所（第1〜26章、2026-11-24） |
+| `analysis/author-experience-questions.md` | 上のうち、著者が内容を書かないと埋まらない経験の問い（106問、答えを書き込む形） |
 | `analysis/ai-style-report.md` | `npm run check:style -- --report`の出力（生成物） |
 
 ## 主なコマンド
