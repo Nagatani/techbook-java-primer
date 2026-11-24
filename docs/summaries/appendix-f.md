@@ -1,9 +1,9 @@
 ---
 source: manuscripts/appendix-f-swing-advanced.md
-summarized: 2026-11-18
+summarized: 2026-11-24
 sections:
   - key: "付録Fについて"
-    hash: 0d6d1680
+    hash: 4697fd6e
 ---
 
 # 付録F Swingの発展的な機能 要約
@@ -25,3 +25,4 @@ sections:
 ## 校正で見つけた個別の問題
 
 - 2026-11-18の校閲: 「本文の基礎課題では使わず」を「演習の基礎課題では使わず」に直した
+- 2026-11-24: 第20章の「統合型データ管理アプリケーション」（旧20-5）をGitHub側に移し、紙面の内容に項目6を足した

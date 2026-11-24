@@ -1,9 +1,9 @@
 ---
 source: manuscripts/appendix-d-build-and-deploy.md
-summarized: 2026-11-16
+summarized: 2026-11-24
 sections:
   - key: "付録Dについて"
-    hash: 8684e715
+    hash: 1943d86b
 ---
 
 # 付録E 高度なビルドとデプロイメント技術 要約
@@ -24,3 +24,4 @@ sections:
 - 付録D（統合プロジェクト）と付録E（データベース）を本文の第24〜26章へ移し、残りの付録をA・B・C・D（java.time）・E（ビルド）・F（エラー）に振り直した。GitHubのディレクトリ名も`d-java-time-api`・`e-build-and-deploy`・`f-common-errors`に改めた
 - すべての付録のページを同じ形（付録Xについて／内容／関連する章／オンライン資料）にそろえた。中身の少ない「学習のポイント」「実践への応用」と、各ページに繰り返していた「問題や質問がある場合」を削り、問い合わせ先は付録一覧に1か所だけ置いた
 - 2026-11-16: 付録Eから付録Dへ振り直した（java.timeを第6章へ編入して旧付録Dを削除したため）。ディレクトリは`appendix/d-build-and-deploy/`
+- 2026-11-24: 第22章の「もう1つのビルドツール：Gradle」をGitHub側の「ビルドツールによる自動化」の「Gradleの基本（第22章）」に移し、紙面の内容に項目1を足した

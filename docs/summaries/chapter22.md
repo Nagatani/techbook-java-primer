@@ -3,13 +3,13 @@ source: manuscripts/chapter22-documentation-and-libraries.md
 summarized: 2026-11-24
 sections:
   - key: "本章の学習目標"
-    hash: b48bc3ee
+    hash: 170b386f
   - key: "Javadocによるドキュメント"
     hash: 1917cd22
   - key: "外部ライブラリの利用"
-    hash: ec30eeb9
+    hash: 66e3648a
   - key: "よくあるエラーと対処法"
-    hash: 57d950a6
+    hash: ec81e6ec
   - key: "まとめ"
     hash: 79ca62b7
   - key: "章末演習"
@@ -96,3 +96,4 @@ sections:
 - 2026-11-23（流れ・矛盾・過不足の校閲）: 第21〜23章の低の指摘: 第21章はJUnitの節をTDDの節より前へ移して先取りの断りをなくし、テストメソッドのpublicの有無を説明し、前提を第3・4章のクラスにした。第22章はクラスパスの定義（JARをクラスファイルの一種のように書いていた）、スコープのruntime・provided、Mockitoの座標（第21章と同じmockito-junit-jupiter）、22-6の抜粋にTypeReferenceの行を含め、まとめから本文にない話題（Ivy・サプライチェーンなど）を外した。第23章はapp-imageの補足を一覧に統合し、第26章が使う--java-optionsを足し、前提から第14章を外した。第2章の「JavaDoc」を第22章の「Javadoc」にそろえた
 - 2026-11-24: Jacksonの節に、本書の第16章と演習ではGsonを使い、Jacksonは書き方の違いだけを見る旨を書いた。Jacksonの特徴の抽象語（柔軟なマッピング、メモリ使用量を最小限に）を具体的な言い方にした
 - 2026-11-24: 学習目標を「話題＋〜できるの子項目」に、まとめを本文の再掲から「判断の順序・持ち帰ってほしい1つ・次章へのつなぎ」の段落に書き直した（第7章の見本にそろえた）。初めて読むときは飛ばしてよい節に「発展」の印（{.advanced}）を付けた
+- 2026-11-24: Jackson・Apache Commonsを付録Gへ、Gradleを付録Dへ移した（Log4Shellのコラムは本文に残し、「実践的な開発フロー」の末尾へ移した）。サンプルコードの番号を振り直した

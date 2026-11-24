@@ -90,7 +90,7 @@ function renderIndex(rel, info) {
 }
 
 function targetFiles(filters) {
-  const all = fs.readdirSync(MANUSCRIPTS).filter((f) => /^(chapter|appendix-[a-h]-).*\.md$/.test(f)).sort();
+  const all = fs.readdirSync(MANUSCRIPTS).filter((f) => /^(chapter|appendix-[a-i]-).*\.md$/.test(f)).sort();
   return filters.length ? all.filter((f) => filters.some((x) => f.includes(x))) : all;
 }
 
