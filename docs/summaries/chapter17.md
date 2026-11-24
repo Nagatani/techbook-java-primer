@@ -1,9 +1,9 @@
 ---
 source: manuscripts/chapter17-gui-basics.md
-summarized: 2026-11-23
+summarized: 2026-11-24
 sections:
   - key: "本章の学習目標"
-    hash: fb3738a5
+    hash: abae8e01
   - key: "基本コンポーネントとレイアウト"
     hash: 4b781c61
   - key: "カスタムコンポーネントの作成"
@@ -11,7 +11,7 @@ sections:
   - key: "よくあるエラーと対処法"
     hash: 222db6a6
   - key: "まとめ"
-    hash: ecfa8925
+    hash: 5e4fb1a3
   - key: "章末演習"
     hash: d78bdb69
 ---
@@ -98,3 +98,4 @@ sections:
     + 17-8・17-9: 抜粋に`setLayout`（GridLayout）の行がなかった。17-9の前の説明に4行2列と書いた
     + 17-13: 前の説明が実際の抜粋（メインエリアの組み立て）と合っていなかった。17-6・17-7の前の説明から誇張した文を除いた
 - 2026-11-23（流れ・矛盾・過不足の校閲）: 17-13（レイアウトの組み合わせ）の抜粋にメニュー項目を作る行とタブを加える行を含め、実行結果の後にJMenuBar・JMenu・JMenuItem、JSplitPane、JTabbedPane、JScrollPaneの役割をリストで説明した。メニュー項目の処理はActionListener（第18章）と案内する
+- 2026-11-24: 学習目標を「話題＋〜できるの子項目」に、まとめを本文の再掲から「判断の順序・持ち帰ってほしい1つ・次章へのつなぎ」の段落に書き直した（第7章の見本にそろえた）

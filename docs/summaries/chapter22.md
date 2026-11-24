@@ -3,15 +3,15 @@ source: manuscripts/chapter22-documentation-and-libraries.md
 summarized: 2026-11-24
 sections:
   - key: "本章の学習目標"
-    hash: 348fd239
+    hash: b48bc3ee
   - key: "Javadocによるドキュメント"
     hash: 1917cd22
   - key: "外部ライブラリの利用"
-    hash: a3d99494
+    hash: ec30eeb9
   - key: "よくあるエラーと対処法"
     hash: 57d950a6
   - key: "まとめ"
-    hash: 364dfa13
+    hash: 79ca62b7
   - key: "章末演習"
     hash: b5c5207d
 ---
@@ -95,3 +95,4 @@ sections:
 - 2026-11-23（流れ・矛盾・過不足の校閲）: 第22章: 最初のpom.xmlの例の前に「Mavenのプロジェクトを作る」（IntelliJ IDEAでMavenを選ぶ、IDE内蔵のMaven、コマンドラインは付録Aでインストール）を置き、依存関係解決のアルゴリズムをpom.xmlの例の後ろへ移した。「実践的な開発フロー」にフェーズ（compile→test→package→verify）とプラグイン・ゴールの関係を足した。リポジトリの「Repository Pattern」をやめ、データの保存を隠すリポジトリとは別の意味だと脚注で区別した。第21章: 第22章への誘導にプラグインとゴールを含め、JaCoCoの箇所でゴールの読み方を添え、章末の浮動小数点数の比べ方に許容誤差の指定のしかたを書いた
 - 2026-11-23（流れ・矛盾・過不足の校閲）: 第21〜23章の低の指摘: 第21章はJUnitの節をTDDの節より前へ移して先取りの断りをなくし、テストメソッドのpublicの有無を説明し、前提を第3・4章のクラスにした。第22章はクラスパスの定義（JARをクラスファイルの一種のように書いていた）、スコープのruntime・provided、Mockitoの座標（第21章と同じmockito-junit-jupiter）、22-6の抜粋にTypeReferenceの行を含め、まとめから本文にない話題（Ivy・サプライチェーンなど）を外した。第23章はapp-imageの補足を一覧に統合し、第26章が使う--java-optionsを足し、前提から第14章を外した。第2章の「JavaDoc」を第22章の「Javadoc」にそろえた
 - 2026-11-24: Jacksonの節に、本書の第16章と演習ではGsonを使い、Jacksonは書き方の違いだけを見る旨を書いた。Jacksonの特徴の抽象語（柔軟なマッピング、メモリ使用量を最小限に）を具体的な言い方にした
+- 2026-11-24: 学習目標を「話題＋〜できるの子項目」に、まとめを本文の再掲から「判断の順序・持ち帰ってほしい1つ・次章へのつなぎ」の段落に書き直した（第7章の見本にそろえた）。初めて読むときは飛ばしてよい節に「発展」の印（{.advanced}）を付けた
