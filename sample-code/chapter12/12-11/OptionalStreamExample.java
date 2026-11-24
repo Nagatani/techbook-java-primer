@@ -1,7 +1,6 @@
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class OptionalStreamExample {
@@ -57,7 +56,7 @@ public class OptionalStreamExample {
             .map(p -> p.getPrice() > 500 ? Optional.of(p.getName())
                     : Optional.<String>empty())
             .flatMap(Optional::stream)  // Optional -> Stream変換
-            .collect(Collectors.toList());
+            .toList();
         
         IO.println("高額商品リスト: " + expensiveProductNames);
     }

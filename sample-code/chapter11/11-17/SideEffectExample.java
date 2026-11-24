@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SideEffectExample {
     public static void main(String[] args) {
@@ -15,7 +14,7 @@ public class SideEffectExample {
         // 良い例：変換した結果を、新しいリストとして受け取る
         List<String> processed = items.stream()
             .map(SideEffectExample::processItem)
-            .collect(Collectors.toList());
+            .toList();
 
         IO.println("悪い例: " + results);
         IO.println("良い例: " + processed);

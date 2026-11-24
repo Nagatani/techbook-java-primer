@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class Student {
     String name;
@@ -30,7 +29,7 @@ public class AdvancedSortExample {
             .sorted(Comparator.comparingInt(Student::getScore).reversed()
                 .thenComparing(Comparator.comparingInt(
                         Student::getHeight).reversed()))
-            .collect(Collectors.toList());
+            .toList();
 
         IO.println(sorted);
         IO.println("元のリスト: " + students); // 元のリストの並びは変わらない

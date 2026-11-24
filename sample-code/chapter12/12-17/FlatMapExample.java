@@ -1,6 +1,5 @@
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FlatMapExample {
     public static void main(String[] args) {
@@ -13,7 +12,7 @@ public class FlatMapExample {
         // flatMapを使ってネストしたリストを平坦化する
         List<String> flatList = nestedList.stream()
             .flatMap(List::stream)  // 各内部リストをストリームに変換して結合
-            .collect(Collectors.toList());
+            .toList();
         
         IO.println(flatList);
         // 出力: [Java, Python, JavaScript, Go, Rust, C++]
@@ -28,7 +27,7 @@ public class FlatMapExample {
         // 各文字列を単語に分割し、すべての単語を1つのリストにまとめる
         List<String> words = sentences.stream()
             .flatMap(sentence -> Arrays.stream(sentence.split(" ")))
-            .collect(Collectors.toList());
+            .toList();
         
         IO.println(words);
         // 出力: [Hello, world, Java, programming, Stream, API]

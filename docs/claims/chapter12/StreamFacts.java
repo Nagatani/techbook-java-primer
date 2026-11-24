@@ -33,7 +33,7 @@ public class StreamFacts {
         List<Integer> nums = IntStream.range(0, 10_000).boxed().toList();
         List<Integer> ordered = new ArrayList<>();
         nums.parallelStream().forEachOrdered(ordered::add);
-        List<Integer> collected = nums.parallelStream().map(n -> n).collect(Collectors.toList());
+        List<Integer> collected = nums.parallelStream().map(n -> n).toList();
         System.out.println("parallel forEachOrdered keeps order: " + ordered.equals(nums));
         System.out.println("parallel collect keeps order: " + collected.equals(nums));
         boolean forEachChanged = false;

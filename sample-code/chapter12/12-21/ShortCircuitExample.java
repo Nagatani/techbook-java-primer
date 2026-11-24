@@ -1,6 +1,5 @@
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ShortCircuitExample {
     public static void main(String[] args) {
@@ -22,7 +21,7 @@ public class ShortCircuitExample {
         // 最初のn個に制限して処理
         List<Integer> firstThree = numbers.stream()
             .limit(3)  // 最初の3要素のみ処理
-            .collect(Collectors.toList());
+            .toList();
         IO.println("最初の3つ: " + firstThree);
     }
 }

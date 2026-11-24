@@ -56,8 +56,8 @@ Stream<Integer> stream = numbers.stream()
         return n > 10;
     });
 
-// collect()が呼ばれてはじめてフィルタリングが実行される
-List<Integer> result = stream.collect(Collectors.toList());
+// toList()が呼ばれてはじめてフィルタリングが実行される
+List<Integer> result = stream.toList();
 ```
 
 次の図は、`numbers`が`[5, 15, 20]`のときに`filter`と`map`をつないだ場合の動きです。終端操作の`collect`を呼ぶまで何も実行されず、呼んだあとは要素が1つずつ、すべての操作を通っていきます。
@@ -145,10 +145,10 @@ List<Student> list = ...;
 // 点数が90点以上の生徒だけを抽出
 List<Student> highScorers = list.stream()
     .filter(s -> s.getScore() >= 90)
-    .collect(Collectors.toList());
+    .toList();
 ```
 
-結果をリストに集めるには、終端操作の`collect`に`Collectors.toList()`を渡します<span class="footnote">Java 16以降は、`collect(Collectors.toList())`の代わりに`toList()`とも書けます。`toList()`が返すリストには、要素を追加したり変更したりできません。</span>。
+結果をリストに集めるには、終端操作の`toList()`を使います<span class="footnote">`toList()`はJava 16以降で使えます。`toList()`が返すリストには、要素を追加したり変更したりできません。変更できるリストが要るときや、Java 15以前のコードでは、`collect(Collectors.toList())`と書きます。</span>。
 
 ### `map`: 要素を別の形に変換
 
@@ -161,7 +161,7 @@ List<Student> highScorers = list.stream()
 // 生徒のリストから、名前のリストを生成
 List<String> names = list.stream()
     .map(Student::getName)
-    .collect(Collectors.toList());
+    .toList();
 ```
 
 ### 数値のストリーム
@@ -227,7 +227,6 @@ public class NumberStreamExample {
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class Student {
     String name;
@@ -256,7 +255,7 @@ public class AdvancedSortExample {
             .sorted(Comparator.comparingInt(Student::getScore).reversed()
                 .thenComparing(Comparator.comparingInt(
                         Student::getHeight).reversed()))
-            .collect(Collectors.toList());
+            .toList();
 
         IO.println(sorted);
         IO.println("元のリスト: " + students); // 元のリストの並びは変わらない
@@ -279,7 +278,7 @@ public class AdvancedSortExample {
 
 実際のStream APIの威力は、複数の操作を組み合わせたときに発揮されます。以下は、複数の条件でフィルタリングし、変換、ソートを順次実行する例です。
 
-<span class="listing-number">**サンプルコード12-6**　StreamExample.java（5〜24行目）</span>
+<span class="listing-number">**サンプルコード12-6**　StreamExample.java（4〜23行目）</span>
 
 ```java
 public class StreamExample {
@@ -296,7 +295,7 @@ public class StreamExample {
             .filter(s -> s.getHeight() >= 170)   // 3. 身長でフィルタリング
             .map(Student::getName)               // 4. 名前に変換
             .sorted()                            // 5. 名前順にソート
-            .collect(Collectors.toList());       // 6. 結果をリストに集約
+            .toList();                           // 6. 結果をリストに集約
 
         IO.println(result);
         // 出力: [Bob, Charlie]
@@ -529,7 +528,7 @@ filter (failed): false
 
 OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。以下のコードは、Stream操作でOptionalを活用する実践的な例です。
 
-<span class="listing-number">**サンプルコード12-11**　OptionalStreamExample.java（7〜8、19、21〜22、27〜63、64行目）</span>
+<span class="listing-number">**サンプルコード12-11**　OptionalStreamExample.java（6〜7、18、20〜21、26〜62、63行目）</span>
 
 ```java
 public class OptionalStreamExample {
@@ -573,7 +572,7 @@ public class OptionalStreamExample {
             .map(p -> p.getPrice() > 500 ? Optional.of(p.getName())
                     : Optional.<String>empty())
             .flatMap(Optional::stream)  // Optional -> Stream変換
-            .collect(Collectors.toList());
+            .toList();
         
         IO.println("高額商品リスト: " + expensiveProductNames);
     }
@@ -896,13 +895,13 @@ numbers.parallelStream()
 // スレッドセーフな代替方法
 List<Integer> safeResults = numbers.parallelStream()
     .map(n -> n * 2)
-    .collect(Collectors.toList());  // スレッドセーフ
+    .toList();  // スレッドセーフ
 ```
 
 #### 順序の保証
 
 並列ストリームでは、`forEach`で要素を処理する順序や`findAny`が返す要素は、実行のたびに変わることがあります。
-一方、`forEachOrdered`や、リストに集める`collect(Collectors.toList())`は、並列ストリームでも元の要素の順序を保ちます。
+一方、`forEachOrdered`や、リストに集める`toList()`は、並列ストリームでも元の要素の順序を保ちます。
 サンプルコード12-16の`safeResults`も、元のリストと同じ順に並びます。
 
 ### 並列ストリームを使うとよい場合
@@ -930,7 +929,7 @@ List<Integer> safeResults = numbers.parallelStream()
 
 </div>
 
-<span class="listing-number">**サンプルコード12-17**　FlatMapExample.java（5〜36行目）</span>
+<span class="listing-number">**サンプルコード12-17**　FlatMapExample.java（4〜35行目）</span>
 
 ```java
 public class FlatMapExample {
@@ -944,7 +943,7 @@ public class FlatMapExample {
         // flatMapを使ってネストしたリストを平坦化する
         List<String> flatList = nestedList.stream()
             .flatMap(List::stream)  // 各内部リストをストリームに変換して結合
-            .collect(Collectors.toList());
+            .toList();
         
         IO.println(flatList);
         // 出力: [Java, Python, JavaScript, Go, Rust, C++]
@@ -959,7 +958,7 @@ public class FlatMapExample {
         // 各文字列を単語に分割し、すべての単語を1つのリストにまとめる
         List<String> words = sentences.stream()
             .flatMap(sentence -> Arrays.stream(sentence.split(" ")))
-            .collect(Collectors.toList());
+            .toList();
         
         IO.println(words);
         // 出力: [Hello, world, Java, programming, Stream, API]
@@ -1044,7 +1043,7 @@ public class CollectorsExample {
         List<String> highScorers = students.stream()
             .filter(s -> s.getScore() >= 85)
             .map(Student::getName)
-            .collect(Collectors.toList());
+            .toList();
         IO.println("高得点者: " + highScorers);
         
         // グループ化の例：点数でグループ分け
@@ -1081,7 +1080,7 @@ public class CollectorsExample {
 `Objects::nonNull`は、`name -> name != null`と同じ判定をするメソッド参照です。
 値が1つだけで、それが存在しない場合もあるときは、本章の「Optional型による安全なnull処理」で学んだ`Optional`を使います。
 
-<span class="listing-number">**サンプルコード12-20**　NullSafeProcessingExample.java（6〜22行目）</span>
+<span class="listing-number">**サンプルコード12-20**　NullSafeProcessingExample.java（5〜21行目）</span>
 
 ```java
 public class NullSafeProcessingExample {
@@ -1095,7 +1094,7 @@ public class NullSafeProcessingExample {
             .filter(Objects::nonNull)           // nullを除外
             .filter(name -> !name.isBlank())    // 空文字列を除外
             .map(String::toUpperCase)           // 大文字に変換
-            .collect(Collectors.toList());
+            .toList();
         
         IO.println("有効な名前: " + validNames);
         // 出力: 有効な名前: [ALICE, BOB, CHARLIE]
@@ -1114,7 +1113,7 @@ public class NullSafeProcessingExample {
 Stream APIには、すべての要素を処理せずに早期に結果を返す操作があります。これらは大量のデータを高速に処理する際に重要です。
 次のサンプルの`peek`は、要素をそのまま次へ渡しながら途中の値を確かめる処理をはさむ中間操作で、主にデバッグに使います。
 
-<span class="listing-number">**サンプルコード12-21**　ShortCircuitExample.java（5〜28行目）</span>
+<span class="listing-number">**サンプルコード12-21**　ShortCircuitExample.java（4〜27行目）</span>
 
 ```java
 public class ShortCircuitExample {
@@ -1137,7 +1136,7 @@ public class ShortCircuitExample {
         // 最初のn個に制限して処理
         List<Integer> firstThree = numbers.stream()
             .limit(3)  // 最初の3要素のみ処理
-            .collect(Collectors.toList());
+            .toList();
         IO.println("最初の3つ: " + firstThree);
     }
 }

@@ -3,14 +3,14 @@
     "dir": "12-05",
     "main": "AdvancedSortExample",
     "excerpt": [
-      { "file": "AdvancedSortExample.java", "from": 1, "to": 38 }
+      { "file": "AdvancedSortExample.java", "from": 1, "to": 37 }
     ]
   },
   "12-6": {
     "dir": "12-06",
     "main": "StreamExample",
     "excerpt": [
-      { "file": "StreamExample.java", "from": 5, "to": 24 }
+      { "file": "StreamExample.java", "from": 4, "to": 23 }
     ],
     "uses": [
       "12-5"
@@ -50,11 +50,11 @@
     "dir": "12-11",
     "main": "OptionalStreamExample",
     "excerpt": [
-      { "file": "OptionalStreamExample.java", "from": 7, "to": 8 },
-      { "file": "OptionalStreamExample.java", "from": 19, "to": 19 },
-      { "file": "OptionalStreamExample.java", "from": 21, "to": 22 },
-      { "file": "OptionalStreamExample.java", "from": 27, "to": 63 },
-      { "file": "OptionalStreamExample.java", "from": 64, "to": 64 }
+      { "file": "OptionalStreamExample.java", "from": 6, "to": 7 },
+      { "file": "OptionalStreamExample.java", "from": 18, "to": 18 },
+      { "file": "OptionalStreamExample.java", "from": 20, "to": 21 },
+      { "file": "OptionalStreamExample.java", "from": 26, "to": 62 },
+      { "file": "OptionalStreamExample.java", "from": 63, "to": 63 }
     ]
   },
   "12-12": {
@@ -89,7 +89,7 @@
     "dir": "12-17",
     "main": "FlatMapExample",
     "excerpt": [
-      { "file": "FlatMapExample.java", "from": 5, "to": 36 }
+      { "file": "FlatMapExample.java", "from": 4, "to": 35 }
     ]
   },
   "12-18": {
@@ -117,14 +117,14 @@
     "dir": "12-20",
     "main": "NullSafeProcessingExample",
     "excerpt": [
-      { "file": "NullSafeProcessingExample.java", "from": 6, "to": 22 }
+      { "file": "NullSafeProcessingExample.java", "from": 5, "to": 21 }
     ]
   },
   "12-21": {
     "dir": "12-21",
     "main": "ShortCircuitExample",
     "excerpt": [
-      { "file": "ShortCircuitExample.java", "from": 5, "to": 28 }
+      { "file": "ShortCircuitExample.java", "from": 4, "to": 27 }
     ]
   },
   "12-22": {

@@ -100,14 +100,14 @@
     "dir": "11-16",
     "main": "NestedLambdaExample",
     "excerpt": [
-      { "file": "NestedLambdaExample.java", "from": 5, "to": 47 }
+      { "file": "NestedLambdaExample.java", "from": 4, "to": 46 }
     ]
   },
   "11-17": {
     "dir": "11-17",
     "main": "SideEffectExample",
     "excerpt": [
-      { "file": "SideEffectExample.java", "from": 5, "to": 27 }
+      { "file": "SideEffectExample.java", "from": 4, "to": 26 }
     ]
   },
   "11-18": {

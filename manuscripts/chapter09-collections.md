@@ -810,7 +810,7 @@ for (String s : list) {
 List<String> result2 = list.stream()
     .filter(s -> s.length() > 5)
     .map(String::toUpperCase)
-    .collect(Collectors.toList());
+    .toList();
 ```
 
 `s -> s.length() > 5`はラムダ式と呼ばれる書き方で、「要素`s`を受け取り、長さが5より大きいかを返す処理」を表します。

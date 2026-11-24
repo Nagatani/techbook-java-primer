@@ -25,7 +25,7 @@ claims:
 
   - id: stream-tolist-16
     claim: Stream.toListはJava 16以降で使える
-    text: Java 16以降は、collect(Collectors.toList())の代わりにtoList()とも書けます
+    text: toList()はJava 16以降で使えます
     verify:
       kind: since
       probe: StreamToList.java
@@ -154,10 +154,10 @@ claims:
       expect: ['^sorted: \[Apple, banana, cherry, あ, 漢\]$']
 
   - id: parallel-order
-    claim: 並列ストリームのforEachの処理順は実行ごとに変わりうるが、forEachOrderedとcollect(Collectors.toList())は元の順序を保つ
+    claim: 並列ストリームのforEachの処理順は実行ごとに変わりうるが、forEachOrderedとtoList()は元の順序を保つ
     text:
       - 並列ストリームでは、forEachで要素を処理する順序やfindAnyが返す要素は、実行のたびに変わることがあります
-      - 一方、forEachOrderedや、リストに集めるcollect(Collectors.toList())は、並列ストリームでも元の要素の順序を保ちます
+      - 一方、forEachOrderedや、リストに集めるtoList()は、並列ストリームでも元の要素の順序を保ちます
     verify:
       kind: run
       probe: StreamFacts.java

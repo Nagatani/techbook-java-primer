@@ -841,7 +841,7 @@ isValidUser: true, false
 ここからは、ラムダ式と関数型インターフェイスを使った、実務に近い設計の例を紹介します。
 本章の基本を学んだあとに読む発展的な内容で、多くは考え方を示すための断片的なコードです。
 Stream API（第12章）を使う例もあるので、最初はラムダ式をどこに渡しているかに注目して読んでください。
-たとえば`list.stream().map(…).collect(Collectors.toList())`は、各要素を`map`に渡したラムダ式で変換し、結果を新しいリストに集める書き方です。
+たとえば`list.stream().map(…).toList()`は、各要素を`map`に渡したラムダ式で変換し、結果を新しいリストに集める書き方です。
 
 ### 高階関数による処理の抽象化
 
@@ -982,7 +982,7 @@ Javaでこのような処理を書くときは、Reactorなどの外部ライブ
 ラムダ式の本体にさらにラムダ式を書くと、どの処理がどの値を扱っているのかを追いにくくなります。
 サンプルコード11-16は、「名前:点数」を並べた行から行ごとの合計点を求める処理を、2通りに書いたものです。
 
-<span class="listing-number">**サンプルコード11-16**　NestedLambdaExample.java（5〜47行目）</span>
+<span class="listing-number">**サンプルコード11-16**　NestedLambdaExample.java（4〜46行目）</span>
 
 ```java
 public class NestedLambdaExample {
@@ -1003,12 +1003,12 @@ public class NestedLambdaExample {
                         return a + b;
                     });
             })
-            .collect(Collectors.toList());
+            .toList();
 
         // 良い例：処理に名前を付けたメソッドに分け、メソッド参照で渡す
         List<Integer> good = lines.stream()
             .map(NestedLambdaExample::sumScores)
-            .collect(Collectors.toList());
+            .toList();
 
         IO.println("悪い例: " + bad);
         IO.println("良い例: " + good);
@@ -1046,7 +1046,7 @@ public class NestedLambdaExample {
 
 サンプルコード11-17は、文字列のリストを大文字に変換した結果を、2通りの方法で作ります。
 
-<span class="listing-number">**サンプルコード11-17**　SideEffectExample.java（5〜27行目）</span>
+<span class="listing-number">**サンプルコード11-17**　SideEffectExample.java（4〜26行目）</span>
 
 ```java
 public class SideEffectExample {
@@ -1062,7 +1062,7 @@ public class SideEffectExample {
         // 良い例：変換した結果を、新しいリストとして受け取る
         List<String> processed = items.stream()
             .map(SideEffectExample::processItem)
-            .collect(Collectors.toList());
+            .toList();
 
         IO.println("悪い例: " + results);
         IO.println("良い例: " + processed);

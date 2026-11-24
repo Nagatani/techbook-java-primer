@@ -18,7 +18,7 @@ public class CollectorsExample {
         List<String> highScorers = students.stream()
             .filter(s -> s.getScore() >= 85)
             .map(Student::getName)
-            .collect(Collectors.toList());
+            .toList();
         IO.println("高得点者: " + highScorers);
         
         // グループ化の例：点数でグループ分け

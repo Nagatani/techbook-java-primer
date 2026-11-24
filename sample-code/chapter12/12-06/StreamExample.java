@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class StreamExample {
     public static void main(String[] args) {
@@ -16,7 +15,7 @@ public class StreamExample {
             .filter(s -> s.getHeight() >= 170)   // 3. 身長でフィルタリング
             .map(Student::getName)               // 4. 名前に変換
             .sorted()                            // 5. 名前順にソート
-            .collect(Collectors.toList());       // 6. 結果をリストに集約
+            .toList();                           // 6. 結果をリストに集約
 
         IO.println(result);
         // 出力: [Bob, Charlie]

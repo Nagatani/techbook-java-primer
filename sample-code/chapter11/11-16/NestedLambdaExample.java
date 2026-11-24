@@ -1,6 +1,5 @@
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NestedLambdaExample {
     public static void main(String[] args) {
@@ -20,12 +19,12 @@ public class NestedLambdaExample {
                         return a + b;
                     });
             })
-            .collect(Collectors.toList());
+            .toList();
 
         // 良い例：処理に名前を付けたメソッドに分け、メソッド参照で渡す
         List<Integer> good = lines.stream()
             .map(NestedLambdaExample::sumScores)
-            .collect(Collectors.toList());
+            .toList();
 
         IO.println("悪い例: " + bad);
         IO.println("良い例: " + good);
