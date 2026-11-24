@@ -73,6 +73,17 @@ h2 {
   page-break-after: avoid;
 }
 
+.advanced-label {
+  display: inline-block;
+  margin-left: 0.6em;
+  padding: 0 0.4em;
+  font-size: 0.6em;
+  font-weight: bold;
+  color: #5d6d7e;
+  border: 1px solid #5d6d7e;
+  vertical-align: middle;
+}
+
 h2 .section-label {
   display: block;
   font-size: 0.65em;

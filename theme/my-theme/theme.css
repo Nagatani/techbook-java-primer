@@ -479,6 +479,28 @@ section > h2[data-chapter]:first-child::before {
   border-radius: 2px;
 }
 
+/* 初めて読むときは飛ばしてよい節の印（原稿の見出しに {.advanced}）。h3〜h5は scripts/vfm-advanced.js が
+   span を入れ、h2は柱に写らないよう ::after で描く（content() は疑似要素を含まない） */
+h2.advanced::after {
+  content: "発展";
+}
+
+h2.advanced::after,
+.advanced-label {
+  display: inline-block;
+  margin-inline-start: 0.6em;
+  padding: 0 0.5em;
+  font-size: 10Q;
+  line-height: 15Q;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #5d6d7e;
+  border: 1px solid #5d6d7e;
+  border-radius: 2px;
+  vertical-align: 0.15em;
+  white-space: nowrap;
+}
+
 /* h2直後のsmallタグをサブタイトルとして装飾 */
 h2 + small,
 h2 small {

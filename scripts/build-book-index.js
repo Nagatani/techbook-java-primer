@@ -35,7 +35,8 @@ function parse(file) {
     const m = line.match(/^(#{1,3}) (.+)$/);
     if (!m) return;
     const level = m[1].length;
-    const text = stripTags(m[2]);
+    // 見出しの属性（{.advanced} など）は節の名前に含めない
+    const text = stripTags(m[2]).replace(/\s*\{[.#][^}]*\}\s*$/, '');
     if (level === 1) { title = text; return; }
     if (level === 2) {
       seen[text] = (seen[text] || 0) + 1;
