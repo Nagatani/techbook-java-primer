@@ -3,11 +3,11 @@ source: manuscripts/chapter22-documentation-and-libraries.md
 summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
-    hash: 170b386f
+    hash: 8b4fe2fb
   - key: "Javadocによるドキュメント"
-    hash: 74af9f5c
+    hash: cebe7cde
   - key: "外部ライブラリの利用"
-    hash: 3840aa1a
+    hash: e5c0c415
   - key: "よくあるエラーと対処法"
     hash: ec81e6ec
   - key: "まとめ"
@@ -100,3 +100,4 @@ sections:
 - 2026-11-24: 著者の答えに合わせ、本文とまとめに判断の基準を書き足した（docs/guides/book-defaults.md）
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 経験の問いを、入門者に起こりがちなこととして一般論で本文に入れた（著者の体験としては書いていない。docs/analysis/author-experience-questions.md）

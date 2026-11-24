@@ -5,15 +5,15 @@ sections:
   - key: "本章の学習目標"
     hash: 77d493d6
   - key: "イベント駆動プログラミングの理解"
-    hash: d9c83eaf
+    hash: faeaee10
   - key: "ボタンクリックの実装"
     hash: 6fe01ff7
   - key: "ラムダ式による簡潔な記述"
-    hash: c7b21da3
+    hash: e46b4de7
   - key: "代表的なイベントの種類"
     hash: a6241a9d
   - key: "イベント処理のベストプラクティス"
-    hash: a094f0cb
+    hash: b985b54e
   - key: "よくあるエラーと対処法"
     hash: 1b49ac87
   - key: "まとめ"
@@ -109,3 +109,4 @@ sections:
 - 2026-11-24: 学習目標を「話題＋〜できるの子項目」に、まとめを本文の再掲から「判断の順序・持ち帰ってほしい1つ・次章へのつなぎ」の段落に書き直した（第7章の見本にそろえた）
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 経験の問いを、入門者に起こりがちなこととして一般論で本文に入れた（著者の体験としては書いていない。docs/analysis/author-experience-questions.md）

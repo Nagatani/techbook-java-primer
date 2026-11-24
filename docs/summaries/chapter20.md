@@ -3,11 +3,11 @@ source: manuscripts/chapter20-advanced-gui.md
 summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
-    hash: 162bbcf3
+    hash: d089372d
   - key: "JTableのしくみと基本"
     hash: 9957c715
   - key: "テーブルのソートとフィルタリング"
-    hash: 9186ceb9
+    hash: 774de640
   - key: "JTreeの実装"
     hash: 0d45df01
   - key: "JListの高度な使用法"
@@ -103,3 +103,4 @@ sections:
 - 2026-11-24: 学習目標を「話題＋〜できるの子項目」に、まとめを本文の再掲から「判断の順序・持ち帰ってほしい1つ・次章へのつなぎ」の段落に書き直した（第7章の見本にそろえた）。初めて読むときは飛ばしてよい節に「発展」の印（{.advanced}）を付けた
 - 2026-11-24: 「統合型データ管理アプリケーション」を付録Fへ移した（基礎課題で使うJSplitPaneとツリーの選択の要点は本文に残した）。サンプルコードの番号を振り直した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
+- 2026-11-25: 経験の問いを、入門者に起こりがちなこととして一般論で本文に入れた（著者の体験としては書いていない。docs/analysis/author-experience-questions.md）

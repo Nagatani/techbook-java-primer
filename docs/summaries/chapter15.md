@@ -5,11 +5,11 @@ sections:
   - key: "本章の学習目標"
     hash: 8cad3b06
   - key: "並行処理の世界への招待"
-    hash: 4f0bbe5b
+    hash: ae9f22c8
   - key: "マルチスレッドプログラミングの基礎"
-    hash: 4a15f179
+    hash: e5103f28
   - key: "共有リソースと同期制御"
-    hash: 8cf1bfa5
+    hash: b5412d28
   - key: "Executorフレームワークと非同期処理"
     hash: 74e31c8a
   - key: "スレッド間の協調"
@@ -118,3 +118,4 @@ sections:
 - 2026-11-24: 著者の判断で本文に残した節（第15章「新しい並行処理のしくみ」、第21章「継続的インテグレーション（CI）との統合」）の発展の印を外した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 経験の問いを、入門者に起こりがちなこととして一般論で本文に入れた（著者の体験としては書いていない。docs/analysis/author-experience-questions.md）

@@ -3,13 +3,13 @@ source: manuscripts/chapter26-integrated-project-technology.md
 summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
-    hash: c478ab35
+    hash: e75514fd
   - key: "技術を選ぶ前に考えること"
-    hash: e9a880d4
+    hash: e54fbb84
   - key: "事例1：データをどこに保存するか"
     hash: 171a2b00
   - key: "事例2：CSVを自分で読むか、ライブラリを使うか"
-    hash: 061673fc
+    hash: 0d29a500
   - key: "事例3：画面を何で作るか"
     hash: e156ab5a
   - key: "事例4：ログを何で出すか"
@@ -17,9 +17,9 @@ sections:
   - key: "事例5：テストに何を使うか"
     hash: 7de91958
   - key: "初版から改善版へ移す"
-    hash: 67e54de2
+    hash: 8bdaf9d6
   - key: "作ったものを振り返る"
-    hash: a53997b1
+    hash: 08476d93
   - key: "技術選定と実装でよくある失敗"
     hash: 969ec19e
   - key: "まとめ"
@@ -85,3 +85,4 @@ sections:
 - 2026-11-24: 評価の観点の節に、生成AIやブログが勧めるライブラリもMaven Centralで座標と版を確かめる旨を足した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 経験の問いを、入門者に起こりがちなこととして一般論で本文に入れた（著者の体験としては書いていない。docs/analysis/author-experience-questions.md）

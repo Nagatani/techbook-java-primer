@@ -3,17 +3,17 @@ source: manuscripts/chapter25-integrated-project-design.md
 summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
-    hash: 6213328e
+    hash: 9f4acbc8
   - key: "統合プロジェクトの全体像"
     hash: d4e295ea
   - key: "要求を整理する"
-    hash: 8e8be8ea
+    hash: df7e2fa8
   - key: "設計判断を記録する"
-    hash: 208dc83a
+    hash: 3b9ac38d
   - key: "事例1：クラスの候補を見つけて責務を割り当てる"
-    hash: b777be52
+    hash: 8a5a8e31
   - key: "事例2：継承か合成か"
-    hash: 49ec9773
+    hash: c0d885d6
   - key: "事例3：計算で求められる値を保存するか"
     hash: 67adffb8
   - key: "事例4：層に分けて依存の向きを決める"
@@ -86,3 +86,4 @@ sections:
 - 2026-11-24: 事例5に、非検査例外を基本にするライブラリも多いことと、本書が利用者の直せる誤りに検査例外を使う理由を書いた
 - 2026-11-24: 学習目標を「話題＋〜できるの子項目」に、まとめを本文の再掲から「判断の順序・持ち帰ってほしい1つ・次章へのつなぎ」の段落に書き直した（第7章の見本にそろえた）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 経験の問いを、入門者に起こりがちなこととして一般論で本文に入れた（著者の体験としては書いていない。docs/analysis/author-experience-questions.md）

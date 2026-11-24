@@ -7,11 +7,11 @@ sections:
   - key: "エラーの種類と対処法"
     hash: 2af34336
   - key: "例外処理の基本：`try-catch-finally`"
-    hash: b2e0d69a
+    hash: b4473e67
   - key: "検査例外と非検査例外"
     hash: c888e758
   - key: "独自例外と例外の連鎖"
-    hash: 986abb5b
+    hash: 32fe32ed
   - key: "実践的な例外処理パターン"
     hash: 2cf89a3d
   - key: "リソース管理の実践例"
@@ -23,7 +23,7 @@ sections:
   - key: "例外処理のベストプラクティス"
     hash: 41097d01
   - key: "よくあるエラーと対処法"
-    hash: 6f573847
+    hash: b3d19715
   - key: "まとめ"
     hash: a72548b2
   - key: "章末演習"
@@ -147,3 +147,4 @@ sections:
 - 2026-11-24: 発展の節（例外情報の構造化記録・例外処理戦略の実装例）を付録Iへ移し、本文には要点と案内の2〜4文を残した。サンプルコードの番号を振り直した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 経験の問いを、入門者に起こりがちなこととして一般論で本文に入れた（著者の体験としては書いていない。docs/analysis/author-experience-questions.md）

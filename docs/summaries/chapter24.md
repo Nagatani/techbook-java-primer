@@ -3,21 +3,21 @@ source: manuscripts/chapter24-database-programming.md
 summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
-    hash: d6ccf40b
+    hash: a6f05184
   - key: "データベースを使う準備"
-    hash: c9f16953
+    hash: 0e2effc2
   - key: "SQLの基本"
-    hash: 7cd5821b
+    hash: 1b3b2ea6
   - key: "JDBCのしくみ"
     hash: 5bd52791
   - key: "行を操作する"
-    hash: 0086179c
+    hash: 8355c272
   - key: "DAOパターン"
     hash: c5ff02eb
   - key: "日付と時刻の列とjava.time"
     hash: e1ed8fb4
   - key: "トランザクション"
-    hash: e0fbc3c2
+    hash: ea84b489
   - key: "コネクションプールとバッチ処理"
     hash: eb5eebb7
   - key: "よくあるエラーと対処法"
@@ -83,3 +83,4 @@ sections:
 - 2026-11-24: SQLインジェクションのコラムに、生成AIや記事のコードも`?`と`PreparedStatement`になっているかを確かめる旨を足した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 経験の問いを、入門者に起こりがちなこととして一般論で本文に入れた（著者の体験としては書いていない。docs/analysis/author-experience-questions.md）

@@ -3,13 +3,13 @@ source: manuscripts/chapter21-unit-testing.md
 summarized: 2026-11-25
 sections:
   - key: "本章の学習目標"
-    hash: 22fb1de6
+    hash: 036d2d5b
   - key: "単体テストの基礎"
-    hash: bdc3e3dc
+    hash: c14e088b
   - key: "テストの基本形（AAAパターン）"
-    hash: f28d2c73
+    hash: d6a1f2a7
   - key: "テストを妨げる「依存関係」"
-    hash: fba29a8d
+    hash: 71dab380
   - key: "疎結合設計（Dependency Injection）"
     hash: accce6ef
   - key: "DIによるテスト容易性の向上"
@@ -19,11 +19,11 @@ sections:
   - key: "JUnitによる効率的なテスト"
     hash: c3ef68dc
   - key: "テストのベストプラクティス"
-    hash: 1c4e7aab
+    hash: b592be83
   - key: "継続的インテグレーション（CI）との統合"
     hash: 6271e8e4
   - key: "よくあるエラーと対処法"
-    hash: b81b8e91
+    hash: d9dd0dfd
   - key: "まとめ"
     hash: 0d7d24f3
   - key: "章末演習"
@@ -127,3 +127,4 @@ sections:
 - 2026-11-24: 著者の判断で本文に残した節（第15章「新しい並行処理のしくみ」、第21章「継続的インテグレーション（CI）との統合」）の発展の印を外した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 経験の問いを、入門者に起こりがちなこととして一般論で本文に入れた（著者の体験としては書いていない。docs/analysis/author-experience-questions.md）

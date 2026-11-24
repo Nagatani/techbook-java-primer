@@ -5,9 +5,9 @@ sections:
   - key: "本章の学習目標"
     hash: 19d0e887
   - key: "ファイルI/Oの基礎とストリーム"
-    hash: 6888c007
+    hash: 0dc47ab3
   - key: "テキストファイルの読み書き"
-    hash: ea9348e5
+    hash: 548c2b94
   - key: "バイナリファイルの高度な処理"
     hash: c60a13be
   - key: "オブジェクトの直列化（シリアライズ）"
@@ -120,3 +120,4 @@ sections:
 - 2026-11-24: 著者の答えに合わせ、本文とまとめに判断の基準を書き足した（docs/guides/book-defaults.md）
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 経験の問いを、入門者に起こりがちなこととして一般論で本文に入れた（著者の体験としては書いていない。docs/analysis/author-experience-questions.md）

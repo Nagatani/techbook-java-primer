@@ -5,15 +5,15 @@ sections:
   - key: "本章の学習目標"
     hash: 9a357ec3
   - key: "はじめに"
-    hash: f8ddb88b
+    hash: af5784e8
   - key: "ネットワークプログラミングの基礎"
     hash: 4d378036
   - key: "ソケットプログラミングの基礎"
-    hash: 049f3e5e
+    hash: b796fe3a
   - key: "マルチスレッドサーバーの実装"
     hash: 1b211675
   - key: "HTTPクライアントの実装"
-    hash: f4621d2a
+    hash: aa36a7b6
   - key: "UDP通信の実装"
     hash: f96bab6b
   - key: "実践的な例：チャットアプリケーション"
@@ -135,3 +135,4 @@ sections:
 - 2026-11-24: 「非同期HTTPクライアント」を付録Hへ移した。コラム「タイムアウトを設定しない通信は、いつか障害になる」は本文に残し、HttpURLConnectionの節の末尾へ移した。「セキュアな通信の実装」は本文に残し、発展の印を外した。サンプルコードの番号を振り直した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 経験の問いを、入門者に起こりがちなこととして一般論で本文に入れた（著者の体験としては書いていない。docs/analysis/author-experience-questions.md）

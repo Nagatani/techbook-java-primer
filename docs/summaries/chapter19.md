@@ -5,13 +5,13 @@ sections:
   - key: "本章の学習目標"
     hash: 1aa27aff
   - key: "詳細なイベント処理の実装"
-    hash: 202a8b49
+    hash: e07a237c
   - key: "カスタムイベントとObserverパターン"
     hash: a840ab38
   - key: "ドラッグ&ドロップ"
     hash: 5b7be090
   - key: "パフォーマンスの最適化"
-    hash: aa3e0ea3
+    hash: 6f710ce8
   - key: "よくあるエラーと対処法"
     hash: c4316666
   - key: "まとめ"
@@ -102,3 +102,4 @@ sections:
 - 2026-11-24: 「パフォーマンスの最適化」の発展の印を、中の「イベントの処理回数を減らす」だけに付け直した（SwingWorkerは第19章で正式に扱う内容のため）
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 経験の問いを、入門者に起こりがちなこととして一般論で本文に入れた（著者の体験としては書いていない。docs/analysis/author-experience-questions.md）

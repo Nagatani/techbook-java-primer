@@ -112,6 +112,8 @@ Main-Class: SimpleApp
 1つは、`Main-Class:`の後に半角スペースを1つ入れることです。
 もう1つは、ファイルの末尾に改行を入れることです。
 最後の行が改行で終わっていないと、その行が正しく読み込まれない場合があります。
+`Main-Class: SimpleApp.class`のように拡張子まで書く誤りもよくあります。
+`Main-Class`にはファイル名ではなくクラス名を書き、パッケージに入れたクラスなら`com.example.SimpleApp`のようにパッケージ名から書きます。
 
 ### ステップ4: `jar`コマンドによるパッケージング
 
@@ -321,6 +323,10 @@ public class ResourceApp {
 
 `getResource("/icon.png")`は、クラスパスの直下から`icon.png`を探し、見つからないと`null`を返します。
 `null`をそのまま`ImageIcon`に渡すと`NullPointerException`になるため、`icon.png`はクラスファイルと同じ場所（JARにする場合はJARのなか）に置いてください。
+
+よくある失敗は、IDEで動かしたときは画像が出るのに、JARにすると出ないというものです。
+`new ImageIcon("src/icon.png")`のようにファイルのパスで読んでいると、IDEではプロジェクトのフォルダーにファイルがあるので読めますが、JARを配った先にはそのファイルがありません。
+JARに入れて配る画像や設定ファイルは、`getResource`でクラスパスから読む書き方にそろえます。
 `icon.png`と、次のJARの作成で使う`manifest.txt`（中身は`Main-Class: ResourceApp`）は、全文と同じディレクトリに用意しています<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter23/23-05/`です。</span>。
 
 リソースを含むJARは、次のように作成します。
@@ -428,6 +434,8 @@ jpackage --type deb \
 ```
 
 コマンドが成功すると、`output`ディレクトリ内にOSに応じたインストーラーが作成されます。これは、Javaランタイムを含んだ自己完結型のアプリケーションであり、ユーザーはJavaをインストールせずにアプリケーションを使用できます<span class="footnote">インストーラーを作るには、OSごとに追加のツールが要ります。Windowsの`exe`・`msi`にはWiX Toolset、Linuxの`deb`には`dpkg-deb`と`fakeroot`、`rpm`には`rpmbuild`を使います。Linuxでは、`app-image`を作るときにも`objcopy`（binutilsパッケージ）が必要です。</span>。
+作ったアプリケーションはランタイムを含むので、JARが数KBでもランタイムの分だけ大きくなります。
+macOSでは、署名していないアプリケーションをインターネット経由で受け取ると、Gatekeeperという機能が起動を止めることがあります。
 
 本書が勧める配り方は、相手によって次のように分かれます。
 
@@ -448,7 +456,7 @@ jpackage --type deb \
 > 古いJVMで動かすと、`UnsupportedClassVersionError`になり、「より新しい版のJavaでコンパイルされている（class file version 69.0）。このJVMが認識できるのは65.0まで」という意味のメッセージが出ます。
 > ほかにも、改行の文字（`System.lineSeparator()`はUNIXでは`\n`、Windowsでは`\r\n`）、ファイルのパスの書き方、文字コード、入っているライブラリの版などが、PCごとに違います。
 >
-> 現場では、こうした違いを人の注意ではなく、しくみで減らします。
+> こうした違いは、人の注意ではなく、しくみで減らします。
 >
 > - コンパイルする版を`pom.xml`の`maven.compiler.release`に書き、誰がビルドしても同じ版のクラスファイルになるようにする（第22章）
 > - 第21章で学んだCIで、まっさらな環境でビルドとテストを毎回やり直し、「自分のPCにだけある何か」に頼っていないことを確かめる
