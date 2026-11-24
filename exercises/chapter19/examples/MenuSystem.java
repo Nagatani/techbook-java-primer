@@ -63,7 +63,8 @@ import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-public class MenuSystem extends JFrame {
+public class MenuSystem {
+    private final JFrame frame = new JFrame("Advanced Menu System");
     // メニュー管理
     private JMenuBar menuBar;
     private Map<String, Action> actions;
@@ -314,7 +315,7 @@ public class MenuSystem extends JFrame {
         menuBar.add(toolsMenu);
         menuBar.add(helpMenu);
         
-        setJMenuBar(menuBar);
+        frame.setJMenuBar(menuBar);
         
         // メニューイベントリスナー
         setupMenuListeners();
@@ -370,7 +371,7 @@ public class MenuSystem extends JFrame {
     }
     
     private void setupLayout() {
-        setLayout(new BorderLayout());
+        frame.setLayout(new BorderLayout());
         
         // メインコンテンツエリア
         JScrollPane scrollPane = new JScrollPane(contentArea);
@@ -390,10 +391,10 @@ public class MenuSystem extends JFrame {
         sidePanel.setPreferredSize(new Dimension(200, 0));
         
         // レイアウト配置
-        add(toolBar, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        add(sidePanel, BorderLayout.EAST);
-        add(statusLabel, BorderLayout.SOUTH);
+        frame.add(toolBar, BorderLayout.NORTH);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        frame.add(sidePanel, BorderLayout.EAST);
+        frame.add(statusLabel, BorderLayout.SOUTH);
     }
     
     private void setupContextMenus() {
@@ -420,7 +421,7 @@ public class MenuSystem extends JFrame {
     
     private void setupEventHandlers() {
         // ウィンドウクローズイベント
-        addWindowListener(new WindowAdapter() {
+        frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 saveConfiguration();
@@ -434,10 +435,9 @@ public class MenuSystem extends JFrame {
     }
     
     private void setupWindow() {
-        setTitle("Advanced Menu System");
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setSize(800, 600);
-        setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
     }
     
     private void updateMenuStates() {
@@ -510,14 +510,14 @@ public class MenuSystem extends JFrame {
     
     private void openFile() {
         JFileChooser fileChooser = new JFileChooser();
-        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 contentArea.read(reader, null);
                 addToRecentFiles(file.getAbsolutePath());
                 statusLabel.setText("ファイルを開きました: " + file.getName());
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "ファイルの読み込みに失敗しました: " + ex.getMessage(),
+                JOptionPane.showMessageDialog(frame, "ファイルの読み込みに失敗しました: " + ex.getMessage(),
                     "エラー", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -525,14 +525,14 @@ public class MenuSystem extends JFrame {
     
     private void saveFile() {
         JFileChooser fileChooser = new JFileChooser();
-        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 contentArea.write(writer);
                 addToRecentFiles(file.getAbsolutePath());
                 statusLabel.setText("ファイルを保存しました: " + file.getName());
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "ファイルの保存に失敗しました: " + ex.getMessage(),
+                JOptionPane.showMessageDialog(frame, "ファイルの保存に失敗しました: " + ex.getMessage(),
                     "エラー", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -543,7 +543,7 @@ public class MenuSystem extends JFrame {
             contentArea.read(reader, null);
             statusLabel.setText("最近のファイルを開きました: " + new File(filePath).getName());
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "ファイルの読み込みに失敗しました: " + ex.getMessage(),
+            JOptionPane.showMessageDialog(frame, "ファイルの読み込みに失敗しました: " + ex.getMessage(),
                 "エラー", JOptionPane.ERROR_MESSAGE);
             recentFiles.remove(filePath);
             updateRecentFilesMenu();
@@ -552,8 +552,8 @@ public class MenuSystem extends JFrame {
     
     private void toggleMenuBar() {
         menuBarVisible = !menuBarVisible;
-        setJMenuBar(menuBarVisible ? menuBar : null);
-        revalidate();
+        frame.setJMenuBar(menuBarVisible ? menuBar : null);
+        frame.revalidate();
         statusLabel.setText("メニューバー: " + (menuBarVisible ? "表示" : "非表示"));
     }
     
@@ -564,7 +564,7 @@ public class MenuSystem extends JFrame {
     }
     
     private void addDynamicMenuItem() {
-        String itemName = JOptionPane.showInputDialog(this, "新しいメニュー項目の名前:", "動的メニュー追加", 
+        String itemName = JOptionPane.showInputDialog(frame, "新しいメニュー項目の名前:", "動的メニュー追加", 
             JOptionPane.QUESTION_MESSAGE);
         
         if (itemName != null && !itemName.trim().isEmpty()) {
@@ -574,7 +574,7 @@ public class MenuSystem extends JFrame {
             
             JMenuItem newItem = new JMenuItem(itemName);
             newItem.addActionListener(e -> {
-                JOptionPane.showMessageDialog(this, "動的メニュー '" + itemName + "' が実行されました");
+                JOptionPane.showMessageDialog(frame, "動的メニュー '" + itemName + "' が実行されました");
                 addToHistory("動的メニュー実行: " + itemName);
             });
             
@@ -584,7 +584,7 @@ public class MenuSystem extends JFrame {
     }
     
     private void showMenuCustomizer() {
-        menuCustomizer.showDialog(this);
+        menuCustomizer.showDialog(frame);
     }
     
     private void exitApplication() {
@@ -667,9 +667,9 @@ public class MenuSystem extends JFrame {
         }
         
         private void initializeDialog() {
-            dialog = new JDialog(MenuSystem.this, "メニューカスタマイズ", true);
+            dialog = new JDialog(frame, "メニューカスタマイズ", true);
             dialog.setSize(500, 400);
-            dialog.setLocationRelativeTo(MenuSystem.this);
+            dialog.setLocationRelativeTo(frame);
             
             // カスタマイズUI（簡略化）
             JPanel panel = new JPanel(new BorderLayout());
@@ -687,6 +687,10 @@ public class MenuSystem extends JFrame {
         }
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -695,7 +699,7 @@ public class MenuSystem extends JFrame {
                 e.printStackTrace();
             }
             
-            new MenuSystem().setVisible(true);
+            new MenuSystem().show();
         });
     }
 }

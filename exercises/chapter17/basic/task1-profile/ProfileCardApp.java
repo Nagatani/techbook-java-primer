@@ -17,11 +17,11 @@ import javax.swing.SwingUtilities;
  * BorderLayoutの5つの領域に、ラベルとボタンを置きます。
  * ボタンを押したときの処理は、第18章で学ぶイベント処理で付けます。
  */
-public class ProfileCardApp extends JFrame {
+public class ProfileCardApp {
+    private final JFrame frame = new JFrame("プロフィール");
 
     public ProfileCardApp() {
-        super("プロフィール");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // 上（NORTH）: 見出し。左右いっぱいに広がるので、文字を中央に寄せる
         JLabel titleLabel = new JLabel("自己紹介", SwingConstants.CENTER);
@@ -62,13 +62,17 @@ public class ProfileCardApp extends JFrame {
         content.add(iconLabel, BorderLayout.WEST);
         content.add(detailLabel, BorderLayout.CENTER);
         content.add(buttonPanel, BorderLayout.SOUTH);
-        setContentPane(content);
+        frame.setContentPane(content);
 
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+    }
+
+    private void show() {
+        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new ProfileCardApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new ProfileCardApp().show());
     }
 }

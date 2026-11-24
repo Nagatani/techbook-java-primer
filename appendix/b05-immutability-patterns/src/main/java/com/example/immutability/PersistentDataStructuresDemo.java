@@ -260,7 +260,7 @@ public class PersistentDataStructuresDemo {
         }
         
         public List<T> toList() {
-            return stream().collect(Collectors.toList());
+            return stream().toList();
         }
         
         @Override
@@ -868,8 +868,8 @@ public class PersistentDataStructuresDemo {
         // Stream API との統合
         List<Integer> doubled = numbers.stream()
             .map(n -> n * 2)
-            .collect(Collectors.toList());
-        IO.println("Doubled (as ArrayList): " + doubled);
+            .toList();
+        IO.println("Doubled (as List): " + doubled);
     }
     
     private static void demonstratePersistentHashMap() {

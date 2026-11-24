@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class StudentManagementGUI extends JFrame {
+public class StudentManagementGUI {
+    private final JFrame frame = new JFrame("学生名簿");
 
     private JTable studentTable;
     private StudentTableModel tableModel;
@@ -159,10 +160,9 @@ public class StudentManagementGUI extends JFrame {
     }
 
     public StudentManagementGUI() {
-        setTitle("学生名簿");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 450);
-        setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 450);
+        frame.setLocationRelativeTo(null);
 
         initializeComponents();
         setupLayout();
@@ -198,9 +198,9 @@ public class StudentManagementGUI extends JFrame {
         topPanel.add(saveButton);
         topPanel.add(loadButton);
 
-        add(topPanel, BorderLayout.NORTH);
-        add(new JScrollPane(studentTable), BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.SOUTH);
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(new JScrollPane(studentTable), BorderLayout.CENTER);
+        frame.add(statusLabel, BorderLayout.SOUTH);
     }
 
     private void setupEventListeners() {
@@ -257,7 +257,7 @@ public class StudentManagementGUI extends JFrame {
         }
         int modelRow = studentTable.convertRowIndexToModel(viewRow);
         Student student = tableModel.getStudentAt(modelRow);
-        int answer = JOptionPane.showConfirmDialog(this, student.getName() + "さんを削除しますか？",
+        int answer = JOptionPane.showConfirmDialog(frame, student.getName() + "さんを削除しますか？",
                 "削除の確認", JOptionPane.YES_NO_OPTION);
         if (answer == JOptionPane.YES_OPTION) {
             tableModel.removeStudent(modelRow);
@@ -277,7 +277,7 @@ public class StudentManagementGUI extends JFrame {
 
     private void saveToCSV() {
         JFileChooser chooser = new JFileChooser();
-        if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+        if (chooser.showSaveDialog(frame) != JFileChooser.APPROVE_OPTION) {
             return;
         }
         Path path = chooser.getSelectedFile().toPath();
@@ -294,7 +294,7 @@ public class StudentManagementGUI extends JFrame {
 
     private void loadFromCSV() {
         JFileChooser chooser = new JFileChooser();
-        if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+        if (chooser.showOpenDialog(frame) != JFileChooser.APPROVE_OPTION) {
             return;
         }
         Path path = chooser.getSelectedFile().toPath();
@@ -340,7 +340,7 @@ public class StudentManagementGUI extends JFrame {
         panel.add(new JLabel("入学日（2026-04-01の形）:"));
         panel.add(dateField);
 
-        int result = JOptionPane.showConfirmDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION);
+        int result = JOptionPane.showConfirmDialog(frame, panel, title, JOptionPane.OK_CANCEL_OPTION);
         if (result != JOptionPane.OK_OPTION) {
             return null;
         }
@@ -378,10 +378,14 @@ public class StudentManagementGUI extends JFrame {
     }
 
     private void showError(String message) {
-        JOptionPane.showMessageDialog(this, message, "エラー", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(frame, message, "エラー", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void show() {
+        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new StudentManagementGUI().setVisible(true));
+        SwingUtilities.invokeLater(() -> new StudentManagementGUI().show());
     }
 }

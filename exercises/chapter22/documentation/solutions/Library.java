@@ -2,7 +2,6 @@ package chapter22.documentation.solutions;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * 図書館システムの中核となるクラス。
@@ -140,7 +139,7 @@ public class Library {
         
         return books.values().stream()
                 .filter(book -> book.getAuthor().toLowerCase().contains(lowerAuthor))
-                .collect(Collectors.toList());
+                .toList();
     }
     
     /**
@@ -160,7 +159,7 @@ public class Library {
         
         return books.values().stream()
                 .filter(book -> book.getTitle().toLowerCase().contains(lowerTitle))
-                .collect(Collectors.toList());
+                .toList();
     }
     
     /**
@@ -281,7 +280,7 @@ public class Library {
     public List<Book> getAvailableBooks() {
         return books.values().stream()
                 .filter(Book::isAvailable)
-                .collect(Collectors.toList());
+                .toList();
     }
     
     /**

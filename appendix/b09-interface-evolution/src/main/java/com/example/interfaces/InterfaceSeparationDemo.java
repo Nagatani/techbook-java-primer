@@ -58,7 +58,7 @@ public class InterfaceSeparationDemo {
         default List<User> findActiveUsers() {
             return findAll().stream()
                 .filter(User::isActive)
-                .collect(java.util.stream.Collectors.toList());
+                .toList();
         }
         
         default long count() {

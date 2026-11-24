@@ -17,7 +17,8 @@ import javax.swing.event.DocumentListener;
  *
  * 文字を打つたびに検索せず、最後の入力から300ミリ秒たってから1回だけ検索します（デバウンス）。
  */
-public class SearchApp extends JFrame {
+public class SearchApp {
+    private final JFrame frame = new JFrame("クラス名の検索");
     private static final int DELAY_MILLIS = 300;
 
     private final WordSearch wordSearch = new WordSearch(WordSearch.sampleWords());
@@ -30,8 +31,7 @@ public class SearchApp extends JFrame {
     private int hitCount = 0;
 
     public SearchApp() {
-        super("クラス名の検索");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // 1回だけ動くタイマー。restartするたびに待ち時間が最初からになる
         debounceTimer = new Timer(DELAY_MILLIS, e -> runSearch());
@@ -65,11 +65,11 @@ public class SearchApp extends JFrame {
         content.add(top, BorderLayout.NORTH);
         content.add(new JScrollPane(resultArea), BorderLayout.CENTER);
         content.add(statusLabel, BorderLayout.SOUTH);
-        setContentPane(content);
+        frame.setContentPane(content);
 
         updateStatus();
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
 
     // 入力のたびに呼ばれる。ここでは検索せず、タイマーをかけ直すだけにする
@@ -92,7 +92,11 @@ public class SearchApp extends JFrame {
         statusLabel.setText("入力 " + inputCount + "回   検索 " + searchCount + "回   ヒット " + hitCount + "件");
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new SearchApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new SearchApp().show());
     }
 }

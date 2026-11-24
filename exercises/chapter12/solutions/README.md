@@ -49,5 +49,5 @@ java -cp out chapter12.solutions.SolutionCheck
 
 | 箇所 | 解答例の書き方 | 別の書き方 |
 |------|----------------|------------|
-| リストに集める | `collect(Collectors.toList())` | `toList()`（Java 16以降。返すリストは変更できない） |
+| リストに集める | `toList()`（返すリストは変更できない） | `collect(Collectors.toList())`（変更できるリストが要るとき。Java 15以前のコードもこの形） |
 | 整数の合計 | `reduce(0, Integer::sum)` | `mapToInt(Integer::intValue).sum()` |

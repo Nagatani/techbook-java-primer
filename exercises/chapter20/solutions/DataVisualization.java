@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Random;
 import javax.imageio.ImageIO;
 
-public class DataVisualization extends JFrame {
+public class DataVisualization {
+    private final JFrame frame = new JFrame("データのグラフ");
 
     // グラフの色。データの順に使い、足りなくなったら最初に戻る
     private static final Color[] PALETTE = {
@@ -287,8 +288,7 @@ public class DataVisualization extends JFrame {
     }
 
     public DataVisualization() {
-        setTitle("データのグラフ");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         initializeComponents();
         setupLayout();
@@ -296,8 +296,8 @@ public class DataVisualization extends JFrame {
         generateSampleData();
         startAnimation();
 
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
 
     private void initializeComponents() {
@@ -328,8 +328,8 @@ public class DataVisualization extends JFrame {
         controls.add(animationSpeedSlider);
         controls.add(exportButton);
 
-        add(controls, BorderLayout.NORTH);
-        add(chartPanel, BorderLayout.CENTER);
+        frame.add(controls, BorderLayout.NORTH);
+        frame.add(chartPanel, BorderLayout.CENTER);
     }
 
     private void setupEventListeners() {
@@ -357,7 +357,7 @@ public class DataVisualization extends JFrame {
         panel.add(new JLabel("値（0以上）:"));
         panel.add(valueField);
 
-        int result = JOptionPane.showConfirmDialog(this, panel, "データ追加", JOptionPane.OK_CANCEL_OPTION);
+        int result = JOptionPane.showConfirmDialog(frame, panel, "データ追加", JOptionPane.OK_CANCEL_OPTION);
         if (result != JOptionPane.OK_OPTION) {
             return;
         }
@@ -370,7 +370,7 @@ public class DataVisualization extends JFrame {
             Color color = PALETTE[chartPanel.getData().size() % PALETTE.length];
             chartPanel.addData(new DataPoint(label, value, color));
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "ラベルと、0以上の数の値を入力してください",
+            JOptionPane.showMessageDialog(frame, "ラベルと、0以上の数の値を入力してください",
                     "エラー", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -379,7 +379,7 @@ public class DataVisualization extends JFrame {
     private void exportChart() {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new FileNameExtensionFilter("PNG画像", "png"));
-        if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+        if (chooser.showSaveDialog(frame) != JFileChooser.APPROVE_OPTION) {
             return;
         }
         File file = chooser.getSelectedFile();
@@ -397,9 +397,9 @@ public class DataVisualization extends JFrame {
         }
         try {
             ImageIO.write(image, "png", file);
-            JOptionPane.showMessageDialog(this, file.getName() + "に保存しました");
+            JOptionPane.showMessageDialog(frame, file.getName() + "に保存しました");
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "保存できませんでした: " + e.getMessage(),
+            JOptionPane.showMessageDialog(frame, "保存できませんでした: " + e.getMessage(),
                     "エラー", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -413,7 +413,11 @@ public class DataVisualization extends JFrame {
         }
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new DataVisualization().setVisible(true));
+        SwingUtilities.invokeLater(() -> new DataVisualization().show());
     }
 }

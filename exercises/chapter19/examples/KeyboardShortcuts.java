@@ -18,7 +18,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.ArrayList;
 
-public class KeyboardShortcuts extends JFrame {
+public class KeyboardShortcuts {
+    private final JFrame frame =
+            new JFrame("テキストエディター - 新規文書");
     
     private JTextArea textArea;
     private JLabel statusLabel;
@@ -29,10 +31,9 @@ public class KeyboardShortcuts extends JFrame {
     private static final int MAX_RECENT_FILES = 5;
     
     public KeyboardShortcuts() {
-        setTitle("テキストエディター - 新規文書");
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setSize(800, 600);
-        setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
         
         initializeComponents();
         setupLayout();
@@ -69,16 +70,16 @@ public class KeyboardShortcuts extends JFrame {
      * レイアウトを設定します
      */
     private void setupLayout() {
-        setLayout(new BorderLayout());
+        frame.setLayout(new BorderLayout());
         
         // メインエリア（テキストエリアをスクロールペインに追加）
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        add(scrollPane, BorderLayout.CENTER);
+        frame.add(scrollPane, BorderLayout.CENTER);
         
         // ステータスバー
-        add(statusLabel, BorderLayout.SOUTH);
+        frame.add(statusLabel, BorderLayout.SOUTH);
     }
     
     /**
@@ -191,7 +192,7 @@ public class KeyboardShortcuts extends JFrame {
         
         menuBar.add(viewMenu);
         
-        setJMenuBar(menuBar);
+        frame.setJMenuBar(menuBar);
     }
     
     /**
@@ -262,7 +263,7 @@ public class KeyboardShortcuts extends JFrame {
      * ウィンドウリスナーを設定します
      */
     private void setupWindowListener() {
-        addWindowListener(new WindowAdapter() {
+        frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 exitApplication();
@@ -305,7 +306,7 @@ public class KeyboardShortcuts extends JFrame {
             }
         });
         
-        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try {
                 String content = readFileContent(file);
@@ -316,7 +317,7 @@ public class KeyboardShortcuts extends JFrame {
                 addToRecentFiles(file);
                 textArea.setCaretPosition(0);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, 
+                JOptionPane.showMessageDialog(frame, 
                     "ファイルの読み込みに失敗しました: " + e.getMessage(),
                     "エラー", JOptionPane.ERROR_MESSAGE);
             }
@@ -333,11 +334,11 @@ public class KeyboardShortcuts extends JFrame {
             try {
                 writeFileContent(currentFile, textArea.getText());
                 setModified(false);
-                JOptionPane.showMessageDialog(this, 
+                JOptionPane.showMessageDialog(frame, 
                     "ファイルを保存しました: " + currentFile.getName(),
                     "保存完了", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, 
+                JOptionPane.showMessageDialog(frame, 
                     "ファイルの保存に失敗しました: " + e.getMessage(),
                     "エラー", JOptionPane.ERROR_MESSAGE);
             }
@@ -361,7 +362,7 @@ public class KeyboardShortcuts extends JFrame {
             }
         });
         
-        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             if (!file.getName().toLowerCase().endsWith(".txt")) {
                 file = new File(file.getAbsolutePath() + ".txt");
@@ -373,11 +374,11 @@ public class KeyboardShortcuts extends JFrame {
                 setModified(false);
                 updateTitle();
                 addToRecentFiles(file);
-                JOptionPane.showMessageDialog(this, 
+                JOptionPane.showMessageDialog(frame, 
                     "ファイルを保存しました: " + file.getName(),
                     "保存完了", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, 
+                JOptionPane.showMessageDialog(frame, 
                     "ファイルの保存に失敗しました: " + e.getMessage(),
                     "エラー", JOptionPane.ERROR_MESSAGE);
             }
@@ -414,7 +415,7 @@ public class KeyboardShortcuts extends JFrame {
      * 検索ダイアログを表示します
      */
     private void showFindDialog() {
-        String searchText = JOptionPane.showInputDialog(this, "検索する文字列:", "検索", JOptionPane.PLAIN_MESSAGE);
+        String searchText = JOptionPane.showInputDialog(frame, "検索する文字列:", "検索", JOptionPane.PLAIN_MESSAGE);
         if (searchText != null && !searchText.trim().isEmpty()) {
             findText(searchText.trim());
         }
@@ -425,7 +426,7 @@ public class KeyboardShortcuts extends JFrame {
      */
     private void findNext() {
         // 簡易実装: 検索機能の詳細はここでは省略
-        JOptionPane.showMessageDialog(this, "次を検索機能は実装中です", "情報", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(frame, "次を検索機能は実装中です", "情報", JOptionPane.INFORMATION_MESSAGE);
     }
     
     /**
@@ -444,7 +445,7 @@ public class KeyboardShortcuts extends JFrame {
             textArea.setCaretPosition(foundIndex);
             textArea.select(foundIndex, foundIndex + searchText.length());
         } else {
-            JOptionPane.showMessageDialog(this, 
+            JOptionPane.showMessageDialog(frame, 
                 "「" + searchText + "」が見つかりませんでした", 
                 "検索結果", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -455,7 +456,7 @@ public class KeyboardShortcuts extends JFrame {
      */
     private void showFontDialog() {
         Font currentFont = textArea.getFont();
-        Font newFont = showFontChooser(this, currentFont);
+        Font newFont = showFontChooser(frame, currentFont);
         if (newFont != null) {
             textArea.setFont(newFont);
         }
@@ -541,7 +542,7 @@ public class KeyboardShortcuts extends JFrame {
             title += " *";
         }
         
-        setTitle(title);
+        frame.setTitle(title);
     }
     
     /**
@@ -549,7 +550,7 @@ public class KeyboardShortcuts extends JFrame {
      */
     private boolean confirmSaveBeforeAction() {
         if (isModified) {
-            int result = JOptionPane.showConfirmDialog(this,
+            int result = JOptionPane.showConfirmDialog(frame,
                 "変更内容を保存しますか？",
                 "確認", JOptionPane.YES_NO_CANCEL_OPTION);
             
@@ -611,7 +612,7 @@ public class KeyboardShortcuts extends JFrame {
      */
     private void openRecentFile(File file) {
         if (!file.exists()) {
-            JOptionPane.showMessageDialog(this, 
+            JOptionPane.showMessageDialog(frame, 
                 "ファイルが見つかりません: " + file.getAbsolutePath(),
                 "エラー", JOptionPane.ERROR_MESSAGE);
             recentFiles.remove(file);
@@ -627,7 +628,7 @@ public class KeyboardShortcuts extends JFrame {
                 updateTitle();
                 textArea.setCaretPosition(0);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, 
+                JOptionPane.showMessageDialog(frame, 
                     "ファイルの読み込みに失敗しました: " + e.getMessage(),
                     "エラー", JOptionPane.ERROR_MESSAGE);
             }
@@ -676,6 +677,10 @@ public class KeyboardShortcuts extends JFrame {
         }
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -683,7 +688,7 @@ public class KeyboardShortcuts extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            new KeyboardShortcuts().setVisible(true);
+            new KeyboardShortcuts().show();
         });
     }
 }

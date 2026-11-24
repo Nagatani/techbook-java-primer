@@ -4,7 +4,6 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.*;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DateTimeUtilities {
@@ -169,7 +168,7 @@ public class DateTimeUtilities {
     // 日付範囲の生成
     public static List<LocalDate> getDateRange(LocalDate start, LocalDate end) {
         return start.datesUntil(end.plusDays(1))
-            .collect(Collectors.toList());
+            .toList();
     }
     
     public static LocalDate getFirstDayOfMonth(LocalDate date) {

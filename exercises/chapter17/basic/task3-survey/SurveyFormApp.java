@@ -24,11 +24,11 @@ import javax.swing.SwingUtilities;
  * 入力系・選択系のコンポーネントを、JPanelの入れ子で並べます。
  * 送信したときの処理は、第18章で学ぶイベント処理で付けます。
  */
-public class SurveyFormApp extends JFrame {
+public class SurveyFormApp {
+    private final JFrame frame = new JFrame("授業アンケート");
 
     public SurveyFormApp() {
-        super("授業アンケート");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // 名前: 1行の文字の入力
         JTextField nameField = new JTextField(15);
@@ -96,13 +96,17 @@ public class SurveyFormApp extends JFrame {
         content.add(formPanel, BorderLayout.NORTH);
         content.add(commentScroll, BorderLayout.CENTER);
         content.add(buttonPanel, BorderLayout.SOUTH);
-        setContentPane(content);
+        frame.setContentPane(content);
 
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+    }
+
+    private void show() {
+        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new SurveyFormApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new SurveyFormApp().show());
     }
 }

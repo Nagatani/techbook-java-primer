@@ -31,7 +31,7 @@ public class SalesAnalyzer {
     public List<Product> filterByPriceRange(double minPrice, double maxPrice) {
         return products.stream()
                 .filter(p -> p.getPrice() >= minPrice && p.getPrice() <= maxPrice)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -40,7 +40,7 @@ public class SalesAnalyzer {
     public List<Product> getOutOfStockProducts() {
         return products.stream()
                 .filter(p -> p.getQuantity() == 0)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -50,7 +50,7 @@ public class SalesAnalyzer {
         return products.stream()
                 .sorted(Comparator.comparingDouble(Product::getTotalSales).reversed())
                 .limit(n)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -59,6 +59,6 @@ public class SalesAnalyzer {
     public List<String> getProductDescriptions() {
         return products.stream()
                 .map(p -> p.getName() + " (" + p.getCategory() + ")")
-                .collect(Collectors.toList());
+                .toList();
     }
 }

@@ -15,14 +15,14 @@ import javax.swing.SwingUtilities;
  * 実行時の引数で年と月を指定します（例: java CalendarApp 2026 11）。
  * 引数を省くと2026年11月を表示します。
  */
-public class CalendarApp extends JFrame {
+public class CalendarApp {
+    private final JFrame frame = new JFrame("カレンダー");
     private static final String[] WEEKDAYS = {"日", "月", "火", "水", "木", "金", "土"};
     private static final Color SUNDAY = new Color(200, 40, 40);
     private static final Color SATURDAY = new Color(40, 80, 200);
 
     public CalendarApp(MonthCalendar calendar) {
-        super("カレンダー");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JLabel titleLabel = new JLabel(calendar.getTitle(), SwingConstants.CENTER);
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 20f));
@@ -56,10 +56,10 @@ public class CalendarApp extends JFrame {
         content.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         content.add(titleLabel, BorderLayout.NORTH);
         content.add(grid, BorderLayout.CENTER);
-        setContentPane(content);
+        frame.setContentPane(content);
 
-        setSize(360, 320);
-        setLocationRelativeTo(null);
+        frame.setSize(360, 320);
+        frame.setLocationRelativeTo(null);
     }
 
     // 列の番号から文字の色を決める（0が日曜、6が土曜）
@@ -73,6 +73,10 @@ public class CalendarApp extends JFrame {
         return Color.BLACK;
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         int year = 2026;
         int month = 11;
@@ -81,6 +85,6 @@ public class CalendarApp extends JFrame {
             month = Integer.parseInt(args[1]);
         }
         MonthCalendar calendar = new MonthCalendar(year, month);
-        SwingUtilities.invokeLater(() -> new CalendarApp(calendar).setVisible(true));
+        SwingUtilities.invokeLater(() -> new CalendarApp(calendar).show());
     }
 }

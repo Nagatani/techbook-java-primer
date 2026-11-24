@@ -11,7 +11,6 @@ import java.nio.channels.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.nio.ByteBuffer;
 
@@ -103,7 +102,7 @@ public class ConcurrentIOBenchmark {
                     throw new UncheckedIOException(e);
                 }
             }, executor))
-            .collect(Collectors.toList());
+            .toList();
         
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
             .thenApply(v -> futures.stream()

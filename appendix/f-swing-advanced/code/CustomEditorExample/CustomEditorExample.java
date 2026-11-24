@@ -77,10 +77,11 @@ class PriorityCellEditor extends DefaultCellEditor {
 }
 
 // メインアプリケーション
-public class CustomEditorExample extends JFrame {
+public class CustomEditorExample {
+    private final JFrame frame = new JFrame("カスタムエディターの例");
+
     public CustomEditorExample() {
-        setTitle("カスタムエディターの例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         // テーブルモデルの作成
         DefaultTableModel model = new DefaultTableModel(
@@ -114,20 +115,24 @@ public class CustomEditorExample extends JFrame {
         table.getColumnModel().getColumn(2).setCellEditor(new ColorCellEditor());
         
         // スクロールペインに追加
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        frame.add(new JScrollPane(table), BorderLayout.CENTER);
         
         // 説明パネル
         JPanel infoPanel = new JPanel();
         infoPanel.add(new JLabel("優先度はドロップダウン、色はクリックで変更できます"));
-        add(infoPanel, BorderLayout.SOUTH);
+        frame.add(infoPanel, BorderLayout.SOUTH);
         
-        setSize(600, 300);
-        setLocationRelativeTo(null);
+        frame.setSize(600, 300);
+        frame.setLocationRelativeTo(null);
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new CustomEditorExample().setVisible(true);
+            new CustomEditorExample().show();
         });
     }
 }

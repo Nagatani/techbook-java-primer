@@ -97,15 +97,16 @@ class StockPricePanel extends JPanel implements PropertyChangeListener {
 }
 
 // メインアプリケーション
-public class JavaBeansEventExample extends JFrame {
+public class JavaBeansEventExample {
+    private final JFrame frame =
+            new JFrame("JavaBeansイベントモデルの例（株価モニター）");
     private Map<String, StockPrice> stocks = new HashMap<>();
     private JPanel stocksPanel;
     private Timer updateTimer;
     private final Random random = new Random();
     
     public JavaBeansEventExample() {
-        setTitle("JavaBeansイベントモデルの例（株価モニター）");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         // 株価データの初期化
         stocks.put("AAPL", new StockPrice("AAPL", 150.00));
@@ -142,11 +143,11 @@ public class JavaBeansEventExample extends JFrame {
         controlPanel.add(startButton);
         controlPanel.add(stopButton);
         
-        add(stocksPanel, BorderLayout.CENTER);
-        add(controlPanel, BorderLayout.SOUTH);
+        frame.add(stocksPanel, BorderLayout.CENTER);
+        frame.add(controlPanel, BorderLayout.SOUTH);
         
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
     
     private void startPriceUpdates() {
@@ -167,9 +168,13 @@ public class JavaBeansEventExample extends JFrame {
         }
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new JavaBeansEventExample().setVisible(true);
+            new JavaBeansEventExample().show();
         });
     }
 }

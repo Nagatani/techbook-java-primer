@@ -5,7 +5,6 @@ import java.nio.file.*;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import java.nio.file.attribute.BasicFileAttributes;
 
 /**
@@ -30,7 +29,7 @@ public class AsyncFileProcessorDemo {
             } else {
                 List<Path> files = Arrays.stream(args)
                     .map(Paths::get)
-                    .collect(Collectors.toList());
+                    .toList();
                 processFiles(files);
             }
         } catch (Exception e) {

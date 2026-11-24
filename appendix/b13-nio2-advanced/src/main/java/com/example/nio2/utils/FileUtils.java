@@ -7,7 +7,6 @@ import java.nio.file.*;
 import java.nio.file.attribute.*;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.io.RandomAccessFile;
 import java.time.Duration;
@@ -75,13 +74,13 @@ public class FileUtils {
     public static List<Path> findFiles(Path directory, String... patterns) throws IOException {
         List<PathMatcher> matchers = Arrays.stream(patterns)
             .map(pattern -> FileSystems.getDefault().getPathMatcher("glob:" + pattern))
-            .collect(Collectors.toList());
+            .toList();
         
         try (Stream<Path> stream = Files.walk(directory)) {
             return stream
                 .filter(Files::isRegularFile)
                 .filter(path -> matchers.stream().anyMatch(matcher -> matcher.matches(path.getFileName())))
-                .collect(Collectors.toList());
+                .toList();
         }
     }
     

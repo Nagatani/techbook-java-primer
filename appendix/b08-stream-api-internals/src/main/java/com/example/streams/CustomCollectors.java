@@ -268,7 +268,7 @@ public class CustomCollectors {
         IO.println("\n3. Statistics Collection:");
         List<Integer> numbers = IntStream.rangeClosed(1, 1000)
             .boxed()
-            .collect(Collectors.toList());
+            .toList();
         
         StatisticsCollector.Stats stats = numbers.stream()
             .collect(new StatisticsCollector());
@@ -297,7 +297,7 @@ public class CustomCollectors {
         
         List<String> largeDataset = IntStream.range(0, 100000)
             .mapToObj(i -> "item_" + i)
-            .collect(Collectors.toList());
+            .toList();
         
         // 標準のjoining vs カスタムコレクター
         // 先に測ったほうがJITコンパイル前で不利にならないよう、どちらも数回空回ししてから測る

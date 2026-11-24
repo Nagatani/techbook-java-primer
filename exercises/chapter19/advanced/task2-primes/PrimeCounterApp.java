@@ -19,7 +19,8 @@ import javax.swing.SwingWorker;
  *
  * 計算している間も、画面の操作（キャンセルボタンなど）を受け付けます。
  */
-public class PrimeCounterApp extends JFrame {
+public class PrimeCounterApp {
+    private final JFrame frame = new JFrame("素数を数える");
     private final JSpinner limitSpinner =
             new JSpinner(new SpinnerNumberModel(20_000_000, 1_000, 100_000_000, 5_000_000));
     private final JButton startButton = new JButton("数える");
@@ -30,8 +31,7 @@ public class PrimeCounterApp extends JFrame {
     private PrimeWorker worker;
 
     public PrimeCounterApp() {
-        super("素数を数える");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         progressBar.setStringPainted(true);
         cancelButton.setEnabled(false);
@@ -58,9 +58,9 @@ public class PrimeCounterApp extends JFrame {
         content.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         content.add(top, BorderLayout.NORTH);
         content.add(center, BorderLayout.CENTER);
-        setContentPane(content);
-        pack();
-        setLocationRelativeTo(null);
+        frame.setContentPane(content);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
 
     private void start() {
@@ -137,7 +137,11 @@ public class PrimeCounterApp extends JFrame {
         }
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new PrimeCounterApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new PrimeCounterApp().show());
     }
 }

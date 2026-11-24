@@ -32,7 +32,8 @@ import java.util.concurrent.CompletableFuture;
 import java.text.SimpleDateFormat;
 import javax.swing.filechooser.FileSystemView;
 
-public class FileExplorer extends JFrame {
+public class FileExplorer {
+    private final JFrame frame = new JFrame();
     
     // ここに実装してください
     
@@ -275,6 +276,10 @@ public class FileExplorer extends JFrame {
         return null;
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -282,7 +287,7 @@ public class FileExplorer extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            new FileExplorer().setVisible(true);
+            new FileExplorer().show();
         });
     }
 }

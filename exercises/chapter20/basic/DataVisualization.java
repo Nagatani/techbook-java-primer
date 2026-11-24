@@ -29,7 +29,8 @@ import java.io.IOException;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-public class DataVisualization extends JFrame {
+public class DataVisualization {
+    private final JFrame frame = new JFrame();
     
     // ここに実装してください
     
@@ -200,6 +201,10 @@ public class DataVisualization extends JFrame {
         // ここにサンプルデータ生成を実装してください
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -207,7 +212,7 @@ public class DataVisualization extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            new DataVisualization().setVisible(true);
+            new DataVisualization().show();
         });
     }
 }

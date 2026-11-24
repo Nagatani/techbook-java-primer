@@ -213,7 +213,7 @@ public class Converters {
                                             TypeConverter<F, T> converter) {
         return from.stream()
             .map(converter::convert)
-            .collect(Collectors.toList());
+            .toList();
     }
 }
 ```

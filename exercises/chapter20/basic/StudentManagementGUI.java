@@ -28,7 +28,8 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class StudentManagementGUI extends JFrame {
+public class StudentManagementGUI {
+    private final JFrame frame = new JFrame();
     
     // ここに実装してください
     
@@ -117,6 +118,10 @@ public class StudentManagementGUI extends JFrame {
         // ここにCSV読込処理を実装してください
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -124,7 +129,7 @@ public class StudentManagementGUI extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            new StudentManagementGUI().setVisible(true);
+            new StudentManagementGUI().show();
         });
     }
 }

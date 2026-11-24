@@ -96,7 +96,7 @@ public class CSVProcessingPipeline {
             // データを変換（ファイルの単位ですでに並列なので、ここでは並列ストリームを使わない）
             List<TransformedRecord> transformed = records.stream()
                 .map(this::transformRecord)
-                .collect(Collectors.toList());
+                .toList();
             
             // データベースへのバッチ挿入
             database.batchInsert(transformed);
@@ -168,12 +168,12 @@ public class LargeFileSearchEngine {
                     return Collections.<SearchResult>emptyList();
                 }
             }))
-            .collect(Collectors.toList());
+            .toList();
         
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
             .thenApply(v -> futures.stream()
                 .flatMap(f -> f.join().stream())
-                .collect(Collectors.toList())
+                .toList()
             );
     }
 }
@@ -285,7 +285,7 @@ public class DistributedFileSync {
                 // すべてのサーバーに並列でアップロード
                 List<CompletableFuture<Void>> uploads = servers.stream()
                     .map(server -> network.uploadAsync(server, file, content))
-                    .collect(Collectors.toList());
+                    .toList();
                 
                 return CompletableFuture.allOf(
                     uploads.toArray(new CompletableFuture[0])

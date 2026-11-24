@@ -6,7 +6,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Date;
 
-public class DragAndDropExample extends JFrame {
+public class DragAndDropExample {
+    private final JFrame frame = new JFrame("ドラッグ&ドロップの例");
     private JList<String> sourceList;
     private JList<String> targetList;
     private DefaultListModel<String> sourceModel;
@@ -14,9 +15,8 @@ public class DragAndDropExample extends JFrame {
     private JTextArea dropArea;
     
     public DragAndDropExample() {
-        setTitle("ドラッグ&ドロップの例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
         
         // リストの作成
         sourceModel = new DefaultListModel<>();
@@ -59,11 +59,11 @@ public class DragAndDropExample extends JFrame {
         // ファイルドロップの設定
         new DropTarget(dropArea, new FileDropTargetListener());
         
-        add(listsPanel, BorderLayout.CENTER);
-        add(new JScrollPane(dropArea), BorderLayout.SOUTH);
+        frame.add(listsPanel, BorderLayout.CENTER);
+        frame.add(new JScrollPane(dropArea), BorderLayout.SOUTH);
         
-        setSize(600, 400);
-        setLocationRelativeTo(null);
+        frame.setSize(600, 400);
+        frame.setLocationRelativeTo(null);
     }
     
     // リスト用のTransferHandler
@@ -161,9 +161,13 @@ public class DragAndDropExample extends JFrame {
         }
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new DragAndDropExample().setVisible(true);
+            new DragAndDropExample().show();
         });
     }
 }

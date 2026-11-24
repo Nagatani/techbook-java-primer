@@ -32,7 +32,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
-public class FileExplorer extends JFrame {
+public class FileExplorer {
+    private final JFrame frame = new JFrame("ファイルの一覧");
 
     // プレビューに出す行の数
     private static final int PREVIEW_LINES = 50;
@@ -228,10 +229,9 @@ public class FileExplorer extends JFrame {
     }
 
     public FileExplorer() {
-        setTitle("ファイルの一覧");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 600);
-        setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(900, 600);
+        frame.setLocationRelativeTo(null);
 
         initializeComponents();
         setupLayout();
@@ -281,9 +281,9 @@ public class FileExplorer extends JFrame {
         topPanel.add(new JLabel("名前で絞り込み:"));
         topPanel.add(searchField);
 
-        add(topPanel, BorderLayout.NORTH);
-        add(mainSplitPane, BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.SOUTH);
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(mainSplitPane, BorderLayout.CENTER);
+        frame.add(statusLabel, BorderLayout.SOUTH);
     }
 
     private void setupEventListeners() {
@@ -450,7 +450,7 @@ public class FileExplorer extends JFrame {
     }
 
     private void deleteFile(Path filePath) {
-        int answer = JOptionPane.showConfirmDialog(this, filePath.getFileName() + " を削除しますか？",
+        int answer = JOptionPane.showConfirmDialog(frame, filePath.getFileName() + " を削除しますか？",
                 "削除の確認", JOptionPane.YES_NO_OPTION);
         if (answer != JOptionPane.YES_OPTION) {
             return;
@@ -517,7 +517,7 @@ public class FileExplorer extends JFrame {
         JFileChooser chooser = new JFileChooser(currentDirectory.toFile());
         chooser.setDialogTitle(title);
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        if (chooser.showDialog(this, "選択") == JFileChooser.APPROVE_OPTION) {
+        if (chooser.showDialog(frame, "選択") == JFileChooser.APPROVE_OPTION) {
             return chooser.getSelectedFile().toPath();
         }
         return null;
@@ -530,7 +530,7 @@ public class FileExplorer extends JFrame {
     }
 
     private void showError(String message) {
-        JOptionPane.showMessageDialog(this, message, "エラー", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(frame, message, "エラー", JOptionPane.ERROR_MESSAGE);
     }
 
     // フォルダーの中の項目を名前順のリストで返す。Files.listの順序はOSで変わるので並べ替える
@@ -546,7 +546,11 @@ public class FileExplorer extends JFrame {
         return result;
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new FileExplorer().setVisible(true));
+        SwingUtilities.invokeLater(() -> new FileExplorer().show());
     }
 }

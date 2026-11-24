@@ -20,7 +20,8 @@ import javax.swing.SwingUtilities;
 /**
  * 入力欄を離れたときに検査する会員登録フォーム（基礎課題4の解答例）
  */
-public class MemberFormApp extends JFrame {
+public class MemberFormApp {
+    private final JFrame frame = new JFrame("会員登録");
     private static final Color ERROR_BG = new Color(255, 225, 225);
     private static final Color FOCUS_BG = new Color(255, 255, 210);
 
@@ -32,10 +33,9 @@ public class MemberFormApp extends JFrame {
     private boolean edited = false;
 
     public MemberFormApp() {
-        super("会員登録");
         // 閉じるボタンで、すぐには閉じない（確認してから閉じる）
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 confirmClose();
@@ -74,10 +74,10 @@ public class MemberFormApp extends JFrame {
         bottom.add(registerButton);
         bottom.add(helpLabel);
 
-        add(form, BorderLayout.CENTER);
-        add(bottom, BorderLayout.SOUTH);
-        pack();
-        setLocationRelativeTo(null);
+        frame.add(form, BorderLayout.CENTER);
+        frame.add(bottom, BorderLayout.SOUTH);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
 
     // 入力欄と、フォーカスを失ったときの検査を登録する
@@ -108,7 +108,7 @@ public class MemberFormApp extends JFrame {
             messageLabel.setText(error);
             return;
         }
-        JOptionPane.showMessageDialog(this, nameField.getText() + "さんを登録しました");
+        JOptionPane.showMessageDialog(frame, nameField.getText() + "さんを登録しました");
         nameField.setText("");
         ageField.setText("");
         emailField.setText("");
@@ -133,17 +133,21 @@ public class MemberFormApp extends JFrame {
 
     private void confirmClose() {
         if (!edited) {
-            dispose();
+            frame.dispose();
             return;
         }
-        int answer = JOptionPane.showConfirmDialog(this,
+        int answer = JOptionPane.showConfirmDialog(frame,
                 "入力した内容は保存されていません。閉じますか？", "確認", JOptionPane.YES_NO_OPTION);
         if (answer == JOptionPane.YES_OPTION) {
-            dispose();
+            frame.dispose();
         }
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MemberFormApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new MemberFormApp().show());
     }
 }

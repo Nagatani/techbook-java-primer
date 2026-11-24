@@ -68,7 +68,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 
-public class InteractiveDrawing extends JFrame {
+public class InteractiveDrawing {
+    private final JFrame frame =
+            new JFrame("Interactive Drawing Application");
     private DrawingPanel drawingPanel;
     private JToolBar toolBar;
     private JLabel statusLabel;
@@ -212,15 +214,15 @@ public class InteractiveDrawing extends JFrame {
         
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
-        setJMenuBar(menuBar);
+        frame.setJMenuBar(menuBar);
     }
     
     private void setupLayout() {
-        setLayout(new BorderLayout());
+        frame.setLayout(new BorderLayout());
         
-        add(toolBar, BorderLayout.NORTH);
-        add(new JScrollPane(drawingPanel), BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.SOUTH);
+        frame.add(toolBar, BorderLayout.NORTH);
+        frame.add(new JScrollPane(drawingPanel), BorderLayout.CENTER);
+        frame.add(statusLabel, BorderLayout.SOUTH);
     }
     
     private void setupEventHandlers() {
@@ -233,7 +235,7 @@ public class InteractiveDrawing extends JFrame {
         
         // 色選択イベント
         colorButton.addActionListener(e -> {
-            Color newColor = JColorChooser.showDialog(this, "色を選択", currentColor);
+            Color newColor = JColorChooser.showDialog(frame, "色を選択", currentColor);
             if (newColor != null) {
                 currentColor = newColor;
                 colorButton.setBackground(currentColor);
@@ -250,10 +252,9 @@ public class InteractiveDrawing extends JFrame {
     }
     
     private void setupWindow() {
-        setTitle("Interactive Drawing Application");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
-        setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
     }
     
     private void updateStatus() {
@@ -267,7 +268,7 @@ public class InteractiveDrawing extends JFrame {
         fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
             "PNG Images", "png"));
         
-        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             if (!file.getName().toLowerCase().endsWith(".png")) {
                 file = new File(file.getAbsolutePath() + ".png");
@@ -275,9 +276,9 @@ public class InteractiveDrawing extends JFrame {
             
             try {
                 drawingPanel.saveToFile(file);
-                JOptionPane.showMessageDialog(this, "描画を保存しました: " + file.getName());
+                JOptionPane.showMessageDialog(frame, "描画を保存しました: " + file.getName());
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "保存に失敗しました: " + ex.getMessage(),
+                JOptionPane.showMessageDialog(frame, "保存に失敗しました: " + ex.getMessage(),
                     "エラー", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -288,13 +289,13 @@ public class InteractiveDrawing extends JFrame {
         fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
             "Image Files", "png", "jpg", "jpeg", "gif"));
         
-        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try {
                 drawingPanel.loadFromFile(file);
-                JOptionPane.showMessageDialog(this, "画像を読み込みました: " + file.getName());
+                JOptionPane.showMessageDialog(frame, "画像を読み込みました: " + file.getName());
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "読み込みに失敗しました: " + ex.getMessage(),
+                JOptionPane.showMessageDialog(frame, "読み込みに失敗しました: " + ex.getMessage(),
                     "エラー", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -636,6 +637,10 @@ public class InteractiveDrawing extends JFrame {
         }
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -644,7 +649,7 @@ public class InteractiveDrawing extends JFrame {
                 e.printStackTrace();
             }
             
-            new InteractiveDrawing().setVisible(true);
+            new InteractiveDrawing().show();
         });
     }
 }

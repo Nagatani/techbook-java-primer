@@ -67,7 +67,8 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class MouseTracker extends JFrame {
+public class MouseTracker {
+    private final JFrame frame = new JFrame("Advanced Mouse Tracker");
     // トラッキングデータ
     private List<TrackPoint> trackPoints;
     private Queue<MouseEvent> eventQueue;
@@ -167,10 +168,10 @@ public class MouseTracker extends JFrame {
     }
     
     private void setupLayout() {
-        setLayout(new BorderLayout());
+        frame.setLayout(new BorderLayout());
         
         // メインパネル
-        add(trackingPanel, BorderLayout.CENTER);
+        frame.add(trackingPanel, BorderLayout.CENTER);
         
         // 情報パネル（上部）
         JPanel infoPanel = new JPanel(new GridLayout(1, 5, 10, 5));
@@ -181,15 +182,15 @@ public class MouseTracker extends JFrame {
         infoPanel.add(clickLabel);
         infoPanel.add(sessionLabel);
         
-        add(infoPanel, BorderLayout.NORTH);
+        frame.add(infoPanel, BorderLayout.NORTH);
         
         // サイドパネル（右側）
         JPanel sidePanel = createSidePanel();
-        add(sidePanel, BorderLayout.EAST);
+        frame.add(sidePanel, BorderLayout.EAST);
         
         // コントロールパネル（下部）
         JPanel controlPanel = createControlPanel();
-        add(controlPanel, BorderLayout.SOUTH);
+        frame.add(controlPanel, BorderLayout.SOUTH);
     }
     
     private JPanel createSidePanel() {
@@ -369,10 +370,9 @@ public class MouseTracker extends JFrame {
     }
     
     private void setupWindow() {
-        setTitle("Advanced Mouse Tracker");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1000, 700);
-        setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1000, 700);
+        frame.setLocationRelativeTo(null);
     }
     
     private void handleMouseMove(MouseEvent e) {
@@ -507,7 +507,7 @@ public class MouseTracker extends JFrame {
     }
     
     private void selectTrailColor() {
-        Color newColor = JColorChooser.showDialog(this, "軌跡の色を選択", trailColor);
+        Color newColor = JColorChooser.showDialog(frame, "軌跡の色を選択", trailColor);
         if (newColor != null) {
             trailColor = newColor;
             trackingPanel.repaint();
@@ -545,7 +545,7 @@ public class MouseTracker extends JFrame {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setSelectedFile(new File("mouse_tracking_" + System.currentTimeMillis() + ".csv"));
         
-        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try (FileWriter writer = new FileWriter(file)) {
                 writer.write("Timestamp,X,Y,Speed\n");
@@ -557,20 +557,20 @@ public class MouseTracker extends JFrame {
                     }
                 }
                 
-                JOptionPane.showMessageDialog(this, "トラッキングデータを保存しました: " + file.getName());
+                JOptionPane.showMessageDialog(frame, "トラッキングデータを保存しました: " + file.getName());
                 logEvent("データ保存: " + file.getAbsolutePath());
                 
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "保存に失敗しました: " + ex.getMessage(),
+                JOptionPane.showMessageDialog(frame, "保存に失敗しました: " + ex.getMessage(),
                     "エラー", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
     
     private void showGestureSettings() {
-        JDialog dialog = new JDialog(this, "ジェスチャー設定", true);
+        JDialog dialog = new JDialog(frame, "ジェスチャー設定", true);
         dialog.setSize(400, 300);
-        dialog.setLocationRelativeTo(this);
+        dialog.setLocationRelativeTo(frame);
         
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(new JLabel("ジェスチャー認識設定（実装例）"), BorderLayout.CENTER);
@@ -584,9 +584,9 @@ public class MouseTracker extends JFrame {
     }
     
     private void showDetailedStatistics() {
-        JDialog dialog = new JDialog(this, "詳細統計", true);
+        JDialog dialog = new JDialog(frame, "詳細統計", true);
         dialog.setSize(500, 400);
-        dialog.setLocationRelativeTo(this);
+        dialog.setLocationRelativeTo(frame);
         
         JTextArea statsArea = new JTextArea();
         statsArea.setEditable(false);
@@ -819,6 +819,10 @@ public class MouseTracker extends JFrame {
         }
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -827,7 +831,7 @@ public class MouseTracker extends JFrame {
                 e.printStackTrace();
             }
             
-            new MouseTracker().setVisible(true);
+            new MouseTracker().show();
         });
     }
 }

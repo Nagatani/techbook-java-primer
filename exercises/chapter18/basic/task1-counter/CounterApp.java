@@ -13,7 +13,8 @@ import javax.swing.SwingUtilities;
 /**
  * 教室の入室人数を数えるカウンター（基礎課題1の解答例）
  */
-public class CounterApp extends JFrame {
+public class CounterApp {
+    private final JFrame frame = new JFrame("入室カウンター");
     private final Counter counter = new Counter(10);
     private final JLabel valueLabel = new JLabel("", SwingConstants.CENTER);
     private final JLabel messageLabel = new JLabel(" ", SwingConstants.CENTER);
@@ -22,8 +23,7 @@ public class CounterApp extends JFrame {
     private final JButton resetButton = new JButton("リセット");
 
     public CounterApp() {
-        super("入室カウンター");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         valueLabel.setFont(valueLabel.getFont().deriveFont(Font.BOLD, 48f));
 
         // 3つのボタンで1つのリスナーを共有し、アクションコマンドで区別する
@@ -51,12 +51,12 @@ public class CounterApp extends JFrame {
         buttons.add(plusButton);
         buttons.add(resetButton);
 
-        add(valueLabel, BorderLayout.NORTH);
-        add(messageLabel, BorderLayout.CENTER);
-        add(buttons, BorderLayout.SOUTH);
+        frame.add(valueLabel, BorderLayout.NORTH);
+        frame.add(messageLabel, BorderLayout.CENTER);
+        frame.add(buttons, BorderLayout.SOUTH);
         updateView();
-        setSize(320, 200);
-        setLocationRelativeTo(null);
+        frame.setSize(320, 200);
+        frame.setLocationRelativeTo(null);
     }
 
     // ロジックの状態を画面に映す
@@ -71,7 +71,11 @@ public class CounterApp extends JFrame {
         }
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new CounterApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new CounterApp().show());
     }
 }

@@ -2,13 +2,13 @@ import javax.swing.*;
 import javax.swing.tree.*;
 import java.awt.*;
 
-public class DynamicTreeExample extends JFrame {
+public class DynamicTreeExample {
+    private final JFrame frame = new JFrame("動的なツリー操作");
     private DefaultTreeModel treeModel;
     private JTree tree;
     
     public DynamicTreeExample() {
-        setTitle("動的なツリー操作");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         // ルートノードとモデルの作成
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("ファイルシステム");
@@ -73,16 +73,16 @@ public class DynamicTreeExample extends JFrame {
         tree.setCellRenderer(new FileSystemTreeCellRenderer());
         
         // レイアウト
-        add(new JScrollPane(tree), BorderLayout.CENTER);
+        frame.add(new JScrollPane(tree), BorderLayout.CENTER);
         
         // 情報パネル
         JPanel infoPanel = new JPanel();
         JLabel infoLabel = new JLabel("右クリックでメニューを表示");
         infoPanel.add(infoLabel);
-        add(infoPanel, BorderLayout.SOUTH);
+        frame.add(infoPanel, BorderLayout.SOUTH);
         
-        setSize(500, 600);
-        setLocationRelativeTo(null);
+        frame.setSize(500, 600);
+        frame.setLocationRelativeTo(null);
     }
     
     private void addNode(String name, boolean isFolder) {
@@ -144,9 +144,13 @@ public class DynamicTreeExample extends JFrame {
         }
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new DynamicTreeExample().setVisible(true);
+            new DynamicTreeExample().show();
         });
     }
 }

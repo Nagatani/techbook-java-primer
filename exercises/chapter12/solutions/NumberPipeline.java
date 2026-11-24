@@ -21,7 +21,7 @@ public class NumberPipeline {
                 .filter(n -> n % 2 == 0)
                 .map(n -> n * n)
                 .map(String::valueOf)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -46,7 +46,7 @@ public class NumberPipeline {
     public static List<Integer> flatten(List<List<Integer>> nested) {
         return nested.stream()
                 .flatMap(List::stream)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -60,7 +60,7 @@ public class NumberPipeline {
 
     public static void main(String[] args) {
         // IntStream.rangeClosed(1, 10)は1から10までの整数。boxedでIntegerのストリームにする
-        List<Integer> numbers = IntStream.rangeClosed(1, 10).boxed().collect(Collectors.toList());
+        List<Integer> numbers = IntStream.rangeClosed(1, 10).boxed().toList();
         IO.println("入力: " + numbers);
 
         IO.println("偶数の2乗（文字列）: " + evenSquares(numbers));

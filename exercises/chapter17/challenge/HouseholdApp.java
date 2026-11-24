@@ -31,15 +31,15 @@ import javax.swing.SwingUtilities;
  * メニューバー・タブ・分割ペイン・自作の円グラフを組み合わせます。
  * メニューやボタンの処理は、第18章で学ぶイベント処理で付けます。
  */
-public class HouseholdApp extends JFrame {
+public class HouseholdApp {
+    private final JFrame frame = new JFrame("家計簿 - 2026年11月");
     private static final List<Color> COLORS = List.of(
             new Color(231, 111, 81), new Color(244, 162, 97), new Color(233, 196, 106),
             new Color(42, 157, 143), new Color(38, 70, 83));
 
     public HouseholdApp(Household household) {
-        super("家計簿 - 2026年11月");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setJMenuBar(createMenuBar());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setJMenuBar(createMenuBar());
 
         JTabbedPane tabs = new JTabbedPane();
         tabs.addTab("一覧", createListTab(household));
@@ -50,10 +50,10 @@ public class HouseholdApp extends JFrame {
                 household.getExpenses().size(), household.getTotal()));
         statusLabel.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
 
-        add(tabs, BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.SOUTH);
-        setSize(560, 420);
-        setLocationRelativeTo(null);
+        frame.add(tabs, BorderLayout.CENTER);
+        frame.add(statusLabel, BorderLayout.SOUTH);
+        frame.setSize(560, 420);
+        frame.setLocationRelativeTo(null);
     }
 
     private JMenuBar createMenuBar() {
@@ -145,8 +145,12 @@ public class HouseholdApp extends JFrame {
         return household;
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         Household household = sampleData();
-        SwingUtilities.invokeLater(() -> new HouseholdApp(household).setVisible(true));
+        SwingUtilities.invokeLater(() -> new HouseholdApp(household).show());
     }
 }

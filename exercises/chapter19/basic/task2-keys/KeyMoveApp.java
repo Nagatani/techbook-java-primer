@@ -19,7 +19,8 @@ import javax.swing.SwingUtilities;
  *
  * キーと処理の対応をInputMapとActionMapで登録します（キーバインディング）。
  */
-public class KeyMoveApp extends JFrame {
+public class KeyMoveApp {
+    private final JFrame frame = new JFrame("キーで動かす");
     private static final int STEP = 10;
     private static final int FAST_STEP = 50;
 
@@ -29,8 +30,7 @@ public class KeyMoveApp extends JFrame {
     private String lastAction = "なし";
 
     public KeyMoveApp() {
-        super("キーで動かす");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // WHEN_IN_FOCUSED_WINDOW: ウィンドウのどこにフォーカスがあってもキーを受け取る
         InputMap inputMap = boardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -61,12 +61,12 @@ public class KeyMoveApp extends JFrame {
         helpLabel.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
         statusLabel.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
 
-        add(helpLabel, BorderLayout.NORTH);
-        add(boardPanel, BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.SOUTH);
+        frame.add(helpLabel, BorderLayout.NORTH);
+        frame.add(boardPanel, BorderLayout.CENTER);
+        frame.add(statusLabel, BorderLayout.SOUTH);
         updateView();
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
 
     // 1つのキーに、名前と動かす量の決まった処理を割り当てる
@@ -105,7 +105,11 @@ public class KeyMoveApp extends JFrame {
         }
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new KeyMoveApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new KeyMoveApp().show());
     }
 }

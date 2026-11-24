@@ -24,7 +24,7 @@ public class StudentAnalyzer {
     public List<String> getAllNames() {
         return students.stream()
                 .map(Student::getName)
-                .collect(Collectors.toList());
+                .toList();
         // Java 16以降はtoList()でも書ける: students.stream().map(Student::getName).toList();
         // ただしtoList()が返すリストは変更できない
     }
@@ -35,7 +35,7 @@ public class StudentAnalyzer {
     public List<Student> filterByGPA(double minGPA) {
         return students.stream()
                 .filter(s -> s.getGpa() >= minGPA)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -65,6 +65,6 @@ public class StudentAnalyzer {
         return students.stream()
                 .sorted(Comparator.comparingDouble(Student::getGpa).reversed())
                 .limit(n)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

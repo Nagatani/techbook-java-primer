@@ -26,7 +26,8 @@ import javax.swing.table.TableRowSorter;
 /**
  * ToDoリストの画面（View）。部品を組み立てて並べるだけで、イベントの処理はTodoControllerが行う。
  */
-public class TodoFrame extends JFrame {
+public class TodoFrame {
+    private final JFrame frame = new JFrame("ToDoリスト");
     final JList<String> categoryList;
     final JTable table;
     final TableRowSorter<TaskTableModel> sorter;
@@ -42,8 +43,7 @@ public class TodoFrame extends JFrame {
 
     public TodoFrame(CategoryListModel categoryModel, TaskTableModel tableModel,
             TaskManager manager, LocalDate today) {
-        super("ToDoリスト");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // 左: 分類の一覧
         categoryList = new JList<>(categoryModel);
@@ -102,9 +102,13 @@ public class TodoFrame extends JFrame {
         south.add(form, BorderLayout.CENTER);
         south.add(status, BorderLayout.SOUTH);
 
-        add(split, BorderLayout.CENTER);
-        add(south, BorderLayout.SOUTH);
-        setSize(860, 440);
-        setLocationRelativeTo(null);
+        frame.add(split, BorderLayout.CENTER);
+        frame.add(south, BorderLayout.SOUTH);
+        frame.setSize(860, 440);
+        frame.setLocationRelativeTo(null);
+    }
+
+    void show() {
+        frame.setVisible(true);
     }
 }

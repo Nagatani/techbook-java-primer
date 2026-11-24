@@ -16,7 +16,8 @@ import java.util.*;
  * @author Hidehiro Nagatani
  * @version 1.0
  */
-public class MessageApp extends JFrame {
+public class MessageApp {
+    private final JFrame frame = new JFrame();
     private Properties config;
     private ResourceBundle messages;
     private JLabel messageLabel;
@@ -34,7 +35,7 @@ public class MessageApp extends JFrame {
             }
             
             MessageApp app = new MessageApp();
-            app.setVisible(true);
+            app.show();
         });
     }
     
@@ -42,12 +43,15 @@ public class MessageApp extends JFrame {
      * コンストラクター
      */
     public MessageApp() {
-        super();
         loadConfiguration();
         loadMessages();
         initializeUI();
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     /**
      * 設定ファイルを読み込む
      */
@@ -120,10 +124,10 @@ public class MessageApp extends JFrame {
      */
     private void initializeUI() {
         // ウィンドウの基本設定
-        setTitle(config.getProperty("app.title", "Message Viewer") + 
-                " v" + config.getProperty("app.version", "1.0.0"));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        frame.setTitle(config.getProperty("app.title", "Message Viewer")
+                + " v" + config.getProperty("app.version", "1.0.0"));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
         
         // アイコンの設定
         loadAndSetIcon();
@@ -132,8 +136,8 @@ public class MessageApp extends JFrame {
         createComponents();
         
         // ウィンドウサイズと位置の設定
-        setSize(500, 300);
-        setLocationRelativeTo(null); // 画面中央に配置
+        frame.setSize(500, 300);
+        frame.setLocationRelativeTo(null); // 画面中央に配置
     }
     
     /**
@@ -144,7 +148,7 @@ public class MessageApp extends JFrame {
             URL iconURL = getClass().getResource("/resources/icon.png");
             if (iconURL != null) {
                 ImageIcon icon = new ImageIcon(iconURL);
-                setIconImage(icon.getImage());
+                frame.setIconImage(icon.getImage());
             } else {
                 System.err.println("警告: icon.pngが見つかりません。");
                 // デフォルトアイコンを作成
@@ -175,7 +179,7 @@ public class MessageApp extends JFrame {
         g2d.drawString("M", 10, 22);
         
         g2d.dispose();
-        setIconImage(icon);
+        frame.setIconImage(icon);
     }
     
     /**
@@ -196,7 +200,7 @@ public class MessageApp extends JFrame {
         languageCombo.addActionListener(e -> changeLanguage());
         topPanel.add(languageCombo);
         
-        add(topPanel, BorderLayout.NORTH);
+        frame.add(topPanel, BorderLayout.NORTH);
         
         // 中央パネル（メッセージ表示）
         JPanel centerPanel = new JPanel(new GridBagLayout());
@@ -206,7 +210,7 @@ public class MessageApp extends JFrame {
         messageLabel.setFont(new Font("Dialog", Font.BOLD, 24));
         centerPanel.add(messageLabel);
         
-        add(centerPanel, BorderLayout.CENTER);
+        frame.add(centerPanel, BorderLayout.CENTER);
         
         // 下部パネル（現在時刻と情報）
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -220,7 +224,7 @@ public class MessageApp extends JFrame {
         aboutButton.addActionListener(e -> showAbout());
         bottomPanel.add(aboutButton, BorderLayout.EAST);
         
-        add(bottomPanel, BorderLayout.SOUTH);
+        frame.add(bottomPanel, BorderLayout.SOUTH);
         
         // タイマーで時刻を更新
         Timer timer = new Timer(1000, e -> {
@@ -249,22 +253,22 @@ public class MessageApp extends JFrame {
      */
     private void updateUI() {
         // 新しいウィンドウを作成して置き換える方が簡単
-        Point location = getLocation();
-        Dimension size = getSize();
+        Point location = frame.getLocation();
+        Dimension size = frame.getSize();
         
-        dispose();
+        frame.dispose();
         
         MessageApp newApp = new MessageApp();
-        newApp.setLocation(location);
-        newApp.setSize(size);
-        newApp.setVisible(true);
+        newApp.frame.setLocation(location);
+        newApp.frame.setSize(size);
+        newApp.show();
     }
     
     /**
      * Aboutダイアログを表示する
      */
     private void showAbout() {
-        JOptionPane.showMessageDialog(this,
+        JOptionPane.showMessageDialog(frame,
             messages.getString("about.message"),
             "About",
             JOptionPane.INFORMATION_MESSAGE);

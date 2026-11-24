@@ -125,7 +125,7 @@ java StreamDemo
 
 ## ヒント
 
-- `collect(Collectors.toList())`の代わりに、Java 16以降は`toList()`とも書ける。ただし`toList()`が返すリストは変更できない
+- 結果をリストにするには`toList()`を使う（第12章）。`toList()`が返すリストは変更できない。あとで要素を足すなど、変更できるリストが要るときは`collect(Collectors.toList())`を使う
 - 降順に並べるには`Comparator.comparingDouble(Student::getGpa).reversed()`を使う（第11章）
 - `average()`は`OptionalDouble`を返す。要素が1つもないと平均がないため。`orElse(0.0)`で、ないときの値を決める
 - `partitioningBy`の結果は、キーが`true`と`false`の2つだけの`Map<Boolean, List<...>>`になる

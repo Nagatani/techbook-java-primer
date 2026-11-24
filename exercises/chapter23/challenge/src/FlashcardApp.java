@@ -23,7 +23,8 @@ import javax.swing.SwingUtilities;
  * 英単語の単語帳アプリ
  * 単語はJARの中のリソース（/words.csv）から読み、覚えた単語はホームディレクトリに保存する
  */
-public class FlashcardApp extends JFrame {
+public class FlashcardApp {
+    private final JFrame frame = new JFrame("単語帳");
     /** 覚えた単語の保存先（インストール先ではなく、利用者のホームディレクトリの下） */
     static final Path SAVE_FILE = Path.of(System.getProperty("user.home"), ".flashcard-app", "known.txt");
 
@@ -37,7 +38,6 @@ public class FlashcardApp extends JFrame {
     private WordCard card;
 
     public FlashcardApp(WordDeck deck) {
-        super("単語帳");
         this.deck = deck;
 
         wordLabel.setFont(wordLabel.getFont().deriveFont(Font.BOLD, 32f));
@@ -59,8 +59,8 @@ public class FlashcardApp extends JFrame {
         south.add(statusLabel, BorderLayout.SOUTH);
         statusLabel.setBorder(BorderFactory.createEmptyBorder(0, 8, 4, 8));
 
-        add(center, BorderLayout.CENTER);
-        add(south, BorderLayout.SOUTH);
+        frame.add(center, BorderLayout.CENTER);
+        frame.add(south, BorderLayout.SOUTH);
 
         showButton.addActionListener(e -> meaningLabel.setText(card.meaning()));
         knownButton.addActionListener(e -> {
@@ -75,9 +75,9 @@ public class FlashcardApp extends JFrame {
             showNext();
         });
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(480, 260);
-        setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(480, 260);
+        frame.setLocationRelativeTo(null);
         showNext();
     }
 
@@ -98,7 +98,7 @@ public class FlashcardApp extends JFrame {
         try {
             deck.saveKnown(SAVE_FILE);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "保存できませんでした: " + e.getMessage());
+            JOptionPane.showMessageDialog(frame, "保存できませんでした: " + e.getMessage());
         }
     }
 
@@ -120,10 +120,14 @@ public class FlashcardApp extends JFrame {
         return deck;
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
-                new FlashcardApp(loadDeck()).setVisible(true);
+                new FlashcardApp(loadDeck()).show();
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "起動できません: " + e.getMessage());
             }

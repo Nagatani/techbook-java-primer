@@ -14,7 +14,8 @@ import javax.swing.SwingUtilities;
  * 表示欄・ボタンの格子・クリアボタンを、BorderLayoutとGridLayoutで組み立てます。
  * 計算の処理は、第18章で学ぶイベント処理で付けます。
  */
-public class CalculatorLayoutApp extends JFrame {
+public class CalculatorLayoutApp {
+    private final JFrame frame = new JFrame("電卓");
     // ボタンの文字を、画面に並ぶ順に配列へ入れておく
     private static final String[] KEYS = {
         "7", "8", "9", "÷",
@@ -24,8 +25,7 @@ public class CalculatorLayoutApp extends JFrame {
     };
 
     public CalculatorLayoutApp() {
-        super("電卓");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // 表示欄: 入力はボタンで行うので、キーボードからは編集させない
         JTextField display = new JTextField("0");
@@ -51,13 +51,17 @@ public class CalculatorLayoutApp extends JFrame {
         content.add(display, BorderLayout.NORTH);
         content.add(keyPanel, BorderLayout.CENTER);
         content.add(clearButton, BorderLayout.SOUTH);
-        setContentPane(content);
+        frame.setContentPane(content);
 
-        setSize(300, 380);
-        setLocationRelativeTo(null);
+        frame.setSize(300, 380);
+        frame.setLocationRelativeTo(null);
+    }
+
+    private void show() {
+        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new CalculatorLayoutApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new CalculatorLayoutApp().show());
     }
 }

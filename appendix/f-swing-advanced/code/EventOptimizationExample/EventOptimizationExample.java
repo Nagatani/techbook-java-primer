@@ -2,7 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class EventOptimizationExample extends JFrame {
+public class EventOptimizationExample {
+    private final JFrame frame = new JFrame("イベント処理の最適化");
     private JPanel drawPanel;
     private JLabel statusLabel;
     private JTextArea logArea;
@@ -13,9 +14,8 @@ public class EventOptimizationExample extends JFrame {
     private static final int THROTTLE_DELAY = 100; // ミリ秒
     
     public EventOptimizationExample() {
-        setTitle("イベント処理の最適化");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
         
         // 描画パネル
         drawPanel = new JPanel() {
@@ -70,13 +70,13 @@ public class EventOptimizationExample extends JFrame {
         clearButton.addActionListener(e -> logArea.setText(""));
         controlPanel.add(clearButton);
         
-        add(drawPanel, BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.EAST);
-        add(controlPanel, BorderLayout.SOUTH);
+        frame.add(drawPanel, BorderLayout.CENTER);
+        frame.add(statusLabel, BorderLayout.NORTH);
+        frame.add(scrollPane, BorderLayout.EAST);
+        frame.add(controlPanel, BorderLayout.SOUTH);
         
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
     
     // デバウンス: 最後のイベントから一定時間後に処理
@@ -102,9 +102,13 @@ public class EventOptimizationExample extends JFrame {
         });
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new EventOptimizationExample().setVisible(true);
+            new EventOptimizationExample().show();
         });
     }
 }

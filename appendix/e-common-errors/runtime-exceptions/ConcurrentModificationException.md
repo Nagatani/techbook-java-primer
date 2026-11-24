@@ -107,7 +107,7 @@ scores.entrySet().removeIf(entry -> entry.getValue() < 75);
 List<String> original = Arrays.asList("A", "B", "C", "D");
 List<String> filtered = original.stream()
     .filter(item -> !item.equals("B"))
-    .collect(Collectors.toList());
+    .toList();
 
 // または従来の方法
 List<String> newList = new ArrayList<>();

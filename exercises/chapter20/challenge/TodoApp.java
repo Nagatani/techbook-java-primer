@@ -13,7 +13,7 @@ public class TodoApp {
             TaskTableModel tableModel = new TaskTableModel(manager);
             TodoFrame view = new TodoFrame(categoryModel, tableModel, manager, today);
             new TodoController(manager, categoryModel, tableModel, view, today);
-            view.setVisible(true);
+            view.show();
         });
     }
 

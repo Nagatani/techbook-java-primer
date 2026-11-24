@@ -20,7 +20,8 @@ import javax.swing.SwingUtilities;
  *
  * 在庫の一覧・少ない在庫の警告・履歴の3つが、それぞれStockListenerとして通知を受け取ります。
  */
-public class InventoryApp extends JFrame {
+public class InventoryApp {
+    private final JFrame frame = new JFrame("在庫管理");
     private static final int LOW_STOCK = 3;
 
     private final Inventory inventory = new Inventory();
@@ -29,8 +30,7 @@ public class InventoryApp extends JFrame {
     private final JTextArea historyArea = new JTextArea(8, 24);
 
     public InventoryApp() {
-        super("在庫管理");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         inventory.register("ノート", 10);
         inventory.register("ボールペン", 5);
@@ -94,11 +94,11 @@ public class InventoryApp extends JFrame {
         content.add(controls, BorderLayout.NORTH);
         content.add(views, BorderLayout.CENTER);
         content.add(warningLabel, BorderLayout.SOUTH);
-        setContentPane(content);
+        frame.setContentPane(content);
 
         showStock();
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
 
     private void showStock() {
@@ -109,7 +109,11 @@ public class InventoryApp extends JFrame {
         stockArea.setText(text.toString());
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new InventoryApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new InventoryApp().show());
     }
 }

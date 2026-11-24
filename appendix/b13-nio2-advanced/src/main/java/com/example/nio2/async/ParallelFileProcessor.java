@@ -53,7 +53,7 @@ public class ParallelFileProcessor {
                     }
                 }, executor)
             )
-            .collect(Collectors.toList());
+            .toList();
         
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
             .thenApply(v -> {
@@ -115,7 +115,7 @@ public class ParallelFileProcessor {
                 List<Path> matchingFiles = Files.walk(directory)
                     .filter(Files::isRegularFile)
                     .filter(matcher::matches)
-                    .collect(Collectors.toList());
+                    .toList();
                 
                 logger.info("Found {} files matching pattern: {}", matchingFiles.size(), glob);
                 return matchingFiles;

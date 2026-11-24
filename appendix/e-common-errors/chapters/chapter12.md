@@ -75,7 +75,7 @@ List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
 List<Integer> evenDoubled = numbers.stream()
     .filter(n -> n % 2 == 0)
     .map(n -> n * 2)
-    .collect(Collectors.toList()); // 終端操作
+    .toList(); // 終端操作
 ```
 
 ## 並列処理での問題
@@ -107,11 +107,11 @@ numbers.parallelStream()
 // ○ 並列処理に適した方法
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
 
-// 方法1: collectを使用
+// 方法1: 終端操作のtoList()で集める
 List<Integer> collected = numbers.parallelStream()
     .filter(n -> n % 2 == 0)
     .map(n -> n * 2)
-    .collect(Collectors.toList());
+    .toList();
 
 // 方法2: 同期化されたコレクション
 List<Integer> synchronizedResults = Collections.synchronizedList(new ArrayList<>());
@@ -177,7 +177,7 @@ String result = names.stream()
 // × 非効率なStream操作
 List<Integer> numbers = IntStream.range(1, 1000000)
     .boxed()
-    .collect(Collectors.toList());
+    .toList();
 
 // 毎回新しいStreamを作成
 long sum = numbers.stream()
@@ -241,7 +241,7 @@ List<String> contents = files.stream()
     .map(file -> {
         return Files.readString(Path.of(file)); // IOException
     })
-    .collect(Collectors.toList());
+    .toList();
 ```
 
 ### エラーメッセージ
@@ -269,7 +269,7 @@ List<String> contents = files.stream()
     })
     .filter(Optional::isPresent)
     .map(Optional::get)
-    .collect(Collectors.toList());
+    .toList();
 
 // 方法2: 例外をランタイム例外でラップ
 List<String> allContents = files.stream()
@@ -280,7 +280,7 @@ List<String> allContents = files.stream()
             throw new UncheckedIOException(e);
         }
     })
-    .collect(Collectors.toList());
+    .toList();
 ```
 
 ## 共通の対処戦略

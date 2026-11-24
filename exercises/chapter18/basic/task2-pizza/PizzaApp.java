@@ -13,14 +13,14 @@ import javax.swing.SwingUtilities;
 /**
  * 選んだ内容に合わせて合計金額がすぐ変わるピザの注文画面（基礎課題2の解答例）
  */
-public class PizzaApp extends JFrame {
+public class PizzaApp {
+    private final JFrame frame = new JFrame("ピザの注文");
     private final PizzaOrder order = new PizzaOrder();
     private final JLabel summaryLabel = new JLabel();
     private final JLabel totalLabel = new JLabel();
 
     public PizzaApp() {
-        super("ピザの注文");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // サイズはラジオボタン。ButtonGroupで1つだけ選べるようにする
         JPanel sizePanel = new JPanel(new GridLayout(1, 0));
@@ -57,12 +57,12 @@ public class PizzaApp extends JFrame {
         result.add(summaryLabel);
         result.add(totalLabel);
 
-        add(sizePanel, BorderLayout.NORTH);
-        add(toppingPanel, BorderLayout.CENTER);
-        add(result, BorderLayout.SOUTH);
+        frame.add(sizePanel, BorderLayout.NORTH);
+        frame.add(toppingPanel, BorderLayout.CENTER);
+        frame.add(result, BorderLayout.SOUTH);
         updateView();
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
 
     private void updateView() {
@@ -70,7 +70,11 @@ public class PizzaApp extends JFrame {
         totalLabel.setText("合計: " + order.getTotal() + "円");
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new PizzaApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new PizzaApp().show());
     }
 }

@@ -39,7 +39,8 @@ CounterFrame.java:11: エラー: ラムダ式から参照されるローカル�
 コンパイルできる全文：[chapter18-code/CounterFrame/](chapter18-code/CounterFrame/)
 
 ```java
-public class CounterFrame extends JFrame {
+public class CounterFrame {
+    private final JFrame frame = new JFrame("カウンター");
     private int count = 0; // フィールドなら、ラムダ式の中で変更できる
     private final JButton button = new JButton("+1");
 

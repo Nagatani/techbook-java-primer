@@ -26,7 +26,7 @@ public class ParallelStreamOptimization {
         for (int size : dataSizes) {
             List<Integer> data = IntStream.range(0, size)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
             
             // CPU集約的なタスク：素数判定
             long sequentialTime = measureTime(() -> {
@@ -71,7 +71,7 @@ public class ParallelStreamOptimization {
         
         List<Integer> data = IntStream.range(0, 10000)
             .boxed()
-            .collect(Collectors.toList());
+            .toList();
         
         // 共通プール（既定の並列度は、通常「CPUコア数 - 1」。呼び出したスレッドも処理に加わる）
         int defaultPoolSize = ForkJoinPool.commonPool().getParallelism();
@@ -116,13 +116,13 @@ public class ParallelStreamOptimization {
         long smallSeqTime = measureTime(() -> {
             return smallData.stream()
                 .map(x -> x * 2)
-                .collect(Collectors.toList());
+                .toList();
         });
         
         long smallParTime = measureTime(() -> {
             return smallData.parallelStream()
                 .map(x -> x * 2)
-                .collect(Collectors.toList());
+                .toList();
         });
         
         IO.println("Small dataset (5 elements):");
@@ -134,26 +134,26 @@ public class ParallelStreamOptimization {
         // 順序のあるストリームでは、並列でもlimitは「先頭の100件」を返す（結果は逐次と同じ）。
         // そのために各スレッドの結果を順序どおりにそろえる必要があり、並列化の利点が小さくなる。
         // 順序が要らなければunordered()で制約を外せる（どの100件になるかは決まらない）
-        List<Integer> numbers = IntStream.range(0, 1_000_000).boxed().collect(Collectors.toList());
+        List<Integer> numbers = IntStream.range(0, 1_000_000).boxed().toList();
         
         List<Integer> sequentialResult = numbers.stream()
             .limit(100)
-            .collect(Collectors.toList());
+            .toList();
         
         long orderedTime = measureTime(() -> numbers.parallelStream()
             .filter(ParallelStreamOptimization::isPrime)
             .limit(100)
-            .collect(Collectors.toList()));
+            .toList());
         
         long unorderedTime = measureTime(() -> numbers.parallelStream()
             .unordered()
             .filter(ParallelStreamOptimization::isPrime)
             .limit(100)
-            .collect(Collectors.toList()));
+            .toList());
         
         List<Integer> parallelResult = numbers.parallelStream()
             .limit(100)
-            .collect(Collectors.toList());
+            .toList();
         
         IO.println("\nOrder-dependent operations:");
         IO.println("  Sequential and parallel results equal: " + 
@@ -169,7 +169,7 @@ public class ParallelStreamOptimization {
      * I/O集約的なタスクでの並列化効果
      */
     private static void demonstrateIOBoundTask() {
-        List<Integer> data = IntStream.range(0, 100).boxed().collect(Collectors.toList());
+        List<Integer> data = IntStream.range(0, 100).boxed().toList();
         
         // I/Oシミュレーション（スリープ）
         // 注意: 実際のI/O待ちを並列ストリームで行うと、プログラム全体で共有する共通プールのスレッドをふさぐ
@@ -186,13 +186,13 @@ public class ParallelStreamOptimization {
         long ioSeqTime = measureTime(() -> {
             return data.stream()
                 .map(ioSimulation)
-                .collect(Collectors.toList());
+                .toList();
         });
         
         long ioParTime = measureTime(() -> {
             return data.parallelStream()
                 .map(ioSimulation)
-                .collect(Collectors.toList());
+                .toList();
         });
         
         IO.println("I/O-bound task simulation:");
@@ -210,7 +210,7 @@ public class ParallelStreamOptimization {
         // ArrayList（範囲の真ん中で分けるので、ほぼ均等に分割できる）
         List<Integer> arrayList = IntStream.range(0, 100000)
             .boxed()
-            .collect(Collectors.toList());
+            .collect(Collectors.toCollection(ArrayList::new));
         
         // LinkedList（先頭から1024個、2048個…と配列に写して切り出すので、均等に分けにくい）
         LinkedList<Integer> linkedList = IntStream.range(0, 100000)
@@ -263,7 +263,7 @@ public class ParallelStreamOptimization {
         
         List<Integer> data = IntStream.range(0, 1_000_000)
             .boxed()
-            .collect(Collectors.toList());
+            .toList();
         
         // 1. 状態を共有しない処理
         IO.println("1. Stateless operations:");
@@ -292,7 +292,7 @@ public class ParallelStreamOptimization {
         // 良い例
         List<Integer> goodResults = data.parallelStream()
             .filter(x -> x < 100)
-            .collect(Collectors.toList()); // スレッドセーフ
+            .toList(); // スレッドセーフ
         IO.println("   Collected " + goodResults.size() + " elements safely");
     }
     

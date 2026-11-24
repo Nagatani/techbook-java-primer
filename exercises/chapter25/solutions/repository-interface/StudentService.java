@@ -34,7 +34,7 @@ public class StudentService {
             .filter(s -> department == null || s.getDepartment().equals(department))
             .filter(s -> minGPA == null || s.getGpa() >= minGPA)
             .filter(s -> minAge == null || s.getAge() >= minAge)
-            .collect(Collectors.toList());
+            .toList();
     }
     
     // 成績レポート生成

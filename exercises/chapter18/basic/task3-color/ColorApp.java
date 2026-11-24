@@ -14,7 +14,8 @@ import javax.swing.SwingUtilities;
  * 赤・緑・青のスライダーで色を作る（基礎課題3の解答例）
  * スライダーとスピナーは連動し、どちらを動かしても見本の色が変わる
  */
-public class ColorApp extends JFrame {
+public class ColorApp {
+    private final JFrame frame = new JFrame("色の調合");
     private static final String[] NAMES = {"赤", "緑", "青"};
 
     private final JSlider[] sliders = new JSlider[3];
@@ -24,8 +25,7 @@ public class ColorApp extends JFrame {
     private final JLabel statusLabel = new JLabel(" ");
 
     public ColorApp() {
-        super("色の調合");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel controls = new JPanel(new GridLayout(3, 3, 8, 4));
         int[] initial = {255, 128, 0};
@@ -53,12 +53,12 @@ public class ColorApp extends JFrame {
         bottom.add(codeLabel);
         bottom.add(statusLabel);
 
-        add(controls, BorderLayout.NORTH);
-        add(preview, BorderLayout.CENTER);
-        add(bottom, BorderLayout.SOUTH);
+        frame.add(controls, BorderLayout.NORTH);
+        frame.add(preview, BorderLayout.CENTER);
+        frame.add(bottom, BorderLayout.SOUTH);
         updatePreview();
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
 
     private void updatePreview() {
@@ -69,7 +69,11 @@ public class ColorApp extends JFrame {
         codeLabel.setText("RGB(%d, %d, %d)  #%02X%02X%02X".formatted(r, g, b, r, g, b));
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new ColorApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new ColorApp().show());
     }
 }

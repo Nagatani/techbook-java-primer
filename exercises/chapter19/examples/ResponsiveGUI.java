@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ResponsiveGUI extends JFrame {
+public class ResponsiveGUI {
+    private final JFrame frame =
+            new JFrame("レスポンシブGUI - リアルタイム応答システム");
     
     // カラーコントロール
     private JSlider redSlider;
@@ -46,10 +48,9 @@ public class ResponsiveGUI extends JFrame {
     private int interactionCount = 0;
     
     public ResponsiveGUI() {
-        setTitle("レスポンシブGUI - リアルタイム応答システム");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 700);
-        setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(900, 700);
+        frame.setLocationRelativeTo(null);
         
         initializeComponents();
         setupLayout();
@@ -138,7 +139,7 @@ public class ResponsiveGUI extends JFrame {
      * レイアウトを設定します
      */
     private void setupLayout() {
-        setLayout(new BorderLayout());
+        frame.setLayout(new BorderLayout());
         
         // 左パネル（カラーコントロール）
         JPanel leftPanel = new JPanel(new BorderLayout());
@@ -178,7 +179,7 @@ public class ResponsiveGUI extends JFrame {
         
         leftPanel.add(colorInfoPanel, BorderLayout.SOUTH);
         
-        add(leftPanel, BorderLayout.WEST);
+        frame.add(leftPanel, BorderLayout.WEST);
         
         // 中央パネル（検索機能）
         JPanel centerPanel = new JPanel(new BorderLayout());
@@ -192,7 +193,7 @@ public class ResponsiveGUI extends JFrame {
         centerPanel.add(searchPanel, BorderLayout.NORTH);
         centerPanel.add(new JScrollPane(dataList), BorderLayout.CENTER);
         
-        add(centerPanel, BorderLayout.CENTER);
+        frame.add(centerPanel, BorderLayout.CENTER);
         
         // 右パネル（プログレスとレイアウト制御）
         JPanel rightPanel = new JPanel(new BorderLayout());
@@ -213,7 +214,7 @@ public class ResponsiveGUI extends JFrame {
         rightPanel.add(progressPanel, BorderLayout.NORTH);
         rightPanel.add(layoutPanel, BorderLayout.CENTER);
         
-        add(rightPanel, BorderLayout.EAST);
+        frame.add(rightPanel, BorderLayout.EAST);
         
         // 下部ステータスパネル
         JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -222,7 +223,7 @@ public class ResponsiveGUI extends JFrame {
         statusPanel.add(new JLabel(" | "));
         statusPanel.add(new JLabel("リアルタイム応答システム稼働中"));
         
-        add(statusPanel, BorderLayout.SOUTH);
+        frame.add(statusPanel, BorderLayout.SOUTH);
     }
     
     /**
@@ -311,7 +312,7 @@ public class ResponsiveGUI extends JFrame {
             if (!e.getValueIsAdjusting()) {
                 String selected = dataList.getSelectedValue();
                 if (selected != null) {
-                    JOptionPane.showMessageDialog(this, 
+                    JOptionPane.showMessageDialog(frame, 
                         "選択されたアイテム: " + selected, 
                         "選択確認", JOptionPane.INFORMATION_MESSAGE);
                     incrementInteractionCount();
@@ -521,14 +522,10 @@ public class ResponsiveGUI extends JFrame {
         return data;
     }
     
-    @Override
-    public void dispose() {
-        if (progressTimer != null) {
-            progressTimer.stop();
-        }
-        super.dispose();
+    private void show() {
+        frame.setVisible(true);
     }
-    
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -536,7 +533,7 @@ public class ResponsiveGUI extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            new ResponsiveGUI().setVisible(true);
+            new ResponsiveGUI().show();
         });
     }
 }

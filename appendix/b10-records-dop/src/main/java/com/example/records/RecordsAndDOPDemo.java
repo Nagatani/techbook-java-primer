@@ -6,7 +6,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -737,7 +736,7 @@ public class RecordsAndDOPDemo {
             alice,
             IntStream.range(0, 150)
                 .mapToObj(i -> new AdvancedPatternMatching.Person("Employee" + i, 30, tokyoAddress, List.of()))
-                .collect(Collectors.toList()),
+                .toList(),
             tokyoAddress
         );
         

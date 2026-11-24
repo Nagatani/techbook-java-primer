@@ -92,7 +92,7 @@ public class PropertyBasedTestDemo {
                 int size = random.nextInt(maxSize + 1);
                 return IntStream.range(0, size)
                         .mapToObj(i -> elementGenerator.generate(random))
-                        .collect(Collectors.toList());
+                        .toList();
             };
         }
         

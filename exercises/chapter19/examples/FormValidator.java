@@ -66,7 +66,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.prefs.Preferences;
 
-public class FormValidator extends JFrame {
+public class FormValidator {
+    private final JFrame frame =
+            new JFrame("Form Validator - リアルタイムバリデーション");
     // バリデーションルール
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
         "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
@@ -136,7 +138,7 @@ public class FormValidator extends JFrame {
     }
     
     private void setupLayout() {
-        setLayout(new BorderLayout());
+        frame.setLayout(new BorderLayout());
         
         // メインフォームパネル
         JPanel formPanel = new JPanel(new GridBagLayout());
@@ -192,9 +194,9 @@ public class FormValidator extends JFrame {
         statusPanel.add(overallStatusLabel, BorderLayout.CENTER);
         
         // 全体レイアウト
-        add(formPanel, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
-        add(statusPanel, BorderLayout.NORTH);
+        frame.add(formPanel, BorderLayout.CENTER);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+        frame.add(statusPanel, BorderLayout.NORTH);
     }
     
     private void setupValidation() {
@@ -373,9 +375,10 @@ public class FormValidator extends JFrame {
         });
         
         // Ctrl+R でリセット
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+        JRootPane rootPane = frame.getRootPane();
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK), "reset");
-        getRootPane().getActionMap().put("reset", new AbstractAction() {
+        rootPane.getActionMap().put("reset", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 resetForm();
@@ -384,11 +387,10 @@ public class FormValidator extends JFrame {
     }
     
     private void setupWindow() {
-        setTitle("Form Validator - リアルタイムバリデーション");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 400);
-        setLocationRelativeTo(null);
-        setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
     }
     
     private void scheduleValidation() {
@@ -432,7 +434,7 @@ public class FormValidator extends JFrame {
                 "*".repeat(passwordField.getPassword().length)
             );
             
-            JOptionPane.showMessageDialog(this, message, "送信完了", 
+            JOptionPane.showMessageDialog(frame, message, "送信完了", 
                 JOptionPane.INFORMATION_MESSAGE);
         }
     }
@@ -635,6 +637,10 @@ public class FormValidator extends JFrame {
         ValidationResult validate(String text);
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -643,7 +649,7 @@ public class FormValidator extends JFrame {
                 e.printStackTrace();
             }
             
-            new FormValidator().setVisible(true);
+            new FormValidator().show();
         });
     }
 }

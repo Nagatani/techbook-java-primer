@@ -171,7 +171,7 @@ public void processNumbers(List<Integer> numbers) {
     
     List<Integer> filtered = numbers.stream()
         .filter(n -> n > threshold)  // エラー: 実質的にfinalではありません
-        .collect(Collectors.toList());
+        .toList();
 }
 ```
 
@@ -190,7 +190,7 @@ public void processNumbers(List<Integer> numbers) {
     
     List<Integer> filtered = numbers.stream()
         .filter(n -> n > threshold)
-        .collect(Collectors.toList());
+        .toList();
 }
 
 // または、変更し終えた値を別の変数にコピーし、ラムダ式からはその変数を参照する
@@ -201,7 +201,7 @@ public void processNumbersWithCopy(List<Integer> numbers) {
     
     List<Integer> filtered = numbers.stream()
         .filter(n -> n > currentThreshold)
-        .collect(Collectors.toList());
+        .toList();
 }
 ```
 

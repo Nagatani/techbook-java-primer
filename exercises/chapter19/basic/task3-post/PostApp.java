@@ -17,7 +17,8 @@ import javax.swing.event.DocumentListener;
  *
  * DocumentListenerで、文字を打つたびに残りの文字数を表示し直します。
  */
-public class PostApp extends JFrame {
+public class PostApp {
+    private final JFrame frame = new JFrame("投稿");
     private final JTextArea inputArea = new JTextArea(5, 36);
     private final JTextArea timelineArea = new JTextArea(8, 36);
     private final JLabel counterLabel = new JLabel();
@@ -25,8 +26,7 @@ public class PostApp extends JFrame {
     private int postCount = 0;
 
     public PostApp() {
-        super("投稿");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         inputArea.setLineWrap(true);
         timelineArea.setEditable(false);
@@ -75,11 +75,11 @@ public class PostApp extends JFrame {
         content.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         content.add(inputPanel, BorderLayout.NORTH);
         content.add(timelineScroll, BorderLayout.CENTER);
-        setContentPane(content);
+        frame.setContentPane(content);
 
         updateCounter();
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
 
     private void updateCounter() {
@@ -90,7 +90,11 @@ public class PostApp extends JFrame {
         postButton.setEnabled(PostRules.canPost(text));
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new PostApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new PostApp().show());
     }
 }

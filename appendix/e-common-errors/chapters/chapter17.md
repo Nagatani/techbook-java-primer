@@ -167,15 +167,16 @@ Java 15からは、NullPointerExceptionのメッセージに、どの式が`null
 ### 対処法
 
 ```java
-public class SwingApplication extends JFrame {
+public class SwingApplication {
+    private final JFrame frame = new JFrame("サンプル");
     private final JLabel label;  // finalにすると、代入し忘れがコンパイルエラーになる
 
     public SwingApplication() {
         label = new JLabel("初期値");  // フィールドに代入する（型名を書かない）
         JButton button = new JButton("更新");
         button.addActionListener(e -> label.setText("更新されたテキスト"));
-        add(label, BorderLayout.CENTER);
-        add(button, BorderLayout.SOUTH);
+        frame.add(label, BorderLayout.CENTER);
+        frame.add(button, BorderLayout.SOUTH);
     }
 }
 ```

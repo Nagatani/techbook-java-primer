@@ -32,7 +32,8 @@ import javax.swing.TransferHandler;
  * ドラッグ&ドロップ・キーバインディング・PropertyChangeListenerを組み合わせます。
  * JListとDefaultListModelの詳しい使い方は第20章で学びます。
  */
-public class TaskBoardApp extends JFrame {
+public class TaskBoardApp {
+    private final JFrame frame = new JFrame("タスクボード");
     private final TaskBoard board = new TaskBoard();
     private final Map<Column, DefaultListModel<String>> models = new EnumMap<>(Column.class);
     private final Map<Column, JList<String>> lists = new EnumMap<>(Column.class);
@@ -40,8 +41,7 @@ public class TaskBoardApp extends JFrame {
     private final JLabel statusLabel = new JLabel();
 
     public TaskBoardApp() {
-        super("タスクボード");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // ボードが変わったら、3つのリストと件数の表示を作り直す
         board.addPropertyChangeListener(e -> refresh());
@@ -85,7 +85,7 @@ public class TaskBoardApp extends JFrame {
         content.add(top, BorderLayout.NORTH);
         content.add(columnsPanel, BorderLayout.CENTER);
         content.add(bottom, BorderLayout.SOUTH);
-        setContentPane(content);
+        frame.setContentPane(content);
 
         board.add("演習の課題を読む");
         board.add("サンプルコードを動かす");
@@ -94,8 +94,8 @@ public class TaskBoardApp extends JFrame {
         board.move("環境を構築する", Column.DONE, -1);
         board.move("演習の課題を読む", Column.DOING, -1);
 
-        setSize(620, 360);
-        setLocationRelativeTo(null);
+        frame.setSize(620, 360);
+        frame.setLocationRelativeTo(null);
     }
 
     private void addTask() {
@@ -124,7 +124,7 @@ public class TaskBoardApp extends JFrame {
 
     // ウィンドウのどこにいても、Ctrl+Nで入力欄へ移る
     private void bindNewTaskKey() {
-        JRootPane root = getRootPane();
+        JRootPane root = frame.getRootPane();
         root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control N"), "newTask");
         root.getActionMap().put("newTask", new AbstractAction() {
             @Override
@@ -208,7 +208,11 @@ public class TaskBoardApp extends JFrame {
         }
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new TaskBoardApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new TaskBoardApp().show());
     }
 }

@@ -22,7 +22,8 @@ import javax.swing.SwingUtilities;
 /**
  * マウスで線を描くお絵かきパネル（基礎課題1の解答例）
  */
-public class PaintApp extends JFrame {
+public class PaintApp {
+    private final JFrame frame = new JFrame("お絵かき");
     private final Sketch sketch = new Sketch();
     private final JLabel statusLabel = new JLabel();
     private final CanvasPanel canvas = new CanvasPanel();
@@ -31,8 +32,7 @@ public class PaintApp extends JFrame {
     private Point mousePoint = null;
 
     public PaintApp() {
-        super("お絵かき");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // 押す・ドラッグ・移動・外へ出るを、1つのMouseAdapterで受け取る
         MouseAdapter mouseHandler = new MouseAdapter() {
@@ -74,11 +74,11 @@ public class PaintApp extends JFrame {
         canvas.setComponentPopupMenu(createPopupMenu());
 
         statusLabel.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
-        add(canvas, BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.SOUTH);
+        frame.add(canvas, BorderLayout.CENTER);
+        frame.add(statusLabel, BorderLayout.SOUTH);
         updateStatus();
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
 
     // 右クリックで出るメニュー。色はラジオボタンのメニュー項目で1つだけ選べるようにする
@@ -159,7 +159,11 @@ public class PaintApp extends JFrame {
         }
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new PaintApp().setVisible(true));
+        SwingUtilities.invokeLater(() -> new PaintApp().show());
     }
 }

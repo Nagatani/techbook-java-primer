@@ -13,7 +13,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class EventHandlingBasics extends JFrame {
+public class EventHandlingBasics {
+    private final JFrame frame =
+            new JFrame("イベントハンドリングの基礎");
     
     private JTextArea logArea;
     private JLabel statusLabel;
@@ -26,10 +28,15 @@ public class EventHandlingBasics extends JFrame {
     private int eventCount = 0;
     
     public EventHandlingBasics() {
-        setTitle("イベントハンドリングの基礎");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 700);
-        setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                cleanup();
+            }
+        });
+        frame.setSize(900, 700);
+        frame.setLocationRelativeTo(null);
         
         initializeComponents();
         setupLayout();
@@ -83,12 +90,12 @@ public class EventHandlingBasics extends JFrame {
      * レイアウトを設定します
      */
     private void setupLayout() {
-        setLayout(new BorderLayout());
+        frame.setLayout(new BorderLayout());
         
         // メインログエリア
         JScrollPane scrollPane = new JScrollPane(logArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        add(scrollPane, BorderLayout.CENTER);
+        frame.add(scrollPane, BorderLayout.CENTER);
         
         // 上部のコントロールパネル
         JPanel topPanel = new JPanel(new BorderLayout());
@@ -103,7 +110,7 @@ public class EventHandlingBasics extends JFrame {
         topPanel.add(buttonPanel, BorderLayout.CENTER);
         topPanel.add(mouseLabel, BorderLayout.SOUTH);
         
-        add(topPanel, BorderLayout.NORTH);
+        frame.add(topPanel, BorderLayout.NORTH);
         
         // 右側のイベントテストパネル
         JPanel rightPanel = new JPanel(new BorderLayout());
@@ -128,10 +135,10 @@ public class EventHandlingBasics extends JFrame {
         rightPanel.add(testButtonPanel, BorderLayout.NORTH);
         rightPanel.add(colorPanel, BorderLayout.CENTER);
         
-        add(rightPanel, BorderLayout.EAST);
+        frame.add(rightPanel, BorderLayout.EAST);
         
         // ステータスバー
-        add(statusLabel, BorderLayout.SOUTH);
+        frame.add(statusLabel, BorderLayout.SOUTH);
     }
     
     /**
@@ -175,7 +182,7 @@ public class EventHandlingBasics extends JFrame {
      */
     private void setupMouseListeners() {
         // フレーム全体でのマウス移動追跡
-        addMouseMotionListener(new MouseMotionAdapter() {
+        frame.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
                 mouseLabel.setText("マウス位置: (" + e.getX() + ", " + e.getY() + ")");
@@ -273,7 +280,7 @@ public class EventHandlingBasics extends JFrame {
         });
         
         // フレーム全体でのキーイベント（フォーカスが必要）
-        addKeyListener(new KeyAdapter() {
+        frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_F1) {
@@ -318,7 +325,7 @@ public class EventHandlingBasics extends JFrame {
      * WindowListenerを実装します
      */
     private void setupWindowListeners() {
-        addWindowListener(new WindowAdapter() {
+        frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowActivated(WindowEvent e) {
                 logEvent("WindowEvent", "ウィンドウがアクティブになりました");
@@ -340,17 +347,17 @@ public class EventHandlingBasics extends JFrame {
      * ComponentListenerを実装します
      */
     private void setupComponentListeners() {
-        addComponentListener(new ComponentAdapter() {
+        frame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                Dimension size = getSize();
+                Dimension size = frame.getSize();
                 logEvent("ComponentEvent", String.format("ウィンドウサイズ変更: %dx%d", 
                     size.width, size.height));
             }
             
             @Override
             public void componentMoved(ComponentEvent e) {
-                Point location = getLocation();
+                Point location = frame.getLocation();
                 logEvent("ComponentEvent", String.format("ウィンドウ移動: (%d, %d)", 
                     location.x, location.y));
             }
@@ -459,7 +466,7 @@ public class EventHandlingBasics extends JFrame {
             "• ウィンドウリサイズ・移動も検出されます\n\n" +
             "すべてのイベントがログに記録されます。";
         
-        JOptionPane.showMessageDialog(this, helpText, "ヘルプ", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(frame, helpText, "ヘルプ", JOptionPane.INFORMATION_MESSAGE);
         logEvent("HelpEvent", "ヘルプダイアログを表示");
     }
     
@@ -473,12 +480,10 @@ public class EventHandlingBasics extends JFrame {
         logEvent("システム", "アプリケーションを終了します");
     }
     
-    @Override
-    public void dispose() {
-        cleanup();
-        super.dispose();
+    private void show() {
+        frame.setVisible(true);
     }
-    
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -486,7 +491,7 @@ public class EventHandlingBasics extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            new EventHandlingBasics().setVisible(true);
+            new EventHandlingBasics().show();
         });
     }
 }

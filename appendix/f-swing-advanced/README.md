@@ -68,7 +68,9 @@ class StockPricePanel extends JPanel implements PropertyChangeListener {
 }
 
 // メインアプリケーション
-public class JavaBeansEventExample extends JFrame {
+public class JavaBeansEventExample {
+    private final JFrame frame =
+            new JFrame("JavaBeansイベントモデルの例（株価モニター）");
     // ...
     private final Random random = new Random();
     // ...
@@ -102,7 +104,8 @@ public class JavaBeansEventExample extends JFrame {
 コードの抜粋（コンパイルできる全文：[code/DragAndDropExample/](code/DragAndDropExample/)のDragAndDropExample.java）
 
 ```java
-public class DragAndDropExample extends JFrame {
+public class DragAndDropExample {
+    private final JFrame frame = new JFrame("ドラッグ&ドロップの例");
     // ...
     public DragAndDropExample() {
         // ...
@@ -202,7 +205,8 @@ public class DragAndDropExample extends JFrame {
 コードの抜粋（コンパイルできる全文：[code/EventOptimizationExample/](code/EventOptimizationExample/)のEventOptimizationExample.java）
 
 ```java
-public class EventOptimizationExample extends JFrame {
+public class EventOptimizationExample {
+    private final JFrame frame = new JFrame("イベント処理の最適化");
     // ...
     private Timer debounceTimer;
     private long lastThrottleTime = 0;
@@ -271,7 +275,8 @@ public class EventOptimizationExample extends JFrame {
 コードの抜粋（コンパイルできる全文：[code/DynamicTreeExample/](code/DynamicTreeExample/)のDynamicTreeExample.java）
 
 ```java
-public class DynamicTreeExample extends JFrame {
+public class DynamicTreeExample {
+    private final JFrame frame = new JFrame("動的なツリー操作");
     private DefaultTreeModel treeModel;
     // ...
     public DynamicTreeExample() {
@@ -377,7 +382,8 @@ class PriorityCellEditor extends DefaultCellEditor {
     }
 }
 // ...
-public class CustomEditorExample extends JFrame {
+public class CustomEditorExample {
+    private final JFrame frame = new JFrame("カスタムエディターの例");
     public CustomEditorExample() {
         // ...
         // テーブルの作成

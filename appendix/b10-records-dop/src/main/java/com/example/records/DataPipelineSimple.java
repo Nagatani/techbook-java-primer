@@ -222,7 +222,7 @@ public class DataPipelineSimple {
                 var userEvents = events
                     .filter(e -> e.userId().equals(userId))
                     .filter(e -> !e.timestamp().isAfter(pointInTime))
-                    .collect(Collectors.toList());
+                    .toList();
                 
                 if (userEvents.isEmpty()) {
                     return Optional.empty();
@@ -616,7 +616,7 @@ public class DataPipelineSimple {
         );
         
         // データ正規化
-        var normalizedSales = SalesDataPipeline.Pipeline.normalize(rawSales).collect(Collectors.toList());
+        var normalizedSales = SalesDataPipeline.Pipeline.normalize(rawSales).toList();
         
         IO.println("Normalized sales:");
         normalizedSales.forEach(sale -> 
@@ -633,7 +633,7 @@ public class DataPipelineSimple {
             normalizedSales.stream(),
             SalesDataPipeline.NormalizedSale::category,
             "Category"
-        ).collect(Collectors.toList());
+        ).toList();
         
         IO.println("\nSales by category:");
         categoryAggregates.forEach(agg ->
@@ -650,7 +650,7 @@ public class DataPipelineSimple {
             normalizedSales.stream(),
             SalesDataPipeline.NormalizedSale::region,
             "Region"
-        ).collect(Collectors.toList());
+        ).toList();
         
         IO.println("\nSales by region:");
         regionAggregates.forEach(agg ->

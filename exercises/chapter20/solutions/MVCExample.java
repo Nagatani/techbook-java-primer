@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class MVCExample extends JFrame {
+public class MVCExample {
+    private final JFrame frame =
+            new JFrame("書籍管理システム - MVCパターン実装例");
 
     // Model（データとビジネスロジック）
     public static class BookModel {
@@ -501,15 +503,18 @@ public class MVCExample extends JFrame {
 
         controller.setView(view);
 
-        setTitle("書籍管理システム - MVCパターン実装例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
-        setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
 
-        add(view);
+        frame.add(view);
+    }
+
+    private void show() {
+        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MVCExample().setVisible(true));
+        SwingUtilities.invokeLater(() -> new MVCExample().show());
     }
 }
