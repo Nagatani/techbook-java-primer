@@ -5,13 +5,13 @@ sections:
   - key: "本章の学習目標"
     hash: fc95dcc8
   - key: "なぜコレクションフレームワークが必要か"
-    hash: df9cfb48
+    hash: f43e9a60
   - key: "コレクションフレームワークの全体像"
     hash: 0588df93
   - key: "List インターフェイス"
-    hash: 1a7d9a36
+    hash: 57ebc7b5
   - key: "Set インターフェイス"
-    hash: 2bf8b993
+    hash: 802d9afd
   - key: "Map インターフェイス"
     hash: 37de5ba2
   - key: "イテレーターとfor-each文"
@@ -125,3 +125,4 @@ sections:
 - 2026-11-24: 付録Iへ移した節（第5章の決済システム、第8章のイテレーター）を参照していた文を、付録Iへの案内に直した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 冒頭を、C言語の配列の大きさやmalloc・reallocの苦労を思い出してもらう形にし、Integerどうしの==の防ぎ方と、equals・hashCodeを確かめる習慣を足した（著者の答えから）

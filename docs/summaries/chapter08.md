@@ -5,9 +5,9 @@ sections:
   - key: "本章の学習目標"
     hash: 6f844490
   - key: "列挙型（Enum）"
-    hash: bf5af826
+    hash: dd4b6381
   - key: "レコード（Record）"
-    hash: 61220da5
+    hash: b12640b0
   - key: "EnumとRecordの使い分けと組み合わせ"
     hash: 6cd350b5
   - key: "内部クラス（Inner Classes）"
@@ -125,3 +125,4 @@ sections:
 - 2026-11-24: 発展の節（enumを使ったデザインパターン・ネストされたRecord・実践的な使用例：イテレーターパターン）を付録Iへ移し、本文には要点と案内の2〜4文を残した。サンプルコードの番号を振り直した
 - 2026-11-25: 著者の判断がいらない指摘（抽象語の具体化、読み飛ばしの案内、困る場面から始める導入など）を本文に反映した（docs/analysis/author-voice-points.md の仕分けで「Claude」としたもの）
 - 2026-11-25: 著者が答えた判断（どれを勧めるか）を本文とまとめに反映した（docs/guides/book-defaults.md）
+- 2026-11-25: 著者の経験（Javaのenumの多機能さに驚く学生が多い、Recordでは IDEの候補でgetName()がないことに気付く）を本文に入れた
