@@ -4,15 +4,15 @@ import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class KeyboardEventAdvancedExample extends JFrame {
+public class KeyboardEventAdvancedExample {
+    private final JFrame frame = new JFrame("高度なキーボードイベント処理");
     private JTextArea textArea;
     private JLabel statusLabel;
     private Set<Integer> pressedKeys = new HashSet<>();
     
     public KeyboardEventAdvancedExample() {
-        setTitle("高度なキーボードイベント処理");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
         
         // テキストエリア
         textArea = new JTextArea(10, 40);
@@ -78,11 +78,11 @@ public class KeyboardEventAdvancedExample extends JFrame {
         // InputMapとActionMapを使ったより良いアプローチ
         setupKeyBindings();
         
-        add(scrollPane, BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.SOUTH);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        frame.add(statusLabel, BorderLayout.SOUTH);
         
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
     
     private void setupKeyBindings() {
@@ -121,11 +121,11 @@ public class KeyboardEventAdvancedExample extends JFrame {
     }
     
     private void saveDocument() {
-        JOptionPane.showMessageDialog(this, "ドキュメントを保存しました");
+        JOptionPane.showMessageDialog(frame, "ドキュメントを保存しました");
     }
     
     private void showHelp() {
-        JOptionPane.showMessageDialog(this, "F1: ヘルプ\nCtrl+S: 保存\nCtrl+A: 全選択");
+        JOptionPane.showMessageDialog(frame, "F1: ヘルプ\nCtrl+S: 保存\nCtrl+A: 全選択");
     }
     
     private void duplicateLine() {
@@ -158,9 +158,13 @@ public class KeyboardEventAdvancedExample extends JFrame {
         statusLabel.setText("内容をクリアしました");
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new KeyboardEventAdvancedExample().setVisible(true);
+            new KeyboardEventAdvancedExample().show();
         });
     }
 }

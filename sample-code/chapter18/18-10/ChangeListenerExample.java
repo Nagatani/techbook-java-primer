@@ -2,16 +2,16 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 
-public class ChangeListenerExample extends JFrame {
+public class ChangeListenerExample {
+    private final JFrame frame = new JFrame("ChangeListener の例");
     private JSlider slider;
     private JSpinner spinner;
     private JProgressBar progressBar;
     private JLabel valueLabel;
     
     public ChangeListenerExample() {
-        setTitle("ChangeListener の例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
         
         JPanel controlPanel = new JPanel(new GridLayout(3, 1, 10, 10));
         controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -77,16 +77,20 @@ public class ChangeListenerExample extends JFrame {
         valueLabel.setFont(new Font("Arial", Font.BOLD, 16));
         valueLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        add(controlPanel, BorderLayout.CENTER);
-        add(valueLabel, BorderLayout.SOUTH);
+        frame.add(controlPanel, BorderLayout.CENTER);
+        frame.add(valueLabel, BorderLayout.SOUTH);
         
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new ChangeListenerExample().setVisible(true);
+            new ChangeListenerExample().show();
         });
     }
 }

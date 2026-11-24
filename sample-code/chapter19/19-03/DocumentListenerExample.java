@@ -4,7 +4,8 @@ import javax.swing.text.*;
 import java.awt.*;
 import java.util.regex.*;
 
-public class DocumentListenerExample extends JFrame {
+public class DocumentListenerExample {
+    private final JFrame frame = new JFrame();
     private JTextField emailField;
     private JPasswordField passwordField;
     private JPasswordField confirmField;
@@ -12,35 +13,35 @@ public class DocumentListenerExample extends JFrame {
     private JButton submitButton;
     
     public DocumentListenerExample() {
-        setTitle("DocumentListenerによるバリデーション");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridBagLayout());
+        frame.setTitle("DocumentListenerによるバリデーション");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         
         // Email フィールド
         gbc.gridx = 0; gbc.gridy = 0;
-        add(new JLabel("Email:"), gbc);
+        frame.add(new JLabel("Email:"), gbc);
         
         emailField = new JTextField(20);
         gbc.gridx = 1;
-        add(emailField, gbc);
+        frame.add(emailField, gbc);
         
         // パスワードフィールド
         gbc.gridx = 0; gbc.gridy = 1;
-        add(new JLabel("パスワード:"), gbc);
+        frame.add(new JLabel("パスワード:"), gbc);
         
         passwordField = new JPasswordField(20);
         gbc.gridx = 1;
-        add(passwordField, gbc);
+        frame.add(passwordField, gbc);
         
         // 確認フィールド
         gbc.gridx = 0; gbc.gridy = 2;
-        add(new JLabel("確認:"), gbc);
+        frame.add(new JLabel("確認:"), gbc);
         
         confirmField = new JPasswordField(20);
         gbc.gridx = 1;
-        add(confirmField, gbc);
+        frame.add(confirmField, gbc);
         
         // ステータスエリア
         statusArea = new JTextArea(5, 30);
@@ -49,19 +50,19 @@ public class DocumentListenerExample extends JFrame {
         JScrollPane scrollPane = new JScrollPane(statusArea);
         gbc.gridx = 0; gbc.gridy = 3;
         gbc.gridwidth = 2;
-        add(scrollPane, gbc);
+        frame.add(scrollPane, gbc);
         
         // 送信ボタン
         submitButton = new JButton("送信");
         submitButton.setEnabled(false);
         gbc.gridy = 4;
-        add(submitButton, gbc);
+        frame.add(submitButton, gbc);
         
         // DocumentListenerの追加
         setupDocumentListeners();
         
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
     
     private void setupDocumentListeners() {
@@ -176,9 +177,13 @@ public class DocumentListenerExample extends JFrame {
         };
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new DocumentListenerExample().setVisible(true);
+            new DocumentListenerExample().show();
         });
     }
 }

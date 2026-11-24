@@ -40,10 +40,11 @@
 右クリックメニューは、リスナーではなく`setComponentPopupMenu()`でパネルに付けます。
 メニューを開く操作がボタンを押したときか離したときかはOSによって違いますが、この方法ならどちらの場合もメニューを表示できます。
 
-<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5、11、36〜64、78〜83、98〜101、118、130行目）</span>
+<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5〜6、12、36〜64、78〜83、98〜101、118、134行目）</span>
 
 ```java
-public class MouseEventCompleteExample extends JFrame {
+public class MouseEventCompleteExample {
+    private final JFrame frame = new JFrame("マウスイベント完全例");
     // ...
     public MouseEventCompleteExample() {
         // ...
@@ -108,10 +109,11 @@ Ctrl+Shift+Dは、押されているキーの集合で同時押しを調べる�
 ダイアログが開くなどしてフォーカスが移ると、キーを離したイベントがテキストエリアに届かず、集合にキーが残ってしまいます。
 そのため、フォーカスが外れたとき（`focusLost()`）に集合を空にしています。
 
-<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7、12、26〜51、67〜76、86、88〜101、111、166行目）</span>
+<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7〜8、13、26〜51、67〜76、86、88〜101、111、170行目）</span>
 
 ```java
-public class KeyboardEventAdvancedExample extends JFrame {
+public class KeyboardEventAdvancedExample {
+    private final JFrame frame = new JFrame("高度なキーボードイベント処理");
     // ...
     public KeyboardEventAdvancedExample() {
         // ...
@@ -195,10 +197,11 @@ public class KeyboardEventAdvancedExample extends JFrame {
 この例では、どの変更でも同じ検証を行うので、3つのメソッドから同じ`validateForm()`を呼んでいます。
 以下のコードは、入力のたびにメールアドレスの形式、パスワードの長さと強度、確認用パスワードの一致を検証する例です。
 
-<span class="listing-number">**サンプルコード19-3**　DocumentListenerExample.java（7、67〜116、153〜155、184行目）</span>
+<span class="listing-number">**サンプルコード19-3**　DocumentListenerExample.java（7〜8、68〜117、154〜156、189行目）</span>
 
 ```java
-public class DocumentListenerExample extends JFrame {
+public class DocumentListenerExample {
+    private final JFrame frame = new JFrame();
     // ...
     private void setupDocumentListeners() {
         // Emailフィールドのリスナー
@@ -281,7 +284,7 @@ Swingの部品が用意するイベントだけでなく、独自のイベント
 
 </div>
 
-<span class="listing-number">**サンプルコード19-4**　CustomEventExample.java（6〜36、46〜61、64、70、100〜108、134〜135、162、169行目）</span>
+<span class="listing-number">**サンプルコード19-4**　CustomEventExample.java（6〜36、46〜61、64〜65、71、100〜108、134〜135、162、173行目）</span>
 
 ```java
 // カスタムイベントクラス
@@ -333,7 +336,8 @@ class TemperatureSensor {
     }
 }
 // ...
-public class CustomEventExample extends JFrame {
+public class CustomEventExample {
+    private final JFrame frame = new JFrame("カスタムイベントの例");
     // ...
     public CustomEventExample() {
         // ...
@@ -422,10 +426,11 @@ Swingの部品どうしのドラッグ&ドロップは、`TransferHandler`で実
 
 </div>
 
-<span class="listing-number">**サンプルコード19-5**　SwingWorkerExample.java（7、70〜76、80〜85、94〜101、103〜133、151行目）</span>
+<span class="listing-number">**サンプルコード19-5**　SwingWorkerExample.java（7〜8、70〜76、80〜85、94〜101、103〜133、155行目）</span>
 
 ```java
-public class SwingWorkerExample extends JFrame {
+public class SwingWorkerExample {
+    private final JFrame frame = new JFrame("SwingWorkerによる非同期処理");
     // ...
     // SwingWorkerの実装
     class DataProcessingWorker extends SwingWorker<String,

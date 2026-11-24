@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
-public class SwingWorkerExample extends JFrame {
+public class SwingWorkerExample {
+    private final JFrame frame = new JFrame("SwingWorkerによる非同期処理");
     private JProgressBar progressBar;
     private JTextArea resultArea;
     private JButton startButton;
@@ -12,9 +13,8 @@ public class SwingWorkerExample extends JFrame {
     private DataProcessingWorker currentWorker;
     
     public SwingWorkerExample() {
-        setTitle("SwingWorkerによる非同期処理");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
         
         // プログレスバー
         progressBar = new JProgressBar(0, 100);
@@ -43,11 +43,11 @@ public class SwingWorkerExample extends JFrame {
         topPanel.add(buttonPanel, BorderLayout.EAST);
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        add(topPanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(scrollPane, BorderLayout.CENTER);
         
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
     
     private void startProcessing() {
@@ -143,9 +143,13 @@ public class SwingWorkerExample extends JFrame {
         }
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new SwingWorkerExample().setVisible(true);
+            new SwingWorkerExample().show();
         });
     }
 }

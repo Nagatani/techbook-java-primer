@@ -2,14 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class BasicKeyEventExample extends JFrame {
+public class BasicKeyEventExample {
+    private final JFrame frame = new JFrame("基本的なキーボードイベント");
     private JTextArea inputArea;
     private JLabel statusLabel;
 
     public BasicKeyEventExample() {
-        setTitle("基本的なキーボードイベント");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
 
         // 入力エリア
         inputArea = new JTextArea(5, 30);
@@ -30,7 +30,7 @@ public class BasicKeyEventExample extends JFrame {
                 if (e.isControlDown()
                         && e.getKeyCode() == KeyEvent.VK_S) {
                     JOptionPane.showMessageDialog(
-                            BasicKeyEventExample.this,
+                            frame,
                             "保存ショートカットが押されました");
                     // 処理済みにして、このあとのキーバインディングに渡さない
                     e.consume();
@@ -38,16 +38,20 @@ public class BasicKeyEventExample extends JFrame {
             }
         });
 
-        add(scrollPane, BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.SOUTH);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        frame.add(statusLabel, BorderLayout.SOUTH);
 
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+    }
+
+    private void show() {
+        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new BasicKeyEventExample().setVisible(true);
+            new BasicKeyEventExample().show();
         });
     }
 }

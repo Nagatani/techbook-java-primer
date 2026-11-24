@@ -361,15 +361,18 @@ public class WindowEventExample {
 マウスのクリックとパネルへの出入りを検出し、ステータスラベルに現在の状態を表示します。
 マウスの移動やドラッグ（`MouseMotionListener`）、ダブルクリックの判定、右クリックメニューは、第19章「高度なイベント処理パターン」のサンプルコード19-1で学びます。
 
-ここからのサンプルは、ウィンドウを表すクラスを`JFrame`の子クラス（第5章の継承）として定義し、コンストラクターで画面を組み立てる形で書きます。
+ここからのサンプルは、ウィンドウを表すクラスを作り、`JFrame`のオブジェクトをフィールド`frame`に持たせて、コンストラクターで画面を組み立てる形で書きます。
 これまでのように`JFrame`のオブジェクトを作って部品を足す形と、できる画面は同じです。
-子クラスにすると、ラベルなどの部品をフィールドに持てるので、リスナーのなかから部品を操作するコードを書きやすくなります。
-コンストラクターのなかの`setTitle(…)`や`add(…)`は、自分自身（`this`）の`JFrame`のメソッドを呼んでいます。
+ラベルなどの部品もフィールドに持てるので、リスナーのなかから部品を操作するコードを書きやすくなります。
+クラスを`JFrame`の子クラス（第5章の継承）にする書き方もありますが、本書は`JFrame`を継承せずに持つ書き方を使います。
+継承しなければ、`JFrame`の多数のメソッドを自分のクラスに引き継がずに済みます。
+この「継承より合成」の考え方は、第25章で学びます。
 
-<span class="listing-number">**サンプルコード18-6**　BasicMouseEventExample.java（5、9、24〜46、53、60行目）</span>
+<span class="listing-number">**サンプルコード18-6**　BasicMouseEventExample.java（5〜6、10、24〜46、53、64行目）</span>
 
 ```java
-public class BasicMouseEventExample extends JFrame {
+public class BasicMouseEventExample {
+    private final JFrame frame = new JFrame("基本的なマウスイベント");
     // ...
     public BasicMouseEventExample() {
         // ...
@@ -422,10 +425,11 @@ public class BasicMouseEventExample extends JFrame {
 以下のコードは、KeyListenerを使用してキーボードイベントを処理する例です。キーの押下を検出し、押されたキーの情報を表示します。また、Ctrl+Sのようなショートカットキーの検出方法も示しています<span class="footnote">macOSでは、保存などのショートカットにCtrlではなくCommandキーを使うのが一般的です。Javaでは、Commandキーが押されているかを`isMetaDown()`で調べます。</span>。`consume()`メソッドを呼ぶと、そのイベントを処理済みにして、このあとに続くキーバインディングなどの処理へ渡さないようにできます。
 複数のキーの同時押しや、`InputMap`と`ActionMap`によるキーバインディングは、第19章のサンプルコード19-2で学びます。
 
-<span class="listing-number">**サンプルコード18-7**　BasicKeyEventExample.java（5、9、23〜39、46、53行目）</span>
+<span class="listing-number">**サンプルコード18-7**　BasicKeyEventExample.java（5〜6、10、23〜39、46、57行目）</span>
 
 ```java
-public class BasicKeyEventExample extends JFrame {
+public class BasicKeyEventExample {
+    private final JFrame frame = new JFrame("基本的なキーボードイベント");
     // ...
     public BasicKeyEventExample() {
         // ...
@@ -439,7 +443,7 @@ public class BasicKeyEventExample extends JFrame {
                 if (e.isControlDown()
                         && e.getKeyCode() == KeyEvent.VK_S) {
                     JOptionPane.showMessageDialog(
-                            BasicKeyEventExample.this,
+                            frame,
                             "保存ショートカットが押されました");
                     // 処理済みにして、このあとのキーバインディングに渡さない
                     e.consume();
@@ -453,8 +457,8 @@ public class BasicKeyEventExample extends JFrame {
 ```
 
 `JOptionPane.showMessageDialog`の第1引数には、ダイアログを表示する基準のウィンドウを渡します。
-匿名クラス（第8章）のなかで`this`と書くと、匿名クラスのオブジェクトを指してしまいます。
-`BasicKeyEventExample.this`のように外側のクラス名を付けて`this`と書くと、外側のクラスのオブジェクト、つまりこのウィンドウを指せます。
+ここでは、ウィンドウを持つフィールド`frame`を渡しています。
+匿名クラス（第8章）のなかで`this`と書くと匿名クラスのオブジェクトを指しますが、外側のクラスのフィールドはリスナーのなかからそのまま使えます。
 
 ### ItemListenerによる選択状態の監視
 
@@ -462,10 +466,11 @@ public class BasicKeyEventExample extends JFrame {
 
 以下のコードは、ItemListenerを使用してチェックボックスとラジオボタンの選択状態を監視する例です。ItemEventを通じて、選択されたか解除されたかを判定し、直前の変化をラベルに、選択中の項目の一覧をコンソールに表示します。
 
-<span class="listing-number">**サンプルコード18-8**　ItemListenerExample.java（5、10、22〜36、54〜64、85、100行目）</span>
+<span class="listing-number">**サンプルコード18-8**　ItemListenerExample.java（5〜6、11、22〜36、54〜64、85、104行目）</span>
 
 ```java
-public class ItemListenerExample extends JFrame {
+public class ItemListenerExample {
+    private final JFrame frame = new JFrame("ItemListener の例");
     // ...
     public ItemListenerExample() {
         // ...
@@ -508,10 +513,11 @@ public class ItemListenerExample extends JFrame {
 
 以下のコードは、FocusListenerを使用してテキストフィールドのフォーカス状態を管理する例です。フォーカスを取得したフィールドの背景色を変更し、フォーカスを失った際には入力内容を検証します。この例では、名前のフィールドが空のままフォーカスを失うと、背景をピンクにしてメッセージを表示します。
 
-<span class="listing-number">**サンプルコード18-9**　FocusListenerExample.java（5、9、21〜45、71、85行目）</span>
+<span class="listing-number">**サンプルコード18-9**　FocusListenerExample.java（5〜6、10、21〜45、71、89行目）</span>
 
 ```java
-public class FocusListenerExample extends JFrame {
+public class FocusListenerExample {
+    private final JFrame frame = new JFrame("FocusListener の例");
     // ...
     public FocusListenerExample() {
         // ...
@@ -555,10 +561,11 @@ public class FocusListenerExample extends JFrame {
 `getValueIsAdjusting()`メソッドはドラッグ中ならtrueを返します。
 これを使うと、表示はそのつど更新し、確定した値の処理（この例ではコンソールへの出力）はドラッグを終えたときに1回だけ行えます。
 
-<span class="listing-number">**サンプルコード18-10**　ChangeListenerExample.java（5、11、28〜41、51〜56、85、92行目）</span>
+<span class="listing-number">**サンプルコード18-10**　ChangeListenerExample.java（5〜6、12、28〜41、51〜56、85、96行目）</span>
 
 ```java
-public class ChangeListenerExample extends JFrame {
+public class ChangeListenerExample {
+    private final JFrame frame = new JFrame("ChangeListener の例");
     // ...
     public ChangeListenerExample() {
         // ...

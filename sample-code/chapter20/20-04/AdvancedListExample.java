@@ -135,13 +135,13 @@ class TaskListCellRenderer extends JPanel
 }
 
 // メインアプリケーション
-public class AdvancedListExample extends JFrame {
+public class AdvancedListExample {
+    private final JFrame frame = new JFrame("タスク管理リスト");
     private TaskListModel model;
     private JList<Task> taskList;
     
     public AdvancedListExample() {
-        setTitle("タスク管理リスト");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         model = new TaskListModel();
         taskList = new JList<>(model);
@@ -169,7 +169,7 @@ public class AdvancedListExample extends JFrame {
         JButton removeButton = new JButton("タスク削除");
         
         addButton.addActionListener(e -> {
-            String title = JOptionPane.showInputDialog(this, "タスクのタイトル:");
+            String title = JOptionPane.showInputDialog(frame, "タスクのタイトル:");
             if (title != null && !title.trim().isEmpty()) {
                 model.addTask(new Task(title, "詳細な説明", 
                     LocalDateTime.now().plusDays(3)));
@@ -187,21 +187,25 @@ public class AdvancedListExample extends JFrame {
         buttonPanel.add(removeButton);
         
         // レイアウト
-        add(new JScrollPane(taskList), BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
+        frame.add(new JScrollPane(taskList), BorderLayout.CENTER);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
         
         // 説明ラベル
         JLabel infoLabel = new JLabel("ダブルクリックでタスクの完了/未完了を切り替え");
         infoLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        add(infoLabel, BorderLayout.NORTH);
+        frame.add(infoLabel, BorderLayout.NORTH);
         
-        setSize(600, 400);
-        setLocationRelativeTo(null);
+        frame.setSize(600, 400);
+        frame.setLocationRelativeTo(null);
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new AdvancedListExample().setVisible(true);
+            new AdvancedListExample().show();
         });
     }
 }

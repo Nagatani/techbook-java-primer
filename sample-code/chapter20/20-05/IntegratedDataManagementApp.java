@@ -30,7 +30,8 @@ class Project {
 }
 
 // メインアプリケーション
-public class IntegratedDataManagementApp extends JFrame {
+public class IntegratedDataManagementApp {
+    private final JFrame frame = new JFrame("プロジェクト管理システム");
     private JSplitPane mainSplitPane;
     private JSplitPane rightSplitPane;
     private JTree projectTree;
@@ -42,8 +43,7 @@ public class IntegratedDataManagementApp extends JFrame {
     private JLabel statusLabel;
     
     public IntegratedDataManagementApp() {
-        setTitle("プロジェクト管理システム");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         // プロジェクトデータの初期化
         initializeData();
@@ -59,8 +59,8 @@ public class IntegratedDataManagementApp extends JFrame {
         // メニューバーの作成
         createMenuBar();
         
-        setSize(1000, 700);
-        setLocationRelativeTo(null);
+        frame.setSize(1000, 700);
+        frame.setLocationRelativeTo(null);
     }
     
     private void initializeData() {
@@ -209,14 +209,14 @@ public class IntegratedDataManagementApp extends JFrame {
             leftPanel, rightSplitPane);
         mainSplitPane.setDividerLocation(300);
         
-        add(mainSplitPane, BorderLayout.CENTER);
+        frame.add(mainSplitPane, BorderLayout.CENTER);
         
         // ステータスバー
         statusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         statusPanel.setBorder(BorderFactory.createEtchedBorder());
         statusLabel = new JLabel("プロジェクトを選択してください");
         statusPanel.add(statusLabel);
-        add(statusPanel, BorderLayout.SOUTH);
+        frame.add(statusPanel, BorderLayout.SOUTH);
     }
     
     private void createMenuBar() {
@@ -239,9 +239,13 @@ public class IntegratedDataManagementApp extends JFrame {
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
         
-        setJMenuBar(menuBar);
+        frame.setJMenuBar(menuBar);
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -251,7 +255,7 @@ public class IntegratedDataManagementApp extends JFrame {
                 e.printStackTrace();
             }
             
-            new IntegratedDataManagementApp().setVisible(true);
+            new IntegratedDataManagementApp().show();
         });
     }
 }

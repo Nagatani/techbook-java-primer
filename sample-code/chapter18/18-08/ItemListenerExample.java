@@ -2,15 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class ItemListenerExample extends JFrame {
+public class ItemListenerExample {
+    private final JFrame frame = new JFrame("ItemListener の例");
     private JCheckBox checkBox1, checkBox2, checkBox3;
     private JRadioButton radio1, radio2, radio3;
     private JLabel statusLabel;
     
     public ItemListenerExample() {
-        setTitle("ItemListener の例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
         
         // チェックボックスパネル
         JPanel checkPanel = new JPanel();
@@ -77,11 +77,11 @@ public class ItemListenerExample extends JFrame {
         mainPanel.add(checkPanel);
         mainPanel.add(radioPanel);
         
-        add(mainPanel, BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.SOUTH);
+        frame.add(mainPanel, BorderLayout.CENTER);
+        frame.add(statusLabel, BorderLayout.SOUTH);
         
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
     
     private void updateSelection() {
@@ -92,9 +92,13 @@ public class ItemListenerExample extends JFrame {
         IO.println(selected.toString());
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new ItemListenerExample().setVisible(true);
+            new ItemListenerExample().show();
         });
     }
 }

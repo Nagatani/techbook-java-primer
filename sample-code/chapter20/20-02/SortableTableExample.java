@@ -3,14 +3,14 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.util.regex.Pattern;
 
-public class SortableTableExample extends JFrame {
+public class SortableTableExample {
+    private final JFrame frame = new JFrame("ソート可能なテーブル");
     private PersonTableModel model;
     private JTable table;
     private TableRowSorter<PersonTableModel> sorter;
     
     public SortableTableExample() {
-        setTitle("ソート可能なテーブル");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         model = new PersonTableModel();
         table = new JTable(model);
@@ -41,8 +41,8 @@ public class SortableTableExample extends JFrame {
         filterPanel.add(filterButton);
         
         // レイアウト
-        add(filterPanel, BorderLayout.NORTH);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        frame.add(filterPanel, BorderLayout.NORTH);
+        frame.add(new JScrollPane(table), BorderLayout.CENTER);
         
         // 操作パネル
         JPanel buttonPanel = new JPanel();
@@ -64,15 +64,19 @@ public class SortableTableExample extends JFrame {
         
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
-        add(buttonPanel, BorderLayout.SOUTH);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
         
-        setSize(700, 400);
-        setLocationRelativeTo(null);
+        frame.setSize(700, 400);
+        frame.setLocationRelativeTo(null);
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new SortableTableExample().setVisible(true);
+            new SortableTableExample().show();
         });
     }
 }

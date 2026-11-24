@@ -54,13 +54,14 @@ JTableはこれらを組み合わせて表を表示します。
 `JScrollPane`に入れることで、データが多い場合にスクロールできるようになります。
 この方法は簡単ですが、表示したあとに行を追加・削除する用途には向いていません。
 
-<span class="listing-number">**サンプルコード20-1**　BasicTableExample.java（4〜23、30行目）</span>
+<span class="listing-number">**サンプルコード20-1**　BasicTableExample.java（4〜24、35行目）</span>
 
 ```java
-public class BasicTableExample extends JFrame {
+public class BasicTableExample {
+    private final JFrame frame = new JFrame("基本的なJTableの例");
+
     public BasicTableExample() {
-        setTitle("基本的なJTableの例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         String[] columnNames = {"ID", "名前", "年齢", "メールアドレス"};
         Object[][] data = {
@@ -72,10 +73,10 @@ public class BasicTableExample extends JFrame {
 
         JTable table = new JTable(data, columnNames);
         JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane, BorderLayout.CENTER);
+        frame.add(scrollPane, BorderLayout.CENTER);
         
-        setSize(600, 300);
-        setLocationRelativeTo(null);
+        frame.setSize(600, 300);
+        frame.setLocationRelativeTo(null);
     }
     // ...
 }
@@ -103,7 +104,7 @@ JTableは組み込みのソート機能を提供しています<span class="foot
 この例では、`AbstractTableModel`を継承した`PersonTableModel`が、`Person`（第8章で学んだRecord）のリストを持ちます。
 全文はGitHubリポジトリの`sample-code/chapter20/20-02/`にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter20/20-02/`</span>。
 
-<span class="listing-number">**サンプルコード20-2**　PersonTableModel.java（6、15〜16、18〜19、30〜39、50〜59行目）、SortableTableExample.java（6、11、15〜37、57〜63、71、78行目）</span>
+<span class="listing-number">**サンプルコード20-2**　PersonTableModel.java（6、15〜16、18〜19、30〜39、50〜59行目）、SortableTableExample.java（6〜7、12、15〜37、57〜63、71、82行目）</span>
 
 ```java
 public class PersonTableModel extends AbstractTableModel {
@@ -136,7 +137,8 @@ public class PersonTableModel extends AbstractTableModel {
     }
 }
 
-public class SortableTableExample extends JFrame {
+public class SortableTableExample {
+    private final JFrame frame = new JFrame("ソート可能なテーブル");
     // ...
     public SortableTableExample() {
         // ...
@@ -227,10 +229,12 @@ JTreeは階層構造のデータを表示するコンポーネントです。
 子を持つノードには、展開・折りたたみのハンドルが表示されます。
 `setShowsRootHandles(true)`は、いちばん上のルートノードにもハンドルを表示する指定です。
 
-<span class="listing-number">**サンプルコード20-3**　BasicTreeExample.java（6〜7、11〜27、34〜36、44、51行目）</span>
+<span class="listing-number">**サンプルコード20-3**　BasicTreeExample.java（6〜9、12〜28、35〜37、45、56行目）</span>
 
 ```java
-public class BasicTreeExample extends JFrame {
+public class BasicTreeExample {
+    private final JFrame frame = new JFrame("基本的なJTreeの例");
+
     public BasicTreeExample() {
         // ...
         // ルートノードの作成
@@ -296,7 +300,7 @@ public class BasicTreeExample extends JFrame {
 `DefaultTreeCellRenderer`は`JLabel`を継承しているので、`setText`や`setIcon`をそのまま呼べます。
 作ったレンダラーは、ツリーの`setCellRenderer`で設定します。
 
-<span class="listing-number">**サンプルコード20-4**　AdvancedListExample.java（29、42〜51、63〜67、74、86〜87、95〜96、100〜135、138、142、146〜149、200、207行目）</span>
+<span class="listing-number">**サンプルコード20-4**　AdvancedListExample.java（29、42〜51、63〜67、74、86〜87、95〜96、100〜135、138〜139、143、146〜149、200、211行目）</span>
 
 ```java
 class TaskListModel extends AbstractListModel<Task> {
@@ -363,7 +367,8 @@ class TaskListCellRenderer extends JPanel
     }
 }
 // ...
-public class AdvancedListExample extends JFrame {
+public class AdvancedListExample {
+    private final JFrame frame = new JFrame("タスク管理リスト");
     // ...
     public AdvancedListExample() {
         // ...
@@ -389,10 +394,11 @@ JTable、JTree、JListを組み合わせた総合的なアプリケーション�
 メニューバーには、アプリケーションを終了する「ファイル」メニューと、画面下のステータスバーの表示・非表示を切り替える「表示」メニューがあります。
 ステータスバーには、選択中のプロジェクト名が表示されます。
 
-<span class="listing-number">**サンプルコード20-5**　IntegratedDataManagementApp.java（33、89、112〜131、158〜174、187、203〜212、220、257行目）</span>
+<span class="listing-number">**サンプルコード20-5**　IntegratedDataManagementApp.java（33〜34、89、112〜131、158〜174、187、203〜212、220、261行目）</span>
 
 ```java
-public class IntegratedDataManagementApp extends JFrame {
+public class IntegratedDataManagementApp {
+    private final JFrame frame = new JFrame("プロジェクト管理システム");
     // ...
     private void createProjectTree() {
         // ...
@@ -446,7 +452,7 @@ public class IntegratedDataManagementApp extends JFrame {
             leftPanel, rightSplitPane);
         mainSplitPane.setDividerLocation(300);
         
-        add(mainSplitPane, BorderLayout.CENTER);
+        frame.add(mainSplitPane, BorderLayout.CENTER);
         // ...
     }
     // ...

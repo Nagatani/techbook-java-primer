@@ -2,16 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MouseEventCompleteExample extends JFrame {
+public class MouseEventCompleteExample {
+    private final JFrame frame = new JFrame("マウスイベント完全例");
     private JTextArea logArea;
     private JPanel drawPanel;
     private Point startPoint;
     private Point currentPoint;
     
     public MouseEventCompleteExample() {
-        setTitle("マウスイベント完全例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
         
         // 描画パネル
         drawPanel = new JPanel() {
@@ -110,11 +110,11 @@ public class MouseEventCompleteExample extends JFrame {
         // setComponentPopupMenuは、どちらの場合もメニューを表示する
         drawPanel.setComponentPopupMenu(popupMenu);
         
-        add(drawPanel, BorderLayout.CENTER);
-        add(scrollPane, BorderLayout.SOUTH);
+        frame.add(drawPanel, BorderLayout.CENTER);
+        frame.add(scrollPane, BorderLayout.SOUTH);
         
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
     
     private void log(String message) {
@@ -122,9 +122,13 @@ public class MouseEventCompleteExample extends JFrame {
         logArea.setCaretPosition(logArea.getDocument().getLength());
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new MouseEventCompleteExample().setVisible(true);
+            new MouseEventCompleteExample().show();
         });
     }
 }

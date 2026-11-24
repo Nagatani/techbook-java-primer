@@ -2,14 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class FocusListenerExample extends JFrame {
+public class FocusListenerExample {
+    private final JFrame frame = new JFrame("FocusListener の例");
     private JTextField field1, field2, field3;
     private JLabel statusLabel;
 
     public FocusListenerExample() {
-        setTitle("FocusListener の例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridBagLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
@@ -46,28 +46,28 @@ public class FocusListenerExample extends JFrame {
 
         // レイアウト
         gbc.gridx = 0; gbc.gridy = 0;
-        add(new JLabel("名前:"), gbc);
+        frame.add(new JLabel("名前:"), gbc);
         gbc.gridx = 1;
-        add(field1, gbc);
+        frame.add(field1, gbc);
 
         gbc.gridx = 0; gbc.gridy = 1;
-        add(new JLabel("メール:"), gbc);
+        frame.add(new JLabel("メール:"), gbc);
         gbc.gridx = 1;
-        add(field2, gbc);
+        frame.add(field2, gbc);
 
         gbc.gridx = 0; gbc.gridy = 2;
-        add(new JLabel("電話番号:"), gbc);
+        frame.add(new JLabel("電話番号:"), gbc);
         gbc.gridx = 1;
-        add(field3, gbc);
+        frame.add(field3, gbc);
 
         // ステータスラベル
         statusLabel = new JLabel("フィールドをクリックしてください");
         statusLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
-        add(statusLabel, gbc);
+        frame.add(statusLabel, gbc);
 
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
 
     private String getFieldName(JTextField field) {
@@ -77,9 +77,13 @@ public class FocusListenerExample extends JFrame {
         return "不明なフィールド";
     }
 
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new FocusListenerExample().setVisible(true);
+            new FocusListenerExample().show();
         });
     }
 }

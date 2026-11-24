@@ -1,10 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class BasicTableExample extends JFrame {
+public class BasicTableExample {
+    private final JFrame frame = new JFrame("基本的なJTableの例");
+
     public BasicTableExample() {
-        setTitle("基本的なJTableの例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         String[] columnNames = {"ID", "名前", "年齢", "メールアドレス"};
         Object[][] data = {
@@ -16,15 +17,19 @@ public class BasicTableExample extends JFrame {
 
         JTable table = new JTable(data, columnNames);
         JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane, BorderLayout.CENTER);
+        frame.add(scrollPane, BorderLayout.CENTER);
         
-        setSize(600, 300);
-        setLocationRelativeTo(null);
+        frame.setSize(600, 300);
+        frame.setLocationRelativeTo(null);
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new BasicTableExample().setVisible(true);
+            new BasicTableExample().show();
         });
     }
 }

@@ -61,16 +61,16 @@ class TemperatureSensor {
 }
 
 // メインアプリケーション
-public class CustomEventExample extends JFrame {
+public class CustomEventExample {
+    private final JFrame frame = new JFrame("カスタムイベントの例");
     private TemperatureSensor sensor;
     private JLabel temperatureLabel;
     private JSlider temperatureSlider;
     private JTextArea logArea;
     
     public CustomEventExample() {
-        setTitle("カスタムイベントの例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
         
         sensor = new TemperatureSensor();
         
@@ -125,10 +125,10 @@ public class CustomEventExample extends JFrame {
                 
                 // 警告表示
                 if (newTemp > 40) {
-                    JOptionPane.showMessageDialog(CustomEventExample.this,
+                    JOptionPane.showMessageDialog(frame,
                         "警告: 高温です！", "温度警告", JOptionPane.WARNING_MESSAGE);
                 } else if (newTemp < -10) {
-                    JOptionPane.showMessageDialog(CustomEventExample.this,
+                    JOptionPane.showMessageDialog(frame,
                         "警告: 低温です！", "温度警告", JOptionPane.WARNING_MESSAGE);
                 }
             }
@@ -153,17 +153,21 @@ public class CustomEventExample extends JFrame {
             }
         });
         
-        add(displayPanel, BorderLayout.NORTH);
-        add(temperatureSlider, BorderLayout.CENTER);
-        add(scrollPane, BorderLayout.SOUTH);
+        frame.add(displayPanel, BorderLayout.NORTH);
+        frame.add(temperatureSlider, BorderLayout.CENTER);
+        frame.add(scrollPane, BorderLayout.SOUTH);
         
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new CustomEventExample().setVisible(true);
+            new CustomEventExample().show();
         });
     }
 }

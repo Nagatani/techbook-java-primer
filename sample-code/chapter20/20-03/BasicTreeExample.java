@@ -3,10 +3,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 
-public class BasicTreeExample extends JFrame {
+public class BasicTreeExample {
+    private final JFrame frame = new JFrame("基本的なJTreeの例");
+
     public BasicTreeExample() {
-        setTitle("基本的なJTreeの例");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         // ルートノードの作成
         DefaultMutableTreeNode root =
@@ -37,15 +38,19 @@ public class BasicTreeExample extends JFrame {
         
         // スクロールペインに追加
         JScrollPane scrollPane = new JScrollPane(tree);
-        add(scrollPane, BorderLayout.CENTER);
+        frame.add(scrollPane, BorderLayout.CENTER);
         
-        setSize(400, 500);
-        setLocationRelativeTo(null);
+        frame.setSize(400, 500);
+        frame.setLocationRelativeTo(null);
     }
     
+    private void show() {
+        frame.setVisible(true);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new BasicTreeExample().setVisible(true);
+            new BasicTreeExample().show();
         });
     }
 }

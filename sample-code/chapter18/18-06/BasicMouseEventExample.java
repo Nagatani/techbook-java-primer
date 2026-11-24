@@ -2,14 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class BasicMouseEventExample extends JFrame {
+public class BasicMouseEventExample {
+    private final JFrame frame = new JFrame("基本的なマウスイベント");
     private JLabel statusLabel;
     private JPanel clickPanel;
 
     public BasicMouseEventExample() {
-        setTitle("基本的なマウスイベント");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
 
         // クリック用パネル
         clickPanel = new JPanel();
@@ -45,16 +45,20 @@ public class BasicMouseEventExample extends JFrame {
             }
         });
 
-        add(clickPanel, BorderLayout.CENTER);
-        add(statusLabel, BorderLayout.SOUTH);
+        frame.add(clickPanel, BorderLayout.CENTER);
+        frame.add(statusLabel, BorderLayout.SOUTH);
 
-        pack();
-        setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+    }
+
+    private void show() {
+        frame.setVisible(true);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new BasicMouseEventExample().setVisible(true);
+            new BasicMouseEventExample().show();
         });
     }
 }
