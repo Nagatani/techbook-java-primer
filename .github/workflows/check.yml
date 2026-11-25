@@ -1,7 +1,9 @@
 name: Check manuscript consistency
 
-# pushとプルリクエストのたびに、構成・索引・サンプルコードの食い違いを検査する。
+# pushとプルリクエストのたびに、構成・索引・サンプルコードの抜粋の食い違いを検査する（数分で終わる軽い検査だけ）。
 # 手元のpre-commitフック（scripts/git-hooks/）を有効にし忘れた環境や、--no-verifyで省いたコミットも拾う。
+# コンパイルは、コードを変えたときだけ動く code.yml で行う。
+# 時間のかかる検査（実行結果の照合、JUnitのテスト、主張の検証、textlint）は手元で npm run check:local を流す。
 on:
   push:
     branches:
@@ -11,9 +13,15 @@ on:
 permissions:
   contents: read
 
+# 同じブランチへ続けてpushしたら、古い検査を取り消す
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -33,19 +41,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # ここから下の4つは、環境によらず同じ結果になる検査。失敗したらジョブを失敗にする
       - name: 章・演習・付録B・用語集・相互参照ガイドの検査
         run: npm run check:structure
 
       - name: 索引と要約が最新か
         run: npm run index:check
 
-      - name: サンプルコードの抜粋とコンパイル
-        run: npm run check:samples -- --no-run
-
-      # 付録（appendix/）と演習（exercises/）の公開コードのコンパイル
-      - name: 付録・演習のコードのコンパイル
-        run: npm run check:public-code -- --no-test
+      # 本文のコードと全文（sample-code/）の範囲の一致、キャプション、番号。コンパイルはしない
+      - name: サンプルコードの抜粋
+        run: npm run check:samples -- --no-compile
 
       # 図の元データ（docs/diagrams/*.mmd）・画像・原稿の対応。文字が小さすぎる図は注意として表示するだけ
       - name: 図の元データと画像の対応
@@ -58,28 +62,3 @@ jobs:
       # 主張の台帳（付録Bのclaims.yml、本文のdocs/claims/）と解説・本文の対応、解説に書いたJVMフラグの実在
       - name: 主張の台帳と解説・本文の対応
         run: node scripts/check-claims.js --static
-
-      # 実行結果の照合は、言語設定・タイムゾーン・画面の有無で出力が変わりうるため参考として流す
-      - name: サンプルコードの実行結果の照合（参考）
-        continue-on-error: true
-        env:
-          TZ: Asia/Tokyo
-          LANG: ja_JP.UTF-8
-        run: xvfb-run -a npm run check:samples
-
-      # 付録・演習のテストの実行。スレッドやファイル監視のタイミングに左右されるテストがあるため参考として流す
-      - name: 付録・演習のテストの実行（参考）
-        continue-on-error: true
-        env:
-          TZ: Asia/Tokyo
-        run: npm run check:public-code
-
-      # 付録Bの主張をJDKで確かめる。JITの判断は実行環境（コア数など）で変わりうるため参考として流す
-      - name: 付録Bと本文の主張の検証（参考）
-        continue-on-error: true
-        run: node scripts/check-claims.js
-
-      # textlintは規約上の例外が残っているため参考として流す
-      - name: textlint（参考）
-        continue-on-error: true
-        run: npm run lint

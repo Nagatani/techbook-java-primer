@@ -1,16 +1,31 @@
 name: Deploy Vivliostyle to GitHub Pages
 
-# mainブランチにプッシュされたときに実行
+# mainブランチにプッシュされたときに実行する。本の中身にかかわるファイルを変えたときだけ
 on:
   push:
     branches:
       - main
+    paths:
+      - 'manuscripts/**'
+      - 'theme/**'
+      - 'scripts/**'
+      - 'docs/diagrams/**'
+      - 'vivliostyle.config.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
 
 # ジョブがリポジトリをクローンし、デプロイを作成できるように権限を設定
 permissions:
   contents: read
   pages: write
   id-token: write
+
+# 続けてpushしたら、待っている古い公開は取り消す（公開中のものは最後まで動かす）
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   # ビルド処理

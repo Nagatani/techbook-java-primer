@@ -1,0 +1,67 @@
+name: Compile published code
+
+# 公開するコード（sample-code/、appendix/、exercises/）を変えたときだけ、Java 25でコンパイルする。
+# 実行結果の照合とJUnitのテストは手元で行う（npm run check:local）。
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'sample-code/**'
+      - 'appendix/**'
+      - 'exercises/**'
+      - 'scripts/sample-code.js'
+      - 'scripts/check-public-code.js'
+      - '.github/workflows/code.yml'
+  pull_request:
+    paths:
+      - 'sample-code/**'
+      - 'appendix/**'
+      - 'exercises/**'
+      - 'scripts/sample-code.js'
+      - 'scripts/check-public-code.js'
+      - '.github/workflows/code.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: code-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Setup Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # 外部ライブラリのJAR（Maven Centralから取得）を使い回す
+      - name: Cache libraries
+        uses: actions/cache@v6
+        with:
+          path: .cache/sample-code-libs
+          key: java-libs-${{ hashFiles('sample-code/**/listings.json', 'scripts/check-public-code.js') }}
+          restore-keys: java-libs-
+
+      - name: サンプルコードの全文のコンパイル
+        run: npm run check:samples -- --no-run
+
+      - name: 付録・演習のコードのコンパイル
+        run: npm run check:public-code -- --no-test

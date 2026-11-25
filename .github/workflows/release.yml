@@ -1,0 +1,107 @@
+name: Release PDF and EPUB
+
+# v で始まるタグをpushしたら、PDFとEPUBを作ってGitHubのリリースに添付する。
+#   v0.9.0-alpha.1 のように「-」を含むタグ   ALPHA版（Web配布版）を作り、プレリリースにする
+#   v1.0.0 のように「-」を含まないタグ        正規版を作る
+# 手で動かした場合（Actionsの画面の Run workflow）は、リリースを作らず、できたファイルをワークフローの成果物に置く。
+# 手順は docs/publishing/07-release.md
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      edition:
+        description: '版'
+        type: choice
+        options:
+          - alpha
+          - release
+        default: alpha
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: 版を決める
+        id: edition
+        env:
+          INPUT_EDITION: ${{ inputs.edition }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            edition="$INPUT_EDITION"
+          elif echo "$REF_NAME" | grep -q -- '-'; then
+            edition=alpha
+          else
+            edition=release
+          fi
+          echo "edition=$edition" >> "$GITHUB_OUTPUT"
+          echo "版: $edition"
+
+      - name: PDFを作る
+        env:
+          BOOK_EDITION: ${{ steps.edition.outputs.edition }}
+        run: |
+          npm run mermaid:convert
+          npx vivliostyle build
+
+      - name: EPUBを作る
+        env:
+          BOOK_EDITION: ${{ steps.edition.outputs.edition }}
+        run: npm run build:epub
+
+      - name: 添付するファイルに名前を付ける
+        id: files
+        env:
+          EDITION: ${{ steps.edition.outputs.edition }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            label="$EDITION-$(date +%Y%m%d)-${GITHUB_SHA::7}"
+          else
+            label="$REF_NAME"
+          fi
+          if [ "$EDITION" = "alpha" ]; then pdf=output/techbook-java-primer.pdf; else pdf=output/techbook-java-primer-release.pdf; fi
+          mkdir -p release
+          cp "$pdf" "release/techbook-java-primer-$label.pdf"
+          cp output/techbook-java-primer.epub "release/techbook-java-primer-$label.epub"
+          ls -l release
+
+      - name: 成果物として置く（手で動かしたとき）
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v7
+        with:
+          name: techbook-java-primer
+          path: release/
+          retention-days: 7
+
+      - name: リリースを作る（タグのとき）
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EDITION: ${{ steps.edition.outputs.edition }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$EDITION" = "alpha" ]; then flag=--prerelease; title="$REF_NAME（ALPHA版）"; else flag=; title="$REF_NAME"; fi
+          gh release create "$REF_NAME" release/* --title "$title" --generate-notes $flag
