@@ -346,6 +346,35 @@ function writeReadme(ch, manuscript, manifest) {
 
 // ---------------------------------------------------------------- check
 
+/**
+ * 紙面をむだに使う抜き出し方を見つける（2026-11-25〜）。
+ * - 全文の、ファイル名だけを書いた1行コメント（`// Shape.java`）。キャプションと枠の見出しにファイル名が出るので要らない
+ * - 閉じ括弧だけの範囲（`}`）。PDFでは範囲ごとに枠と見出しが付くので、1行のために枠が1つ増える。見出しの行番号で続きを省いたことはわかる
+ * - 空行だけを挟んで続く範囲。空行はPDFで取り除くので、1つの範囲にまとめられる
+ */
+function pageSpaceProblems(where, dir, excerpt) {
+  const problems = [];
+  const FILE_NAME_COMMENT = /^\s*\/\/\s*[A-Za-z0-9_]+\.java\s*$/;
+  const files = new Set(excerpt.map((seg) => seg.file));
+  for (const f of files) {
+    readLines(path.join(dir, f)).forEach((line, i) => {
+      if (FILE_NAME_COMMENT.test(line)) problems.push(`${where}: ${f}の${i + 1}行目がファイル名だけのコメント（消して範囲を直す）`);
+    });
+  }
+  if (excerpt.length < 2) return problems;
+  excerpt.forEach((seg, i) => {
+    const lines = readLines(path.join(dir, seg.file));
+    if (lines.slice(seg.from - 1, seg.to).every((l) => /^\s*[})\];]*\s*$/.test(l))) {
+      problems.push(`${where}: ${seg.file}の${seg.from}〜${seg.to}行目は閉じ括弧だけの範囲（listings.jsonから外す）`);
+    }
+    const prev = excerpt[i - 1];
+    if (prev && prev.file === seg.file && !prev.sep && !seg.sep && lines.slice(prev.to, seg.from - 1).every((l) => l.trim() === '')) {
+      problems.push(`${where}: ${seg.file}の${prev.to}行目と${seg.from}行目の範囲は空行だけで区切られている（1つの範囲にまとめる）`);
+    }
+  });
+  return problems;
+}
+
 function checkCommand(filters, args) {
   const runMode = !args.includes('--no-run');
   const work = fs.mkdtempSync(path.join(os.tmpdir(), 'sample-code-check-'));
@@ -379,6 +408,7 @@ function checkCommand(filters, args) {
       }
       const want = captionLine(id, captionOf(dir, e.excerpt));
       if (!text.includes(want)) problems.push(`${where}: キャプションが listings.json と合わない（sync で直せる）`);
+      problems.push(...pageSpaceProblems(where, dir, e.excerpt));
       const out = path.join(work, `${ch}-${e.dir}`);
       fs.cpSync(dir, out, { recursive: true });
       let c;
