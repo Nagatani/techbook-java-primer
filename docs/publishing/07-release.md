@@ -33,12 +33,33 @@ npm run build:release                      # 奥付のページを目で確か�
 
 確かめたら`docs: 正規版の奥付に発行日を入れる`のようにコミットします。
 
+## GitHubのリリースでPDFとEPUBを配る
+
+`v`で始まるタグをpushすると、GitHub Actions（`.github/workflows/release.yml`）がPDFとEPUBを作り、GitHubのリリースに添付します（2026-11-26〜、20分ほど）。タグの名前で版が決まります。
+
+| タグの例 | 作る版 | リリースの扱い | 添付するファイル |
+|---|---|---|---|
+| `v0.9.0-alpha.1`（「-」を含む） | ALPHA版 | プレリリース | `techbook-java-primer-v0.9.0-alpha.1.pdf`・`.epub` |
+| `v1.0.0`（「-」を含まない） | 正規版 | リリース | `techbook-java-primer-v1.0.0.pdf`・`.epub` |
+
+リリースは公開されるので、だれでもファイルを取得できます。正規版を有料で出す場合に正規版のファイルを配ってよいかは、出版の前に決めてください。決まるまでは「-」を含むタグ（ALPHA版）だけを使います。
+
+```bash
+npm run check:local                       # 手元の検査をすべて通す（01-checks.md）
+git tag -a v0.9.0-alpha.1 -m "ALPHA版 2026-11"
+git push origin v0.9.0-alpha.1            # これでリリースが作られる
+```
+
+タグを付けずに試しに作るときは、「Actions」タブの「Release PDF and EPUB」から「Run workflow」で版を選んで動かします。リリースは作らず、できたファイルをワークフローの成果物（Artifacts、7日間保存）に置きます。
+
+KDPの本文PDFと入稿用PDFは、入稿先に合わせて手元で作ります（[04-kdp-paperback.md](04-kdp-paperback.md)・[06-press.md](06-press.md)）。
+
 ## 出版した後
 
-- 出版に使ったコミットに印（タグ）を付けておくと、後で同じものを作り直せる
+- 出版に使ったコミットに印（タグ）を付けておくと、後で同じものを作り直せる。上の「GitHubのリリースでPDFとEPUBを配る」のとおり、タグをpushするとリリースが作られる
     ```bash
-    git tag -a v1.0 -m "初版第1刷"
-    git push origin v1.0    # pushするときだけ
+    git tag -a v1.0.0 -m "初版第1刷"
+    git push origin v1.0.0    # pushするときだけ。正規版のリリースが作られる
     ```
 - `TODO.md`の「出版時に決めること」を完了にし、決めた内容（発行日、入稿先、判型と紙、ISBN）を書き残す
 - 入稿したファイル（`output/`の中身と表紙）を、リポジトリの外に保管しておく。`output/`はビルドのたびに上書きされる
@@ -51,10 +72,10 @@ npm run build:release                      # 奥付のページを目で確か�
 2. 奥付の表示を変えるか決める（直した量が少なければ「初版第2刷発行」、大きく書き直したら「第2版第1刷発行」が一般的）。変える場合は、初版の日付の行を残して、その下に新しい行を足すのが市販の書籍の形
 3. [01-checks.md](01-checks.md)の検査を通す
 4. 出している形ごとに作り直して入れ替える（[04-kdp-paperback.md](04-kdp-paperback.md)・[05-kindle-epub.md](05-kindle-epub.md)・[06-press.md](06-press.md)の「内容を直して入れ替えるとき」）
-5. タグを付ける（`v1.1`など）
+5. タグを付ける（`v1.1.0`など）
 
 Web版（ALPHA版）は、mainへpushするたびに直した内容で公開し直されます。
 
 ---
 
-最終更新：2026-11-19
+最終更新：2026-11-26

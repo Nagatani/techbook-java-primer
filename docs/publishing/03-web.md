@@ -4,7 +4,7 @@ ALPHA版をHTMLにしてGitHub Pagesで公開しています。公開は自動�
 
 ## しくみ
 
-mainへpushすると、GitHub Actionsの`.github/workflows/deploy.yml`が次のことを行います。
+mainへpushすると、GitHub Actionsの`.github/workflows/deploy.yml`が次のことを行います。本の中身にかかわるファイル（`manuscripts/`・`theme/`・`scripts/`・`docs/diagrams/`・`vivliostyle.config.js`・`package.json`・`package-lock.json`）を変えたときだけ動きます（2026-11-26〜）。それ以外の変更のあとに公開し直したいときは、「Actions」タブの「Deploy Vivliostyle to GitHub Pages」から「Run workflow」で動かします。
 
 1. `npm ci`で依存を入れる
 2. `npm run build4web`でALPHA版をHTMLにする（出力先は`dist/`）

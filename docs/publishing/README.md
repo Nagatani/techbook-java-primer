@@ -24,7 +24,8 @@
 | Web版（HTML） | `npm run build4web` | `dist/` | alpha | GitHub Pages（mainへのpushで自動公開） |
 | 正規版のPDF | `npm run build:release` | `output/techbook-java-primer-release.pdf` | release | 電子版のPDF、確認用 |
 | KDPの本文PDF | `npm run build:kdp` | `output/techbook-java-primer-kdp.pdf` | release | KDPのペーパーバック |
-| EPUB | `npm run build:epub` | `output/techbook-java-primer.epub` | release | Kindleなどの電子書籍 |
+| EPUB | `npm run build:epub` | `output/techbook-java-primer.epub` | release（`BOOK_EDITION=alpha`でALPHA版） | Kindleなどの電子書籍 |
+| GitHubのリリース | `v*`のタグをpush | リリースの添付ファイル（PDF・EPUB） | タグで決まる | 配布（[07-release.md](07-release.md)） |
 | 入稿用PDF | `npm run build:press` | `output/techbook-java-primer-press.pdf` | release | 印刷所（PDF/X-1a） |
 
 版（`BOOK_EDITION`）によって変わるのは次の3か所です。
@@ -65,4 +66,4 @@ KDPの数値（のどの最小値、ページ数の上限、背幅の計算、�
 
 ---
 
-最終更新：2026-11-19
+最終更新：2026-11-26

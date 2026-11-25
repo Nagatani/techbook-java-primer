@@ -21,11 +21,12 @@
 
 | コマンド | 内容 |
 |---|---|
-| `npm run check:samples -- --no-run` | `sample-code/`の抜粋の一致とコンパイル（CIで失敗扱い） |
-| `npm run check:samples` | 上に加えて実行し、本文の「実行結果」と照合する（CIでは参考） |
+| `npm run check:samples -- --no-compile` | `sample-code/`の抜粋の一致、キャプション、番号（CIで失敗扱い） |
+| `npm run check:samples -- --no-run` | 上に加えて全文のコンパイル（`sample-code/`などを変えたときCIで失敗扱い） |
+| `npm run check:samples` | 上に加えて実行し、本文の「実行結果」と照合する（手元だけ。`npm run check:local`に含む） |
 | `npm run check:java` | 全文を公開していない番号付きコードブロックのコンパイル |
-| `npm run check:public-code -- --no-test` | `appendix/`と`exercises/`のコードのコンパイル（CIで失敗扱い） |
-| `npm run check:public-code` | 上に加えて、テストのあるまとまりをJUnitで実行する（CIでは参考） |
+| `npm run check:public-code -- --no-test` | `appendix/`と`exercises/`のコードのコンパイル（それらを変えたときCIで失敗扱い） |
+| `npm run check:public-code` | 上に加えて、テストのあるまとまりをJUnitで実行する（手元だけ。`npm run check:local`に含む） |
 
 `check:samples`は非推奨・削除予定のAPIの使用を「非推奨・削除予定のAPIを使っている」として報告します。
 
