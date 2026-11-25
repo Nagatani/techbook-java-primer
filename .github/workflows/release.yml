@@ -43,6 +43,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Ubuntu 24.04はAppArmorで非特権のユーザー名前空間を禁じており、EPUBの表紙を描くChrome（puppeteer）が
+      # 「No usable sandbox!」で起動しない。サンドボックスを外さずに動かすため、この制限を解く
+      - name: Chromeのサンドボックスを使えるようにする
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
       - name: 版を決める
         id: edition
         env:
