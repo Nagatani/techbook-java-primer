@@ -35,7 +35,7 @@ npm run build:release                      # 奥付のページを目で確か�
 
 ## GitHubのリリースでPDFとEPUBを配る
 
-`v`で始まるタグをpushすると、GitHub Actions（`.github/workflows/release.yml`）がPDFとEPUBを作り、GitHubのリリースに添付します（2026-11-26〜、20分ほど）。タグの名前で版が決まります。
+`v`で始まるタグをpushすると、GitHub Actions（`.github/workflows/release.yml`）がPDFとEPUBを作り、GitHubのリリースに添付します（2026-11-26〜、6分ほど）。タグの名前で版が決まります。
 
 | タグの例 | 作る版 | リリースの扱い | 添付するファイル |
 |---|---|---|---|

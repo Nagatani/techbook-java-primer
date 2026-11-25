@@ -8,7 +8,7 @@
 - [x] 付録Bの節番号体系を確定し、相互参照ガイドを現行構成で書き直す（Issue #011、2026-11-09）。番号はディレクトリ名に統一し、相互参照ガイドは`npm run crossref`で生成する
 - [x] 章・付録・演習・用語集の食い違いを検出する`npm run check:structure`を追加し、pre-commitフックで実行する（2026-11-09）
 - [x] pre-commitフックを`scripts/git-hooks/`で共有し（`git config core.hooksPath scripts/git-hooks`で有効にする）、GitHub Actions（`.github/workflows/check.yml`）で構成・索引・サンプルを検査する（2026-11-09。CIはpush後に初回の結果を確認する）
-- [x] GitHub Actionsの負荷を減らした（2026-11-26、著者の指示）。毎回15〜25分かかっていた検査を、軽い検査（約1分、`check.yml`）と、コードを変えたときだけのコンパイル（`code.yml`）に分けた。Web版の公開は本の中身を変えたときだけにした。実行結果の照合・JUnit・主張の検証・textlintは手元の`npm run check:local`へ移した。`v*`のタグでPDFとEPUBをGitHubのリリースに添付する`release.yml`を足した（「-」を含むタグはALPHA版のプレリリース）。まだタグを付けて動かしていない
+- [x] GitHub Actionsの負荷を減らした（2026-11-26、著者の指示）。毎回15〜25分かかっていた検査を、軽い検査（約1分、`check.yml`）と、コードを変えたときだけのコンパイル（`code.yml`）に分けた。Web版の公開は本の中身を変えたときだけにした。実行結果の照合・JUnit・主張の検証・textlintは手元の`npm run check:local`へ移した。`v*`のタグでPDFとEPUBをGitHubのリリースに添付する`release.yml`を足した（「-」を含むタグはALPHA版のプレリリース）。2026-11-26に`v0.9.0-alpha.1`で初めてリリースした（GitHubのUbuntu 24.04でpuppeteerのChromeが起動しない問題を直した）
 - [x] 公開するコードをJava 25で再検査し、不具合を直した（2026-11-09）
     - 本文のサンプル320件: 全件コンパイル、mainを持つ211件を実行（GUIは仮想ディスプレイ、サーバーはクライアントと組にして確認）。チャットのデッドロック（16-9・16-10）、data.txt・icon.pngの欠落（14-2・23-6）、架空の実行結果（23-6）などを修正
     - 付録60のまとまり: 全件コンパイル・実行。Maven・GradleのプロジェクトはJDK 25・Gradle 9でビルドとテストまで確認
