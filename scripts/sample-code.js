@@ -30,6 +30,7 @@
  * 使い方:
  *   node scripts/sample-code.js check [chapterXX]     本文と全文の一致、キャプション、コンパイル、実行結果を検査する
  *   node scripts/sample-code.js check --no-run        実行結果の照合を省く
+ *   node scripts/sample-code.js check --no-compile    コンパイルと実行を省き、本文と全文の一致・キャプション・番号だけを見る（数秒。CI用）
  *   node scripts/sample-code.js sync [chapterXX]      listings.json から本文のキャプションとコードブロック、各章の README.md を作り直す
  *                                                     （本文のコードは全文から生成するので、コードを直すときは全文を編集して sync する）
  *   node scripts/sample-code.js show 5-3              全文を行番号付きで表示する
@@ -376,7 +377,8 @@ function pageSpaceProblems(where, dir, excerpt) {
 }
 
 function checkCommand(filters, args) {
-  const runMode = !args.includes('--no-run');
+  const compileMode = !args.includes('--no-compile');
+  const runMode = compileMode && !args.includes('--no-run');
   const work = fs.mkdtempSync(path.join(os.tmpdir(), 'sample-code-check-'));
   const problems = [];
   const totals = { 掲載: 0, 一致: 0, 数値差: 0, 実行不可: 0, 照合なし: 0 };
@@ -409,6 +411,7 @@ function checkCommand(filters, args) {
       const want = captionLine(id, captionOf(dir, e.excerpt));
       if (!text.includes(want)) problems.push(`${where}: キャプションが listings.json と合わない（sync で直せる）`);
       problems.push(...pageSpaceProblems(where, dir, e.excerpt));
+      if (!compileMode) continue;
       const out = path.join(work, `${ch}-${e.dir}`);
       fs.cpSync(dir, out, { recursive: true });
       let c;

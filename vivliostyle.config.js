@@ -51,13 +51,14 @@ const { currentEdition } = require('./scripts/vfm-edition.js');
 const edition = currentEdition();
 
 // 出力先（BOOK_TARGET）: pdf は通常のPDF（既定）、kdp はAmazon KDPのペーパーバックの本文PDF、
-// epub は電子書籍（scripts/vfm-epub.js）。kdp と epub は正規版（BOOK_EDITION=release）で作る。
+// epub は電子書籍（scripts/vfm-epub.js）。kdp は正規版（BOOK_EDITION=release）で作る。
+// epub は正規版が既定で、GitHubのリリース（.github/workflows/release.yml）ではALPHA版も作る。
 // kdp では1ページ目を白地の本扉にし（kdp-title-theme.css）、のどを広げる（kdp-theme.css）。
 // epub では紙面のテーマを使わず epub-theme.css だけを当て、表紙を画像にし（scripts/epub-assets.js が作る）、
 // 目次を原稿（table-of-contents.md）ではなくVivliostyleが作るもの（リーダーの目次にも使われる）にする。
 const { currentTarget } = require('./scripts/vfm-epub.js');
 const target = currentTarget();
-if (target !== 'pdf' && edition !== 'release') {
+if (target === 'kdp' && edition !== 'release') {
   throw new Error(`BOOK_TARGET=${target} は BOOK_EDITION=release と組み合わせてください（npm run build:${target}）`);
 }
 // my-theme のディレクトリ（package.json があるパッケージ）の外に置く。中に置くとパッケージ全体がEPUBに入る
