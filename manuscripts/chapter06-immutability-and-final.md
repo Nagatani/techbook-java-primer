@@ -336,7 +336,7 @@ class ColoredPoint extends ImmutablePoint { }
 
 ### 実践例：不変な`ImmutablePerson`クラス
 
-<span class="listing-number">**サンプルコード6-6**　ImmutablePerson.java（5〜12、20〜28、37〜51、73行目）</span>
+<span class="listing-number">**サンプルコード6-6**　ImmutablePerson.java（5〜12、20〜28、37〜51行目）</span>
 
 ```java
 // 完全な不変クラスの例
@@ -373,8 +373,6 @@ public final class ImmutablePerson {
         newHobbies.add(hobby);
         return new ImmutablePerson(this.name, this.age, newHobbies);
     }
-    // ...
-}
 ```
 
 `new ArrayList<>(hobbies)`は、`hobbies`と同じ要素を持つ新しいリスト（`ArrayList`）を作ります。
@@ -553,7 +551,7 @@ public class ViewVsCopy {
 クラスの内側に`static`を付けて宣言するクラス（静的ネストクラス）は、第8章で学びます。
 ここでは、`Book`に付属するクラスで、外からは`Book.Builder`という名前で使える、と読んでください。
 
-<span class="listing-number">**サンプルコード6-11**　Book.java（3〜7、13〜17、22〜30、36〜37、44〜52、80〜83、89行目）</span>
+<span class="listing-number">**サンプルコード6-11**　Book.java（3〜7、13〜17、22〜30、36〜37、44〜52、80〜83行目）</span>
 
 ```java
 // ビルダーパターンを使った不変オブジェクトの構築
@@ -595,8 +593,6 @@ public final class Book {
             return new Book(this);
         }
     }
-    // ...
-}
 ```
 
 ### ビルダーパターンの使用例

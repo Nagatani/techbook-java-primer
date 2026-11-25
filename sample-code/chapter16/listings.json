@@ -17,10 +17,8 @@
     "dir": "16-03",
     "main": "MultiThreadedServer",
     "excerpt": [
-      { "file": "MultiThreadedServer.java", "from": 5, "to": 27 },
-      { "file": "MultiThreadedServer.java", "from": 29, "to": 29 },
-      { "file": "MultiThreadedServer.java", "from": 36, "to": 59 },
-      { "file": "MultiThreadedServer.java", "from": 68, "to": 70 }
+      { "file": "MultiThreadedServer.java", "from": 5, "to": 29 },
+      { "file": "MultiThreadedServer.java", "from": 36, "to": 59 }
     ]
   },
   "16-4": {
@@ -35,8 +33,7 @@
     "dir": "16-05",
     "main": "HttpURLConnectionExample",
     "excerpt": [
-      { "file": "HttpURLConnectionExample.java", "from": 4, "to": 33 },
-      { "file": "HttpURLConnectionExample.java", "from": 39, "to": 40 }
+      { "file": "HttpURLConnectionExample.java", "from": 4, "to": 33 }
     ]
   },
   "16-6": {
@@ -76,8 +73,7 @@
     "main": "JsonApiClient",
     "excerpt": [
       { "file": "JsonApiClient.java", "from": 7, "to": 30 },
-      { "file": "JsonApiClient.java", "from": 49, "to": 58 },
-      { "file": "JsonApiClient.java", "from": 80, "to": 80 }
+      { "file": "JsonApiClient.java", "from": 49, "to": 58 }
     ],
     "libs": [
       "com.google.code.gson:gson:2.15.0"

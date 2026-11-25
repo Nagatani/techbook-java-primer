@@ -78,8 +78,7 @@
     "excerpt": [
       { "file": "Person.java", "from": 3, "to": 17 },
       { "file": "Person.java", "from": 21, "to": 25 },
-      { "file": "Person.java", "from": 27, "to": 31 },
-      { "file": "Person.java", "from": 33, "to": 34 }
+      { "file": "Person.java", "from": 27, "to": 31 }
     ]
   },
   "8-11": {
@@ -179,7 +178,6 @@
     "main": "GameDemo",
     "excerpt": [
       { "file": "CharacterClass.java", "from": 1, "to": 5 },
-      { "file": "CharacterClass.java", "from": 24, "to": 24 },
       { "file": "CharacterStats.java", "from": 1, "to": 7 },
       { "file": "GameCharacter.java", "from": 1, "to": 2 },
       { "file": "GameCharacter.java", "from": 17, "to": 21 }

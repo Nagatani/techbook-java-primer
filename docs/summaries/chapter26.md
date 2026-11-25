@@ -7,7 +7,7 @@ sections:
   - key: "技術を選ぶ前に考えること"
     hash: e54fbb84
   - key: "事例1：データをどこに保存するか"
-    hash: 171a2b00
+    hash: 7e78d9b6
   - key: "事例2：CSVを自分で読むか、ライブラリを使うか"
     hash: 0d29a500
   - key: "事例3：画面を何で作るか"
@@ -15,7 +15,7 @@ sections:
   - key: "事例4：ログを何で出すか"
     hash: 0417df07
   - key: "事例5：テストに何を使うか"
-    hash: 7de91958
+    hash: 80bc8612
   - key: "初版から改善版へ移す"
     hash: 8bdaf9d6
   - key: "作ったものを振り返る"

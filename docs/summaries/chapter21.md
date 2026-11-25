@@ -13,7 +13,7 @@ sections:
   - key: "疎結合設計（Dependency Injection）"
     hash: accce6ef
   - key: "DIによるテスト容易性の向上"
-    hash: 7ff715d2
+    hash: d1d5f5e7
   - key: "テスト駆動開発（TDD）"
     hash: 037ca88d
   - key: "JUnitによる効率的なテスト"

@@ -256,7 +256,7 @@ public class Main {
 
 #### 実践例：`attack`メソッドのオーバーライド
 
-<span class="listing-number">**サンプルコード5-4**　Character.java、Wizard.java（1〜15、20行目）、Knight.java、CharacterOverrideTest.java（1〜2、9〜11、23〜28行目）</span>
+<span class="listing-number">**サンプルコード5-4**　Character.java、Wizard.java（1〜15行目）、Knight.java、CharacterOverrideTest.java（1〜2、9〜11、23〜28行目）</span>
 
 ```java
 // 親クラス
@@ -289,8 +289,6 @@ public class Wizard extends Character {
     public void attack() {
         IO.println(this.name + "は杖で殴った！");
     }
-    // ...
-}
 
 // 子クラス
 public class Knight extends Character {
@@ -374,7 +372,7 @@ Javaでは、親クラス型の変数に、その子クラスのインスタン�
 `AdminUser`と`GuestUser`は`processRequest()`をオーバーライドし、`RegularUser`は`User`の`processRequest()`をそのまま使います。
 `GuestUser`のコンストラクターは、受け取ったセッションIDの前に`guest_`を付けて利用者のIDにします。
 
-<span class="listing-number">**サンプルコード5-5**　User.java（2〜4、11〜14、32行目）、Users.java（2〜5、11、13、21〜25、31、33〜43行目）</span>
+<span class="listing-number">**サンプルコード5-5**　User.java（2〜4、11〜14行目）、Users.java（2〜5、13、21〜25、33〜43行目）</span>
 
 ```java
 public class User {
@@ -385,16 +383,12 @@ public class User {
         IO.println("ユーザー " + userId + " が " + action
                 + " をリクエストしました");
     }
-    // ...
-}
 
 class RegularUser extends User {
     RegularUser(String userId, String email) {
         super(userId, email);
     }
     // ...
-}
-// ...
 class AdminUser extends User {
     // ...
     @Override
@@ -403,8 +397,6 @@ class AdminUser extends User {
         IO.println("セキュリティチェックを実行中...");
     }
     // ...
-}
-// ...
 class GuestUser extends User {
     GuestUser(String sessionId) {
         super("guest_" + sessionId, null);
@@ -535,7 +527,7 @@ guest_session123 には DELETE 権限がありません
 
 #### After：ポリモーフィズムを使った場合
 
-<span class="listing-number">**サンプルコード5-9**　User.java（2、16〜19、32行目）、UserSystemAfter.java（1〜19、28〜45、56行目）</span>
+<span class="listing-number">**サンプルコード5-9**　User.java（2、16〜19行目）、UserSystemAfter.java（1〜19、28〜45行目）</span>
 
 ```java
 public class User {
@@ -544,8 +536,6 @@ public class User {
         // デフォルトでは読み取り権限のみ
         return resource.equals("READ");
     }
-    // ...
-}
 
 // 統一的な処理で全ての型を扱える
 public class UserSystemAfter {
@@ -585,8 +575,6 @@ public class UserSystemAfter {
         
         return hasPermission;
     }
-    // ...
-}
 ```
 
 実行結果：
@@ -1187,7 +1175,7 @@ public class Document {
 子クラスは`Document`を継承し、自分に固有の部分だけを書きます。
 コンストラクターでは`super(...)`で親クラスの初期化を呼び、保存の方法が違う`PDFDocument`と`ExcelDocument`は`save()`をオーバーライドします。
 
-<span class="listing-number">**サンプルコード5-19**　WordDocument.java、PDFDocument.java（1〜14、23行目）、ExcelDocument.java</span>
+<span class="listing-number">**サンプルコード5-19**　WordDocument.java、PDFDocument.java（1〜14行目）、ExcelDocument.java</span>
 
 ```java
 // リファクタリング後：重複が除去された
@@ -1217,8 +1205,6 @@ public class PDFDocument extends Document {
         fileSize = (content != null ? content.length() : 0) / 2;
         IO.println(filename + " をPDF形式で保存: " + fileSize + "バイト");
     }
-    // ...
-}
 
 public class ExcelDocument extends Document {
     public ExcelDocument(String filename, String content) {
@@ -1334,7 +1320,7 @@ data.xlsx を閉じました
 `ArrayList<String>`は、第4章でも使った、文字列を必要なだけ追加できる入れ物です（第9章「コレクションフレームワーク」で学びます）。
 `pop`と`peek`の`throw new EmptyStackException()`は、第4章でも使った`throw`で、スタックが空のときに処理を中断してエラーを知らせます。
 
-<span class="listing-number">**サンプルコード5-21**　MyStack.java（1、5〜16、23行目）、StackProblem.java</span>
+<span class="listing-number">**サンプルコード5-21**　MyStack.java（1、5〜16行目）、StackProblem.java</span>
 
 ```java
 // 悪い例：実装の詳細を継承してしまう
@@ -1351,8 +1337,6 @@ public class MyStack extends ArrayList<String> {
         return remove(size() - 1);
     }
     
-    // ...
-}
 
 // 問題点が露呈する使用例
 public class StackProblem {
@@ -1452,7 +1436,7 @@ public class EmployeeManagementSystem {
 
 有名な例として「正方形と長方形」の問題も見てみましょう。これはリスコフ置換原則（LSP）違反の典型例です。
 
-<span class="listing-number">**サンプルコード5-24**　Rectangle.java（1〜5、11〜17、22行目）、Square.java、RectangleSquareTest.java（1〜11、21〜32行目）</span>
+<span class="listing-number">**サンプルコード5-24**　Rectangle.java（1〜5、11〜17行目）、Square.java、RectangleSquareTest.java（1〜11、21〜32行目）</span>
 
 ```java
 // 問題のあるコード：数学的には正方形は長方形の一種だが...
@@ -1468,8 +1452,6 @@ public class Rectangle {
     public void setHeight(int height) {
         this.height = height;
     }
-    // ...
-}
 
 // 正方形を長方形として継承すると問題が発生
 public class Square extends Rectangle {

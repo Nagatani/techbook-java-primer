@@ -267,7 +267,7 @@ public class SimpleTCPServer {
 
 </div>
 
-<span class="listing-number">**サンプルコード16-3**　MultiThreadedServer.java（5〜27、29、36〜59、68〜70行目）</span>
+<span class="listing-number">**サンプルコード16-3**　MultiThreadedServer.java（5〜29、36〜59行目）</span>
 
 ```java
 public class MultiThreadedServer {
@@ -293,7 +293,7 @@ public class MultiThreadedServer {
         }
     }
 }
-// ...
+
 class ClientHandler implements Runnable {
     // ...
     @Override
@@ -320,10 +320,6 @@ class ClientHandler implements Runnable {
                 }
             }
         } catch (IOException e) {
-        // ...
-        }
-    }
-}
 ```
 
 ## HTTPクライアントの実装
@@ -452,7 +448,7 @@ Javaは、より高レベルなHTTP通信のためのAPIも提供しています
 
 以下のコードは、HttpURLConnectionを使用したHTTP GETリクエストの実装例です。このクラスはソケットレベルの詳細を隠蔽し、HTTPヘッダーの設定、レスポンスコードの取得、タイムアウトの設定などを簡単に行えます。この例では、GitHub APIにアクセスしてJSON形式のユーザー情報を取得しています<span class="footnote">認証なしでGitHub APIを呼び出せるのは、1つのIPアドレスから1時間に60回までです。回数を超えると、レスポンスコードが403や429になります。</span>。
 
-<span class="listing-number">**サンプルコード16-5**　HttpURLConnectionExample.java（4〜33、39〜40行目）</span>
+<span class="listing-number">**サンプルコード16-5**　HttpURLConnectionExample.java（4〜33行目）</span>
 
 ```java
 public class HttpURLConnectionExample {
@@ -485,9 +481,6 @@ public class HttpURLConnectionExample {
                     IO.println("Response: " + response.toString());
                 }
             }
-            // ...
-    }
-}
 ```
 
 次は実行結果の一例です<span class="footnote">JSONレスポンスの内容は、実行した時期によって異なる場合があります。</span>。
@@ -795,7 +788,7 @@ GsonはJavaの標準APIではなく、外部ライブラリです。
 外部ライブラリの追加方法とGsonの使い方は、第22章「ドキュメントと外部ライブラリ」で学びます。
 ここでは、`Gson`の`fromJson`メソッドがJSONの文字列を指定した型のオブジェクトに変換する、とだけ押さえてコードを読んでください。
 
-<span class="listing-number">**サンプルコード16-10**　JsonApiClient.java（7〜30、49〜58、80行目）</span>
+<span class="listing-number">**サンプルコード16-10**　JsonApiClient.java（7〜30、49〜58行目）</span>
 
 ```java
 public class JsonApiClient {
@@ -833,8 +826,6 @@ public class JsonApiClient {
             throw new RuntimeException("HTTP error: " + status);
         }
     }
-    // ...
-}
 ```
 
 JSONとJavaのオブジェクトとの変換（シリアライズとデシリアライズ）は自分で書かず、ライブラリに任せます。

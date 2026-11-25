@@ -36,8 +36,7 @@
     "excerpt": [
       { "file": "ImmutablePerson.java", "from": 5, "to": 12 },
       { "file": "ImmutablePerson.java", "from": 20, "to": 28 },
-      { "file": "ImmutablePerson.java", "from": 37, "to": 51 },
-      { "file": "ImmutablePerson.java", "from": 73, "to": 73 }
+      { "file": "ImmutablePerson.java", "from": 37, "to": 51 }
     ]
   },
   "6-7": {
@@ -74,8 +73,7 @@
       { "file": "Book.java", "from": 22, "to": 30 },
       { "file": "Book.java", "from": 36, "to": 37 },
       { "file": "Book.java", "from": 44, "to": 52 },
-      { "file": "Book.java", "from": 80, "to": 83 },
-      { "file": "Book.java", "from": 89, "to": 89 }
+      { "file": "Book.java", "from": 80, "to": 83 }
     ]
   },
   "6-12": {

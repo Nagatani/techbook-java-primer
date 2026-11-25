@@ -334,7 +334,7 @@ public class LambdaCheckedException {
 
 アプリケーション固有のエラー状況を表現するために、独自の例外クラスを作成できます。`Exception`または`RuntimeException`を継承して定義します。`throw`キーワードを使うと、任意の場所で意図的に例外を発生させることができます。
 
-<span class="listing-number">**サンプルコード13-6**　BankAccount.java（1〜17、26行目）</span>
+<span class="listing-number">**サンプルコード13-6**　BankAccount.java（1〜17行目）</span>
 
 ```java
 // 独自の検査例外クラス
@@ -354,8 +354,6 @@ public class BankAccount {
         }
         this.balance -= amount;
     }
-    // ...
-}
 ```
 
 実行結果：
@@ -462,13 +460,13 @@ public class UserService {
 `retryableException.isInstance(e)`は、例外`e`がその型（またはその子クラス）のオブジェクトかどうかを調べます。
 `instanceof`と同じ判定を、型を変数で受け取って行う書き方です。
 
-<span class="listing-number">**サンプルコード13-8**　RetryableOperation.java（4〜6、8〜22、31〜36、54行目）</span>
+<span class="listing-number">**サンプルコード13-8**　RetryableOperation.java（4〜22、31〜36行目）</span>
 
 ```java
 public class RetryableOperation {
     private static final int MAX_RETRY_COUNT = 3;
     private static final long RETRY_DELAY_MS = 1000;
-    // ...
+    
     public static <T> T executeWithRetry(Callable<T> operation,
             Class<? extends Exception> retryableException)
             throws Exception {
@@ -491,8 +489,6 @@ public class RetryableOperation {
         throw new RuntimeException("最大リトライ回数に達しました",
                 lastException);
     }
-    // ...
-}
 ```
 
 次は実行結果の一例です<span class="footnote">ランダムな処理のため、実行のたびに結果が異なります。すべての試行が失敗した場合は「最終的に失敗: 最大リトライ回数に達しました」が出力されます。</span>。
@@ -573,7 +569,7 @@ public class ExceptionAggregator {
 
 実際の開発では、複数のリソースを同時に扱うことが多くあります。`try-with-resources`では、複数のリソースを1つの`try`の括弧内にまとめて宣言できます。
 
-<span class="listing-number">**サンプルコード13-10**　MultiResourceExample.java（4〜19、49行目）</span>
+<span class="listing-number">**サンプルコード13-10**　MultiResourceExample.java（4〜19行目）</span>
 
 ```java
 public class MultiResourceExample {
@@ -592,8 +588,6 @@ public class MultiResourceExample {
             }
         } // すべてのリソースが逆順（宣言と逆の順序）で自動的にクローズされる
     }
-    // ...
-}
 ```
 
 リソースは宣言と逆の順序で閉じられます。
@@ -609,7 +603,7 @@ public class MultiResourceExample {
 
 独自のリソース管理クラスを作成する場合、`AutoCloseable`インターフェイスを実装すると、`try-with-resources`で使えるようになります。
 
-<span class="listing-number">**サンプルコード13-11**　ResourcePool.java（3〜7、15〜44、58行目）、ResourcePoolDemo.java</span>
+<span class="listing-number">**サンプルコード13-11**　ResourcePool.java（3〜7、15〜44行目）、ResourcePoolDemo.java</span>
 
 ```java
 public class ResourcePool implements AutoCloseable {
@@ -648,8 +642,6 @@ public class ResourcePool implements AutoCloseable {
             resource.cleanup();
         }
     }
-    // ...
-}
 
 public class ResourcePoolDemo {
     public static void main(String[] args) {
@@ -686,7 +678,7 @@ tryブロックを抜けました
 
 ログ記録は例外処理の重要な要素です<span class="footnote">サンプルコード13-12の`Logger`と`Level`は、Java 1.4で標準ライブラリに加わった`java.util.logging`パッケージのクラスです。実務では、SLF4JやLog4j 2などのライブラリもよく使われます。</span>。目的に応じたログレベルを選ぶと、問題の深刻度を正確に伝えられます。
 
-<span class="listing-number">**サンプルコード13-12**　ExceptionLogging.java（5〜37、58行目）</span>
+<span class="listing-number">**サンプルコード13-12**　ExceptionLogging.java（5〜37行目）</span>
 
 ```java
 public class ExceptionLogging {
@@ -722,8 +714,6 @@ public class ExceptionLogging {
             IO.println("システムエラーが発生しました。エラーID: " + errorId);
         }
     }
-    // ...
-}
 ```
 
 同じ例外を途中の層と呼び出し元の両方でログに書くと、二重に記録されます。
@@ -753,7 +743,7 @@ public class ExceptionLogging {
 同じI/Oの異常でも、その場で回復できる場所があるかどうかで、検査例外にするか非検査例外にするかを選びます（第25章でも、この方針で例外を設計します）。
 サンプルコード13-6の`InsufficientBalanceException`は、ここでは`BusinessException`を継承する形に定義し直しています。
 
-<span class="listing-number">**サンプルコード13-13**　BusinessException.java（4〜13、22、28〜31行目）、InsufficientBalanceException.java（3〜12行目）、SystemException.java（4〜13、28行目）</span>
+<span class="listing-number">**サンプルコード13-13**　BusinessException.java（4〜13、22、28〜31行目）、InsufficientBalanceException.java（3〜12行目）、SystemException.java（4〜13行目）</span>
 
 ```java
 // ビジネス例外の基底クラス
@@ -795,15 +785,13 @@ public abstract class SystemException extends RuntimeException {
         this.errorId = generateErrorId();
         this.occurredAt = Instant.now();
     }
-    // ...
-}
 ```
 
 ### エラーコードとメッセージの管理
 
 エラーコードとメッセージを一元管理することで、国際化<span class="footnote">国際化（internationalization）は、最初のiと最後のnのあいだに18文字あることから「i18n」とも書きます。</span>やメンテナンスが容易になります。
 
-<span class="listing-number">**サンプルコード13-14**　ErrorCode.java（1〜5、15〜23、37行目）、BusinessException.java（4〜5、15〜18、38行目）、InsufficientBalanceException.java（3〜12行目）、ErrorResponse.java（4〜18、28〜29行目）</span>
+<span class="listing-number">**サンプルコード13-14**　ErrorCode.java（1〜5、15〜23行目）、BusinessException.java（4〜5、15〜18行目）、InsufficientBalanceException.java（3〜12行目）、ErrorResponse.java（4〜18、28〜29行目）</span>
 
 ```java
 public enum ErrorCode {
@@ -821,8 +809,6 @@ public enum ErrorCode {
         this.code = code;
         this.defaultMessage = defaultMessage;
     }
-    // ...
-}
 
 // ビジネス例外の基底クラス
 public abstract class BusinessException extends Exception {
@@ -831,8 +817,6 @@ public abstract class BusinessException extends Exception {
     protected BusinessException(ErrorCode errorCode) {
         this(errorCode.getCode(), errorCode.getMessage());
     }
-    // ...
-}
 
 // ErrorCodeを使って定義し直したビジネス例外
 public class InsufficientBalanceException extends BusinessException {

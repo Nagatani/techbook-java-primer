@@ -475,7 +475,7 @@ nullチェックに慣れていると、`if (x != null)`をそのまま置き換
 
 Optionalは関数型プログラミングのコンテナーとして、map、flatMap、filterなどの操作をサポートします。以下のコードは、Optional内の値を安全に変換・操作する方法を示しています。
 
-<span class="listing-number">**サンプルコード12-10**　OptionalTransformationExample.java（3〜6、13〜18、20〜57行目）</span>
+<span class="listing-number">**サンプルコード12-10**　OptionalTransformationExample.java（3〜6、13〜57行目）</span>
 
 ```java
 public class OptionalTransformationExample {
@@ -489,7 +489,7 @@ public class OptionalTransformationExample {
             return Optional.ofNullable(email);
         }
     }
-    // ...
+    
     public static void main(String[] args) {
         Optional<User> user =
                 Optional.of(new User("Alice", "alice@example.com"));
@@ -545,13 +545,11 @@ filter (failed): false
 
 OptionalはStream APIと密接に連携し、ストリーム処理の結果としてよく使用されます。以下のコードは、Stream操作でOptionalを活用する実践的な例です。
 
-<span class="listing-number">**サンプルコード12-11**　OptionalStreamExample.java（6〜7、18、20〜21、26〜62、63行目）</span>
+<span class="listing-number">**サンプルコード12-11**　OptionalStreamExample.java（6〜7、20〜21、26〜62行目）</span>
 
 ```java
 public class OptionalStreamExample {
     static class Product {
-    // ...
-    }
     // ...
     public static void main(String[] args) {
         List<Product> products = Arrays.asList(
@@ -593,7 +591,6 @@ public class OptionalStreamExample {
         
         IO.println("高額商品リスト: " + expensiveProductNames);
     }
-}
 ```
 
 実行結果：
@@ -609,7 +606,7 @@ public class OptionalStreamExample {
 
 実際のアプリケーションでOptionalを効果的に使用する例を見てみましょう。以下のコードは、データベース検索や設定値取得といった実用的なシナリオでのOptional活用例です。
 
-<span class="listing-number">**サンプルコード12-12**　OptionalPracticalExample.java（5〜8、15〜19、21、34〜37、39、48〜59、61〜92行目）</span>
+<span class="listing-number">**サンプルコード12-12**　OptionalPracticalExample.java（5〜8、15〜21、34〜39、48〜92行目）</span>
 
 ```java
 public class OptionalPracticalExample {
@@ -622,14 +619,14 @@ public class OptionalPracticalExample {
             return Optional.ofNullable(users.get(id));
         }
     }
-    // ...
+    
     static class User {
         // ...
         public Optional<String> getEmail() { 
             return Optional.ofNullable(email); 
         }
     }
-    // ...
+    
     static class ConfigService {
         // ...
         // 設定値の取得（存在しない可能性を考慮）
@@ -644,7 +641,7 @@ public class OptionalPracticalExample {
                 .orElse(30);  // デフォルト30秒
         }
     }
-    // ...
+    
     public static void main(String[] args) {
         UserRepository repo = new UserRepository();
         ConfigService config = new ConfigService();
@@ -692,7 +689,7 @@ public class OptionalPracticalExample {
 
 Optionalを使う際に避けるべき間違いと、その代わりの書き方を示します。
 
-<span class="listing-number">**サンプルコード12-13**　OptionalAntiPatternsExample.java（5〜58、67〜68行目）</span>
+<span class="listing-number">**サンプルコード12-13**　OptionalAntiPatternsExample.java（5〜58行目）</span>
 
 ```java
 public class OptionalAntiPatternsExample {
@@ -749,9 +746,6 @@ public class OptionalAntiPatternsExample {
         // 良い例：mapを使用
         optional.map(String::toUpperCase)
             .ifPresent(IO::println);
-            // ...
-    }
-}
 ```
 
 ### Optionalのベストプラクティス
@@ -948,7 +942,7 @@ public class FlatMapExample {
 
 `reduce`操作<span class="footnote">mapとreduceは、Lispなどの関数型言語で古くから使われてきた名前です。Googleが2004年に発表した大規模データ処理のしくみMapReduceも、この2つの関数から名前を取っています。</span>は、ストリームの要素を単一の結果に集約するための柔軟な方法を提供します。合計、最大値、最小値の計算や、文字列の結合など、カスタムの集約処理を実装できます。
 
-<span class="listing-number">**サンプルコード12-17**　ReduceExample.java（5〜27、41〜42行目）</span>
+<span class="listing-number">**サンプルコード12-17**　ReduceExample.java（5〜27行目）</span>
 
 ```java
 public class ReduceExample {
@@ -974,9 +968,6 @@ public class ReduceExample {
             .reduce("", (result, word) -> result.isEmpty() ? word
                     : result + " " + word);
         IO.println(sentence); // 出力: Java is awesome
-        // ...
-    }
-}
 ```
 
 実行結果：

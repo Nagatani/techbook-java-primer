@@ -33,8 +33,7 @@
     "excerpt": [
       { "file": "BorderLayoutExample.java", "from": 4, "to": 4 },
       { "file": "BorderLayoutExample.java", "from": 9, "to": 9 },
-      { "file": "BorderLayoutExample.java", "from": 14, "to": 22 },
-      { "file": "BorderLayoutExample.java", "from": 26, "to": 27 }
+      { "file": "BorderLayoutExample.java", "from": 14, "to": 22 }
     ]
   },
   "17-6": {
@@ -43,8 +42,7 @@
     "excerpt": [
       { "file": "GridLayoutExample.java", "from": 4, "to": 4 },
       { "file": "GridLayoutExample.java", "from": 9, "to": 9 },
-      { "file": "GridLayoutExample.java", "from": 14, "to": 20 },
-      { "file": "GridLayoutExample.java", "from": 24, "to": 25 }
+      { "file": "GridLayoutExample.java", "from": 14, "to": 20 }
     ]
   },
   "17-7": {
@@ -53,8 +51,7 @@
     "excerpt": [
       { "file": "FlowLayoutExample.java", "from": 4, "to": 4 },
       { "file": "FlowLayoutExample.java", "from": 9, "to": 9 },
-      { "file": "FlowLayoutExample.java", "from": 14, "to": 23 },
-      { "file": "FlowLayoutExample.java", "from": 27, "to": 28 }
+      { "file": "FlowLayoutExample.java", "from": 14, "to": 23 }
     ]
   },
   "17-8": {
@@ -63,8 +60,7 @@
     "excerpt": [
       { "file": "AdvancedLabel.java", "from": 4, "to": 4 },
       { "file": "AdvancedLabel.java", "from": 9, "to": 9 },
-      { "file": "AdvancedLabel.java", "from": 13, "to": 27 },
-      { "file": "AdvancedLabel.java", "from": 31, "to": 32 }
+      { "file": "AdvancedLabel.java", "from": 13, "to": 27 }
     ]
   },
   "17-9": {
@@ -73,8 +69,7 @@
     "excerpt": [
       { "file": "AdvancedButton.java", "from": 4, "to": 4 },
       { "file": "AdvancedButton.java", "from": 9, "to": 9 },
-      { "file": "AdvancedButton.java", "from": 13, "to": 34 },
-      { "file": "AdvancedButton.java", "from": 38, "to": 39 }
+      { "file": "AdvancedButton.java", "from": 13, "to": 34 }
     ]
   },
   "17-10": {
@@ -83,8 +78,7 @@
     "excerpt": [
       { "file": "TextInputComponents.java", "from": 4, "to": 4 },
       { "file": "TextInputComponents.java", "from": 9, "to": 9 },
-      { "file": "TextInputComponents.java", "from": 13, "to": 45 },
-      { "file": "TextInputComponents.java", "from": 49, "to": 50 }
+      { "file": "TextInputComponents.java", "from": 13, "to": 45 }
     ]
   },
   "17-11": {
@@ -93,8 +87,7 @@
     "excerpt": [
       { "file": "SelectionComponents.java", "from": 4, "to": 4 },
       { "file": "SelectionComponents.java", "from": 9, "to": 9 },
-      { "file": "SelectionComponents.java", "from": 13, "to": 48 },
-      { "file": "SelectionComponents.java", "from": 52, "to": 53 }
+      { "file": "SelectionComponents.java", "from": 13, "to": 48 }
     ]
   },
   "17-12": {
@@ -117,8 +110,7 @@
       { "file": "CombinedLayoutExample.java", "from": 42, "to": 53 },
       { "file": "CombinedLayoutExample.java", "from": 65, "to": 73 },
       { "file": "CombinedLayoutExample.java", "from": 82, "to": 89 },
-      { "file": "CombinedLayoutExample.java", "from": 98, "to": 98 },
-      { "file": "CombinedLayoutExample.java", "from": 102, "to": 103 }
+      { "file": "CombinedLayoutExample.java", "from": 98, "to": 98 }
     ]
   },
   "17-14": {

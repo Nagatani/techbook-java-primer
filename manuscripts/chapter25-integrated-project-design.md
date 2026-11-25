@@ -353,7 +353,6 @@ GPAのほかにも、教務の言葉には大学によって扱いが違うも�
 <span class="listing-number">**サンプルコード25-1**　Enrollment.java、Undergraduate.java、Graduate.java、Student.java（5〜10、31〜48行目）</span>
 
 ```java
-// Enrollment.java
 // 在籍区分。学部生と大学院生で持つ情報が違うので、区分ごとにレコードを分ける
 public sealed interface Enrollment permits Undergraduate, Graduate {}
 

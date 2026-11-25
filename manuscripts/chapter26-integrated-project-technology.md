@@ -182,13 +182,13 @@ SQLiteに保存する実装は、このインターフェイスを実装する�
 JDBCを使うのはこのクラスだけにし、`StudentService`は変えません。
 実行結果は、全文の`JdbcDemo`で、メモリ上のSQLiteのデータベースに学生と成績を保存し、読み直してから1人を削除したものです。
 
-<span class="listing-number">**サンプルコード26-1**　JdbcStudentRepository.java（13〜15、17〜21、53〜59、73〜87、173〜191行目）</span>
+<span class="listing-number">**サンプルコード26-1**　JdbcStudentRepository.java（13〜21、53〜59、73〜87、173〜191行目）</span>
 
 ```java
 public class JdbcStudentRepository implements StudentRepository,
         AutoCloseable {
     private final Connection connection;
-    // ...
+
     // SQLExceptionを投げてよい処理（トランザクションの中身）
     @FunctionalInterface
     private interface SqlWork {
@@ -507,7 +507,7 @@ Swingは、その考え方を学ぶ教材です。
 `StudentService`のテストに、データベースは要りません。
 第25章で作った`InMemoryStudentRepository`を渡せば、サービスの規則だけを確かめられます。
 
-<span class="listing-number">**サンプルコード26-4**　StudentServiceTest.java（10〜38、49行目）</span>
+<span class="listing-number">**サンプルコード26-4**　StudentServiceTest.java（10〜38行目）</span>
 
 ```java
 class StudentServiceTest {
@@ -539,8 +539,6 @@ class StudentServiceTest {
         assertEquals(20.0 / 6, service.find("S001").orElseThrow().gpa(),
                 1e-9);
     }
-    // ...
-}
 ```
 
 テストのたびにデータベースを用意しないので、テストは速く終わり、どの環境でも同じ結果になります。

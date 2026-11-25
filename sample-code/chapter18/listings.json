@@ -12,8 +12,7 @@
     "excerpt": [
       { "file": "LambdaButtonExample.java", "from": 7, "to": 7 },
       { "file": "LambdaButtonExample.java", "from": 12, "to": 12 },
-      { "file": "LambdaButtonExample.java", "from": 17, "to": 29 },
-      { "file": "LambdaButtonExample.java", "from": 36, "to": 37 }
+      { "file": "LambdaButtonExample.java", "from": 17, "to": 29 }
     ]
   },
   "18-3": {
@@ -21,8 +20,7 @@
     "main": "GreetingApp",
     "excerpt": [
       { "file": "GreetingApp.java", "from": 8, "to": 8 },
-      { "file": "GreetingApp.java", "from": 14, "to": 32 },
-      { "file": "GreetingApp.java", "from": 37, "to": 38 }
+      { "file": "GreetingApp.java", "from": 14, "to": 32 }
     ]
   },
   "18-4": {
@@ -48,9 +46,7 @@
     "excerpt": [
       { "file": "BasicMouseEventExample.java", "from": 5, "to": 6 },
       { "file": "BasicMouseEventExample.java", "from": 10, "to": 10 },
-      { "file": "BasicMouseEventExample.java", "from": 24, "to": 46 },
-      { "file": "BasicMouseEventExample.java", "from": 53, "to": 53 },
-      { "file": "BasicMouseEventExample.java", "from": 64, "to": 64 }
+      { "file": "BasicMouseEventExample.java", "from": 24, "to": 46 }
     ]
   },
   "18-7": {
@@ -59,9 +55,7 @@
     "excerpt": [
       { "file": "BasicKeyEventExample.java", "from": 5, "to": 6 },
       { "file": "BasicKeyEventExample.java", "from": 10, "to": 10 },
-      { "file": "BasicKeyEventExample.java", "from": 23, "to": 39 },
-      { "file": "BasicKeyEventExample.java", "from": 46, "to": 46 },
-      { "file": "BasicKeyEventExample.java", "from": 57, "to": 57 }
+      { "file": "BasicKeyEventExample.java", "from": 23, "to": 39 }
     ]
   },
   "18-8": {
@@ -71,9 +65,7 @@
       { "file": "ItemListenerExample.java", "from": 5, "to": 6 },
       { "file": "ItemListenerExample.java", "from": 11, "to": 11 },
       { "file": "ItemListenerExample.java", "from": 22, "to": 36 },
-      { "file": "ItemListenerExample.java", "from": 54, "to": 64 },
-      { "file": "ItemListenerExample.java", "from": 85, "to": 85 },
-      { "file": "ItemListenerExample.java", "from": 104, "to": 104 }
+      { "file": "ItemListenerExample.java", "from": 54, "to": 64 }
     ]
   },
   "18-9": {
@@ -82,9 +74,7 @@
     "excerpt": [
       { "file": "FocusListenerExample.java", "from": 5, "to": 6 },
       { "file": "FocusListenerExample.java", "from": 10, "to": 10 },
-      { "file": "FocusListenerExample.java", "from": 21, "to": 45 },
-      { "file": "FocusListenerExample.java", "from": 71, "to": 71 },
-      { "file": "FocusListenerExample.java", "from": 89, "to": 89 }
+      { "file": "FocusListenerExample.java", "from": 21, "to": 45 }
     ]
   },
   "18-10": {
@@ -94,9 +84,7 @@
       { "file": "ChangeListenerExample.java", "from": 5, "to": 6 },
       { "file": "ChangeListenerExample.java", "from": 12, "to": 12 },
       { "file": "ChangeListenerExample.java", "from": 28, "to": 41 },
-      { "file": "ChangeListenerExample.java", "from": 51, "to": 56 },
-      { "file": "ChangeListenerExample.java", "from": 85, "to": 85 },
-      { "file": "ChangeListenerExample.java", "from": 96, "to": 96 }
+      { "file": "ChangeListenerExample.java", "from": 51, "to": 56 }
     ]
   },
   "18-11": {
@@ -104,8 +92,7 @@
     "main": "EdtCheckExample",
     "excerpt": [
       { "file": "EdtCheckExample.java", "from": 6, "to": 11 },
-      { "file": "EdtCheckExample.java", "from": 17, "to": 37 },
-      { "file": "EdtCheckExample.java", "from": 43, "to": 44 }
+      { "file": "EdtCheckExample.java", "from": 17, "to": 37 }
     ]
   },
   "18-12": {
@@ -114,8 +101,7 @@
     "excerpt": [
       { "file": "FreezeExample.java", "from": 7, "to": 7 },
       { "file": "FreezeExample.java", "from": 12, "to": 12 },
-      { "file": "FreezeExample.java", "from": 17, "to": 45 },
-      { "file": "FreezeExample.java", "from": 53, "to": 54 }
+      { "file": "FreezeExample.java", "from": 17, "to": 45 }
     ]
   },
   "18-13": {
@@ -123,8 +109,7 @@
     "main": "TimerExample",
     "excerpt": [
       { "file": "TimerExample.java", "from": 6, "to": 11 },
-      { "file": "TimerExample.java", "from": 17, "to": 41 },
-      { "file": "TimerExample.java", "from": 48, "to": 49 }
+      { "file": "TimerExample.java", "from": 17, "to": 41 }
     ]
   }
 }

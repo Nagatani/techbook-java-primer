@@ -5,7 +5,7 @@ sections:
   - key: "本章の学習目標"
     hash: 0b98b298
   - key: "基本コンポーネントとレイアウト"
-    hash: 6e368842
+    hash: 6edffbef
   - key: "カスタムコンポーネントの作成"
     hash: 4fb8d5c3
   - key: "よくあるエラーと対処法"

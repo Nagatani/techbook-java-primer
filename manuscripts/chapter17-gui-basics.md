@@ -256,7 +256,7 @@ JFrameのデフォルトのレイアウトもBorderLayoutです。
 ここからのサンプルコードは、import文と`main`メソッド、ウィンドウを作って表示する行（サンプルコード17-4と同じ形）を省き、例ごとに変わる部分だけを載せます。
 以下のコードは、BorderLayoutを使用した基本的なレイアウトの例です。各領域にボタンを配置することで、BorderLayoutの動作を視覚的に理解できます。ウィンドウサイズを変更すると、CENTER領域が伸縮し、他の領域はコンポーネントの推奨サイズに応じた動作をします。
 
-<span class="listing-number">**サンプルコード17-5**　BorderLayoutExample.java（4、9、14〜22、26〜27行目）</span>
+<span class="listing-number">**サンプルコード17-5**　BorderLayoutExample.java（4、9、14〜22行目）</span>
 
 ```java
 public class BorderLayoutExample {
@@ -272,9 +272,6 @@ public class BorderLayoutExample {
         frame.add(new JButton("東 (EAST)"), BorderLayout.EAST);
         frame.add(new JButton("西 (WEST)"), BorderLayout.WEST);
         frame.add(new JButton("中央 (CENTER)"), BorderLayout.CENTER);
-        // ...
-    }
-}
 ```
 
 実行結果：
@@ -307,7 +304,7 @@ GridLayoutには、次の特徴があります。
 
 以下のコードは、GridLayoutを使用してボタンを格子状に配置する例です。3行2列のグリッドを作成し、コンポーネント間の間隔を指定しています。
 
-<span class="listing-number">**サンプルコード17-6**　GridLayoutExample.java（4、9、14〜20、24〜25行目）</span>
+<span class="listing-number">**サンプルコード17-6**　GridLayoutExample.java（4、9、14〜20行目）</span>
 
 ```java
 public class GridLayoutExample {
@@ -321,9 +318,6 @@ public class GridLayoutExample {
         for (int i = 1; i <= 6; i++) {
             frame.add(new JButton("ボタン " + i));
         }
-        // ...
-    }
-}
 ```
 
 実行結果：
@@ -338,7 +332,7 @@ public class GridLayoutExample {
 
 以下のコードは、FlowLayoutを使用したボタン配置の例です。コンポーネントは追加された順番に左から右へ配置され、ウィンドウ幅に収まらない場合は自動的に次の行に折り返されます。ウィンドウサイズの変更に柔軟に対応できるため、FlowLayoutはツールバーなどの実装に適しています。
 
-<span class="listing-number">**サンプルコード17-7**　FlowLayoutExample.java（4、9、14〜23、27〜28行目）</span>
+<span class="listing-number">**サンプルコード17-7**　FlowLayoutExample.java（4、9、14〜23行目）</span>
 
 ```java
 public class FlowLayoutExample {
@@ -355,9 +349,6 @@ public class FlowLayoutExample {
         frame.add(new JButton("キャンセル"));
         frame.add(new JButton("ヘルプ"));
         frame.add(new JButton("設定"));
-        // ...
-    }
-}
 ```
 
 実行結果：
@@ -373,7 +364,7 @@ public class FlowLayoutExample {
 
 以下のコードは、JLabelでHTMLを表示する例です。JLabelはHTMLタグをサポートしており、太字、斜体、色付き文字などのリッチテキストを表示できます<span class="footnote">HTMLとして扱うのは、文字列が`<html>`で始まるときだけです。使えるのはHTML 3.2相当の基本的なタグで、Webブラウザーと同じ表示になるとは限りません。</span>。また、HTMLの`<br>`タグを使えば、複数行のテキストも表示できます。
 
-<span class="listing-number">**サンプルコード17-8**　AdvancedLabel.java（4、9、13〜27、31〜32行目）</span>
+<span class="listing-number">**サンプルコード17-8**　AdvancedLabel.java（4、9、13〜27行目）</span>
 
 ```java
 public class AdvancedLabel {
@@ -395,9 +386,6 @@ public class AdvancedLabel {
         frame.add(textLabel);
         frame.add(htmlLabel);
         frame.add(multiLineLabel);
-        // ...
-    }
-}
 ```
 
 実行結果：
@@ -408,7 +396,7 @@ public class AdvancedLabel {
 JButtonは、ユーザーのクリック操作を受け付けるコンポーネントです。
 以下のコードは、JButtonのさまざまなカスタマイズ方法を示しています。ボタンの背景色と文字色（前景色）の変更、推奨サイズの指定、無効化の設定を順に試しています。
 
-<span class="listing-number">**サンプルコード17-9**　AdvancedButton.java（4、9、13〜34、38〜39行目）</span>
+<span class="listing-number">**サンプルコード17-9**　AdvancedButton.java（4、9、13〜34行目）</span>
 
 ```java
 public class AdvancedButton {
@@ -437,9 +425,6 @@ public class AdvancedButton {
         frame.add(coloredButton);
         frame.add(largeButton);
         frame.add(disabledButton);
-        // ...
-    }
-}
 ```
 
 実行結果：
@@ -463,7 +448,7 @@ Swingには、入力する内容に合わせて使い分ける、次のような
 
 以下のコードは、これらの入力コンポーネントを1つのウィンドウに並べる例です。
 
-<span class="listing-number">**サンプルコード17-10**　TextInputComponents.java（4、9、13〜45、49〜50行目）</span>
+<span class="listing-number">**サンプルコード17-10**　TextInputComponents.java（4、9、13〜45行目）</span>
 
 ```java
 public class TextInputComponents {
@@ -503,9 +488,6 @@ public class TextInputComponents {
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
         frame.add(slider);
-        // ...
-    }
-}
 ```
 
 実行結果：
@@ -525,7 +507,7 @@ JListは、複数の項目を一度に表示し、単一または複数選択を
 複数のチェックボックスやラジオボタンは、`JPanel`（部品を入れる入れ物）にまとめてから1つのセルに置いています。
 `JPanel`で部品をまとめる方法は、本章の「パネルを使った複雑なレイアウト」で詳しく学びます。
 
-<span class="listing-number">**サンプルコード17-11**　SelectionComponents.java（4、9、13〜48、52〜53行目）</span>
+<span class="listing-number">**サンプルコード17-11**　SelectionComponents.java（4、9、13〜48行目）</span>
 
 ```java
 public class SelectionComponents {
@@ -568,9 +550,6 @@ public class SelectionComponents {
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane listScrollPane = new JScrollPane(list);
         frame.add(listScrollPane);
-        // ...
-    }
-}
 ```
 
 実行結果：
@@ -650,7 +629,7 @@ public class ComplexLayoutExample {
 以下のコードは、さらに高度なレイアウトの組み合わせ例を示しています。メニューバー、ツールバー、コンテンツエリア、サイドパネルなど、実際のアプリケーションでよく使われるパターンを、複数のレイアウトマネージャーを使って構築しています。
 初めて読むときは眺めるだけでよく、チャレンジ課題の家計簿の画面を組むときに参照してください。
 
-<span class="listing-number">**サンプルコード17-13**　CombinedLayoutExample.java（4、9〜25、33、42〜53、65〜73、82〜89、98、102〜103行目）</span>
+<span class="listing-number">**サンプルコード17-13**　CombinedLayoutExample.java（4、9〜25、33、42〜53、65〜73、82〜89、98行目）</span>
 
 ```java
 public class CombinedLayoutExample {
@@ -708,9 +687,6 @@ public class CombinedLayoutExample {
         statusBar.add(new JLabel("準備完了"), BorderLayout.WEST);
         // ...
         frame.add(statusBar, BorderLayout.SOUTH);
-        // ...
-    }
-}
 ```
 
 実行結果：

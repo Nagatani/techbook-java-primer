@@ -37,7 +37,7 @@
 右クリックメニューは、リスナーではなく`setComponentPopupMenu()`でパネルに付けます。
 メニューを開く操作がボタンを押したときか離したときかはOSによって違いますが、この方法ならどちらの場合もメニューを表示できます。
 
-<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5〜6、12、36〜64、78〜83、98〜101、118、134行目）</span>
+<span class="listing-number">**サンプルコード19-1**　MouseEventCompleteExample.java（5〜6、12、36〜64、78〜83、98〜101行目）</span>
 
 ```java
 public class MouseEventCompleteExample {
@@ -86,10 +86,6 @@ public class MouseEventCompleteExample {
         
         drawPanel.addMouseListener(mouseHandler);
         drawPanel.addMouseMotionListener(mouseHandler);
-        // ...
-    }
-    // ...
-}
 ```
 
 実行すると、「マウスイベント完全例」というウィンドウが開きます。白い描画パネルにカーソルを入れると十字の形に変わり、パネルへの出入り、クリック、ボタンの押下と解放、ドラッグのたびに、下のログエリアにイベントの種類（出入り以外は座標も）を記録します。ドラッグ中は押した位置から現在の位置まで青い線を描き、右クリックすると「切り取り」「コピー」「貼り付け」のメニューを表示します<span class="footnote">右クリックメニューを作る部分と描画の部分は、本文では省いています。全文は`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter19/19-01/`にあります。</span>。
@@ -106,7 +102,7 @@ Ctrl+Shift+Dは、押されているキーの集合で同時押しを調べる�
 ダイアログが開くなどしてフォーカスが移ると、キーを離したイベントがテキストエリアに届かず、集合にキーが残ってしまいます。
 そのため、フォーカスが外れたとき（`focusLost()`）に集合を空にしています。
 
-<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7〜8、13、26〜51、67〜76、86、88〜101、111、170行目）</span>
+<span class="listing-number">**サンプルコード19-2**　KeyboardEventAdvancedExample.java（7〜8、13、26〜51、67〜76、88〜101行目）</span>
 
 ```java
 public class KeyboardEventAdvancedExample {
@@ -152,8 +148,6 @@ public class KeyboardEventAdvancedExample {
             }
         });
         // ...
-    }
-    // ...
     private void setupKeyBindings() {
         InputMap inputMap =
                 textArea.getInputMap(JComponent.WHEN_FOCUSED);
@@ -168,10 +162,6 @@ public class KeyboardEventAdvancedExample {
                 deleteLine();
             }
         });
-        // ...
-    }
-    // ...
-}
 ```
 
 実行すると、「高度なキーボードイベント処理」というウィンドウが開きます。キーを押したり離したりするたびに、下のステータスラベルに修飾キーとキーの名前を表示します。Ctrl+Sで保存のダイアログ、F1でヘルプを表示し、Ctrl+Aで全選択、Ctrl+Dで現在の行の削除、Ctrl+Shift+Dで現在の行の複製、F5で内容のクリアを行います。
@@ -198,7 +188,7 @@ public class KeyboardEventAdvancedExample {
 この例では、どの変更でも同じ検証を行うので、3つのメソッドから同じ`validateForm()`を呼んでいます。
 以下のコードは、入力のたびにメールアドレスの形式、パスワードの長さと強度、確認用パスワードの一致を検証する例です。
 
-<span class="listing-number">**サンプルコード19-3**　DocumentListenerExample.java（7〜8、68〜117、154〜156、189行目）</span>
+<span class="listing-number">**サンプルコード19-3**　DocumentListenerExample.java（7〜8、68〜117、154〜156行目）</span>
 
 ```java
 public class DocumentListenerExample {
@@ -258,8 +248,6 @@ public class DocumentListenerExample {
         statusArea.setText(status.toString());
         submitButton.setEnabled(isValid);
     }
-    // ...
-}
 ```
 
 実行すると、「DocumentListenerによるバリデーション」というウィンドウが開きます。Email、パスワード、確認の各欄に入力するたびに、下のステータスエリアに検証結果を表示し、条件を満たさない欄の背景をピンクにします。パスワードは8文字以上で強度（弱い・普通・強い）も表示し、すべての条件を満たすと「送信」ボタンが押せるようになります。
@@ -294,7 +282,7 @@ Swingの部品が用意するイベントだけでなく、独自のイベント
 
 </div>
 
-<span class="listing-number">**サンプルコード19-4**　CustomEventExample.java（6〜36、46〜61、64〜65、71、100〜108、134〜135、162、173行目）</span>
+<span class="listing-number">**サンプルコード19-4**　CustomEventExample.java（6〜36、46〜61、64〜65、71、100〜108行目）</span>
 
 ```java
 // カスタムイベントクラス
@@ -360,13 +348,6 @@ public class CustomEventExample {
                 double oldTemp = e.getOldTemperature();
                 
                 temperatureLabel.setText("%.1f°C".formatted(newTemp));
-                // ...
-            }
-        });
-        // ...
-    }
-    // ...
-}
 ```
 
 実行すると、「カスタムイベントの例」というウィンドウが開きます。
@@ -440,7 +421,7 @@ Swingの部品どうしのドラッグ&ドロップは、`TransferHandler`で実
 
 </div>
 
-<span class="listing-number">**サンプルコード19-5**　SwingWorkerExample.java（7〜8、70〜76、80〜85、94〜101、103〜133、155行目）</span>
+<span class="listing-number">**サンプルコード19-5**　SwingWorkerExample.java（7〜8、70〜76、80〜85、94〜133行目）</span>
 
 ```java
 public class SwingWorkerExample {
@@ -469,7 +450,7 @@ public class SwingWorkerExample {
             
             return result.toString();
         }
-        // ...
+        
         @Override
         protected void process(List<ProgressInfo> chunks) {
             // 最新の進捗情報を使用
@@ -501,8 +482,6 @@ public class SwingWorkerExample {
             }
         }
     }
-    // ...
-}
 ```
 
 実行して「処理開始」ボタンを押すと、プログレスバーが0%から100%へ進み、下のエリアに「処理中: アイテム 1/100」のような進捗を表示します。

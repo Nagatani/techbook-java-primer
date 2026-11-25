@@ -3,7 +3,7 @@
     "dir": "25-01",
     "main": "DesignDemo",
     "excerpt": [
-      { "file": "Enrollment.java", "from": 1, "to": 3 },
+      { "file": "Enrollment.java", "from": 1, "to": 2 },
       { "file": "Undergraduate.java", "from": 1, "to": 2 },
       { "file": "Graduate.java", "from": 1, "to": 3 },
       { "file": "Student.java", "from": 5, "to": 10 },

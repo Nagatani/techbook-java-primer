@@ -42,8 +42,7 @@
     "main": "OptionalTransformationExample",
     "excerpt": [
       { "file": "OptionalTransformationExample.java", "from": 3, "to": 6 },
-      { "file": "OptionalTransformationExample.java", "from": 13, "to": 18 },
-      { "file": "OptionalTransformationExample.java", "from": 20, "to": 57 }
+      { "file": "OptionalTransformationExample.java", "from": 13, "to": 57 }
     ]
   },
   "12-11": {
@@ -51,10 +50,8 @@
     "main": "OptionalStreamExample",
     "excerpt": [
       { "file": "OptionalStreamExample.java", "from": 6, "to": 7 },
-      { "file": "OptionalStreamExample.java", "from": 18, "to": 18 },
       { "file": "OptionalStreamExample.java", "from": 20, "to": 21 },
-      { "file": "OptionalStreamExample.java", "from": 26, "to": 62 },
-      { "file": "OptionalStreamExample.java", "from": 63, "to": 63 }
+      { "file": "OptionalStreamExample.java", "from": 26, "to": 62 }
     ]
   },
   "12-12": {
@@ -62,20 +59,16 @@
     "main": "OptionalPracticalExample",
     "excerpt": [
       { "file": "OptionalPracticalExample.java", "from": 5, "to": 8 },
-      { "file": "OptionalPracticalExample.java", "from": 15, "to": 19 },
-      { "file": "OptionalPracticalExample.java", "from": 21, "to": 21 },
-      { "file": "OptionalPracticalExample.java", "from": 34, "to": 37 },
-      { "file": "OptionalPracticalExample.java", "from": 39, "to": 39 },
-      { "file": "OptionalPracticalExample.java", "from": 48, "to": 59 },
-      { "file": "OptionalPracticalExample.java", "from": 61, "to": 92 }
+      { "file": "OptionalPracticalExample.java", "from": 15, "to": 21 },
+      { "file": "OptionalPracticalExample.java", "from": 34, "to": 39 },
+      { "file": "OptionalPracticalExample.java", "from": 48, "to": 92 }
     ]
   },
   "12-13": {
     "dir": "12-13",
     "main": "OptionalAntiPatternsExample",
     "excerpt": [
-      { "file": "OptionalAntiPatternsExample.java", "from": 5, "to": 58 },
-      { "file": "OptionalAntiPatternsExample.java", "from": 67, "to": 68 }
+      { "file": "OptionalAntiPatternsExample.java", "from": 5, "to": 58 }
     ]
   },
   "12-16": {
@@ -89,8 +82,7 @@
     "dir": "12-17",
     "main": "ReduceExample",
     "excerpt": [
-      { "file": "ReduceExample.java", "from": 5, "to": 27 },
-      { "file": "ReduceExample.java", "from": 41, "to": 42 }
+      { "file": "ReduceExample.java", "from": 5, "to": 27 }
     ],
     "uses": [
       "12-5"

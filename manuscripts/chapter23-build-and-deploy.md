@@ -154,19 +154,17 @@ java -jar SimpleApp.jar
 次のTodoアプリケーションは、ウィンドウを組み立てる`TodoApp`クラスと、入力欄と「追加」ボタンをまとめた`TodoInputPanel`クラスの2つのファイルからなります。
 `TodoInputPanel`は`JPanel`を継承したクラスで、「追加」ボタンが押されると、入力された文字を`TodoApp`から受け取ったリストのモデルに加えます。
 
-<span class="listing-number">**サンプルコード23-3**　TodoApp.java（1、5〜7、9〜11、13〜14、22〜23、28〜33行目）、TodoInputPanel.java（1、5〜21行目）</span>
+<span class="listing-number">**サンプルコード23-3**　TodoApp.java（4〜13、21〜22、27〜32行目）、TodoInputPanel.java（4〜20行目）</span>
 
 ```java
-// TodoApp.java
-// ...
 public class TodoApp {
     private final DefaultListModel<String> listModel =
             new DefaultListModel<>();
-            // ...
+
     public TodoApp() {
         createAndShowGUI();
     }
-    // ...
+
     private void createAndShowGUI() {
         JFrame frame = new JFrame("Todo Manager");
         // ...
@@ -180,8 +178,6 @@ public class TodoApp {
     }
 }
 
-// TodoInputPanel.java
-// ...
 public class TodoInputPanel extends JPanel {
     private final JTextField inputField = new JTextField();
     private final JButton addButton = new JButton("追加");
@@ -295,7 +291,7 @@ Gradleでは、`build.gradle`の`jar`ブロックで、`manifest`の`attributes`
 
 アプリケーションには画像やプロパティファイルなどのリソースが含まれることがあります。
 
-<span class="listing-number">**サンプルコード23-5**　ResourceApp.java（5〜23行目）</span>
+<span class="listing-number">**サンプルコード23-5**　ResourceApp.java（4〜22行目）</span>
 
 ```java
 public class ResourceApp {

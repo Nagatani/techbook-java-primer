@@ -622,7 +622,7 @@ Factoryパターンは、オブジェクトの生成を専門に行うクラス�
 
 </div>
 
-<span class="listing-number">**サンプルコード7-12**　FigureFactory.java（3〜10、17〜20、26、68〜77、91〜96行目）、FactoryDemo.java</span>
+<span class="listing-number">**サンプルコード7-12**　FigureFactory.java（3〜10、17〜20、68〜77、91〜96行目）、FactoryDemo.java</span>
 
 ```java
 // 共通のインターフェイス
@@ -639,8 +639,6 @@ class CircleFigure implements Figure {
         IO.println("○ 半径 " + radius + " の円を描画");
     }
     // ...
-}
-// ...
 // ファクトリクラス
 public class FigureFactory {
     public static Figure createFigure(String type, double... params) {
@@ -691,7 +689,7 @@ public class FactoryDemo {
 
 </div>
 
-<span class="listing-number">**サンプルコード7-13**　DocumentFactory.java（1〜20、30〜41、52行目）</span>
+<span class="listing-number">**サンプルコード7-13**　DocumentFactory.java（1〜20、30〜41行目）</span>
 
 ```java
 // ファクトリの抽象クラス
@@ -727,8 +725,6 @@ class WordDocument implements Document {
     public void open() {
         IO.println("Word文書を開いています...");
     }
-    // ...
-}
 ```
 
 ### Factoryパターンの利点

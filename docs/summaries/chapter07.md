@@ -17,7 +17,7 @@ sections:
   - key: "高度な設計パターン"
     hash: 14c8ff03
   - key: "Factoryパターン：オブジェクト生成の抽象化"
-    hash: 2d50f8b8
+    hash: fce9ea9c
   - key: "よくあるエラーと対処法"
     hash: f70a0467
   - key: "まとめ"

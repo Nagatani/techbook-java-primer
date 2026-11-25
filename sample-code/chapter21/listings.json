@@ -64,7 +64,7 @@
     "main": "UserServiceManualTest",
     "excerpt": [
       { "file": "UserRepositoryStub.java", "from": 1, "to": 8 },
-      { "file": "UserServiceManualTest.java", "from": 1, "to": 19 }
+      { "file": "UserServiceManualTest.java", "from": 1, "to": 18 }
     ],
     "uses": [
       "21-7"

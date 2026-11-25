@@ -3,8 +3,7 @@
     "dir": "20-01",
     "main": "BasicTableExample",
     "excerpt": [
-      { "file": "BasicTableExample.java", "from": 4, "to": 24 },
-      { "file": "BasicTableExample.java", "from": 35, "to": 35 }
+      { "file": "BasicTableExample.java", "from": 4, "to": 24 }
     ]
   },
   "20-2": {
@@ -12,16 +11,13 @@
     "main": "SortableTableExample",
     "excerpt": [
       { "file": "PersonTableModel.java", "from": 6, "to": 6 },
-      { "file": "PersonTableModel.java", "from": 15, "to": 16 },
-      { "file": "PersonTableModel.java", "from": 18, "to": 19 },
+      { "file": "PersonTableModel.java", "from": 15, "to": 19 },
       { "file": "PersonTableModel.java", "from": 30, "to": 39 },
       { "file": "PersonTableModel.java", "from": 50, "to": 59 },
       { "file": "SortableTableExample.java", "from": 6, "to": 7 },
       { "file": "SortableTableExample.java", "from": 12, "to": 12 },
       { "file": "SortableTableExample.java", "from": 15, "to": 37 },
-      { "file": "SortableTableExample.java", "from": 57, "to": 63 },
-      { "file": "SortableTableExample.java", "from": 71, "to": 71 },
-      { "file": "SortableTableExample.java", "from": 82, "to": 82 }
+      { "file": "SortableTableExample.java", "from": 57, "to": 63 }
     ]
   },
   "20-3": {
@@ -30,9 +26,7 @@
     "excerpt": [
       { "file": "BasicTreeExample.java", "from": 6, "to": 9 },
       { "file": "BasicTreeExample.java", "from": 12, "to": 28 },
-      { "file": "BasicTreeExample.java", "from": 35, "to": 37 },
-      { "file": "BasicTreeExample.java", "from": 45, "to": 45 },
-      { "file": "BasicTreeExample.java", "from": 56, "to": 56 }
+      { "file": "BasicTreeExample.java", "from": 35, "to": 37 }
     ]
   },
   "20-4": {
@@ -48,9 +42,7 @@
       { "file": "AdvancedListExample.java", "from": 100, "to": 135 },
       { "file": "AdvancedListExample.java", "from": 138, "to": 139 },
       { "file": "AdvancedListExample.java", "from": 143, "to": 143 },
-      { "file": "AdvancedListExample.java", "from": 146, "to": 149 },
-      { "file": "AdvancedListExample.java", "from": 200, "to": 200 },
-      { "file": "AdvancedListExample.java", "from": 211, "to": 211 }
+      { "file": "AdvancedListExample.java", "from": 146, "to": 149 }
     ]
   }
 }

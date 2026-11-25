@@ -7,7 +7,7 @@ sections:
   - key: "なぜビルドと配布が必要か"
     hash: 89891709
   - key: "実行可能JARファイルの作成"
-    hash: 26f2444c
+    hash: cd2942f6
   - key: "jpackageによるネイティブアプリケーション化"
     hash: 353a6fce
   - key: "よくあるエラーと対処法"

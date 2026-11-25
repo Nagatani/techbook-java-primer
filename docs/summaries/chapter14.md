@@ -7,7 +7,7 @@ sections:
   - key: "ファイルI/Oの基礎とストリーム"
     hash: 0dc47ab3
   - key: "テキストファイルの読み書き"
-    hash: 548c2b94
+    hash: 47628118
   - key: "バイナリファイルの高度な処理"
     hash: c60a13be
   - key: "オブジェクトの直列化（シリアライズ）"
@@ -15,11 +15,11 @@ sections:
   - key: "ファイルシステムの操作（NIO.2）"
     hash: 530f6afe
   - key: "実践的なファイル処理例"
-    hash: 05dad606
+    hash: 6503700c
   - key: "GUIでのファイル選択：`JFileChooser`"
     hash: 074e92e0
   - key: "Text Blocks：複数行の文字列を読みやすく書く"
-    hash: 2ff25f0b
+    hash: c8f523c8
   - key: "まとめ"
     hash: e8b768f3
   - key: "よくあるエラーと対処法"

@@ -82,7 +82,7 @@
 
 以下のコードは、朝食の準備を順番に行うシングルスレッドのプログラムです。コーヒー（3秒）、トースト（2秒）、卵（5秒）を順番に処理するため、合計10秒かかります。各処理が完了するまで次の処理を開始できないため、待ち時間が無駄になっています。
 
-<span class="listing-number">**サンプルコード15-1**　SingleThreadExample.java（1〜24、28、36、42〜43行目）</span>
+<span class="listing-number">**サンプルコード15-1**　SingleThreadExample.java（1〜24、36行目）</span>
 
 ```java
 public class SingleThreadExample {
@@ -110,12 +110,7 @@ public class SingleThreadExample {
     
     private static void makeToast() {
     // ...
-    }
-    // ...
     private static void sleep(int milliseconds) {
-    // ...
-    }
-}
 ```
 
 実行結果：
@@ -135,7 +130,7 @@ public class SingleThreadExample {
 
 これをマルチスレッドで書き換えると、次のようになります。
 
-<span class="listing-number">**サンプルコード15-2**　MultiThreadExample.java（1〜24、50行目）</span>
+<span class="listing-number">**サンプルコード15-2**　MultiThreadExample.java（1〜24行目）</span>
 
 ```java
 public class MultiThreadExample {
@@ -162,7 +157,6 @@ public class MultiThreadExample {
     }
     
     // makeCoffee、makeToast、boilEgg、sleepメソッドはサンプルコード15-1と同じ
-}
 ```
 
 次は実行結果の一例です。
@@ -375,7 +369,7 @@ IntelliJ IDEAのデバッガーで実行してプログラムを一時停止し�
 
 メソッド全体ではなく、特定のコードブロックだけを同期化したい場合は、`synchronized`ブロックを使用します。これにより、必要最小限の範囲だけをロックすることができ、パフォーマンスの向上につながります。
 
-<span class="listing-number">**サンプルコード15-6**　BankAccount.java（1〜18、35行目）</span>
+<span class="listing-number">**サンプルコード15-6**　BankAccount.java（1〜18行目）</span>
 
 ```java
 class BankAccount {
@@ -396,8 +390,6 @@ class BankAccount {
             IO.println("入金後残高: " + balance);
         }
     }
-    // ...
-}
 ```
 
 残高を`double`で持っているのは、同期化の説明を簡単にするためです。
@@ -476,7 +468,7 @@ public class VolatileDemo {
 - `AtomicReference<T>`
     + 参照型のアトミック操作
 
-<span class="listing-number">**サンプルコード15-8**　AtomicCounterExample.java（3〜31、49行目）</span>
+<span class="listing-number">**サンプルコード15-8**　AtomicCounterExample.java（3〜31行目）</span>
 
 ```java
 public class AtomicCounterExample {
@@ -508,8 +500,6 @@ public class AtomicCounterExample {
         IO.println("Final counter value: " + counter.get());
         // 常に正確に10,000になる
     }
-    // ...
-}
 ```
 
 Atomicクラスはロックを使わないため、ロックが空くのを待ってスレッドが止まることがありません。
@@ -688,11 +678,11 @@ IntelliJ IDEAで実行していれば、最後の出力のあとも停止ボタ�
 タスクが例外を投げたときは、その例外が`Future`に入り、`get()`を呼んだときに`ExecutionException`に包まれて届きます。
 実行中のタスクをキャンセルすることもできます。
 
-<span class="listing-number">**サンプルコード15-12**　FutureCallableExample.java（5、7〜8、15〜24、30〜63行目）</span>
+<span class="listing-number">**サンプルコード15-12**　FutureCallableExample.java（5〜8、15〜24、30〜63行目）</span>
 
 ```java
 public class FutureCallableExample {
-    // ...
+    
     // 計算に時間がかかるタスク
     static class CalculationTask implements Callable<Long> {
         // ...
@@ -841,7 +831,7 @@ public class CompletableFutureExample {
 
 次のサンプルコード15-14は、`thenCompose`で非同期処理を順につなぐ例です。
 
-<span class="listing-number">**サンプルコード15-14**　AsyncChainingExample.java（4〜13、35〜47、56行目）</span>
+<span class="listing-number">**サンプルコード15-14**　AsyncChainingExample.java（4〜13、35〜47行目）</span>
 
 ```java
 public class AsyncChainingExample {
@@ -868,8 +858,6 @@ public class AsyncChainingExample {
         
         IO.println("Total amount: " + totalFuture.get());
     }
-    // ...
-}
 ```
 
 この例では、ユーザー情報の取得→注文履歴の取得→合計金額の計算という一連の処理を、メソッドの連鎖でつないでいます。
@@ -896,7 +884,7 @@ Javaでは、このバッファーに`java.util.concurrent`パッケージの`Bl
 `put()`はキューが満杯なら空きができるまで待ち、`take()`はキューが空なら要素が入るまで待ちます。
 次の例では、2つのプロデューサーと3つのコンシューマーが、容量10のキューを介して整数を受け渡します。
 
-<span class="listing-number">**サンプルコード15-15**　ProducerConsumerExample.java（8〜18、27〜44、53〜80、86〜87行目）</span>
+<span class="listing-number">**サンプルコード15-15**　ProducerConsumerExample.java（8〜18、27〜44、53〜80行目）</span>
 
 ```java
 public class ProducerConsumerExample {
@@ -958,9 +946,6 @@ public class ProducerConsumerExample {
         
         executor.shutdown();
         executor.awaitTermination(30, TimeUnit.SECONDS);
-        // ...
-    }
-}
 ```
 
 プロデューサーは100ミリ秒ごとに、コンシューマーは200ミリ秒ごとに1つの要素を扱います。

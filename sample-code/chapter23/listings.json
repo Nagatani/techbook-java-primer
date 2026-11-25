@@ -10,21 +10,17 @@
     "dir": "23-03",
     "main": "TodoApp",
     "excerpt": [
-      { "file": "TodoApp.java", "from": 1, "to": 1 },
-      { "file": "TodoApp.java", "from": 5, "to": 7 },
-      { "file": "TodoApp.java", "from": 9, "to": 11 },
-      { "file": "TodoApp.java", "from": 13, "to": 14 },
-      { "file": "TodoApp.java", "from": 22, "to": 23 },
-      { "file": "TodoApp.java", "from": 28, "to": 33 },
-      { "file": "TodoInputPanel.java", "from": 1, "to": 1 },
-      { "file": "TodoInputPanel.java", "from": 5, "to": 21 }
+      { "file": "TodoApp.java", "from": 4, "to": 13 },
+      { "file": "TodoApp.java", "from": 21, "to": 22 },
+      { "file": "TodoApp.java", "from": 27, "to": 32 },
+      { "file": "TodoInputPanel.java", "from": 4, "to": 20 }
     ]
   },
   "23-5": {
     "dir": "23-05",
     "main": "ResourceApp",
     "excerpt": [
-      { "file": "ResourceApp.java", "from": 5, "to": 23 }
+      { "file": "ResourceApp.java", "from": 4, "to": 22 }
     ]
   }
 }

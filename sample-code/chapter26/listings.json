@@ -3,8 +3,7 @@
     "dir": "26-01",
     "main": "JdbcDemo",
     "excerpt": [
-      { "file": "JdbcStudentRepository.java", "from": 13, "to": 15 },
-      { "file": "JdbcStudentRepository.java", "from": 17, "to": 21 },
+      { "file": "JdbcStudentRepository.java", "from": 13, "to": 21 },
       { "file": "JdbcStudentRepository.java", "from": 53, "to": 59 },
       { "file": "JdbcStudentRepository.java", "from": 73, "to": 87 },
       { "file": "JdbcStudentRepository.java", "from": 173, "to": 191 }
@@ -37,8 +36,7 @@
     "dir": "26-04",
     "main": null,
     "excerpt": [
-      { "file": "StudentServiceTest.java", "from": 10, "to": 38 },
-      { "file": "StudentServiceTest.java", "from": 49, "to": 49 }
+      { "file": "StudentServiceTest.java", "from": 10, "to": 38 }
     ],
     "libs": [
       "org.junit.jupiter:junit-jupiter-api:6.1.3",

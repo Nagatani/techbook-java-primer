@@ -331,7 +331,6 @@ public class UserRepositoryStub implements UserRepository {
     }
 }
 
-// UserServiceManualTest.java
 public class UserServiceManualTest {
     public static void main(String[] args) {
         // Arrange（準備）

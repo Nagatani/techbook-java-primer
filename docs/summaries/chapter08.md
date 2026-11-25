@@ -7,9 +7,9 @@ sections:
   - key: "列挙型（Enum）"
     hash: dd4b6381
   - key: "レコード（Record）"
-    hash: b12640b0
+    hash: ed904258
   - key: "EnumとRecordの使い分けと組み合わせ"
-    hash: 6cd350b5
+    hash: 7b8cd2b1
   - key: "内部クラス（Inner Classes）"
     hash: 8ae03d82
   - key: "よくあるエラーと対処法"

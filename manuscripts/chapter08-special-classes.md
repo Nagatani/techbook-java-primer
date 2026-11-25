@@ -394,7 +394,7 @@ public record Person(String name, int age) {}
 Recordの名前の後ろの括弧に書いた`name`と`age`を、Recordの成分（record component）と呼びます。
 これだけで、コンパイラーが次のクラスを定義したのとほぼ同じ意味になります（メソッドの中身は省略しています）。
 
-<span class="listing-number">**サンプルコード8-10**　Person.java（3〜17、21〜25、27〜31、33〜34行目）</span>
+<span class="listing-number">**サンプルコード8-10**　Person.java（3〜17、21〜25、27〜31行目）</span>
 
 ```java
 public final class Person {
@@ -424,9 +424,6 @@ public final class Person {
     @Override
     public String toString() {  // ⑥
         // 全フィールドを表示する実装
-        // ...
-    }
-}
 ```
 
 ### 自動生成される要素の詳細
@@ -900,7 +897,7 @@ public record Order(String orderId, String customerId,
 次のサンプルは、ゲームのキャラクターを、職業を表すEnumの`CharacterClass`と、能力値を表すRecordの`CharacterStats`で組み立てたものです。
 職業ごとの初期値はEnumの列挙子に持たせ、レベルアップでは能力値を書き換えずに新しいRecordを作って返します。
 
-<span class="listing-number">**サンプルコード8-23**　CharacterClass.java（1〜5、24行目）、CharacterStats.java、GameCharacter.java（1〜2、17〜21行目）</span>
+<span class="listing-number">**サンプルコード8-23**　CharacterClass.java（1〜5行目）、CharacterStats.java、GameCharacter.java（1〜2、17〜21行目）</span>
 
 ```java
 // キャラクターの職業
@@ -908,8 +905,6 @@ public enum CharacterClass {
     WARRIOR("戦士", 100, 20, 10),
     MAGE("魔法使い", 60, 10, 30),
     ARCHER("弓使い", 80, 15, 15);
-    // ...
-}
 
 public record CharacterStats(int level, int health, int attack,
         int magic) {

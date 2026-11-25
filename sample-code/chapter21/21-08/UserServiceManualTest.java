@@ -1,4 +1,3 @@
-// UserServiceManualTest.java
 public class UserServiceManualTest {
     public static void main(String[] args) {
         // Arrange（準備）

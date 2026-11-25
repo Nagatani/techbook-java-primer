@@ -4,17 +4,14 @@
     "main": "SingleThreadExample",
     "excerpt": [
       { "file": "SingleThreadExample.java", "from": 1, "to": 24 },
-      { "file": "SingleThreadExample.java", "from": 28, "to": 28 },
-      { "file": "SingleThreadExample.java", "from": 36, "to": 36 },
-      { "file": "SingleThreadExample.java", "from": 42, "to": 43 }
+      { "file": "SingleThreadExample.java", "from": 36, "to": 36 }
     ]
   },
   "15-2": {
     "dir": "15-02",
     "main": "MultiThreadExample",
     "excerpt": [
-      { "file": "MultiThreadExample.java", "from": 1, "to": 24 },
-      { "file": "MultiThreadExample.java", "from": 50, "to": 50, "sep": "none" }
+      { "file": "MultiThreadExample.java", "from": 1, "to": 24 }
     ]
   },
   "15-3": {
@@ -42,8 +39,7 @@
     "dir": "15-06",
     "main": null,
     "excerpt": [
-      { "file": "BankAccount.java", "from": 1, "to": 18 },
-      { "file": "BankAccount.java", "from": 35, "to": 35 }
+      { "file": "BankAccount.java", "from": 1, "to": 18 }
     ]
   },
   "15-7": {
@@ -57,8 +53,7 @@
     "dir": "15-08",
     "main": null,
     "excerpt": [
-      { "file": "AtomicCounterExample.java", "from": 3, "to": 31 },
-      { "file": "AtomicCounterExample.java", "from": 49, "to": 49 }
+      { "file": "AtomicCounterExample.java", "from": 3, "to": 31 }
     ]
   },
   "15-11": {
@@ -72,8 +67,7 @@
     "dir": "15-12",
     "main": "FutureCallableExample",
     "excerpt": [
-      { "file": "FutureCallableExample.java", "from": 5, "to": 5 },
-      { "file": "FutureCallableExample.java", "from": 7, "to": 8 },
+      { "file": "FutureCallableExample.java", "from": 5, "to": 8 },
       { "file": "FutureCallableExample.java", "from": 15, "to": 24 },
       { "file": "FutureCallableExample.java", "from": 30, "to": 63 }
     ]
@@ -91,8 +85,7 @@
     "main": "AsyncChainingExample",
     "excerpt": [
       { "file": "AsyncChainingExample.java", "from": 4, "to": 13 },
-      { "file": "AsyncChainingExample.java", "from": 35, "to": 47 },
-      { "file": "AsyncChainingExample.java", "from": 56, "to": 56 }
+      { "file": "AsyncChainingExample.java", "from": 35, "to": 47 }
     ]
   },
   "15-15": {
@@ -101,8 +94,7 @@
     "excerpt": [
       { "file": "ProducerConsumerExample.java", "from": 8, "to": 18 },
       { "file": "ProducerConsumerExample.java", "from": 27, "to": 44 },
-      { "file": "ProducerConsumerExample.java", "from": 53, "to": 80 },
-      { "file": "ProducerConsumerExample.java", "from": 86, "to": 87 }
+      { "file": "ProducerConsumerExample.java", "from": 53, "to": 80 }
     ]
   }
 }

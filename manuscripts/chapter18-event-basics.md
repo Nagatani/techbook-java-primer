@@ -161,7 +161,7 @@ ActionListenerのように、実装すべきメソッドが1つだけのイン�
 以下のコードは、先ほどの匿名クラスをラムダ式で書き換えた例です。ラムダ式を使用することで、コードがより簡潔になり、イベント処理の本質に集中できます。ActionEventのパラメーターeはラムダ式内で参照できますが、この例では使用していません<span class="footnote">Java 22からは、使わない引数を`_`（アンダースコア）と書いて、使わないことを示せます（`_ -> ...`）。</span>。
 2つ目のボタン`shortButton`には、処理が1行のときの短い書き方でリスナーを登録しています。
 
-<span class="listing-number">**サンプルコード18-2**　LambdaButtonExample.java（7、12、17〜29、36〜37行目）</span>
+<span class="listing-number">**サンプルコード18-2**　LambdaButtonExample.java（7、12、17〜29行目）</span>
 
 ```java
 public class LambdaButtonExample {
@@ -181,9 +181,6 @@ public class LambdaButtonExample {
         shortButton.addActionListener(e ->
                 JOptionPane.showMessageDialog(frame,
                 "ボタンがクリックされました！"));
-                // ...
-    }
-}
 ```
 
 イベント処理のように、あとで呼び出してもらう処理（コールバック）を渡す場面では、ラムダ式で書くのが標準的です。
@@ -196,7 +193,7 @@ public class LambdaButtonExample {
 
 以下のコードは、テキストフィールドとボタン、ラベルを組み合わせたインタラクティブな挨拶アプリケーションの例です。ラムダ式を使用して、ボタンクリック時にテキストフィールドから入力を取得し、ラベルに動的にメッセージを表示します。
 
-<span class="listing-number">**サンプルコード18-3**　GreetingApp.java（8、14〜32、37〜38行目）</span>
+<span class="listing-number">**サンプルコード18-3**　GreetingApp.java（8、14〜32行目）</span>
 
 ```java
 public class GreetingApp {
@@ -220,9 +217,6 @@ public class GreetingApp {
         frame.add(nameField);
         frame.add(greetButton);
         frame.add(messageLabel);
-        // ...
-    }
-}
 ```
 
 実行すると、次のように表示されます。
@@ -371,7 +365,7 @@ public class WindowEventExample {
 継承しなければ、`JFrame`の多数のメソッドを自分のクラスに引き継がずに済みます。
 この「継承より合成」の考え方は、第25章で学びます。
 
-<span class="listing-number">**サンプルコード18-6**　BasicMouseEventExample.java（5〜6、10、24〜46、53、64行目）</span>
+<span class="listing-number">**サンプルコード18-6**　BasicMouseEventExample.java（5〜6、10、24〜46行目）</span>
 
 ```java
 public class BasicMouseEventExample {
@@ -402,10 +396,6 @@ public class BasicMouseEventExample {
                 clickPanel.setBackground(Color.LIGHT_GRAY);
             }
         });
-        // ...
-    }
-    // ...
-}
 ```
 
 実行すると、次のように表示されます。
@@ -430,7 +420,7 @@ public class BasicMouseEventExample {
 自分のアプリのショートカットは、第19章のサンプルコード19-2で学ぶ`InputMap`と`ActionMap`によるキーバインディングで登録してください。
 KeyListenerはフォーカスのある部品にしかキーが届かないので、パネルに置いても反応しないことがあります。
 
-<span class="listing-number">**サンプルコード18-7**　BasicKeyEventExample.java（5〜6、10、23〜39、46、57行目）</span>
+<span class="listing-number">**サンプルコード18-7**　BasicKeyEventExample.java（5〜6、10、23〜39行目）</span>
 
 ```java
 public class BasicKeyEventExample {
@@ -455,10 +445,6 @@ public class BasicKeyEventExample {
                 }
             }
         });
-        // ...
-    }
-    // ...
-}
 ```
 
 `JOptionPane.showMessageDialog`の第1引数には、ダイアログを表示する基準のウィンドウを渡します。
@@ -471,7 +457,7 @@ public class BasicKeyEventExample {
 
 以下のコードは、ItemListenerを使用してチェックボックスとラジオボタンの選択状態を監視する例です。ItemEventを通じて、選択されたか解除されたかを判定し、直前の変化をラベルに、選択中の項目の一覧をコンソールに表示します。
 
-<span class="listing-number">**サンプルコード18-8**　ItemListenerExample.java（5〜6、11、22〜36、54〜64、85、104行目）</span>
+<span class="listing-number">**サンプルコード18-8**　ItemListenerExample.java（5〜6、11、22〜36、54〜64行目）</span>
 
 ```java
 public class ItemListenerExample {
@@ -506,10 +492,6 @@ public class ItemListenerExample {
         radio1.addItemListener(radioListener);
         radio2.addItemListener(radioListener);
         radio3.addItemListener(radioListener);
-        // ...
-    }
-    // ...
-}
 ```
 
 ### FocusListenerによるフォーカス管理
@@ -518,7 +500,7 @@ public class ItemListenerExample {
 
 以下のコードは、FocusListenerを使用してテキストフィールドのフォーカス状態を管理する例です。フォーカスを取得したフィールドの背景色を変更し、フォーカスを失った際には入力内容を確かめます。この例では、名前のフィールドが空のままフォーカスを失うと、背景をピンクにして下のラベルに案内を出します。
 
-<span class="listing-number">**サンプルコード18-9**　FocusListenerExample.java（5〜6、10、21〜45、71、89行目）</span>
+<span class="listing-number">**サンプルコード18-9**　FocusListenerExample.java（5〜6、10、21〜45行目）</span>
 
 ```java
 public class FocusListenerExample {
@@ -551,10 +533,6 @@ public class FocusListenerExample {
         field1.addFocusListener(focusListener);
         field2.addFocusListener(focusListener);
         field3.addFocusListener(focusListener);
-        // ...
-    }
-    // ...
-}
 ```
 
 誤りを確定して伝えるのは、送信ボタンを押したときです。
@@ -569,7 +547,7 @@ public class FocusListenerExample {
 `getValueIsAdjusting()`メソッドはドラッグ中ならtrueを返します。
 これを使うと、表示はそのつど更新し、確定した値の処理（この例ではコンソールへの出力）はドラッグを終えたときに1回だけ行えます。
 
-<span class="listing-number">**サンプルコード18-10**　ChangeListenerExample.java（5〜6、12、28〜41、51〜56、85、96行目）</span>
+<span class="listing-number">**サンプルコード18-10**　ChangeListenerExample.java（5〜6、12、28〜41、51〜56行目）</span>
 
 ```java
 public class ChangeListenerExample {
@@ -598,10 +576,6 @@ public class ChangeListenerExample {
             progressBar.setValue(value);
             valueLabel.setText("現在の値: " + value);
         });
-        // ...
-    }
-    // ...
-}
 ```
 
 スピナーで値を変えると、スピナーのリスナーが`slider.setValue`を呼ぶので、スライダーのリスナーも動きます。
@@ -620,7 +594,7 @@ public class ChangeListenerExample {
 `SwingUtilities.isEventDispatchThread()`は、呼び出したスレッドがEDTならtrueを返します。
 コンポーネントを操作するコードがEDT上で動いているかを確かめたいときに使えます。
 
-<span class="listing-number">**サンプルコード18-11**　EdtCheckExample.java（6〜11、17〜37、43〜44行目）</span>
+<span class="listing-number">**サンプルコード18-11**　EdtCheckExample.java（6〜11、17〜37行目）</span>
 
 ```java
 public class EdtCheckExample {
@@ -651,9 +625,6 @@ public class EdtCheckExample {
                         + SwingUtilities.isEventDispatchThread());
             }
         });
-        // ...
-    }
-}
 ```
 
 このプログラムを実行すると、「イベント確認」ボタンと「準備完了」ラベルが表示されます。ボタンをクリックすると、ラベルが「正しくEDT上で実行されています」に変わり、コンソールには次のような出力が表示されます<span class="footnote">SwingはAWTのイベントキューを土台にしています。EDTもAWTが用意するスレッドなので「AWT-EventQueue-0」という名前になっています。</span>。
@@ -684,7 +655,7 @@ EDTに処理を頼むメソッドには、`invokeLater()`のほかに`SwingUtili
 後者はループが終わるまで描き直されないので、途中の動きは見えず、最後の位置だけが表示されます。
 アニメーションには、このあとの節で学ぶ`javax.swing.Timer`を使います。
 
-<span class="listing-number">**サンプルコード18-12**　FreezeExample.java（7、12、17〜45、53〜54行目）</span>
+<span class="listing-number">**サンプルコード18-12**　FreezeExample.java（7、12、17〜45行目）</span>
 
 ```java
 public class FreezeExample {
@@ -720,9 +691,6 @@ public class FreezeExample {
                 }
             }).start();
         });
-        // ...
-    }
-}
 ```
 
 ### 定期的な処理：javax.swing.Timer
@@ -736,7 +704,7 @@ public class FreezeExample {
 `Timer`は最初の呼び出しも指定した間隔のあとに行うので、この例では`setInitialDelay(0)`で、開始してすぐに1回目を実行しています。
 リスナーの処理が長いとEDTを止めてしまうので、`Timer`で呼び出す処理は短く保ちます。
 
-<span class="listing-number">**サンプルコード18-13**　TimerExample.java（6〜11、17〜41、48〜49行目）</span>
+<span class="listing-number">**サンプルコード18-13**　TimerExample.java（6〜11、17〜41行目）</span>
 
 ```java
 public class TimerExample {
@@ -771,9 +739,6 @@ public class TimerExample {
                 toggleButton.setText("停止");
             }
         });
-        // ...
-    }
-}
 ```
 
 このプログラムを実行すると、空のラベルと「開始」ボタンが表示されます。「開始」ボタンをクリックすると、すぐに現在時刻（HH:mm:ss形式）が表示され、その後は毎秒更新されます。ボタンのテキストは「停止」に変わり、再度クリックすると時計が止まります。

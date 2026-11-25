@@ -1,4 +1,3 @@
-// TodoApp.java
 import javax.swing.*;
 import java.awt.*;
 

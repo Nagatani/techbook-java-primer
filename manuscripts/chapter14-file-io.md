@@ -78,7 +78,7 @@ IntelliJ IDEAから実行すると、既定ではプロジェクトのフォル�
 
 次のプログラムは、実行したディレクトリにある`data.txt`を読み込みます。`data.txt`は、GitHubリポジトリの全文と同じディレクトリに用意しています<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter14/14-01/`</span>。
 
-<span class="listing-number">**サンプルコード14-1**　ScannerExample.java（7〜31、43〜44行目）</span>
+<span class="listing-number">**サンプルコード14-1**　ScannerExample.java（7〜31行目）</span>
 
 ```java
 public class ScannerExample {
@@ -106,9 +106,6 @@ public class ScannerExample {
                 IO.println(scanner.next());
             }
         }
-        // ...
-    }
-}
 ```
 
 実行結果：
@@ -419,7 +416,7 @@ CSV（Comma-Separated Values）形式は、表計算データやデータベー�
 Excelやほかのシステムが作ったCSVは、引用符やBOMが入りうるので、第26章のようにApache Commons CSVなどのライブラリで読みます。
 次は、基本的なCSVの読み込みと書き込みの実装例です。
 
-<span class="listing-number">**サンプルコード14-6**　CSVProcessingExample.java（6〜54、67行目）</span>
+<span class="listing-number">**サンプルコード14-6**　CSVProcessingExample.java（6〜54行目）</span>
 
 ```java
 public class CSVProcessingExample {
@@ -471,8 +468,6 @@ public class CSVProcessingExample {
             IO.println("CSVファイルを書き込みました: " + filePath);
         }
     }
-    // ...
-}
 ```
 
 実行結果：
@@ -609,7 +604,7 @@ public class TextBlockBasics {
 
 Text Blocksのもっとも重要な特徴の1つは、共通インデントの自動除去です<span class="footnote">基準となるインデントを決めるときは、閉じる`"""`だけの行も数に入ります。閉じる`"""`を本文の行より左に置くと、その差の分だけ各行の先頭に空白が残ります。</span>。
 
-<span class="listing-number">**サンプルコード14-9**　TextBlockIndentation.java（1〜15、27〜35、46〜47行目）</span>
+<span class="listing-number">**サンプルコード14-9**　TextBlockIndentation.java（1〜15、27〜35行目）</span>
 
 ```java
 public class TextBlockIndentation {
@@ -637,9 +632,6 @@ public class TextBlockIndentation {
             """;
         IO.println("\n=== 混合インデント（もっとも浅い行が基準） ===");
         IO.println(mixedIndent);
-        // ...
-    }
-}
 ```
 
 実行結果：

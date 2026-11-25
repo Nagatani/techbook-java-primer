@@ -52,7 +52,7 @@ JTableはこれらを組み合わせて表を表示します。
 `JScrollPane`に入れることで、データが多い場合にスクロールできるようになります。
 この方法は簡単ですが、表示したあとに行を追加・削除する用途には向いていません。
 
-<span class="listing-number">**サンプルコード20-1**　BasicTableExample.java（4〜24、35行目）</span>
+<span class="listing-number">**サンプルコード20-1**　BasicTableExample.java（4〜24行目）</span>
 
 ```java
 public class BasicTableExample {
@@ -76,8 +76,6 @@ public class BasicTableExample {
         frame.setSize(600, 300);
         frame.setLocationRelativeTo(null);
     }
-    // ...
-}
 ```
 
 実行すると、次のように表示されます。
@@ -102,14 +100,14 @@ JTableは組み込みのソート機能を提供しています<span class="foot
 この例では、`AbstractTableModel`を継承した`PersonTableModel`が、`Person`（第8章で学んだRecord）のリストを持ちます。
 全文はGitHubリポジトリの`sample-code/chapter20/20-02/`にあります<span class="footnote">`https://github.com/Nagatani/techbook-java-primer/tree/main/sample-code/chapter20/20-02/`</span>。
 
-<span class="listing-number">**サンプルコード20-2**　PersonTableModel.java（6、15〜16、18〜19、30〜39、50〜59行目）、SortableTableExample.java（6〜7、12、15〜37、57〜63、71、82行目）</span>
+<span class="listing-number">**サンプルコード20-2**　PersonTableModel.java（6、15〜19、30〜39、50〜59行目）、SortableTableExample.java（6〜7、12、15〜37、57〜63行目）</span>
 
 ```java
 public class PersonTableModel extends AbstractTableModel {
     // ...
     @Override
     public int getRowCount() { return people.size(); }
-    // ...
+
     @Override
     public int getColumnCount() { return columnNames.length; }
     // ...
@@ -171,10 +169,6 @@ public class SortableTableExample {
                 model.removePerson(modelRow);
             }
         });
-        // ...
-    }
-    // ...
-}
 ```
 
 `JTable`は、表を描くときにモデルの`getRowCount()`で行数を、`getColumnCount()`で列数を、`getValueAt(行, 列)`で各セルの値を問い合わせます。
@@ -231,7 +225,7 @@ JTreeは階層構造のデータを表示するコンポーネントです。
 子を持つノードには、展開・折りたたみのハンドルが表示されます。
 `setShowsRootHandles(true)`は、いちばん上のルートノードにもハンドルを表示する指定です。
 
-<span class="listing-number">**サンプルコード20-3**　BasicTreeExample.java（6〜9、12〜28、35〜37、45、56行目）</span>
+<span class="listing-number">**サンプルコード20-3**　BasicTreeExample.java（6〜9、12〜28、35〜37行目）</span>
 
 ```java
 public class BasicTreeExample {
@@ -260,10 +254,6 @@ public class BasicTreeExample {
         // JTreeの作成
         JTree tree = new JTree(root);
         tree.setShowsRootHandles(true);
-        // ...
-    }
-    // ...
-}
 ```
 
 ### 表示したあとにノードを追加・削除する {.advanced}
@@ -306,7 +296,7 @@ public class BasicTreeExample {
 `DefaultTreeCellRenderer`は`JLabel`を継承しているので、`setText`や`setIcon`をそのまま呼べます。
 作ったレンダラーは、ツリーの`setCellRenderer`で設定します。
 
-<span class="listing-number">**サンプルコード20-4**　AdvancedListExample.java（29、42〜51、63〜67、74、86〜87、95〜96、100〜135、138〜139、143、146〜149、200、211行目）</span>
+<span class="listing-number">**サンプルコード20-4**　AdvancedListExample.java（29、42〜51、63〜67、74、86〜87、95〜96、100〜135、138〜139、143、146〜149行目）</span>
 
 ```java
 class TaskListModel extends AbstractListModel<Task> {
@@ -382,10 +372,6 @@ public class AdvancedListExample {
         taskList = new JList<>(model);
         taskList.setCellRenderer(new TaskListCellRenderer());
         taskList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        // ...
-    }
-    // ...
-}
 ```
 
 ## 実践的なアプリケーション例

@@ -96,7 +96,7 @@ public int add(int a, int b) {
 
 以下は、実際のプロジェクトで使用されるような、詳細で実用的なJavadocコメントの例です。クラスレベルのコメント、各フィールド、コンストラクター、メソッドに至るまで、包括的なドキュメントを提供しています。
 
-<span class="listing-number">**サンプルコード22-2**　Task.java（1〜20、58〜66、78、144〜153、167行目）</span>
+<span class="listing-number">**サンプルコード22-2**　Task.java（1〜20、58〜66、144〜153行目）</span>
 
 ```java
 /**
@@ -130,8 +130,6 @@ public class Task {
      */
     public Task(String title, Priority priority) {
     // ...
-    }
-    // ...
     /**
      * タスクの概要を文字列で返す
      * 
@@ -142,8 +140,6 @@ public class Task {
     public String getSummary() {
         return String.format("Task[id=%d, title='%s']", id, title);
     }
-    // ...
-}
 ```
 
 Javadocは、ほかの人が使う`public`なクラスとメソッドに書きます。
@@ -307,7 +303,7 @@ Mavenを初めて使うときによくある誤りは、`pom.xml`を書き換え
 
 次の例では、`@SerializedName`アノテーションによるJSONのフィールド名の指定、`transient`<span class="footnote">`transient`は、第14章「ファイルI/O」の直列化で学んだ修飾子です。Gsonも、この修飾子を付けたフィールドをJSONに含めません。</span>によるフィールドの除外、`GsonBuilder`による整形出力の設定を示します。
 
-<span class="listing-number">**サンプルコード22-4**　TodoItem.java（9〜19、32行目）、GsonAdvancedExample.java（8〜18、30〜43行目）</span>
+<span class="listing-number">**サンプルコード22-4**　TodoItem.java（9〜19行目）、GsonAdvancedExample.java（8〜18、30〜43行目）</span>
 
 ```java
 public class TodoItem {
@@ -321,8 +317,6 @@ public class TodoItem {
     
     private String createdAt;
     private List<String> tags;
-    // ...
-}
 
 public class GsonAdvancedExample {
     public static void main(String[] args) {
